@@ -22,9 +22,13 @@ The tool is made up of three parts:
 
 This lets you select the destination table to which you are transferring data. 
 
+![Table browser](images/destination-table.png)
+
 ### Map Key Columns
 
 This lets you choose the key columns in the source and destination tables.
+
+![Map Key Columns](images/key-mapping.png)
 
 Two `Match` buttons allow you to select the matching column name from the opposite table.
 
@@ -37,6 +41,8 @@ Lastly, we give a count of how many blank keys and how many error (#N/A, etc.) k
 ### Map Value Columns
 
 This lets you choose which columns are mapped between the two tables. 
+
+![Map Value Columns](images/value-mapping.png)
 
 The `Auto Map` column maps all columns which share the same name.
 
