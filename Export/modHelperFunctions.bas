@@ -1,4 +1,5 @@
 Attribute VB_Name = "modHelperFunctions"
+'@Folder "HelperFunctions"
 Option Explicit
 
 Public Function TableFromString(s As String) As ListObject
@@ -9,7 +10,7 @@ Public Function TableFromString(s As String) As ListObject
     Debug.Assert LBound(n, 1) = 0
     Debug.Assert UBound(n, 1) = 2
     
-    n(2) = Replace(n(2), " (active)", "")
+    n(2) = Replace(n(2), " (active)", vbNullString)
     
     Set wb = Workbooks(n(0))
     Set ws = wb.Worksheets(n(1))

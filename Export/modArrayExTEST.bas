@@ -1,25 +1,26 @@
 Attribute VB_Name = "modArrayExTEST"
+'@Folder "ArrayExtensions"
 Option Explicit
 
 Private Sub TESTArrayEx()
     Dim lhs As Variant
-    Dim rhs As Variant
+    Dim RHS As Variant
     
     lhs = ThisWorkbook.Worksheets("Sheet1").ListObjects("Table1").ListColumns("KeyA").DataBodyRange.Value
-    rhs = ThisWorkbook.Worksheets("Sheet1").ListObjects("Table1").ListColumns("KeyA").DataBodyRange.Value
+    RHS = ThisWorkbook.Worksheets("Sheet1").ListObjects("Table1").ListColumns("KeyA").DataBodyRange.Value
     'rhs = ThisWorkbook.Worksheets("Sheet1").listobjects("Table2").ListColumns("KeyB").DataBodyRange.Value
     
     Debug.Print "***"
     Debug.Print "START TESTING"
     'Debug.Print "Match Arrays = " & ArraySubset(lhs, rhs)
     
-    Dim antiTest As Variant: antiTest = ArrayAntiJoinLeft(lhs, rhs)
+    Dim antiTest As Variant: antiTest = ArrayAntiJoinLeft(lhs, RHS)
     Dim distTest As Variant: distTest = ArrayDistinct(lhs)
     Dim findTest As Integer: findTest = ArrayFind("left1", lhs)
-    Dim interTest As Variant: interTest = ArrayIntersect(lhs, rhs)
+    Dim interTest As Variant: interTest = ArrayIntersect(lhs, RHS)
     Dim lenTest As Integer: lenTest = ArrayLength(lhs)
-    Dim matchTest As Boolean: matchTest = ArrayMatch(lhs, rhs)
-    Dim subsetTest As Boolean: subsetTest = ArraySubset(lhs, rhs)
+    Dim matchTest As Boolean: matchTest = ArrayMatch(lhs, RHS)
+    Dim subsetTest As Boolean: subsetTest = ArraySubset(lhs, RHS)
     Dim trimTest As Variant: trimTest = ArrayTrim(lhs, 2)
     Dim uniqTest As Variant: uniqTest = ArrayUnique(lhs)
     Dim fltTxtTest As Variant: fltTxtTest = ArrayFilterTextOnly(lhs)
@@ -39,7 +40,7 @@ Private Sub TESTArrayEx()
     Dim two As ArrayExAnalyseTwo
     
     one = ArrayAnalyseOne(lhs)
-    two = ArrayAnalyseTwo(lhs, rhs)
+    two = ArrayAnalyseTwo(lhs, RHS)
     
     'ArrayPrint (two.LeftOnly)
     
@@ -53,7 +54,7 @@ Private Function ArrayPrint(arr As Variant, Optional header As String)
     Dim i As Integer
     If IsEmpty(arr) Then
         Debug.Print " >>> Variant/Empty"
-        Debug.Print ""
+        Debug.Print vbNullString
         Exit Function
     End If
     Debug.Print "Printing array(1 to " & UBound(arr, 1) & ", 1 to 1)"
@@ -64,5 +65,5 @@ Private Function ArrayPrint(arr As Variant, Optional header As String)
             Debug.Print " " & CStr(i) & ") " & arr(i, 1)
         End If
     Next i
-    Debug.Print ""
+    Debug.Print vbNullString
 End Function

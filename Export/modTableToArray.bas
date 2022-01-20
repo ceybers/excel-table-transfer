@@ -1,4 +1,5 @@
 Attribute VB_Name = "modTableToArray"
+'@Folder "HelperFunctions"
 Option Explicit
 
 
@@ -6,7 +7,7 @@ Public Function GetVisibleTableAsArray(lo As ListObject) As Variant
     Dim arr As Variant, vismask As Variant
     arr = GetDBR(lo)
     vismask = GetVisibilityMask(lo)
-    Call ApplyBitmask(arr, vismask)
+    ApplyBitmask arr, vismask
     GetVisibleTableAsArray = arr
 End Function
 
@@ -33,8 +34,8 @@ End Function
 
 Private Function GetVisibilityMask(lo As ListObject) As Variant
     Dim bitmask As Variant
-    Dim maskRng As Range
-    Dim origin As Range
+    Dim maskRng As range
+    Dim origin As range
     
     bitmask = GetDBR(lo)
     ReDim bitmask(LBound(bitmask, 1) To UBound(bitmask, 1), LBound(bitmask, 2) To UBound(bitmask, 2))
@@ -42,7 +43,7 @@ Private Function GetVisibilityMask(lo As ListObject) As Variant
     Set origin = lo.DataBodyRange.Cells(1, 1)
     
     Dim i As Integer, j As Integer, k As Integer
-    Dim a As Range
+    Dim a As range
     For i = 1 To maskRng.Areas.count
         Set a = maskRng.Areas(i)
         For j = 1 To a.Rows.count
@@ -63,7 +64,7 @@ Private Function GetDBR(lo As ListObject) As Variant
 End Function
 
 Private Function SetDBR(lo As ListObject, arr As Variant) As Boolean
-    Dim dbr As Range
+    Dim dbr As range
     Set dbr = lo.DataBodyRange
     Dim arrHeight As Integer: arrHeight = UBound(arr, 1)
     Dim arrWidth As Integer: arrWidth = UBound(arr, 2)
@@ -75,7 +76,7 @@ Private Function SetDBR(lo As ListObject, arr As Variant) As Boolean
 End Function
 
 Private Sub FillTableWithAddresses(lo As ListObject)
-    Dim c As Range
+    Dim c As range
     For Each c In lo.DataBodyRange.Cells
         c.Value = CStr(c.Address)
     Next c

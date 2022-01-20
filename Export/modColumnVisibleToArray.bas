@@ -1,4 +1,5 @@
 Attribute VB_Name = "modColumnVisibleToArray"
+'@Folder "HelperFunctions"
 Option Explicit
 
 Public Sub TESTColumnVisibleToArray()
@@ -6,7 +7,7 @@ Public Sub TESTColumnVisibleToArray()
     Dim ws As Worksheet
     Dim lo As ListObject
     Dim lc As ListColumn
-    Dim rng As Range
+    Dim rng As range
     Dim v As Variant
     
     Set wb = ThisWorkbook
@@ -22,7 +23,7 @@ Public Sub TESTColumnVisibleToArray()
     Debug.Assert False
 End Sub
 
-Public Function VisibleRangeToArray(rng As Range) As Variant
+Public Function VisibleRangeToArray(rng As range) As Variant
     'RangeToArray = rng.Value
     
     Dim arr As Variant
@@ -36,10 +37,10 @@ Public Function VisibleRangeToArray(rng As Range) As Variant
     VisibleRangeToArray = arr
 End Function
 
-Private Function GetVisibilityMask(rng As Range) As Variant
+Private Function GetVisibilityMask(rng As range) As Variant
     Dim bitmask As Variant
-    Dim maskRng As Range
-    Dim origin As Range
+    Dim maskRng As range
+    Dim origin As range
     
     bitmask = rng.Value
     'ReDim bitmask(LBound(bitmask, 1) To UBound(bitmask, 1), LBound(bitmask, 2) To UBound(bitmask, 2))
@@ -49,7 +50,7 @@ Private Function GetVisibilityMask(rng As Range) As Variant
     Set origin = rng.Cells(1, 1)
     
     Dim i As Integer, j As Integer, k As Integer
-    Dim a As Range
+    Dim a As range
     For i = 1 To maskRng.Areas.count
         Set a = maskRng.Areas(i)
         For j = 1 To a.Rows.count

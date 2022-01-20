@@ -7,12 +7,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+'@Folder "VBAProject"
 Option Explicit
 
-Private WithEvents tableBrowser As frmTableBrowser
-Attribute tableBrowser.VB_VarHelpID = -1
+'@MemberAttribute VB_VarHelpID, -1
 Private WithEvents keyMapper As frmKeyMapper
 Attribute keyMapper.VB_VarHelpID = -1
+'@MemberAttribute VB_VarHelpID, -1
 Private WithEvents valueMapper As frmValueMapper
 Attribute valueMapper.VB_VarHelpID = -1
 
@@ -33,35 +34,35 @@ Private Sub Class_Initialize()
     'TODO Use active selection picker instead
     'Set this.Source = ThisWorkbook.Worksheets("Sheet1").listobjects("Table1")
     
-    Set tableBrowser = New frmTableBrowser
     Set keyMapper = New frmKeyMapper
     Set valueMapper = New frmValueMapper
 End Sub
 
-Public Sub TransferFrom(lo As ListObject)
+Public Sub TransferFrom(ByRef lo As ListObject)
     Set this.Source = lo
-    GetDestinationTable
-End Sub
 
-Private Sub GetDestinationTable()
-    tableBrowser.Show
+    Dim vm As clsSelectTableViewModel
+    Set vm = New clsSelectTableViewModel
+    Set vm.ActiveTable = lo
+    
+    With New frmSelectTable
+        If .ShowDialog(vm) Then
+            If Not vm.SelectedTable Is Nothing Then
+                Set this.Destination = vm.SelectedTable
+                GetKeyMapping
+            End If
+        End If
+    End With
 End Sub
 
 Private Sub GetKeyMapping()
-    Call keyMapper.SetTables(this.Source, this.Destination)
+    keyMapper.SetTables this.Source, this.Destination
     keyMapper.Show
 End Sub
 
 Private Sub GetValueMapping()
-    'MsgBox ("Now map the columns")
-    
-    'Debug.Print "srcKeyCol = " & this.SourceKeyColumn.Name
-    'Debug.Print "dstKeyCol = " & this.DestinationKeyColumn.Name
-    
-'    Call frmColumnMapper.PopulateColumnMapper(GetSelectedTable(), lo)
-'    frmColumnMapper.Show
     With this
-        Call valueMapper.PopulateColumnMapper(.Source, .SourceKeyColumn, .Destination, .DestinationKeyColumn)
+        valueMapper.PopulateColumnMapper .Source, .SourceKeyColumn, .Destination, .DestinationKeyColumn
     End With
     valueMapper.Show
 End Sub
@@ -81,15 +82,10 @@ Private Sub DoTransfer()
     RunTransferInstruction ti
 End Sub
 
-Private Sub keyMapper_Completed(lhs As ListColumn, rhs As ListColumn)
+Private Sub keyMapper_Completed(lhs As ListColumn, RHS As ListColumn)
     Set this.SourceKeyColumn = lhs
-    Set this.DestinationKeyColumn = rhs
+    Set this.DestinationKeyColumn = RHS
     GetValueMapping
-End Sub
-
-Private Sub tableBrowser_TableSelected(ByVal lo As ListObject)
-    Set this.Destination = lo
-    GetKeyMapping
 End Sub
 
 Private Sub valueMapper_Cancelled()

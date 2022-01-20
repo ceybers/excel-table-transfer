@@ -48,7 +48,7 @@ Private Sub cmbAutoMap_Click()
 End Sub
 
 Private Sub cmbClearSearch_Click()
-    Me.txtSearch.text = ""
+    Me.txtSearch.text = vbNullString
 End Sub
 
 Private Sub cmbSelectAll_Click()
@@ -75,8 +75,8 @@ End Sub
 Private Sub lbListBox_Click()
     Dim s As String
     s = CStr(Me.lbListBox.List(Me.lbListBox.ListIndex))
-    Call TryUpdateInListview(s)
-    Call CheckNextButton
+    TryUpdateInListview s
+    CheckNextButton
 End Sub
 
 Private Sub lvListView_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeader)
@@ -85,7 +85,7 @@ Private Sub lvListView_ColumnClick(ByVal ColumnHeader As MSComctlLib.ColumnHeade
 End Sub
 
 Private Sub lvListView_ItemCheck(ByVal Item As MSComctlLib.ListItem)
-    Call CheckNextButton
+    CheckNextButton
 End Sub
 
 Private Sub lvListView_ItemClick(ByVal Item As MSComctlLib.ListItem)
@@ -103,8 +103,8 @@ Public Sub PopulateColumnMapper(src As ListObject, srcKey As ListColumn, dst As 
     Set this.dst = dst
     Set this.dstKey = dstKey
     
-    Call PopulateColumnsToListView(Me.lvListView, src, srcKey)
-    Call PopulateColumnsToListBox(Me.lbListBox, dst, dstKey)
+    PopulateColumnsToListView Me.lvListView, src, srcKey
+    PopulateColumnsToListBox Me.lbListBox, dst, dstKey
 End Sub
 
 Private Function PopulateColumnsToListView(lv As ListView, lo As ListObject, keyCol As ListColumn)
@@ -114,7 +114,7 @@ Private Function PopulateColumnsToListView(lv As ListView, lo As ListObject, key
     lv.ListItems.Clear
     
     With lv
-        .View = lvwReport
+        .view = lvwReport
         .CheckBoxes = True
         .FullRowSelect = True
         .Gridlines = True
@@ -154,7 +154,7 @@ Private Function PopulateColumnsToListBox(lb As MSForms.ListBox, lo As ListObjec
             If IsMissing(filter) Or UCase(Left(lc.Name, Len(filter))) = UCase(filter) Then
                 lb.AddItem (lc.Name)
             End If
-            If currentlySelected <> "" And lc.Name = currentlySelected Then
+            If currentlySelected <> vbNullString And lc.Name = currentlySelected Then
                 lb = lb.List(lb.ListCount - 1)
             End If
         End If

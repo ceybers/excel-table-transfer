@@ -1,4 +1,5 @@
 Attribute VB_Name = "modArrayEx"
+'@Folder "ArrayExtensions"
 Option Explicit
 
 Public Type ArrayExAnalyseOne
@@ -31,14 +32,14 @@ Public Function ArrayAnalyseOne(arr As Variant) As ArrayExAnalyseOne
     End With
 End Function
 
-Public Function ArrayAnalyseTwo(lhs As Variant, rhs As Variant) As ArrayExAnalyseTwo
+Public Function ArrayAnalyseTwo(lhs As Variant, RHS As Variant) As ArrayExAnalyseTwo
     With ArrayAnalyseTwo
-        .LeftOnly = ArrayDistinct(ArrayAntiJoinLeft(lhs, rhs))
-        .RightOnly = ArrayDistinct(ArrayAntiJoinLeft(rhs, lhs))
-        .Intersection = ArrayDistinct(ArrayIntersect(lhs, rhs))
-        .Match = ArrayMatch(lhs, rhs)
-        .LeftSubset = ArraySubset(lhs, rhs)
-        .RightSubset = ArraySubset(lhs, rhs)
+        .LeftOnly = ArrayDistinct(ArrayAntiJoinLeft(lhs, RHS))
+        .RightOnly = ArrayDistinct(ArrayAntiJoinLeft(RHS, lhs))
+        .Intersection = ArrayDistinct(ArrayIntersect(lhs, RHS))
+        .Match = ArrayMatch(lhs, RHS)
+        .LeftSubset = ArraySubset(lhs, RHS)
+        .RightSubset = ArraySubset(lhs, RHS)
         .LeftOnlyCount = ArrayLength(.LeftOnly)
         .IntersectionCount = ArrayLength(.Intersection)
         .RightOnlyCount = ArrayLength(.RightOnly)
@@ -74,7 +75,7 @@ Public Function ArrayBlankCount(arr As Variant) As Integer
     Dim c As Integer
     For i = LBound(arr, 1) To UBound(arr, 1)
         If IsError(arr(i, 1)) Then
-        ElseIf arr(i, 1) = "" Then
+        ElseIf arr(i, 1) = vbNullString Then
             c = c + 1
         End If
     Next i
@@ -110,7 +111,7 @@ Public Function ArrayUnique(arr As Variant) As Variant
     For i = LBound(arr, 1) To UBound(arr, 1)
         this = arr(i, 1)
         If IsError(this) Then
-        ElseIf this = "" Then
+        ElseIf this = vbNullString Then
         Else
             c = 0
             For j = LBound(arr, 1) To UBound(arr, 1)
@@ -159,7 +160,7 @@ Public Function ArrayDistinct(arr As Variant) As Variant
         this = arr(i, 1)
         
         If IsError(this) Then
-        ElseIf this = "" Then
+        ElseIf this = vbNullString Then
         ElseIf ArrayFind(this, result) <> -1 Then
         Else
             n = n + 1
@@ -173,7 +174,7 @@ End Function
 ' Returns a list of items in both lhs and rhs.
 ' Excludes blanks and errors.
 ' Only checks 1st instance of each duplicate.
-Public Function ArrayIntersect(lhs As Variant, rhs As Variant) As Variant
+Public Function ArrayIntersect(lhs As Variant, RHS As Variant) As Variant
     Dim i As Integer
     Dim n As Integer
     Dim this As Variant
@@ -186,9 +187,9 @@ Public Function ArrayIntersect(lhs As Variant, rhs As Variant) As Variant
         this = lhs(i, 1)
         
         If IsError(this) Then
-        ElseIf this = "" Then
+        ElseIf this = vbNullString Then
         ElseIf ArrayFind(this, result) <> -1 Then
-        ElseIf ArrayFind(this, rhs) < 0 Then
+        ElseIf ArrayFind(this, RHS) < 0 Then
         Else
             n = n + 1
             result(n, 1) = this
@@ -234,7 +235,7 @@ End Function
 
 ' Returns an array(n, 1) of all the items that are in the lhs array but
 ' not in the rhs array. Excludes blanks and errors.
-Public Function ArrayAntiJoinLeft(lhs As Variant, rhs As Variant) As Variant
+Public Function ArrayAntiJoinLeft(lhs As Variant, RHS As Variant) As Variant
     Dim i As Integer
     Dim n As Integer
     Dim this As Variant
@@ -247,8 +248,8 @@ Public Function ArrayAntiJoinLeft(lhs As Variant, rhs As Variant) As Variant
     For i = LBound(lhs, 1) To UBound(lhs, 1)
         this = lhs(i, 1)
         If IsError(this) Then
-        ElseIf this = "" Then
-        ElseIf ArrayFind(this, rhs) = -1 Then
+        ElseIf this = vbNullString Then
+        ElseIf ArrayFind(this, RHS) = -1 Then
             n = n + 1
             result(n, 1) = this
         End If
@@ -268,11 +269,11 @@ End Function
 ' Check if every item in lhs exists in rhs.
 ' Does not check if rhs items all exist in lhs.
 ' Ignores blanks and errors
-Public Function ArraySubset(lhs As Variant, rhs As Variant) As Boolean
+Public Function ArraySubset(lhs As Variant, RHS As Variant) As Boolean
     Dim i As Integer
     Dim this As Variant
     
-    If UBound(lhs, 1) <> UBound(rhs, 1) Then
+    If UBound(lhs, 1) <> UBound(RHS, 1) Then
         ArraySubset = False
         Exit Function
     End If
@@ -280,8 +281,8 @@ Public Function ArraySubset(lhs As Variant, rhs As Variant) As Boolean
     For i = LBound(lhs, 1) To UBound(lhs, 1)
         this = lhs(i, 1)
         If IsError(this) Then
-        ElseIf this = "" Then
-        ElseIf ArrayFind(this, rhs) = -1 Then
+        ElseIf this = vbNullString Then
+        ElseIf ArrayFind(this, RHS) = -1 Then
             ArraySubset = False
             Exit Function
         End If
@@ -290,9 +291,9 @@ Public Function ArraySubset(lhs As Variant, rhs As Variant) As Boolean
 End Function
 
 ' Checks if all items exist in both lhs and rhs
-Public Function ArrayMatch(lhs As Variant, rhs As Variant) As Boolean
-    If ArraySubset(lhs, rhs) = False Then Exit Function
-    If ArraySubset(rhs, lhs) = False Then Exit Function
+Public Function ArrayMatch(lhs As Variant, RHS As Variant) As Boolean
+    If ArraySubset(lhs, RHS) = False Then Exit Function
+    If ArraySubset(RHS, lhs) = False Then Exit Function
     ArrayMatch = True
 End Function
 
@@ -308,14 +309,14 @@ Public Function ArrayFind(Match As Variant, arr As Variant) As Integer
         ArrayFind = -3
         Exit Function
     End If
-    If Match = "" Then
+    If Match = vbNullString Then
         ArrayFind = -2
         Exit Function
     End If
     For i = LBound(arr, 1) To UBound(arr, 1)
         chk = arr(i, 1)
         If IsError(chk) Then
-        ElseIf chk = "" Then
+        ElseIf chk = vbNullString Then
         ElseIf Match = chk Then
             ArrayFind = i
             Exit Function

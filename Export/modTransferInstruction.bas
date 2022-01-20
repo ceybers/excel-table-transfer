@@ -1,4 +1,5 @@
 Attribute VB_Name = "modTransferInstruction"
+'@Folder "TransferInstructions"
 Option Explicit
 
 Public Type TransferInstruction
@@ -46,7 +47,7 @@ Public Sub RunTransferInstruction(ti As TransferInstruction)
     
     If ti.ClearDestinationColumns Then
         For j = 1 To UBound(ti.Columns, 1)
-            ti.Destination.ListColumns(ti.Columns(j, 2)).DataBodyRange.Value = ""
+            ti.Destination.ListColumns(ti.Columns(j, 2)).DataBodyRange.Value = vbNullString
         Next j
     End If
     
