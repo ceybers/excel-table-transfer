@@ -15,8 +15,9 @@ Public Function GetMSOImageList(Optional ByVal iconSize As Integer = 16) As Imag
     AddImageListImage GetMSOImageList, "AutoSum", "AutoSum", iconSize
     AddImageListImage GetMSOImageList, "MagicWand", "QueryBuilder", iconSize
     AddImageListImage GetMSOImageList, "TraceError", "TraceError", iconSize
-    AddImageListImage GetMSOImageList, "AcceptInvitation", "AcceptInvitation", iconSize
-    AddImageListImage GetMSOImageList, "DeclineInvitation", "DeclineInvitation", iconSize
+    AddImageListImage GetMSOImageList, "Tick", "AcceptInvitation", iconSize
+    AddImageListImage GetMSOImageList, "Cross", "DeclineInvitation", iconSize
+    AddImageListImage GetMSOImageList, "Key", "AdpPrimaryKey", iconSize
 End Function
 
 Private Sub AddImageListImage(ByRef il As ImageList, ByVal key As String, ByVal imageMso As String, ByVal iconSize As Integer)

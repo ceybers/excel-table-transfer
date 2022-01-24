@@ -15,11 +15,14 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@Folder "KeyMapper"
 Option Explicit
+Implements IView
 
 Private WithEvents vm As clsKeyMapperViewModel
 Attribute vm.VB_VarHelpID = -1
 Private Const ICON_SIZE As Integer = 16
 Private msoImageList As ImageList
+
+Public DEBUG_EVENTS As Boolean
 
 Private Type TFrmKeyMapper2View
     IsCancelled As Boolean
@@ -36,66 +39,47 @@ Private Sub cmbCheck_Click()
     vm.DoCheck
 End Sub
 
-Private Sub cmbTableLHS_Click()
+Private Sub cmbColumnLHS_Change()
+    vm.TrySelectLHS Me.cmbColumnLHS
+End Sub
+
+Private Sub cmbColumnRHS_Change()
+    vm.TrySelectRHS Me.cmbColumnRHS
+End Sub
+
+Private Sub cmbTableLHS_DropButtonClick()
     Dim result As ListObject
     If modSelectTable.TrySelectTable(result) = True Then
         Set vm.LHSTable = result
-        ' TODO this does not go here
-        'Me.cmbTableLHS.text = result.Name
     End If
-End Sub
-
-Private Sub cmbTableRHS_Click()
-    Dim result As ListObject
-    If modSelectTable.TrySelectTable(result) = True Then
-        Set vm.RHSTable = result
-        ' TODO this does not go here
-        'Me.cmbTableRHS.text = result.Name
-    End If
+    Me.cmbColumnLHS.SetFocus
 End Sub
 
 Private Sub cmbTableRHS_DropButtonClick()
-    If Me.cmbTableRHS.ListCount > 0 Then
-        cmbTableRHS_Click
-        Me.cmbCancel.SetFocus
-        Me.cmbTableRHS.Clear
-        ' ???
-        Me.cmbTableRHS.AddItem vm.LHSTable.Name
-        Me.cmbTableRHS.value = vm.LHSTable.Name
-        Me.cmbTableRHS.SetFocus
-    Else
-        Me.cmbTableRHS.AddItem vm.LHSTable.Name
-        Me.cmbTableRHS.value = vm.LHSTable.Name
-        Me.cmbTableRHS.SetFocus
+    Dim result As ListObject
+    If modSelectTable.TrySelectTable(result) = True Then
+        Set vm.RHSTable = result
     End If
+    Me.cmbColumnRHS.SetFocus
 End Sub
 
-Private Function TrySelectTable() As ListObject
-    
-End Function
+Private Sub ChangeTable(ByRef cmb As ComboBox, ByRef lo As ListObject)
+    cmb.RemoveItem (0)
+    cmb.AddItem lo.Name
+    cmb = lo.Name
+End Sub
 
-Private Sub cmbOK_Click()
+Private Sub PopulateColumns(ByRef cmb As ComboBox, ByRef lo As ListObject)
+    cmb.Clear
+    Dim lc As ListColumn
+    For Each lc In lo.ListColumns
+        cmb.AddItem lc.Name
+    Next lc
+    cmb = cmb.List(0)
+End Sub
+
+Private Sub cmbNext_Click()
     Me.Hide
-End Sub
-
-Private Sub ComboBox1_DropButtonClick()
-    'cmbLHSTableSelect_Click
-    'Me.txtLHSTable.Locked = False
-    'Me.txtLHSTable.SetFocus
-    'Me.ComboBox1.AddItem Me.txtLHSTable.text
-    'Me.ComboBox1.value = Me.txtLHSTable.text
-End Sub
-
-Private Sub imgcmbLHS_Click()
-    'If Not Me.imgcmbLHS.SelectedItem Is Nothing Then
-    '    vm.TrySelectLHS Me.imgcmbLHS.SelectedItem.key
-    'End If
-End Sub
-
-Private Sub imgcmbRHS_Click()
-    'If Not Me.imgcmbRHS.SelectedItem Is Nothing Then
-    '    vm.TrySelectRHS Me.imgcmbRHS.SelectedItem.key
-    'End If
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -111,92 +95,68 @@ Private Sub OnCancel()
 End Sub
 
 ' ---
-Public Function ShowDialog(ByVal viewModel As Object) As Boolean
+Private Function IView_ShowDialog(ByVal viewModel As IViewModel) As Boolean
     Set vm = viewModel
     this.IsCancelled = False
-    'Me.cmbOK.Enabled = False
     
     Set msoImageList = New ImageList
     PopulateImageList msoImageList, ICON_SIZE
-    'Me.imgcmbLHS.ImageList = msoImageList
-    'Me.imgcmbRHS.ImageList = msoImageList
     
-    'Set Me.cmbLHSTableSelect.Picture = msoImageList.ListImages("FindText").Picture
-    'Set Me.cmbRHSTableSelect.Picture = msoImageList.ListImages("FindText").Picture
+    InitializeTableCombobox Me.cmbTableLHS
+    InitializeTableCombobox Me.cmbTableRHS
     
-    'vm_PropertyChanged "LHSTable"
-    'vm_PropertyChanged "LHSColumns"
-    'vm_PropertyChanged "RHSTable"
-    'vm_PropertyChanged "RHSColumns"
+    LoadFromVM
     
-    'imgcmbLHS_Click
-    'imgcmbRHS_Click
+    Me.Show
     
-    'UpdateCheckButton
-    
-    Me.cmbTableRHS.Clear
-    Me.cmbTableRHS.AddItem "(No table selected)"
-    Me.cmbTableRHS.value = "(No table selected)"
-    
-    zzzdowork
-    
-    Show
-    
-    ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not this.IsCancelled
 End Function
 
-Public Sub zzzdowork()
-    Dim vm As clsColumnQualityViewModel
-    Set vm = New clsColumnQualityViewModel
-    Set vm.ListColumn = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
-    vm.InitializeListView Me.lvQualityLHS
-    vm.UpdateListView Me.lvQualityLHS
-    vm.InitializeListView Me.lvQualityRHS
-    vm.UpdateListView Me.lvQualityRHS
-    
-    Me.cmbTableLHS.AddItem ("Table1")
-    Me.cmbTableLHS.value = "Table1"
-    Me.cmbColumnLHS.AddItem ("Column1")
-    Me.cmbColumnLHS.value = "Column1"
+Private Sub InitializeTableCombobox(ByRef cmb As ComboBox)
+    With cmb
+        .Clear
+        .AddItem "(No table selected)"
+        .value = "(No table selected)"
+    End With
 End Sub
 
-Private Sub PopulateImageCombo(ByRef imgCmb As ImageCombo, ByRef coll As Collection)
-    Dim lc As ListColumn
-    
-    imgCmb.ComboItems.Clear
-    
-    For Each lc In coll
-        imgCmb.ComboItems.Add key:=lc.Name, text:=lc.Name, image:="col", SelImage:="AdpPrimaryKey"
-    Next lc
-    
-    If imgCmb.ComboItems.Count > 0 Then
-        imgCmb.ComboItems(1).Selected = True
+Public Sub LoadFromVM()
+    If Not vm.LHSTable Is Nothing Then
+        vm_PropertyChanged "LHSTable"
+        vm_PropertyChanged "LHSColumns"
+    End If
+    If Not vm.RHSTable Is Nothing Then
+        vm_PropertyChanged "RHSTable"
+        vm_PropertyChanged "RHSColumns"
     End If
 End Sub
 
-Private Sub vm_CheckCompleted()
-    'Me.lbIntersect.AddItem "Hi"
-    UpdateCheckButton
-End Sub
-
 Private Sub vm_PropertyChanged(ByVal propertyName As String)
-    Debug.Print "Property changed: " & propertyName
+    If DEBUG_EVENTS = True Then Debug.Print "Property changed: " & propertyName
     Select Case propertyName
         Case "LHSTable"
-            'Me.txtLHSTable.text = vm.LHSTable.Name
+            ChangeTable Me.cmbTableLHS, vm.LHSTable
         Case "LHSColumns"
-            'PopulateImageCombo Me.imgcmbLHS, vm.LHSColumns
+            PopulateColumns Me.cmbColumnLHS, vm.LHSTable
         Case "LHSKeyColumn"
-            'UpdateCheckButton
+            PopulateKeyPreview Me.lvQualityLHS, vm.LHSKeyColumn
         Case "RHSTable"
-            'Me.txtRHSTable.text = vm.RHSTable.Name
+            ChangeTable Me.cmbTableRHS, vm.RHSTable
         Case "RHSColumns"
-            'PopulateImageCombo Me.imgcmbRHS, vm.RHSColumns
+            PopulateColumns Me.cmbColumnRHS, vm.RHSTable
         Case "RHSKeyColumn"
-            'UpdateCheckButton
+            PopulateKeyPreview Me.lvQualityRHS, vm.RHSKeyColumn
     End Select
 End Sub
 
 Private Sub UpdateCheckButton()
     'Me.cmbCheck.Enabled = vm.CanCheck And vm.IsDirty
+End Sub
+
+Private Sub PopulateKeyPreview(ByRef lv As ListView, ByRef lc As ListColumn)
+    Dim vm As clsColumnQualityViewModel
+    Set vm = New clsColumnQualityViewModel
+    Set vm.ListColumn = lc
+    vm.InitializeListView lv
+    vm.UpdateListView lv
 End Sub

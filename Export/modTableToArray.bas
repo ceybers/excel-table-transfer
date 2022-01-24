@@ -76,8 +76,8 @@ Private Function SetDBR(lo As ListObject, arr As Variant) As Boolean
 End Function
 
 Private Sub FillTableWithAddresses(lo As ListObject)
-    Dim c As Range
-    For Each c In lo.DataBodyRange.Cells
-        c.value = CStr(c.Address)
-    Next c
+    Dim C As Range
+    For Each C In lo.DataBodyRange.Cells
+        C.value = CStr(C.Address)
+    Next C
 End Sub

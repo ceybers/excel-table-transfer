@@ -9,6 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Folder("KeyMapper")
 Option Explicit
+Implements IViewModel
 
 Public Event PropertyChanged(ByVal propertyName As String)
 Public Event CheckCompleted()
@@ -142,3 +143,12 @@ Public Sub DoCheck()
     RaiseEvent CheckCompleted
 End Sub
 
+Private Function IViewModel_IsValid() As Boolean
+    If this.LHSKeyColumn Is Nothing Then Exit Function
+    If this.RHSKeyColumn Is Nothing Then Exit Function
+    IViewModel_IsValid = True
+End Function
+
+Public Function IsValid() As Boolean
+    IsValid = IViewModel_IsValid
+End Function

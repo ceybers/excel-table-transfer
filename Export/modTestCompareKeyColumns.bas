@@ -6,7 +6,7 @@ Public Sub TestCompareKeyColumns()
     Dim compare As clsCompareKeyColumns
     Set compare = clsCompareKeyColumns.Create(GetLHS, GetRHS)
     
-    compare.LHS.PrintKeys
+    compare.lhs.PrintKeys
     
     Debug.Print "TEST"
     Debug.Print "===="
@@ -18,9 +18,9 @@ Public Sub TestCompareKeyColumns()
     Debug.Print "Intersection = " & compare.Intersection.Count
     Debug.Print ""
     
-    Dim mapResult As Variant
-    mapResult = compare.Map
-    SubPasteMap mapResult
+    Dim MapResult As Variant
+    MapResult = compare.Map
+    SubPasteMap MapResult
     Debug.Print "mapped"
 End Sub
 

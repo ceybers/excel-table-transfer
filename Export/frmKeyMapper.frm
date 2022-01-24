@@ -15,7 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Event Completed(LHS As ListColumn, RHS As ListColumn)
+Public Event Completed(lhs As ListColumn, RHS As ListColumn)
 Public Event Cancelled()
 
 Private Type tKeyMapper
@@ -105,13 +105,13 @@ Private Sub cmbMatchToSrc_Click()
     Me.cmbMatchToSrc.Enabled = False
 End Sub
 
-Private Function CanMatchImageCombo2(LHS As ImageCombo2, RHS As ImageCombo) As Boolean
+Private Function CanMatchImageCombo2(lhs As ImageCombo2, RHS As ImageCombo) As Boolean
     CanMatchImageCombo2 = False
-    If LHS.ComboItems.Count = 0 Or RHS.ComboItems.Count = 0 Then
+    If lhs.ComboItems.Count = 0 Or RHS.ComboItems.Count = 0 Then
         Exit Function
     End If
     Dim lookFor As String, curSel As String, thisItem As String
-    lookFor = LHS.SelectedItem.text
+    lookFor = lhs.SelectedItem.text
     curSel = RHS.SelectedItem.text
     If lookFor = curSel Then Exit Function
     Dim i As Integer
@@ -126,9 +126,9 @@ Private Function CanMatchImageCombo2(LHS As ImageCombo2, RHS As ImageCombo) As B
     Next i
 End Function
 
-Private Function DoMatchImageCombo2(LHS As ImageCombo2, RHS As ImageCombo)
+Private Function DoMatchImageCombo2(lhs As ImageCombo2, RHS As ImageCombo)
     Dim lookFor As String, thisItem As String
-    lookFor = LHS.SelectedItem.text
+    lookFor = lhs.SelectedItem.text
     Dim i As Integer
     For i = 1 To RHS.ComboItems.Count
         thisItem = RHS.ComboItems(i).text
@@ -176,7 +176,7 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub DoCheckNow(Optional Fast As Boolean = False)
-    Dim LHS As Variant
+    Dim lhs As Variant
     Dim RHS As Variant
     
     'Set this.SourceColumn = this.Source.ListColumns(CStr(Me.cmbSource))
@@ -185,10 +185,10 @@ Private Sub DoCheckNow(Optional Fast As Boolean = False)
     Set this.SourceColumn = this.Source.ListColumns(Me.cmbSource2.SelectedItem.text)
     Set this.DestinationColumn = this.Destination.ListColumns(Me.cmbDestination2.SelectedItem.text)
     
-    LHS = this.SourceColumn.DataBodyRange.value
+    lhs = this.SourceColumn.DataBodyRange.value
     RHS = this.DestinationColumn.DataBodyRange.value
     
-    If (UBound(LHS, 1) > 1000) Or (UBound(RHS, 1) > 1000) Then
+    If (UBound(lhs, 1) > 1000) Or (UBound(RHS, 1) > 1000) Then
         If Fast = True Then
             Exit Sub
         Else
@@ -201,7 +201,7 @@ Private Sub DoCheckNow(Optional Fast As Boolean = False)
     'lhs = ArrayTrim(lhs, 100)
     'rhs = ArrayTrim(rhs, 100)
     
-    With ArrayAnalyseTwo(LHS, RHS)
+    With ArrayAnalyseTwo(lhs, RHS)
         LoadArrayToListBox ArrayTrim(.LeftOnly, 100), Me.lbLHSonly
         LoadArrayToListBox ArrayTrim(.Intersection, 100), Me.lbIntersect
         LoadArrayToListBox ArrayTrim(.RightOnly, 100), Me.lbRHSonly
@@ -211,7 +211,7 @@ Private Sub DoCheckNow(Optional Fast As Boolean = False)
         LoadArrayCountToLabel .RightOnlyCount, Me.lblRHSMatches, " removals(s)"
     End With
 
-    With ArrayAnalyseOne(LHS)
+    With ArrayAnalyseOne(lhs)
         LoadArrayCountToLabel .Errors, Me.lblLHSErrors, " error cell(s)"
         LoadArrayCountToLabel .Blanks, Me.lblLHSBlanks, " blank cell(s)"
     End With

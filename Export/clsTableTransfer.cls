@@ -83,8 +83,8 @@ Private Sub DoTransfer()
     RunTransferInstruction ti
 End Sub
 
-Private Sub keyMapper_Completed(LHS As ListColumn, RHS As ListColumn)
-    Set this.SourceKeyColumn = LHS
+Private Sub keyMapper_Completed(lhs As ListColumn, RHS As ListColumn)
+    Set this.SourceKeyColumn = lhs
     Set this.DestinationKeyColumn = RHS
     GetValueMapping
 End Sub

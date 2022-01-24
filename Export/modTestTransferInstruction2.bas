@@ -1,5 +1,5 @@
 Attribute VB_Name = "modTestTransferInstruction2"
-'@Folder("KeyColumn")
+'@Folder "TransferInstructions2"
 Option Explicit
 
 Public Sub TestTransferInstruction2()
@@ -8,12 +8,12 @@ End Sub
 
 Public Sub TestCompareKeyColumns()
     Dim compare As clsCompareKeyColumns
-    Dim mapResult As Variant
+    Dim MapResult As Variant
     
     Set compare = clsCompareKeyColumns.Create(GetLHS, GetRHS)
-    mapResult = compare.Map
+    MapResult = compare.Map
     
-    DoTransfer mapResult, GetSrc, GetDst
+    DoTransfer MapResult, GetSrc, GetDst
     Debug.Print "OK"
 End Sub
 

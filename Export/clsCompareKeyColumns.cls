@@ -12,7 +12,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Type TClsCompareKeyColumns
-    LHS As clsKeyColumn
+    lhs As clsKeyColumn
     RHS As clsKeyColumn
     LeftOnly As Collection
     Intersection As Collection
@@ -22,12 +22,12 @@ End Type
 
 Private this As TClsCompareKeyColumns
 
-Public Property Get LHS() As clsKeyColumn
-    Set LHS = this.LHS
+Public Property Get lhs() As clsKeyColumn
+    Set lhs = this.lhs
 End Property
 
-Public Property Set LHS(ByVal RHS As clsKeyColumn)
-    Set this.LHS = RHS
+Public Property Set lhs(ByVal RHS As clsKeyColumn)
+    Set this.lhs = RHS
     TryDoWork
 End Property
 
@@ -68,7 +68,7 @@ End Property
 ' Methods
 
 Private Sub TryDoWork()
-    If this.LHS Is Nothing Then Exit Sub
+    If this.lhs Is Nothing Then Exit Sub
     If this.RHS Is Nothing Then Exit Sub
     DoWork
 End Sub
@@ -76,7 +76,7 @@ End Sub
 Private Sub DoWork()
     Set this.Dict = CreateObject("Scripting.Dictionary")
     Dim key As Variant
-    For Each key In LHS.Keys
+    For Each key In lhs.Keys
         Upsert key, 1
     Next
     For Each key In RHS.Keys
@@ -109,9 +109,9 @@ Private Sub Upsert(ByVal key As String, ByVal value As Integer)
     End If
 End Sub
 
-Public Function Create(ByRef LHS As clsKeyColumn, ByRef RHS As clsKeyColumn)
+Public Function Create(ByRef lhs As clsKeyColumn, ByRef RHS As clsKeyColumn)
     Set Create = New clsCompareKeyColumns
-    Set Create.LHS = LHS
+    Set Create.lhs = lhs
     Set Create.RHS = RHS
 End Function
 
@@ -124,7 +124,7 @@ Public Function Map() As Variant
     ReDim result(LBound(arr) To UBound(arr))
     
     For i = LBound(arr) To UBound(arr)
-        result(i) = this.LHS.Find(arr(i))
+        result(i) = this.lhs.Find(arr(i))
     Next i
     
     Map = result

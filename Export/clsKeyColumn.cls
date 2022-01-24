@@ -198,6 +198,10 @@ Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As B
     Set FromRange.Range = rng
 End Function
 
+Public Function FromColumn(ByRef lc As ListColumn, Optional ByVal IncludeNumbers As Boolean = False) As clsKeyColumn
+    Set FromColumn = FromRange(lc.DataBodyRange, IncludeNumbers)
+End Function
+
 Private Function IsRangeASingleColumn(ByVal rng As Range) As Boolean
     Dim area As Range
     For Each area In rng.Areas
