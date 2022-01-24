@@ -45,14 +45,15 @@ Public Sub TransferFrom(ByRef lo As ListObject)
     Set vm = New clsSelectTableViewModel
     Set vm.ActiveTable = lo
     
-    With New frmSelectTable
-        If .ShowDialog(vm) Then
-            If Not vm.SelectedTable Is Nothing Then
-                Set this.Destination = vm.SelectedTable
-                GetKeyMapping
-            End If
+    Dim frm As IView
+    Set frm = New frmSelectTable
+    
+    If frm.ShowDialog(vm) Then
+        If Not vm.SelectedTable Is Nothing Then
+            Set this.Destination = vm.SelectedTable
+            GetKeyMapping
         End If
-    End With
+    End If
 End Sub
 
 Private Sub GetKeyMapping()
@@ -82,8 +83,8 @@ Private Sub DoTransfer()
     RunTransferInstruction ti
 End Sub
 
-Private Sub keyMapper_Completed(lhs As ListColumn, RHS As ListColumn)
-    Set this.SourceKeyColumn = lhs
+Private Sub keyMapper_Completed(LHS As ListColumn, RHS As ListColumn)
+    Set this.SourceKeyColumn = LHS
     Set this.DestinationKeyColumn = RHS
     GetValueMapping
 End Sub
@@ -94,8 +95,8 @@ End Sub
 
 Private Sub valueMapper_Completed(result As Variant)
     this.ValueMapping = result
-    this.ClearDestinationColumns = valueMapper.chkClearDstCols.Value
-    this.PasteIntoBlankCellsOnly = valueMapper.chkPasteIntoBlanks.Value
-    this.CopyNonBlankCellsOnly = valueMapper.chkCopyNonBlankCellsOnly.Value
+    this.ClearDestinationColumns = valueMapper.chkClearDstCols.value
+    this.PasteIntoBlankCellsOnly = valueMapper.chkPasteIntoBlanks.value
+    this.CopyNonBlankCellsOnly = valueMapper.chkCopyNonBlankCellsOnly.value
     DoTransfer
 End Sub

@@ -3,27 +3,27 @@ Attribute VB_Name = "modArrayExTEST"
 Option Explicit
 
 Private Sub TESTArrayEx()
-    Dim lhs As Variant
+    Dim LHS As Variant
     Dim RHS As Variant
     
-    lhs = ThisWorkbook.Worksheets("Sheet1").ListObjects("Table1").ListColumns("KeyA").DataBodyRange.Value
-    RHS = ThisWorkbook.Worksheets("Sheet1").ListObjects("Table1").ListColumns("KeyA").DataBodyRange.Value
+    LHS = ThisWorkbook.Worksheets("Sheet1").ListObjects("Table1").ListColumns("KeyA").DataBodyRange.value
+    RHS = ThisWorkbook.Worksheets("Sheet1").ListObjects("Table1").ListColumns("KeyA").DataBodyRange.value
     'rhs = ThisWorkbook.Worksheets("Sheet1").listobjects("Table2").ListColumns("KeyB").DataBodyRange.Value
     
     Debug.Print "***"
     Debug.Print "START TESTING"
     'Debug.Print "Match Arrays = " & ArraySubset(lhs, rhs)
     
-    Dim antiTest As Variant: antiTest = ArrayAntiJoinLeft(lhs, RHS)
-    Dim distTest As Variant: distTest = ArrayDistinct(lhs)
-    Dim findTest As Integer: findTest = ArrayFind("left1", lhs)
-    Dim interTest As Variant: interTest = ArrayIntersect(lhs, RHS)
-    Dim lenTest As Integer: lenTest = ArrayLength(lhs)
-    Dim matchTest As Boolean: matchTest = ArrayMatch(lhs, RHS)
-    Dim subsetTest As Boolean: subsetTest = ArraySubset(lhs, RHS)
-    Dim trimTest As Variant: trimTest = ArrayTrim(lhs, 2)
-    Dim uniqTest As Variant: uniqTest = ArrayUnique(lhs)
-    Dim fltTxtTest As Variant: fltTxtTest = ArrayFilterTextOnly(lhs)
+    Dim antiTest As Variant: antiTest = ArrayAntiJoinLeft(LHS, RHS)
+    Dim distTest As Variant: distTest = ArrayDistinct(LHS)
+    Dim findTest As Integer: findTest = ArrayFind("left1", LHS)
+    Dim interTest As Variant: interTest = ArrayIntersect(LHS, RHS)
+    Dim lenTest As Integer: lenTest = ArrayLength(LHS)
+    Dim matchTest As Boolean: matchTest = ArrayMatch(LHS, RHS)
+    Dim subsetTest As Boolean: subsetTest = ArraySubset(LHS, RHS)
+    Dim trimTest As Variant: trimTest = ArrayTrim(LHS, 2)
+    Dim uniqTest As Variant: uniqTest = ArrayUnique(LHS)
+    Dim fltTxtTest As Variant: fltTxtTest = ArrayFilterTextOnly(LHS)
     
     ArrayPrint antiTest, "ANTI JOIN LEFT:"
     ArrayPrint distTest, "DISTINCT:"
@@ -39,8 +39,8 @@ Private Sub TESTArrayEx()
     Dim one As ArrayExAnalyseOne
     Dim two As ArrayExAnalyseTwo
     
-    one = ArrayAnalyseOne(lhs)
-    two = ArrayAnalyseTwo(lhs, RHS)
+    one = ArrayAnalyseOne(LHS)
+    two = ArrayAnalyseTwo(LHS, RHS)
     
     'ArrayPrint (two.LeftOnly)
     

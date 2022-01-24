@@ -35,7 +35,7 @@ Private Sub cmbAutoMap_Click()
     Dim lv As ListView, lb As MSForms.ListBox
     Set lv = Me.lvListView
     Set lb = Me.lbListBox
-    For i = 1 To lv.ListItems.count
+    For i = 1 To lv.ListItems.Count
         For j = 1 To lb.ListCount
             If CStr(lv.ListItems(i)) = CStr(lb.List(j - 1)) Then
                 lv.ListItems(i).Checked = True
@@ -53,7 +53,7 @@ End Sub
 
 Private Sub cmbSelectAll_Click()
     Dim i As Integer
-    For i = 1 To Me.lvListView.ListItems.count
+    For i = 1 To Me.lvListView.ListItems.Count
         ' TODO Replace hardcoded value with const
         If Me.lvListView.ListItems(i).SubItems(1) <> "(not mapped)" Then
             Me.lvListView.ListItems(i).Checked = True
@@ -63,7 +63,7 @@ End Sub
 
 Private Sub cmbSelectNone_Click()
     Dim i As Integer
-    For i = 1 To Me.lvListView.ListItems.count
+    For i = 1 To Me.lvListView.ListItems.Count
         Me.lvListView.ListItems(i).Checked = False
     Next i
 End Sub
@@ -225,7 +225,7 @@ Private Function GetArray() As Variant
     Dim result As Variant
     
     n = 0
-    For i = 1 To Me.lvListView.ListItems.count
+    For i = 1 To Me.lvListView.ListItems.Count
         If Me.lvListView.ListItems(i).Checked = True Then
             n = n + 1
         End If
@@ -233,7 +233,7 @@ Private Function GetArray() As Variant
     ReDim result(1 To n, 1 To 2)
     
     n = 0
-    For i = 1 To Me.lvListView.ListItems.count
+    For i = 1 To Me.lvListView.ListItems.Count
         If Me.lvListView.ListItems(i).Checked = True Then
             n = n + 1
             result(n, 1) = Me.lvListView.ListItems(i).text

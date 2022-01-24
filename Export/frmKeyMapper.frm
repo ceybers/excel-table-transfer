@@ -15,7 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Event Completed(lhs As ListColumn, RHS As ListColumn)
+Public Event Completed(LHS As ListColumn, RHS As ListColumn)
 Public Event Cancelled()
 
 Private Type tKeyMapper
@@ -59,7 +59,7 @@ Private Function LoadColumnsToImageCombo2(lo As ListObject, cmb As ImageCombo2)
         cmb.ComboItems.Add Index:=lc.Index, text:=lc.Name
     Next lc
     
-    If cmb.ComboItems.count > 0 Then
+    If cmb.ComboItems.Count > 0 Then
         cmb.ComboItems(1).Selected = True
     End If
 End Function
@@ -105,17 +105,17 @@ Private Sub cmbMatchToSrc_Click()
     Me.cmbMatchToSrc.Enabled = False
 End Sub
 
-Private Function CanMatchImageCombo2(lhs As ImageCombo2, RHS As ImageCombo) As Boolean
+Private Function CanMatchImageCombo2(LHS As ImageCombo2, RHS As ImageCombo) As Boolean
     CanMatchImageCombo2 = False
-    If lhs.ComboItems.count = 0 Or RHS.ComboItems.count = 0 Then
+    If LHS.ComboItems.Count = 0 Or RHS.ComboItems.Count = 0 Then
         Exit Function
     End If
     Dim lookFor As String, curSel As String, thisItem As String
-    lookFor = lhs.SelectedItem.text
+    lookFor = LHS.SelectedItem.text
     curSel = RHS.SelectedItem.text
     If lookFor = curSel Then Exit Function
     Dim i As Integer
-    For i = 1 To RHS.ComboItems.count
+    For i = 1 To RHS.ComboItems.Count
         thisItem = RHS.ComboItems(i).text
         If lookFor = thisItem Then
             If (curSel <> thisItem) Then
@@ -126,11 +126,11 @@ Private Function CanMatchImageCombo2(lhs As ImageCombo2, RHS As ImageCombo) As B
     Next i
 End Function
 
-Private Function DoMatchImageCombo2(lhs As ImageCombo2, RHS As ImageCombo)
+Private Function DoMatchImageCombo2(LHS As ImageCombo2, RHS As ImageCombo)
     Dim lookFor As String, thisItem As String
-    lookFor = lhs.SelectedItem.text
+    lookFor = LHS.SelectedItem.text
     Dim i As Integer
-    For i = 1 To RHS.ComboItems.count
+    For i = 1 To RHS.ComboItems.Count
         thisItem = RHS.ComboItems(i).text
         If lookFor = thisItem Then
             RHS.ComboItems(i).Selected = True
@@ -176,7 +176,7 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub DoCheckNow(Optional Fast As Boolean = False)
-    Dim lhs As Variant
+    Dim LHS As Variant
     Dim RHS As Variant
     
     'Set this.SourceColumn = this.Source.ListColumns(CStr(Me.cmbSource))
@@ -185,10 +185,10 @@ Private Sub DoCheckNow(Optional Fast As Boolean = False)
     Set this.SourceColumn = this.Source.ListColumns(Me.cmbSource2.SelectedItem.text)
     Set this.DestinationColumn = this.Destination.ListColumns(Me.cmbDestination2.SelectedItem.text)
     
-    lhs = this.SourceColumn.DataBodyRange.Value
-    RHS = this.DestinationColumn.DataBodyRange.Value
+    LHS = this.SourceColumn.DataBodyRange.value
+    RHS = this.DestinationColumn.DataBodyRange.value
     
-    If (UBound(lhs, 1) > 1000) Or (UBound(RHS, 1) > 1000) Then
+    If (UBound(LHS, 1) > 1000) Or (UBound(RHS, 1) > 1000) Then
         If Fast = True Then
             Exit Sub
         Else
@@ -201,17 +201,17 @@ Private Sub DoCheckNow(Optional Fast As Boolean = False)
     'lhs = ArrayTrim(lhs, 100)
     'rhs = ArrayTrim(rhs, 100)
     
-    With ArrayAnalyseTwo(lhs, RHS)
-        LoadArrayToListBox ArrayTrim(.LeftOnly, 100), Me.lbLHSOnly
+    With ArrayAnalyseTwo(LHS, RHS)
+        LoadArrayToListBox ArrayTrim(.LeftOnly, 100), Me.lbLHSonly
         LoadArrayToListBox ArrayTrim(.Intersection, 100), Me.lbIntersect
-        LoadArrayToListBox ArrayTrim(.RightOnly, 100), Me.lbRHSOnly
+        LoadArrayToListBox ArrayTrim(.RightOnly, 100), Me.lbRHSonly
         
         LoadArrayCountToLabel .LeftOnlyCount, Me.lblLHSMatches, " additions(s)"
         LoadArrayCountToLabel .IntersectionCount, Me.lblIntMatches, " matches(s)"
         LoadArrayCountToLabel .RightOnlyCount, Me.lblRHSMatches, " removals(s)"
     End With
 
-    With ArrayAnalyseOne(lhs)
+    With ArrayAnalyseOne(LHS)
         LoadArrayCountToLabel .Errors, Me.lblLHSErrors, " error cell(s)"
         LoadArrayCountToLabel .Blanks, Me.lblLHSBlanks, " blank cell(s)"
     End With
@@ -234,7 +234,7 @@ Private Sub TryNextNow(Optional Force As Boolean = False)
 End Sub
 
 Private Function LoadArrayCountToLabel(n As Integer, lbl As MSForms.Label, suffix As String)
-    lbl.Caption = CStr(n) & suffix
+    lbl.caption = CStr(n) & suffix
 End Function
 
 Private Function LoadArrayToListBox(arr As Variant, lb As MSForms.ListBox)

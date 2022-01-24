@@ -19,7 +19,7 @@ Public Sub RunTransferInstruction(ti As TransferInstruction)
     
     Dim srcKeys As Variant
     Dim dstKeys As Variant
-    Dim keys As Variant
+    Dim Keys As Variant
     Dim mapping As Variant
     
     'srcKeys = ti.SourceKey.DataBodyRange.Value
@@ -30,14 +30,14 @@ Public Sub RunTransferInstruction(ti As TransferInstruction)
     srcKeys = VisibleRangeToArray(ti.SourceKey.DataBodyRange)
     dstKeys = VisibleRangeToArray(ti.DestinationKey.DataBodyRange)
     
-    keys = ArrayIntersect(srcKeys, dstKeys)
+    Keys = ArrayIntersect(srcKeys, dstKeys)
     
-    ReDim mapping(1 To ArrayLength(keys), 1 To 2)
+    ReDim mapping(1 To ArrayLength(Keys), 1 To 2)
     
     Dim i As Integer
-    For i = 1 To ArrayLength(keys)
-        mapping(i, 1) = ArrayFind(keys(i, 1), srcKeys)
-        mapping(i, 2) = ArrayFind(keys(i, 1), dstKeys)
+    For i = 1 To ArrayLength(Keys)
+        mapping(i, 1) = ArrayFind(Keys(i, 1), srcKeys)
+        mapping(i, 2) = ArrayFind(Keys(i, 1), dstKeys)
     Next i
     
     Dim srcValues As Variant
@@ -47,14 +47,14 @@ Public Sub RunTransferInstruction(ti As TransferInstruction)
     
     If ti.ClearDestinationColumns Then
         For j = 1 To UBound(ti.Columns, 1)
-            ti.Destination.ListColumns(ti.Columns(j, 2)).DataBodyRange.Value = vbNullString
+            ti.Destination.ListColumns(ti.Columns(j, 2)).DataBodyRange.value = vbNullString
         Next j
     End If
     
     Dim thisVarType As VbVarType
     For j = 1 To UBound(ti.Columns, 1)
-        srcValues = ti.Source.ListColumns(ti.Columns(j, 1)).DataBodyRange.Value
-        dstValues = ti.Destination.ListColumns(ti.Columns(j, 2)).DataBodyRange.Value
+        srcValues = ti.Source.ListColumns(ti.Columns(j, 1)).DataBodyRange.value
+        dstValues = ti.Destination.ListColumns(ti.Columns(j, 2)).DataBodyRange.value
         For k = 1 To UBound(mapping, 1)
             thisVarType = VarType(dstValues(mapping(k, 2), 1))
             If (ti.PasteIntoBlankCellsOnly = False) Or IsEmpty(dstValues(mapping(k, 2), 1)) Then
@@ -63,7 +63,7 @@ Public Sub RunTransferInstruction(ti As TransferInstruction)
                 End If
             End If
         Next k
-        ti.Destination.ListColumns(ti.Columns(j, 2)).DataBodyRange.Value = dstValues
+        ti.Destination.ListColumns(ti.Columns(j, 2)).DataBodyRange.value = dstValues
         DoEvents
     Next j
     

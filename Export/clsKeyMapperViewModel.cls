@@ -16,10 +16,10 @@ Public Event CheckCompleted()
 Private Type TClsKeyMapperViewModel
     LHSTable As ListObject
     RHSTable As ListObject
-    LHSColumns As Collection
-    RHSColumns As Collection
     LHSKeyColumn As ListColumn
     RHSKeyColumn As ListColumn
+    LHSColumns As Collection ' Remove?
+    RHSColumns As Collection ' Remove?
     IsDirty As Boolean
 End Type
 
@@ -110,7 +110,7 @@ Private Sub UpdateColumns(ByRef lo As ListObject, ByRef coll As Collection)
     Dim i As Long
     Dim lc As ListColumn
     
-    For i = coll.count To 1 Step -1
+    For i = coll.Count To 1 Step -1
         coll.Remove i
     Next i
     

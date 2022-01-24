@@ -15,6 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@Folder "SelectTable"
 Option Explicit
+Implements IView
 
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents vm As clsSelectTableViewModel
@@ -34,7 +35,7 @@ End Sub
 
 Private Sub cmbClearSearch_Click()
     Me.txtSearch = vbNullString
-    vm.Criteria = vbNullString
+    vm.criteria = vbNullString
     Me.txtSearch.SetFocus
 End Sub
 
@@ -65,7 +66,7 @@ Private Sub vm_ItemSelected()
 End Sub
 
 Private Sub txtSearch_Change()
-    vm.Criteria = txtSearch & "*"
+    vm.criteria = txtSearch & "*"
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -80,7 +81,7 @@ Private Sub OnCancel()
     Hide
 End Sub
 
-Public Function ShowDialog(ByVal viewModel As Object) As Boolean
+Private Function IView_ShowDialog(ByVal viewModel As IViewModel) As Boolean
     Set vm = viewModel
     this.IsCancelled = False
     Me.txtSearch = vbNullString
@@ -93,7 +94,7 @@ Public Function ShowDialog(ByVal viewModel As Object) As Boolean
     Me.txtSearch.SetFocus
     Show
     
-    ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not this.IsCancelled
 End Function
 
 Private Sub LoadTreeview()
@@ -127,7 +128,7 @@ End Sub
 Private Sub TryHighlightActive()
     Dim nd As Node
     For Each nd In Me.tvTables.Nodes
-        If nd.key = vm.ActiveTable.range.Address(External:=True) Then
+        If nd.key = vm.ActiveTable.Range.Address(External:=True) Then
             nd.Selected = True
             nd.EnsureVisible
         End If
@@ -161,12 +162,12 @@ Private Sub TryAddNode(ByRef obj As Object)
         
     ElseIf TypeOf obj Is ListObject Then
         Set lo = obj
-        key = lo.range.Address(External:=True)
+        key = lo.Range.Address(External:=True)
         parent = "[" & lo.parent.parent.Name & "]" & lo.parent.Name
         image = "lo"
         text = lo.Name
         If Not vm.ActiveTable Is Nothing Then
-            If vm.ActiveTable.range.Address(External:=True) = lo.range.Address(External:=True) Then
+            If vm.ActiveTable.Range.Address(External:=True) = lo.Range.Address(External:=True) Then
                 image = "activeLo"
                 text = text & " (active)"
             End If

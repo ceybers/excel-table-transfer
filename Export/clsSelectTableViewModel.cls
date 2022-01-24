@@ -10,6 +10,7 @@ Attribute VB_Exposed = False
 '@Folder("SelectTable")
 Option Explicit
 Option Compare Text
+Implements IViewModel
 
 Public Event CollectionChanged()
 Public Event ItemSelected()
@@ -17,7 +18,7 @@ Public Event ItemSelected()
 Private Type TClsSelectTableViewModel
     SelectedTable As ListObject
     ActiveTable As ListObject
-    Criteria As String
+    criteria As String
     Tables As Collection
 End Type
 
@@ -45,12 +46,12 @@ Public Property Set ActiveTable(ByVal RHS As ListObject)
     Load
 End Property
 
-Public Property Get Criteria() As String
-    Criteria = this.Criteria
+Public Property Get criteria() As String
+    criteria = this.criteria
 End Property
 
-Public Property Let Criteria(ByVal RHS As String)
-    this.Criteria = RHS
+Public Property Let criteria(ByVal RHS As String)
+    this.criteria = RHS
     Load
 End Property
 
@@ -68,8 +69,8 @@ Private Function GetAllTables() As Collection
     For Each wb In Application.Workbooks
         For Each ws In wb.Worksheets
             For Each lo In ws.ListObjects
-                If this.Criteria = vbNullString Or lo.Name Like this.Criteria Then
-                    GetAllTables.Add lo, lo.range.Address(External:=True)
+                If this.criteria = vbNullString Or lo.Name Like this.criteria Then
+                    GetAllTables.Add lo, lo.Range.Address(External:=True)
                 End If
             Next lo
         Next ws
@@ -79,7 +80,7 @@ End Function
 Public Sub TrySelect(ByVal key As String)
     Dim lo As ListObject
     For Each lo In this.Tables
-        If lo.range.Address(External:=True) = key Then
+        If lo.Range.Address(External:=True) = key Then
             Set SelectedTable = lo
             Exit Sub
         End If
@@ -91,3 +92,6 @@ Private Sub Class_Initialize()
     Load
 End Sub
 
+Private Function IViewModel_IsValid() As Boolean
+    IViewModel_IsValid = this.SelectedTable Is Nothing
+End Function
