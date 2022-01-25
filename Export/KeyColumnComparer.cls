@@ -21,44 +21,44 @@ Private Type TClsCompareKeyColumns
     Dict As Object
 End Type
 
-Private this As TClsCompareKeyColumns
+Private This As TClsCompareKeyColumns
 
 Public Property Get LHS() As KeyColumn
-    Set LHS = this.LHS
+    Set LHS = This.LHS
 End Property
 
 Public Property Set LHS(ByVal RHS As KeyColumn)
-    Set this.LHS = RHS
+    Set This.LHS = RHS
     TryDoWork
 End Property
 
 Public Property Get RHS() As KeyColumn
-    Set RHS = this.RHS
+    Set RHS = This.RHS
 End Property
 
 Public Property Set RHS(ByVal RHS As KeyColumn)
-    Set this.RHS = RHS
+    Set This.RHS = RHS
     TryDoWork
 End Property
 
 Public Property Get LeftOnly() As Collection
-    Set LeftOnly = this.LeftOnly
+    Set LeftOnly = This.LeftOnly
 End Property
 
 Public Property Get Intersection() As Collection
-    Set Intersection = this.Intersection
+    Set Intersection = This.Intersection
 End Property
 
 Public Property Get RightOnly() As Collection
-    Set RightOnly = this.RightOnly
+    Set RightOnly = This.RightOnly
 End Property
 
 Public Property Get IsSubsetLHS() As Boolean
-    IsSubsetLHS = this.LeftOnly.Count = 0
+    IsSubsetLHS = This.LeftOnly.Count = 0
 End Property
 
 Public Property Get IsSubsetRHS() As Boolean
-    IsSubsetRHS = this.RightOnly.Count = 0
+    IsSubsetRHS = This.RightOnly.Count = 0
 End Property
 
 
@@ -69,13 +69,13 @@ End Property
 ' Methods
 
 Private Sub TryDoWork()
-    If this.LHS Is Nothing Then Exit Sub
-    If this.RHS Is Nothing Then Exit Sub
+    If This.LHS Is Nothing Then Exit Sub
+    If This.RHS Is Nothing Then Exit Sub
     DoWork
 End Sub
 
 Private Sub DoWork()
-    Set this.Dict = CreateObject("Scripting.Dictionary")
+    Set This.Dict = CreateObject("Scripting.Dictionary")
     Dim key As Variant
     For Each key In LHS.Keys
         Upsert key, 1
@@ -84,29 +84,29 @@ Private Sub DoWork()
         Upsert key, 2
     Next
     
-    Set this.Intersection = New Collection
-    Set this.LeftOnly = New Collection
-    Set this.RightOnly = New Collection
+    Set This.Intersection = New Collection
+    Set This.LeftOnly = New Collection
+    Set This.RightOnly = New Collection
     
     Dim val As Integer
     
-    For Each key In this.Dict.Keys
-        Select Case this.Dict.Item(key)
+    For Each key In This.Dict.Keys
+        Select Case This.Dict.Item(key)
             Case 1
-                this.LeftOnly.Add key
+                This.LeftOnly.Add key
             Case 2
-                this.RightOnly.Add key
+                This.RightOnly.Add key
             Case 3
-                this.Intersection.Add key
+                This.Intersection.Add key
         End Select
     Next key
 End Sub
 
 Private Sub Upsert(ByVal key As String, ByVal value As Integer)
-    If this.Dict.Exists(key) Then
-        this.Dict.Item(key) = this.Dict.Item(key) + value
+    If This.Dict.Exists(key) Then
+        This.Dict.Item(key) = This.Dict.Item(key) + value
     Else
-        this.Dict.Item(key) = value
+        This.Dict.Item(key) = value
     End If
 End Sub
 
@@ -117,16 +117,16 @@ Public Function Create(ByVal LHS As KeyColumn, ByVal RHS As KeyColumn) As KeyCol
 End Function
 
 Public Function Map() As Variant
-    Dim result As Variant
+    Dim Result As Variant
     Dim arr As Variant
     Dim i As Long
     
-    arr = this.RHS.GetArray
-    ReDim result(LBound(arr) To UBound(arr))
+    arr = This.RHS.GetArray
+    ReDim Result(LBound(arr) To UBound(arr))
     
     For i = LBound(arr) To UBound(arr)
-        result(i) = this.LHS.Find(arr(i))
+        Result(i) = This.LHS.Find(arr(i))
     Next i
     
-    Map = result
+    Map = Result
 End Function

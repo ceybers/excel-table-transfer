@@ -13,6 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '@Folder "KeyMapper"
 Option Explicit
 Implements IView
@@ -29,7 +30,7 @@ Private Type TFrmKeyMapper2View
     IsCancelled As Boolean
 End Type
 
-Private this As TFrmKeyMapper2View
+Private This As TFrmKeyMapper2View
 
 Private Sub cmbBack_Click()
     MsgBox "NYI"
@@ -57,17 +58,17 @@ Private Sub cmbColumnRHS_Change()
 End Sub
 
 Private Sub cmbTableLHS_DropButtonClick()
-    Dim result As ListObject
-    If TestSelectTable.TrySelectTable(result) = True Then
-        Set vm.LHSTable = result
+    Dim Result As ListObject
+    If TestSelectTable.TrySelectTable(Result) = True Then
+        Set vm.LHSTable = Result
     End If
     Me.cmbColumnLHS.SetFocus
 End Sub
 
 Private Sub cmbTableRHS_DropButtonClick()
-    Dim result As ListObject
-    If TestSelectTable.TrySelectTable(result) = True Then
-        Set vm.RHSTable = result
+    Dim Result As ListObject
+    If TestSelectTable.TrySelectTable(Result) = True Then
+        Set vm.RHSTable = Result
     End If
     Me.cmbColumnRHS.SetFocus
 End Sub
@@ -99,14 +100,14 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub OnCancel()
-    this.IsCancelled = True
+    This.IsCancelled = True
     Me.Hide
 End Sub
 
 ' ---
-Private Function IView_ShowDialog(ByVal viewModel As IViewModel) As Boolean
-    Set vm = viewModel
-    this.IsCancelled = False
+Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
+    Set vm = ViewModel
+    This.IsCancelled = False
     
     Set msoImageList = modStandardImageList.GetMSOImageList(ICON_SIZE)
     
@@ -117,7 +118,7 @@ Private Function IView_ShowDialog(ByVal viewModel As IViewModel) As Boolean
     
     Me.Show
     
-    IView_ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not This.IsCancelled
 End Function
 
 Private Sub InitializeTableCombobox(ByVal cmb As ComboBox)
@@ -178,7 +179,6 @@ Private Sub vm_PropertyChanged(ByVal propertyName As String)
 End Sub
 
 Private Sub UpdateCheckButton()
-    Debug.Print "UpdateCheckButton"
     Me.cmbCheckQuality.Enabled = vm.CanCheck
     Me.cmbCheckKeys.Enabled = vm.CanMatch
     Me.cmbNext.Enabled = vm.CanContinue

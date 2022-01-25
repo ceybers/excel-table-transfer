@@ -15,29 +15,29 @@ Private Type TClsColumnPairs
     ConstrainRHS As Boolean
 End Type
 
-Private this As TClsColumnPairs
+Private This As TClsColumnPairs
 
 '@Enumerator
 Public Property Get Item() As Collection
 Attribute Item.VB_UserMemId = -4
-    Set Item = this.Item
+    Set Item = This.Item
 End Property
 
 Public Property Get Count() As Long
-    Count = this.Item.Count
+    Count = This.Item.Count
 End Property
 
 Public Property Get ConstrainRHS() As Boolean
-    ConstrainRHS = this.ConstrainRHS
+    ConstrainRHS = This.ConstrainRHS
 End Property
 
 Public Property Let ConstrainRHS(ByVal RHS As Boolean)
-    this.ConstrainRHS = RHS
+    This.ConstrainRHS = RHS
 End Property
 
 Private Sub Class_Initialize()
-    Set this.Item = New Collection
-    this.ConstrainRHS = True
+    Set This.Item = New Collection
+    This.ConstrainRHS = True
 End Sub
 
 Public Sub AddOrReplace(ByVal colPair As ColumnPair)
@@ -51,13 +51,13 @@ Public Sub AddOrReplace(ByVal colPair As ColumnPair)
         Set foundPair.LHS = colPair.LHS
         Set foundPair.RHS = colPair.RHS
     Else
-        this.Item.Add colPair
+        This.Item.Add colPair
     End If
 End Sub
 
 Public Sub Add(ByVal colPair As ColumnPair)
     If Exists(colPair) Then Exit Sub
-    this.Item.Add colPair
+    This.Item.Add colPair
 End Sub
 
 Public Sub Remove(ByVal colPair As ColumnPair)
@@ -67,15 +67,15 @@ Public Sub Remove(ByVal colPair As ColumnPair)
     Set match = GetPair(colPair.LHS, colPair.RHS)
     idx = GetIndexOfColumnPair(match)
     If idx > -1 Then
-        this.Item.Remove idx
+        This.Item.Remove idx
     End If
 End Sub
 
 Private Function GetIndexOfColumnPair(ByVal colPair As ColumnPair) As Long
     Debug.Assert Not colPair Is Nothing
     Dim i As Long
-    For i = 1 To this.Item.Count
-        If this.Item(i).Equals(colPair) Or (this.ConstrainRHS And (this.Item(i).RHS Is colPair.RHS)) Then
+    For i = 1 To This.Item.Count
+        If This.Item(i).Equals(colPair) Or (This.ConstrainRHS And (This.Item(i).RHS Is colPair.RHS)) Then
             GetIndexOfColumnPair = i
             Exit Function
         End If
@@ -85,14 +85,14 @@ End Function
 
 Public Sub Clear()
     Dim i As Long
-    For i = this.Item.Count To 1 Step -1
-        this.Item.Remove i
+    For i = This.Item.Count To 1 Step -1
+        This.Item.Remove i
     Next i
 End Sub
 
 Public Function Exists(ByVal colPair As ColumnPair) As Boolean
     Dim RHS As ColumnPair
-    For Each RHS In this.Item
+    For Each RHS In This.Item
         If colPair.Equals(RHS) Then
             Exists = True
             Exit Function
@@ -108,7 +108,7 @@ Public Function GetPair(Optional ByVal LHS As ListColumn, Optional ByVal RHS As 
     
     If (LHS Is Nothing) And (RHS Is Nothing) Then Exit Function
 
-    For Each colPair In this.Item
+    For Each colPair In This.Item
         If (RHS Is Nothing) And colPair.LHS Is LHS Then
             Set GetPair = colPair
             Exit Function
@@ -123,15 +123,15 @@ Public Function GetPair(Optional ByVal LHS As ListColumn, Optional ByVal RHS As 
 End Function
 
 Public Function TryGetPair(ByRef colPair As ColumnPair, Optional ByVal LHS As ListColumn, Optional ByVal RHS As ListColumn) As Boolean
-    Dim result As ColumnPair
-    Set result = GetPair(LHS, RHS)
-    Set colPair = result
-    If Not result Is Nothing Then TryGetPair = True
+    Dim Result As ColumnPair
+    Set Result = GetPair(LHS, RHS)
+    Set colPair = Result
+    If Not Result Is Nothing Then TryGetPair = True
 End Function
 
 Public Function IsMappedRHS(ByVal lc As ListColumn) As Boolean
     Dim colPair As ColumnPair
-    For Each colPair In this.Item
+    For Each colPair In This.Item
         If colPair.RHS Is lc Then
             IsMappedRHS = True
             Exit Function

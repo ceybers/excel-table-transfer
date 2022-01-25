@@ -13,29 +13,30 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '@Folder("TransferOptions")
 Option Explicit
 Implements IView
 
 Public vm As IViewModel
-Public flags As Integer
+Public Flags As Integer
 
 Private Type TFrmKeyMapper2View
     IsCancelled As Boolean
 End Type
 
-Private this As TFrmKeyMapper2View
+Private This As TFrmKeyMapper2View
 
 Private Sub CheckBox1_Click()
-    flags = modTestTransferOptions.SetFlag(flags, TransferOptionsEnum.ClearDestinationFirst, Me.CheckBox1.value)
+    Flags = modTestTransferOptions.SetFlag(Flags, TransferOptionsEnum.ClearDestinationFirst, Me.CheckBox1.value)
 End Sub
 
 Private Sub CheckBox2_Click()
-    flags = modTestTransferOptions.SetFlag(flags, TransferOptionsEnum.TransferBlanks, Me.CheckBox2.value)
+    Flags = modTestTransferOptions.SetFlag(Flags, TransferOptionsEnum.TransferBlanks, Me.CheckBox2.value)
 End Sub
 
 Private Sub CheckBox3_Click()
-    flags = modTestTransferOptions.SetFlag(flags, TransferOptionsEnum.ReplaceEmptyOnly, Me.CheckBox3.value)
+    Flags = modTestTransferOptions.SetFlag(Flags, TransferOptionsEnum.ReplaceEmptyOnly, Me.CheckBox3.value)
 End Sub
 
 ' ---
@@ -55,15 +56,15 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub OnCancel()
-    this.IsCancelled = True
+    This.IsCancelled = True
     Me.Hide
 End Sub
 
-Private Function IView_ShowDialog(ByVal viewModel As IViewModel) As Boolean
-    Set vm = viewModel
-    this.IsCancelled = False
+Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
+    Set vm = ViewModel
+    This.IsCancelled = False
     
     Me.Show
     
-    IView_ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not This.IsCancelled
 End Function

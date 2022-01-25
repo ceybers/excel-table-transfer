@@ -8,9 +8,12 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Folder "Abstractions"
+'@ModuleDescription "Describes a View."
 '@Interface
+'@Exposed
 Option Explicit
 
-' TODO implement from https://github.com/rubberduck-vba/MVVM/blob/main/src/IView.cls
-Public Function ShowDialog(ByVal viewModel As IViewModel) As Boolean
+'@Description "Displays the View modally and returns a value indicating confirmation (True) or cancellation (False)."
+Public Function ShowDialog(ByVal ViewModel As IViewModel) As Boolean
+
 End Function

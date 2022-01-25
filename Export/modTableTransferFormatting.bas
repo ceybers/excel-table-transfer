@@ -1,4 +1,5 @@
 Attribute VB_Name = "modTableTransferFormatting"
+'@Folder "TableTransfer"
 '@IgnoreModule ImplicitPublicMember
 Option Explicit
     

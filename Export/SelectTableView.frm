@@ -23,19 +23,22 @@ Attribute vm.VB_VarHelpID = -1
 Private Const ICON_SIZE As Integer = 16
 Private msoImageList As ImageList
 
-Private Type TFrmSelectTableView
+Private Type TView
+    ' Context as MVVM.IAppContext
+    'ViewModel As SelectTableViewModel
     IsCancelled As Boolean
 End Type
 
-Private this As TFrmSelectTableView
+Private This As TView
 
 Private Sub cmbCancel_Click()
+    
     OnCancel
 End Sub
 
 Private Sub cmbClearSearch_Click()
     Me.txtSearch = vbNullString
-    vm.criteria = vbNullString
+    vm.SearchCriteria = vbNullString
     Me.txtSearch.SetFocus
 End Sub
 
@@ -66,7 +69,7 @@ Private Sub vm_ItemSelected()
 End Sub
 
 Private Sub txtSearch_Change()
-    vm.criteria = txtSearch & "*"
+    vm.SearchCriteria = txtSearch & "*"
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -75,27 +78,6 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
         OnCancel
     End If
 End Sub
-
-Private Sub OnCancel()
-    this.IsCancelled = True
-    Me.Hide
-End Sub
-
-Private Function IView_ShowDialog(ByVal viewModel As IViewModel) As Boolean
-    Set vm = viewModel
-    this.IsCancelled = False
-    Me.txtSearch = vbNullString
-    Me.cmbOK.Enabled = False
-    
-    PopulateImageList
-    LoadTreeview
-    
-    Set Me.cmbClearSearch.Picture = msoImageList.ListImages.Item("delete").Picture
-    Me.txtSearch.SetFocus
-    Me.Show
-    
-    IView_ShowDialog = Not this.IsCancelled
-End Function
 
 Private Sub LoadTreeview()
     With Me.tvTables
@@ -199,3 +181,29 @@ Private Sub AddImageListImage(ByVal il As ImageList, ByVal key As String, ByVal 
     il.ListImages.Add 1, key, Application.CommandBars.GetImageMso(imageMso, ICON_SIZE, ICON_SIZE)
 End Sub
 
+Private Sub InitializeView()
+    This.IsCancelled = False
+    Me.txtSearch = vbNullString
+    Me.cmbOK.Enabled = False
+    
+    PopulateImageList
+    LoadTreeview
+    
+    Set Me.cmbClearSearch.Picture = msoImageList.ListImages.Item("delete").Picture
+    Me.txtSearch.SetFocus
+End Sub
+
+Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
+    Set vm = ViewModel
+    
+    InitializeView
+
+    Me.Show
+    IView_ShowDialog = Not This.IsCancelled
+End Function
+
+
+Private Sub OnCancel()
+    This.IsCancelled = True
+    Me.Hide
+End Sub

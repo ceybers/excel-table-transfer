@@ -16,27 +16,27 @@ Private Type TClsColumnPair
     RHS As ListColumn
 End Type
 
-Private this As TClsColumnPair
+Private This As TClsColumnPair
 
 Public Property Get LHS() As ListColumn
-    Set LHS = this.LHS
+    Set LHS = This.LHS
 End Property
 
 Public Property Set LHS(ByVal RHS As ListColumn)
-    Set this.LHS = RHS
+    Set This.LHS = RHS
 End Property
 
 Public Property Get RHS() As ListColumn
-    Set RHS = this.RHS
+    Set RHS = This.RHS
 End Property
 
 Public Property Set RHS(ByVal RHS As ListColumn)
-    Set this.RHS = RHS
+    Set This.RHS = RHS
 End Property
 
 Public Function IsValid() As Boolean
-    If this.LHS Is Nothing Then Exit Function
-    If this.RHS Is Nothing Then Exit Function
+    If This.LHS Is Nothing Then Exit Function
+    If This.RHS Is Nothing Then Exit Function
     IsValid = True
 End Function
 
@@ -50,8 +50,8 @@ End Function
 
 Public Function Equals(ByVal RHS As ColumnPair) As Boolean
     If RHS Is Nothing Then Exit Function
-    If Not this.LHS Is RHS.LHS Then Exit Function
-    If Not this.RHS Is RHS.RHS Then Exit Function
+    If Not This.LHS Is RHS.LHS Then Exit Function
+    If Not This.RHS Is RHS.RHS Then Exit Function
     Equals = True
 End Function
 

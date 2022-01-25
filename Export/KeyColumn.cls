@@ -24,14 +24,14 @@ Private Type TClsKeyColumn
     Array As Variant
 End Type
 
-Private this As TClsKeyColumn
+Private This As TClsKeyColumn
 
 Public Property Get GetArray() As Variant
-    GetArray = this.Array
+    GetArray = This.Array
 End Property
 
 Public Property Get Range() As Range
-    Set Range = this.rng
+    Set Range = This.rng
 End Property
 
 Public Property Set Range(ByVal RHS As Range)
@@ -39,45 +39,45 @@ Public Property Set Range(ByVal RHS As Range)
         Err.Raise Number:=vbObjectError + 1, Description:="Cannot create clsKeyColumn with a range that spans multiple columns"
         Exit Property
     End If
-    Set this.rng = RHS
+    Set This.rng = RHS
     LoadRange RHS
 End Property
 
 Public Property Get IncludeNumbersAsText() As Boolean
-    IncludeNumbersAsText = this.IncludeNumbersAsText
+    IncludeNumbersAsText = This.IncludeNumbersAsText
 End Property
 
 Public Property Let IncludeNumbersAsText(ByVal RHS As Boolean)
-    this.IncludeNumbersAsText = RHS
+    This.IncludeNumbersAsText = RHS
 End Property
 
 Public Property Get NonTextCount() As Long
-    NonTextCount = this.NonTextCount
+    NonTextCount = This.NonTextCount
 End Property
 
 Public Property Get ErrorCount() As Long
-    ErrorCount = this.ErrorCount
+    ErrorCount = This.ErrorCount
 End Property
 
 Public Property Get BlankCount() As Long
-    BlankCount = this.BlankCount
+    BlankCount = This.BlankCount
 End Property
 
 Public Property Get Keys() As Collection
-    Set Keys = this.Distinct
+    Set Keys = This.Distinct
 End Property
 
 Public Property Get Count() As Long
-    Count = this.Distinct.Count
+    Count = This.Distinct.Count
 End Property
 
 Public Property Get UniqueKeys() As Collection
-    Set UniqueKeys = this.Unique
+    Set UniqueKeys = This.Unique
 End Property
 
 Private Sub LoadRange(ByVal rng As Range)
     Debug.Assert rng.Columns.Count = 1
-    Set this.Dict = CreateObject("Scripting.Dictionary")
+    Set This.Dict = CreateObject("Scripting.Dictionary")
     Dim a As Range
     Dim v As Variant
     Dim vv As Variant
@@ -96,14 +96,14 @@ Private Sub LoadRange(ByVal rng As Range)
     SetUnique
     SetDistinct
     
-    this.Array = DisjointRangeToArray(rng)
+    This.Array = DisjointRangeToArray(rng)
 End Sub
 
 Private Sub ProcessVariants(ByVal v As Variant)
     Select Case VarType(v)
         Case vbString
             If v = vbNullString Then
-                this.BlankCount = this.BlankCount + 1
+                This.BlankCount = This.BlankCount + 1
             Else
                 AppendOrIncrement v
             End If
@@ -111,65 +111,65 @@ Private Sub ProcessVariants(ByVal v As Variant)
             If IncludeNumbersAsText = True Then
                 AppendOrIncrement CStr(v)
             Else
-                this.NonTextCount = this.NonTextCount + 1
+                This.NonTextCount = This.NonTextCount + 1
             End If
         Case vbError
-            this.ErrorCount = this.ErrorCount + 1
+            This.ErrorCount = This.ErrorCount + 1
         Case vbEmpty
-            this.BlankCount = this.BlankCount + 1
+            This.BlankCount = This.BlankCount + 1
         Case Else
-            this.NonTextCount = this.NonTextCount + 1
+            This.NonTextCount = This.NonTextCount + 1
     End Select
 End Sub
 
 Private Sub AppendOrIncrement(ByVal value As String)
-    If this.Dict.Exists(value) Then
-        this.Dict.Item(value) = this.Dict.Item(value) + 1
+    If This.Dict.Exists(value) Then
+        This.Dict.Item(value) = This.Dict.Item(value) + 1
     Else
-        this.Dict.Item(value) = 1
+        This.Dict.Item(value) = 1
     End If
 End Sub
 
 Public Sub PrintKeys()
     Dim k As Variant
-    For Each k In this.Dict.Keys
+    For Each k In This.Dict.Keys
         Debug.Print k
     Next k
 End Sub
 
 Private Sub SetUnique()
-    Set this.Unique = New Collection
+    Set This.Unique = New Collection
     Dim key As Variant
-    For Each key In this.Dict.Keys
-        If this.Dict.Item(key) = 1 Then
-            this.Unique.Add key
+    For Each key In This.Dict.Keys
+        If This.Dict.Item(key) = 1 Then
+            This.Unique.Add key
         End If
     Next key
 End Sub
 
 Private Sub SetDistinct()
-    Set this.Distinct = New Collection
+    Set This.Distinct = New Collection
     Dim key As Variant
-    For Each key In this.Dict.Keys
-        this.Distinct.Add key
+    For Each key In This.Dict.Keys
+        This.Distinct.Add key
     Next key
 End Sub
 
 Public Property Get IsDistinct() As Boolean
-    IsDistinct = (this.Unique.Count = this.Distinct.Count)
+    IsDistinct = (This.Unique.Count = This.Distinct.Count)
 End Property
 
 Public Function Trim(ByVal length As Long) As Collection
     Dim i As Integer
     
-    If length > this.Distinct.Count Then
-        Set Trim = this.Distinct
+    If length > This.Distinct.Count Then
+        Set Trim = This.Distinct
         Exit Function
     End If
     
     Set Trim = New Collection
     For i = 1 To length
-        Trim.Add this.Distinct.Item(i)
+        Trim.Add This.Distinct.Item(i)
     Next i
 End Function
 
@@ -188,9 +188,9 @@ Public Function Find(ByVal value As Variant) As Long
     'Debug.Print "Find('" & value & "')"
         
     Dim i As Long
-    For i = LBound(this.Array) To UBound(this.Array)
-        If VarType(this.Array(i)) <> vbError Then
-            If this.Array(i) = value Then
+    For i = LBound(This.Array) To UBound(This.Array)
+        If VarType(This.Array(i)) <> vbError Then
+            If This.Array(i) = value Then
                 Find = i
                 Exit Function
             End If
@@ -199,7 +199,7 @@ Public Function Find(ByVal value As Variant) As Long
 End Function
 
 Public Function Exists(ByVal value As Variant) As Boolean
-    Exists = this.Dict.Exists(value)
+    Exists = This.Dict.Exists(value)
 End Function
 
 Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As Boolean = False) As KeyColumn

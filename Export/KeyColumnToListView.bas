@@ -4,14 +4,14 @@ Option Explicit
 
 
 Public Sub UpdateListView(ByVal lv As ListView)
-    Debug.Assert IViewModel_IsValid
+    'Debug.Assert IViewModel_IsValid
     
-    AddListViewItem lv, "Distinct", this.Results.Count, "Tick"
-    AddListViewItem lv, "Unique", this.Results.UniqueKeys.Count, "Tick"
-    AddListViewItem lv, "Non-Text", this.Results.NonTextCount, "Cross"
-    AddListViewItem lv, "Errors", this.Results.ErrorCount, "TraceError"
-    AddListViewItem lv, "Blanks", this.Results.BlankCount, "Cross"
-    AddListViewItem lv, "Count", this.Results.Range.Cells.Count, "AutoSum"
+    'AddListViewItem lv, "Distinct", This.Results.Count, "Tick"
+    'AddListViewItem lv, "Unique", This.Results.UniqueKeys.Count, "Tick"
+    'AddListViewItem lv, "Non-Text", This.Results.NonTextCount, "Cross"
+    'AddListViewItem lv, "Errors", This.Results.ErrorCount, "TraceError"
+    'AddListViewItem lv, "Blanks", This.Results.BlankCount, "Cross"
+    'AddListViewItem lv, "Count", This.Results.Range.Cells.Count, "AutoSum"
     
     With lv.ListItems(lv.ListItems.Count)
         .Bold = True

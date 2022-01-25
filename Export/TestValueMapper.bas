@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestValueMapper"
-'@Folder("ValueMapper2")
+'@Folder "ValueMapper"
 Option Explicit
 Option Private Module
 

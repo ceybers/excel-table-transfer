@@ -14,7 +14,7 @@ Public Enum TransferOptionsEnum
     DestinationFilteredOnly = 2 ^ 5 ' 32
 End Enum
 
-Public Sub TestTransferOptions()
+Public Sub Test()
     Dim vm As IViewModel
     Set vm = Nothing
     
@@ -25,61 +25,61 @@ Public Sub TestTransferOptions()
     Set vview = view
     
     If view.ShowDialog(vm) Then
-        Debug.Print "Result = " & vview.flags
+        Debug.Print "Result = " & vview.Flags
         
-        MsgBox "Do we clear dest first? " & HasFlag(vview.flags, TransferOptionsEnum.ClearDestinationFirst)
+        MsgBox "Do we clear dest first? " & HasFlag(vview.Flags, TransferOptionsEnum.ClearDestinationFirst)
     Else
         Debug.Print "Cancelled"
     End If
 End Sub
 
 Public Sub TestTransferOptions2()
-    Dim flags As Integer
-    flags = TransferOptionsEnum.ClearDestinationFirst
+    Dim Flags As Integer
+    Flags = TransferOptionsEnum.ClearDestinationFirst
     
-    PrintFlags flags
+    PrintFlags Flags
     
-    flags = AddFlag(flags, TransferBlanks)
-    flags = RemoveFlag(flags, Invalid)
-    flags = RemoveFlag(flags, ClearDestinationFirst)
+    Flags = AddFlag(Flags, TransferBlanks)
+    Flags = RemoveFlag(Flags, Invalid)
+    Flags = RemoveFlag(Flags, ClearDestinationFirst)
      
-    PrintFlags flags
+    PrintFlags Flags
 End Sub
 
-Public Function AddFlag(ByVal flags As Integer, ByVal flag As Integer) As Integer
-    If Not HasFlag(flags, flag) Then
-        AddFlag = flags + flag
+Public Function AddFlag(ByVal Flags As Integer, ByVal flag As TransferOptionsEnum) As Integer
+    If Not HasFlag(Flags, flag) Then
+        AddFlag = Flags + flag
     Else
-        AddFlag = flags
+        AddFlag = Flags
     End If
 End Function
 
-Public Function RemoveFlag(ByVal flags As Integer, ByVal flag As Integer) As Integer
-    If HasFlag(flags, flag) Then
-        RemoveFlag = flags - flag
+Public Function RemoveFlag(ByVal Flags As Integer, ByVal flag As TransferOptionsEnum) As Integer
+    If HasFlag(Flags, flag) Then
+        RemoveFlag = Flags - flag
     Else
-        RemoveFlag = flags
+        RemoveFlag = Flags
     End If
 End Function
 
-Public Function HasFlag(ByVal flags As Integer, ByVal flag As Integer) As Boolean
-    HasFlag = (flags And flag) = flag
+Public Function HasFlag(ByVal Flags As Integer, ByVal flag As TransferOptionsEnum) As Boolean
+    HasFlag = (Flags And flag) = flag
 End Function
 
-Public Function SetFlag(ByVal flags As Integer, ByVal flag As Integer, ByVal checked As Boolean) As Integer
+Public Function SetFlag(ByVal Flags As Integer, ByVal flag As TransferOptionsEnum, ByVal checked As Boolean) As Integer
     If checked Then
-        SetFlag = AddFlag(flags, flag)
+        SetFlag = AddFlag(Flags, flag)
     Else
-        SetFlag = RemoveFlag(flags, flag)
+        SetFlag = RemoveFlag(Flags, flag)
     End If
 End Function
 
-Private Sub PrintFlags(ByVal flags As Integer)
+Private Sub PrintFlags(ByVal Flags As Integer)
     Debug.Print "TEST"
     Debug.Print "===="
-    Debug.Print "Has Invalid: " & HasFlag(flags, Invalid)
-    Debug.Print "Has ClearDestinationFirst: " & HasFlag(flags, ClearDestinationFirst)
-    Debug.Print "Has TransferBlanks: " & HasFlag(flags, TransferBlanks)
-    Debug.Print "Has ReplaceEmptyOnly: " & HasFlag(flags, ReplaceEmptyOnly)
+    Debug.Print "Has Invalid: " & HasFlag(Flags, Invalid)
+    Debug.Print "Has ClearDestinationFirst: " & HasFlag(Flags, ClearDestinationFirst)
+    Debug.Print "Has TransferBlanks: " & HasFlag(Flags, TransferBlanks)
+    Debug.Print "Has ReplaceEmptyOnly: " & HasFlag(Flags, ReplaceEmptyOnly)
     Debug.Print vbNullString
 End Sub
