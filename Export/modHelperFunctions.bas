@@ -2,7 +2,7 @@ Attribute VB_Name = "modHelperFunctions"
 '@Folder "HelperFunctions"
 Option Explicit
 
-Public Function TableFromString(s As String) As ListObject
+Public Function TableFromString(ByVal s As String) As ListObject
     Dim wb As Workbook, ws As Worksheet, lo As ListObject
     Dim n() As String
     
@@ -19,12 +19,12 @@ Public Function TableFromString(s As String) As ListObject
     Set TableFromString = lo
 End Function
 
-Public Function TableToString(lo As ListObject) As String
+Public Function TableToString(ByVal lo As ListObject) As String
     Debug.Assert Not lo Is Nothing
     TableToString = lo.parent.parent.Name & "\" & lo.parent.Name & "\" & lo.Name
 End Function
 
-Public Function ToKey(i As Integer) As String
+Public Function ToKey(ByVal i As Integer) As String
     Debug.Assert (i >= 0 And i <= 999)
-    ToKey = "K" & Trim(Format(i, "000"))
+    ToKey = "K" & Trim$(Format$(i, "000"))
 End Function

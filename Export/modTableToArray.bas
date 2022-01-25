@@ -3,7 +3,7 @@ Attribute VB_Name = "modTableToArray"
 Option Explicit
 
 
-Public Function GetVisibleTableAsArray(lo As ListObject) As Variant
+Public Function GetVisibleTableAsArray(ByVal lo As ListObject) As Variant
     Dim arr As Variant, vismask As Variant
     arr = GetDBR(lo)
     vismask = GetVisibilityMask(lo)
@@ -12,7 +12,7 @@ Public Function GetVisibleTableAsArray(lo As ListObject) As Variant
 End Function
 
 ' If value of bitmask is not 1, then set cell value to empty variant
-Private Function ApplyBitmask(ByRef arr As Variant, bitmask As Variant) As Boolean
+Private Function ApplyBitmask(ByVal arr As Variant, ByVal bitmask As Variant) As Boolean
     Dim myEmpty As Variant
     Dim i As Integer, j As Integer
     
@@ -32,7 +32,7 @@ Private Function ApplyBitmask(ByRef arr As Variant, bitmask As Variant) As Boole
     ApplyBitmask = True
 End Function
 
-Private Function GetVisibilityMask(lo As ListObject) As Variant
+Private Function GetVisibilityMask(ByVal lo As ListObject) As Variant
     Dim bitmask As Variant
     Dim maskRng As Range
     Dim origin As Range
@@ -56,14 +56,14 @@ Private Function GetVisibilityMask(lo As ListObject) As Variant
     GetVisibilityMask = bitmask
 End Function
 
-Private Function GetDBR(lo As ListObject) As Variant
+Private Function GetDBR(ByVal lo As ListObject) As Variant
     Debug.Assert Not lo Is Nothing
     Dim result As Variant
     result = lo.DataBodyRange.value
     GetDBR = result
 End Function
 
-Private Function SetDBR(lo As ListObject, arr As Variant) As Boolean
+Private Function SetDBR(ByVal lo As ListObject, ByVal arr As Variant) As Boolean
     Dim dbr As Range
     Set dbr = lo.DataBodyRange
     Dim arrHeight As Integer: arrHeight = UBound(arr, 1)
@@ -75,7 +75,7 @@ Private Function SetDBR(lo As ListObject, arr As Variant) As Boolean
     SetDBR = True
 End Function
 
-Private Sub FillTableWithAddresses(lo As ListObject)
+Private Sub FillTableWithAddresses(ByVal lo As ListObject)
     Dim C As Range
     For Each C In lo.DataBodyRange.Cells
         C.value = CStr(C.Address)

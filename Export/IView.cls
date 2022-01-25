@@ -11,5 +11,6 @@ Attribute VB_Exposed = False
 '@Interface
 Option Explicit
 
+' TODO implement from https://github.com/rubberduck-vba/MVVM/blob/main/src/IView.cls
 Public Function ShowDialog(ByVal viewModel As IViewModel) As Boolean
 End Function

@@ -1,7 +1,8 @@
 Attribute VB_Name = "modTableTransferFormatting"
+'@IgnoreModule ImplicitPublicMember
 Option Explicit
     
-Sub FormatMatch(rng As Range)
+Sub FormatMatch(ByVal rng As Range)
     With rng.Interior
         .Pattern = xlSolid
         .PatternColorIndex = xlAutomatic
@@ -15,7 +16,7 @@ Sub FormatMatch(rng As Range)
     End With
 End Sub
 
-Sub FormatNonMatch(rng As Range)
+Sub FormatNonMatch(ByVal rng As Range)
     With rng.Interior
         .Pattern = xlLightUp
         .PatternColor = 16751103
@@ -25,7 +26,7 @@ Sub FormatNonMatch(rng As Range)
     End With
 End Sub
 
-Sub FormatReset(rng As Range)
+Sub FormatReset(ByVal rng As Range)
     With rng.Interior
         .Pattern = xlNone
         .TintAndShade = 0

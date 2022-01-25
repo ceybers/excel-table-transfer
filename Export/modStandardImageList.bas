@@ -20,6 +20,6 @@ Public Function GetMSOImageList(Optional ByVal iconSize As Integer = 16) As Imag
     AddImageListImage GetMSOImageList, "Key", "AdpPrimaryKey", iconSize
 End Function
 
-Private Sub AddImageListImage(ByRef il As ImageList, ByVal key As String, ByVal imageMso As String, ByVal iconSize As Integer)
+Private Sub AddImageListImage(ByVal il As ImageList, ByVal key As String, ByVal imageMso As String, ByVal iconSize As Integer)
     il.ListImages.Add 1, key, Application.CommandBars.GetImageMso(imageMso, iconSize, iconSize)
 End Sub

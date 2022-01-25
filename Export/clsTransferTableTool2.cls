@@ -21,25 +21,25 @@ Private Sub Class_Initialize()
     Set ValuePairs = New Collection
 End Sub
 
-Public Sub Add(ByRef lhs As ListColumn, ByRef RHS As ListColumn)
-    ValuePairs.Add clsColumnPair.Create(lhs, RHS)
+Public Sub Add(ByVal LHS As ListColumn, ByVal RHS As ListColumn)
+    ValuePairs.Add ColumnPair.Create(LHS, RHS)
 End Sub
 
 Public Sub Transfer()
     SetMapResult
     
-    Dim colPair As clsColumnPair
+    Dim colPair As ColumnPair
     For Each colPair In ValuePairs
         TransferOne colPair
     Next colPair
 End Sub
 
 Private Sub SetMapResult()
-    Dim compare As clsCompareKeyColumns
-    Set compare = clsCompareKeyColumns.Create(clsKeyColumn.FromColumn(SourceKey), clsKeyColumn.FromColumn(DestinationKey))
+    Dim compare As KeyColumnComparer
+    Set compare = KeyColumnComparer.Create(KeyColumn.FromColumn(SourceKey), KeyColumn.FromColumn(DestinationKey))
     MapResult = compare.Map
 End Sub
 
-Private Sub TransferOne(ByRef colPair As clsColumnPair)
-   modTestTransferInstruction2.DoTransfer MapResult, colPair.lhs, colPair.RHS
+Private Sub TransferOne(ByVal colPair As ColumnPair)
+   modTestTransferInstruction2.DoTransfer MapResult, colPair.LHS, colPair.RHS
 End Sub

@@ -1,23 +1,24 @@
 Attribute VB_Name = "modTestTransferInstruction2"
 '@Folder "TransferInstructions2"
 Option Explicit
+Option Private Module
 
 Public Sub TestTransferInstruction2()
     
 End Sub
 
 Public Sub TestCompareKeyColumns()
-    Dim compare As clsCompareKeyColumns
+    Dim compare As KeyColumnComparer
     Dim MapResult As Variant
     
-    Set compare = clsCompareKeyColumns.Create(GetLHS, GetRHS)
+    Set compare = KeyColumnComparer.Create(GetLHS, GetRHS)
     MapResult = compare.Map
     
     DoTransfer MapResult, GetSrc, GetDst
     Debug.Print "OK"
 End Sub
 
-Public Sub DoTransfer(ByRef Map As Variant, ByRef Source As ListColumn, ByRef Destination As ListColumn)
+Public Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal Destination As ListColumn)
     Dim i As Integer
     Dim arrLHS As Variant
     Dim arrRHS As Variant
@@ -49,12 +50,12 @@ Public Sub DoTransfer(ByRef Map As Variant, ByRef Source As ListColumn, ByRef De
     Destination.DataBodyRange.Value2 = arrRHS
 End Sub
 
-Private Function GetLHS() As clsKeyColumn
-    Set GetLHS = clsKeyColumn.FromRange(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1).DataBodyRange)
+Private Function GetLHS() As KeyColumn
+    Set GetLHS = KeyColumn.FromRange(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1).DataBodyRange)
 End Function
 
-Private Function GetRHS() As clsKeyColumn
-    Set GetRHS = clsKeyColumn.FromRange(ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(1).DataBodyRange)
+Private Function GetRHS() As KeyColumn
+    Set GetRHS = KeyColumn.FromRange(ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(1).DataBodyRange)
 End Function
 
 Private Function GetSrc() As ListColumn
