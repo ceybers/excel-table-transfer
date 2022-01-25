@@ -24,7 +24,7 @@ Private This As TState
 
 ' Properties
 Public Property Get Flags() As Integer
-    Set Flags = This.Source
+    Flags = This.Flags
 End Property
 
 Public Property Let Flags(ByVal Flags As Integer)
@@ -93,8 +93,8 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Methods
-Public Sub Add(ByVal LHS As ListColumn, ByVal RHS As ListColumn)
-    ValuePairs.Add ColumnPair.Create(LHS, RHS)
+Public Sub Add(ByVal lhs As ListColumn, ByVal RHS As ListColumn)
+    ValuePairs.Add ColumnPair.Create(lhs, RHS)
 End Sub
 
 Public Function IsValid() As Boolean
@@ -125,11 +125,12 @@ End Sub
 Private Sub SetMapResult()
     Dim compare As KeyColumnComparer
     Set compare = KeyColumnComparer.Create(KeyColumn.FromColumn(SourceKey), KeyColumn.FromColumn(DestinationKey))
-    MapResult = compare.Map
+    
+    MapResult = compare.Map(HasFlag(This.Flags, SourceFilteredOnly), HasFlag(This.Flags, DestinationFilteredOnly))
 End Sub
 
 Private Sub TransferOne(ByVal colPair As ColumnPair)
-   DoTransfer MapResult, colPair.LHS, colPair.RHS
+   DoTransfer MapResult, colPair.lhs, colPair.RHS
 End Sub
 
 Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal Destination As ListColumn)
@@ -138,7 +139,15 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
     Dim arrRHS As Variant
     Dim arrLHSOffset As Long
     Dim arrRHSOffset As Long
+    Dim oldValue As Variant
     Dim newValue As Variant
+    Dim doCopy As Boolean
+        
+    If Destination.DataBodyRange.AutoFilter Then
+        If Not Destination.parent.AutoFilter Is Nothing Then
+            Destination.parent.AutoFilter.ShowAllData
+        End If
+    End If
     
     arrLHS = Source.DataBodyRange.Value2
     arrRHS = Destination.DataBodyRange.Value2
@@ -147,19 +156,31 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
     
     For i = LBound(Map) To UBound(Map)
         If Map(i) > -1 Then
+            oldValue = arrRHS(i - arrRHSOffset + 1, 1)
             newValue = arrLHS(Map(i) - arrLHSOffset + 1, 1)
-            Select Case VarType(newValue)
-                Case vbString
-                    If newValue <> vbNullString Then
-                        arrRHS(i - arrRHSOffset + 1, 1) = newValue
-                    End If
-                Case Else
-                    arrRHS(i - arrRHSOffset + 1, 1) = newValue
-            End Select
-        Else
-            arrRHS(i - arrRHSOffset + 1, 1) = "Unmapped"
+            doCopy = True
+            
+            If HasFlag(This.Flags, ReplaceEmptyOnly) And (oldValue <> Empty) Then
+                doCopy = False
+            End If
+            
+            If (HasFlag(This.Flags, TransferBlanks) = False) And (newValue = Empty) Then
+                doCopy = False
+            End If
+            
+            If doCopy Then
+                arrRHS(i - arrRHSOffset + 1, 1) = newValue
+            End If
+        Else ' Row is not mapped by keys
+            If HasFlag(This.Flags, ClearDestinationFirst) Then
+                arrRHS(i - arrRHSOffset + 1, 1) = Empty
+            Else
+                'arrRHS(i - arrRHSOffset + 1, 1) = "Unmapped"
+            End If
         End If
     Next i
     
     Destination.DataBodyRange.Value2 = arrRHS
+    
+    Destination.parent.ShowAutoFilter = True
 End Sub

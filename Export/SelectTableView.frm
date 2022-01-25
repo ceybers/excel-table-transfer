@@ -110,7 +110,7 @@ End Sub
 Private Sub TryHighlightActive()
     Dim nd As Node
     For Each nd In Me.tvTables.Nodes
-        If nd.key = vm.ActiveTable.Range.Address(External:=True) Then
+        If nd.key = vm.ActiveTable.Range.Address(external:=True) Then
             nd.Selected = True
             nd.EnsureVisible
         End If
@@ -144,12 +144,12 @@ Private Sub TryAddNode(ByVal obj As Object)
         
     ElseIf TypeOf obj Is ListObject Then
         Set lo = obj
-        key = lo.Range.Address(External:=True)
+        key = lo.Range.Address(external:=True)
         parent = "[" & lo.parent.parent.Name & "]" & lo.parent.Name
         image = "lo"
         text = lo.Name
         If Not vm.ActiveTable Is Nothing Then
-            If vm.ActiveTable.Range.Address(External:=True) = lo.Range.Address(External:=True) Then
+            If vm.ActiveTable.Range.Address(external:=True) = lo.Range.Address(external:=True) Then
                 image = "activeLo"
                 text = text & " (active)"
             End If

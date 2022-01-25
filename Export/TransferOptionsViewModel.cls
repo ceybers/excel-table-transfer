@@ -11,6 +11,23 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IViewModel
 
+Private Type TViewModel
+    ' TODO Reset to before changes
+    ' i.e. StartEditing, StopEditing, CancelEditing
+    ' OldFlags as integer
+    Flags As Integer
+End Type
+
+Private This As TViewModel
+
+Public Property Get Flags() As Integer
+    Flags = This.Flags
+End Property
+
+Public Property Let Flags(ByVal RHS As Integer)
+    This.Flags = RHS
+End Property
+
 Private Function IViewModel_IsValid() As Boolean
-    Err.Raise 5                                  'TODO implement interface member
+    IViewModel_IsValid = True
 End Function

@@ -196,7 +196,7 @@ End Sub
 Private Sub PopulateMatchSets()
     Dim comp As KeyColumnComparer
     Set comp = New KeyColumnComparer
-    Set comp.LHS = KeyColumn.FromColumn(vm.LHSKeyColumn)
+    Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn)
     Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn)
     comp.Map
     

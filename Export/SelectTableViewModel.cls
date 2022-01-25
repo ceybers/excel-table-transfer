@@ -70,7 +70,7 @@ Private Function GetAllTables() As Collection
         For Each ws In wb.Worksheets
             For Each lo In ws.ListObjects
                 If (This.SearchCriteria = vbNullString) Or (lo.Name Like This.SearchCriteria) Then
-                    GetAllTables.Add lo, lo.Range.Address(External:=True)
+                    GetAllTables.Add lo, lo.Range.Address(external:=True)
                 End If
             Next lo
         Next ws
@@ -79,8 +79,18 @@ End Function
 
 Public Sub TrySelect(ByVal key As String)
     Dim lo As ListObject
+    
+    If Not This.ActiveTable Is Nothing Then
+        If This.ActiveTable.Range.Address(external:=True) = key Then
+            ' Set selected table to nothing, otherwise we can still double click the active table and
+            ' it will close the dialog and return the previously selected valid table
+            Set SelectedTable = Nothing
+            Exit Sub
+        End If
+    End If
+    
     For Each lo In This.Tables
-        If lo.Range.Address(External:=True) = key Then
+        If lo.Range.Address(external:=True) = key Then
             Set SelectedTable = lo
             Exit Sub
         End If

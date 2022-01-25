@@ -10,7 +10,7 @@ Public Sub Test()
     
     Set ws = ThisWorkbook.Worksheets(2)
     Set rng = ws.Range("A2:A5,A14") ',C2:C13")
-    Set key = KeyColumn.FromRange(rng, True)
+    Set key = KeyColumn.FromRange(rng, True, True)
     
     Debug.Print "TEST"
     Debug.Print "===="

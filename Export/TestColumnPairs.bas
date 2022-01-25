@@ -4,10 +4,10 @@ Option Explicit
 Option Private Module
 
 Public Sub Test()
-    Dim LHS As ListObject
+    Dim lhs As ListObject
     Dim RHS As ListObject
     
-    Set LHS = ThisWorkbook.Worksheets(1).ListObjects(1)
+    Set lhs = ThisWorkbook.Worksheets(1).ListObjects(1)
     Set RHS = ThisWorkbook.Worksheets(1).ListObjects(2)
     
     Dim colPairs As ColumnPairs
@@ -16,13 +16,13 @@ Public Sub Test()
     Dim colPair As ColumnPair
     
     
-    Set colPair = ColumnPair.Create(LHS.ListColumns(2), RHS.ListColumns(2))
+    Set colPair = ColumnPair.Create(lhs.ListColumns(2), RHS.ListColumns(2))
     colPairs.Add colPair
     
-    Set colPair = ColumnPair.Create(LHS.ListColumns(3), RHS.ListColumns(4))
+    Set colPair = ColumnPair.Create(lhs.ListColumns(3), RHS.ListColumns(4))
     colPairs.Add colPair
     
-    Set colPair = ColumnPair.Create(LHS.ListColumns(4), RHS.ListColumns(3))
+    Set colPair = ColumnPair.Create(lhs.ListColumns(4), RHS.ListColumns(3))
     colPairs.Add colPair
     
     'PrintColumnPairs colPairs
@@ -35,7 +35,7 @@ Public Sub Test()
         Debug.Print Result.ToString
     End If
     
-    Set colPair = ColumnPair.Create(LHS.ListColumns(1), RHS.ListColumns(2))
+    Set colPair = ColumnPair.Create(lhs.ListColumns(1), RHS.ListColumns(2))
     colPairs.Add colPair
     'PrintColumnPairs colPairs
     

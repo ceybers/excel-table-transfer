@@ -21,7 +21,7 @@ Private Const NOT_MAPPED As String = "(Not mapped)"
 Private Const KEY_COLUMN As String = "(Key column)"
 
 Private Type TClsValueMapperViewModel
-    LHS As ListObject
+    lhs As ListObject
     RHS As ListObject
     LHSCriteria As String
     RHSCriteria As String
@@ -35,9 +35,18 @@ Private Type TClsValueMapperViewModel
     SelectedRHS As ListColumn
     SelectedValuePair As ColumnPair
     IsAutoMapped As Boolean
+    Flags As Integer
 End Type
 
 Private This As TClsValueMapperViewModel
+
+Public Property Get Flags() As Integer
+    Flags = This.Flags
+End Property
+
+Public Property Let Flags(ByVal RHS As Integer)
+    This.Flags = RHS
+End Property
 
 Public Property Get KeyColumnLHS() As ListColumn
     Set KeyColumnLHS = This.KeyColumnLHS
@@ -59,12 +68,12 @@ Public Property Get checked() As Collection
     Set checked = This.CheckedValuePairs.Item
 End Property
 
-Public Property Get LHS() As ListObject
-    Set LHS = This.LHS
+Public Property Get lhs() As ListObject
+    Set lhs = This.lhs
 End Property
 
-Public Property Set LHS(ByVal RHS As ListObject)
-    Set This.LHS = RHS
+Public Property Set lhs(ByVal RHS As ListObject)
+    Set This.lhs = RHS
 End Property
 
 Public Property Get RHS() As ListObject
@@ -110,7 +119,7 @@ Public Sub LoadLHStoListView(ByVal lv As ListView)
     
     lv.ListItems.Clear
     
-    For Each lc In LHS.ListColumns
+    For Each lc In lhs.ListColumns
         If (LHSCriteria = vbNullString) Or (lc.Name Like LHSCriteria & "*") Then
             Set li = lv.ListItems.Add(key:=lc.Name, text:=lc.Name)
         End If
@@ -124,10 +133,10 @@ Public Sub UpdateLHStoListView(ByVal lv As ListView)
     Dim lc As ListColumn
     
     For Each li In lv.ListItems
-        If TryGetListColumnByName(This.LHS, li.key, lc) Then
+        If TryGetListColumnByName(This.lhs, li.key, lc) Then
             If lc Is This.KeyColumnLHS Then
                 li.SmallIcon = "Key"
-            ElseIf This.ValuePairs.GetPair(LHS:=lc) Is Nothing Then
+            ElseIf This.ValuePairs.GetPair(lhs:=lc) Is Nothing Then
                 li.SmallIcon = "Cross"
             Else
                 li.SmallIcon = "Tick"
@@ -140,7 +149,7 @@ Private Function IsMappedLHS(ByVal columnName As String) As Boolean
     Err.Raise 5, , "no"
     Dim colPair As ColumnPair
     For Each colPair In This.ValuePairs
-        If colPair.LHS.Name = columnName Then
+        If colPair.lhs.Name = columnName Then
             IsMappedLHS = True
             Exit Function
         End If
@@ -180,7 +189,7 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
                 Set mappedTo = This.ValuePairs.GetPair(RHS:=lc)
                 li.SmallIcon = "Tick"
                 With li.ListSubItems(1)
-                    .text = mappedTo.LHS.Name
+                    .text = mappedTo.lhs.Name
                     .ForeColor = RGB(0, 0, 0)
                 End With
             Else
@@ -200,7 +209,7 @@ Private Function GetMappedTo(ByVal columnName As String) As String
     Dim colPair As ColumnPair
     For Each colPair In This.ValuePairs
         If colPair.RHS.Name = columnName Then
-            GetMappedTo = colPair.LHS.Name
+            GetMappedTo = colPair.lhs.Name
             Exit Function
         End If
     Next colPair
@@ -314,7 +323,7 @@ End Sub
 
 Public Sub TrySelectLHS(ByVal Item As MSComctlLib.ListItem)
     Dim lc As ListColumn
-    If TryGetListColumnByName(This.LHS, Item.key, lc) Then
+    If TryGetListColumnByName(This.lhs, Item.key, lc) Then
         Set This.SelectedLHS = lc
     End If
 
@@ -406,15 +415,15 @@ Public Sub Automap()
 End Sub
 
 Private Sub TryAutomap()
-    Dim LHS As ListColumn
+    Dim lhs As ListColumn
     Dim RHS As ListColumn
     Dim colPair As ColumnPair
     
     For Each RHS In This.RHS.ListColumns
         If Not RHS Is This.KeyColumnRHS Then
-            If TryGetListColumnByName(This.LHS, RHS.Name, LHS) Then
-                If Not LHS Is This.KeyColumnLHS Then
-                    Set colPair = ColumnPair.Create(LHS, RHS)
+            If TryGetListColumnByName(This.lhs, RHS.Name, lhs) Then
+                If Not lhs Is This.KeyColumnLHS Then
+                    Set colPair = ColumnPair.Create(lhs, RHS)
                     This.ValuePairs.Add colPair
                     This.CheckedValuePairs.Add colPair
                 End If

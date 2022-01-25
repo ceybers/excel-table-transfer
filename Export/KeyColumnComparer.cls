@@ -13,7 +13,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Type TClsCompareKeyColumns
-    LHS As KeyColumn
+    lhs As KeyColumn
     RHS As KeyColumn
     LeftOnly As Collection
     Intersection As Collection
@@ -23,12 +23,12 @@ End Type
 
 Private This As TClsCompareKeyColumns
 
-Public Property Get LHS() As KeyColumn
-    Set LHS = This.LHS
+Public Property Get lhs() As KeyColumn
+    Set lhs = This.lhs
 End Property
 
-Public Property Set LHS(ByVal RHS As KeyColumn)
-    Set This.LHS = RHS
+Public Property Set lhs(ByVal RHS As KeyColumn)
+    Set This.lhs = RHS
     TryDoWork
 End Property
 
@@ -69,7 +69,7 @@ End Property
 ' Methods
 
 Private Sub TryDoWork()
-    If This.LHS Is Nothing Then Exit Sub
+    If This.lhs Is Nothing Then Exit Sub
     If This.RHS Is Nothing Then Exit Sub
     DoWork
 End Sub
@@ -77,7 +77,7 @@ End Sub
 Private Sub DoWork()
     Set This.Dict = CreateObject("Scripting.Dictionary")
     Dim key As Variant
-    For Each key In LHS.Keys
+    For Each key In lhs.Keys
         Upsert key, 1
     Next
     For Each key In RHS.Keys
@@ -110,22 +110,34 @@ Private Sub Upsert(ByVal key As String, ByVal value As Integer)
     End If
 End Sub
 
-Public Function Create(ByVal LHS As KeyColumn, ByVal RHS As KeyColumn) As KeyColumnComparer
+Public Function Create(ByVal lhs As KeyColumn, ByVal RHS As KeyColumn) As KeyColumnComparer
     Set Create = New KeyColumnComparer
-    Set Create.LHS = LHS
+    Set Create.lhs = lhs
     Set Create.RHS = RHS
 End Function
 
-Public Function Map() As Variant
+Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByVal FilterDestination As Boolean = False) As Variant
     Dim Result As Variant
     Dim arr As Variant
     Dim i As Long
     
-    arr = This.RHS.GetArray
+    Dim lhsFlt As KeyColumn
+    Set lhsFlt = This.lhs
+    If FilterSource Then
+        Set lhsFlt = KeyColumn.FromRange(This.lhs.Range, This.lhs.IncludeNumbersAsText, True)
+    End If
+    
+    Dim rhsFlt As KeyColumn
+    Set rhsFlt = This.RHS
+    If FilterDestination Then
+        Set rhsFlt = KeyColumn.FromRange(This.RHS.Range, This.RHS.IncludeNumbersAsText, True)
+    End If
+    
+    arr = rhsFlt.GetArray
     ReDim Result(LBound(arr) To UBound(arr))
     
     For i = LBound(arr) To UBound(arr)
-        Result(i) = This.LHS.Find(arr(i))
+        Result(i) = lhsFlt.Find(arr(i))
     Next i
     
     Map = Result

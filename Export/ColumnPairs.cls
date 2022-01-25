@@ -46,9 +46,9 @@ Public Sub AddOrReplace(ByVal colPair As ColumnPair)
         If ConstrainRHS Then
             Set foundPair = GetPair(RHS:=colPair.RHS)
         Else
-            Set foundPair = GetPair(colPair.LHS, colPair.RHS)
+            Set foundPair = GetPair(colPair.lhs, colPair.RHS)
         End If
-        Set foundPair.LHS = colPair.LHS
+        Set foundPair.lhs = colPair.lhs
         Set foundPair.RHS = colPair.RHS
     Else
         This.Item.Add colPair
@@ -64,7 +64,7 @@ Public Sub Remove(ByVal colPair As ColumnPair)
     Debug.Assert Not colPair Is Nothing
     Dim idx As Long
     Dim match As ColumnPair
-    Set match = GetPair(colPair.LHS, colPair.RHS)
+    Set match = GetPair(colPair.lhs, colPair.RHS)
     idx = GetIndexOfColumnPair(match)
     If idx > -1 Then
         This.Item.Remove idx
@@ -103,28 +103,28 @@ Public Function Exists(ByVal colPair As ColumnPair) As Boolean
     Next RHS
 End Function
 
-Public Function GetPair(Optional ByVal LHS As ListColumn, Optional ByVal RHS As ListColumn) As ColumnPair
+Public Function GetPair(Optional ByVal lhs As ListColumn, Optional ByVal RHS As ListColumn) As ColumnPair
     Dim colPair As ColumnPair
     
-    If (LHS Is Nothing) And (RHS Is Nothing) Then Exit Function
+    If (lhs Is Nothing) And (RHS Is Nothing) Then Exit Function
 
     For Each colPair In This.Item
-        If (RHS Is Nothing) And colPair.LHS Is LHS Then
+        If (RHS Is Nothing) And colPair.lhs Is lhs Then
             Set GetPair = colPair
             Exit Function
-        ElseIf (LHS Is Nothing) And colPair.RHS Is RHS Then
+        ElseIf (lhs Is Nothing) And colPair.RHS Is RHS Then
             Set GetPair = colPair
             Exit Function
-        ElseIf colPair.LHS Is LHS And colPair.RHS Is RHS Then
+        ElseIf colPair.lhs Is lhs And colPair.RHS Is RHS Then
             Set GetPair = colPair
             Exit Function
         End If
     Next colPair
 End Function
 
-Public Function TryGetPair(ByRef colPair As ColumnPair, Optional ByVal LHS As ListColumn, Optional ByVal RHS As ListColumn) As Boolean
+Public Function TryGetPair(ByRef colPair As ColumnPair, Optional ByVal lhs As ListColumn, Optional ByVal RHS As ListColumn) As Boolean
     Dim Result As ColumnPair
-    Set Result = GetPair(LHS, RHS)
+    Set Result = GetPair(lhs, RHS)
     Set colPair = Result
     If Not Result Is Nothing Then TryGetPair = True
 End Function

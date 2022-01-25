@@ -7,7 +7,7 @@ Public Sub TestCompareKeyColumns()
     Dim compare As KeyColumnComparer
     Set compare = KeyColumnComparer.Create(GetLHS, GetRHS)
     
-    compare.LHS.PrintKeys
+    compare.lhs.PrintKeys
     
     Debug.Print "TEST"
     Debug.Print "===="

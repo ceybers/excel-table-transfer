@@ -15,19 +15,15 @@ Public Enum TransferOptionsEnum
 End Enum
 
 Public Sub Test()
-    Dim vm As IViewModel
-    Set vm = Nothing
+    Dim vm As TransferOptionsViewModel
+    Set vm = New TransferOptionsViewModel
+    vm.Flags = ClearDestinationFirst + ReplaceEmptyOnly + DestinationFilteredOnly
     
     Dim view As IView
     Set view = New TransferOptionsView
     
-    Dim vview As TransferOptionsView
-    Set vview = view
-    
     If view.ShowDialog(vm) Then
-        Debug.Print "Result = " & vview.Flags
-        
-        MsgBox "Do we clear dest first? " & HasFlag(vview.Flags, TransferOptionsEnum.ClearDestinationFirst)
+        PrintFlags vm.Flags
     Else
         Debug.Print "Cancelled"
     End If
@@ -81,5 +77,7 @@ Private Sub PrintFlags(ByVal Flags As Integer)
     Debug.Print "Has ClearDestinationFirst: " & HasFlag(Flags, ClearDestinationFirst)
     Debug.Print "Has TransferBlanks: " & HasFlag(Flags, TransferBlanks)
     Debug.Print "Has ReplaceEmptyOnly: " & HasFlag(Flags, ReplaceEmptyOnly)
+    Debug.Print "Has SourceFilteredOnly: " & HasFlag(Flags, SourceFilteredOnly)
+    Debug.Print "Has DestinationFilteredOnly: " & HasFlag(Flags, DestinationFilteredOnly)
     Debug.Print vbNullString
 End Sub

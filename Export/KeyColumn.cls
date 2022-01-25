@@ -22,6 +22,7 @@ Private Type TClsKeyColumn
     BlankCount As Long
     NonTextCount As Long
     Array As Variant
+    RespectFilter As Boolean
 End Type
 
 Private This As TClsKeyColumn
@@ -41,6 +42,14 @@ Public Property Set Range(ByVal RHS As Range)
     End If
     Set This.rng = RHS
     LoadRange RHS
+End Property
+
+Public Property Get RespectFilter() As Boolean
+    RespectFilter = This.RespectFilter
+End Property
+
+Public Property Let RespectFilter(ByVal RHS As Boolean)
+    This.RespectFilter = RHS
 End Property
 
 Public Property Get IncludeNumbersAsText() As Boolean
@@ -81,6 +90,16 @@ Private Sub LoadRange(ByVal rng As Range)
     Dim a As Range
     Dim v As Variant
     Dim vv As Variant
+    
+    If This.RespectFilter Then
+        On Error Resume Next
+        Set rng = rng.SpecialCells(xlCellTypeVisible)
+        On Error GoTo 0
+        If rng Is Nothing Then
+            MsgBox "No cells were visible after filtering"
+            Err.Raise 5, , "KeyColumn.LoadRange failed"
+        End If
+    End If
     
     For Each a In rng.Areas
         v = a.Value2
@@ -202,8 +221,9 @@ Public Function Exists(ByVal value As Variant) As Boolean
     Exists = This.Dict.Exists(value)
 End Function
 
-Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As Boolean = False) As KeyColumn
+Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As Boolean = False, Optional ByVal Filtered As Boolean = False) As KeyColumn
     Set FromRange = New KeyColumn
+    FromRange.RespectFilter = Filtered
     FromRange.IncludeNumbersAsText = IncludeNumbers
     Set FromRange.Range = rng
 End Function
@@ -246,10 +266,10 @@ Private Function DisjointRangeToArray(ByVal rng As Range) As Variant
     For Each area In rng.Areas
         If VarType(area) = vbArray + vbVariant Then
             For Each vv In area
-                arr(vv.Row) = vv
+                arr(vv.Row) = CStr(vv)
             Next vv
         Else
-            arr(area.Row) = area
+            arr(area.Row) = CStr(area)
         End If
     Next area
     

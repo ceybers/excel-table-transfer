@@ -57,6 +57,21 @@ Private Sub cmbMapRight_Click()
     Model.TryMap
 End Sub
 
+Private Sub cmbOptions_Click()
+    Dim vm As TransferOptionsViewModel
+    Set vm = New TransferOptionsViewModel
+    vm.Flags = Model.Flags
+    
+    Dim view As IView
+    Set view = New TransferOptionsView
+    
+    If view.ShowDialog(vm) Then
+        Model.Flags = vm.Flags
+    Else
+        'Debug.Print "Cancelled"
+    End If
+End Sub
+
 Private Sub cmbReset_Click()
     Model.Reset
 End Sub
@@ -199,6 +214,8 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     
     Me.cmbClearSearchLHS.Picture = msoImageList.ListImages("delete").Picture
     Me.cmbClearSearchRHS.Picture = msoImageList.ListImages("delete").Picture
+    
+    Model.Automap
     
     Me.Show
     

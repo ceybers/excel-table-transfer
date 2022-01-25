@@ -18,25 +18,35 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IView
 
-Public vm As IViewModel
-Public Flags As Integer
-
 Private Type TFrmKeyMapper2View
+    ViewModel As TransferOptionsViewModel
     IsCancelled As Boolean
 End Type
 
 Private This As TFrmKeyMapper2View
 
 Private Sub CheckBox1_Click()
-    Flags = modTestTransferOptions.SetFlag(Flags, TransferOptionsEnum.ClearDestinationFirst, Me.CheckBox1.value)
+    SetFlag ClearDestinationFirst, Me.CheckBox1
 End Sub
 
 Private Sub CheckBox2_Click()
-    Flags = modTestTransferOptions.SetFlag(Flags, TransferOptionsEnum.TransferBlanks, Me.CheckBox2.value)
+    SetFlag TransferBlanks, Me.CheckBox2
 End Sub
 
 Private Sub CheckBox3_Click()
-    Flags = modTestTransferOptions.SetFlag(Flags, TransferOptionsEnum.ReplaceEmptyOnly, Me.CheckBox3.value)
+    SetFlag ReplaceEmptyOnly, Me.CheckBox3
+End Sub
+
+Private Sub CheckBox4_Click()
+    SetFlag SourceFilteredOnly, Me.CheckBox4
+End Sub
+
+Private Sub CheckBox5_Click()
+    SetFlag DestinationFilteredOnly, Me.CheckBox5
+End Sub
+
+Private Sub SetFlag(ByVal flag As TransferOptionsEnum, ByRef cb As MSForms.CheckBox)
+    This.ViewModel.Flags = modTestTransferOptions.SetFlag(This.ViewModel.Flags, flag, cb.value)
 End Sub
 
 ' ---
@@ -61,10 +71,24 @@ Private Sub OnCancel()
 End Sub
 
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
-    Set vm = ViewModel
+    Set This.ViewModel = ViewModel
     This.IsCancelled = False
+    
+    LoadFlags
     
     Me.Show
     
     IView_ShowDialog = Not This.IsCancelled
 End Function
+
+Private Sub LoadFlags()
+    LoadFlag ClearDestinationFirst, Me.CheckBox1
+    LoadFlag TransferBlanks, Me.CheckBox2
+    LoadFlag ReplaceEmptyOnly, Me.CheckBox3
+    LoadFlag SourceFilteredOnly, Me.CheckBox4
+    LoadFlag DestinationFilteredOnly, Me.CheckBox5
+End Sub
+
+Private Sub LoadFlag(ByVal flag As TransferOptionsEnum, ByVal cb As MSForms.CheckBox)
+    cb.value = modTestTransferOptions.HasFlag(This.ViewModel.Flags, flag)
+End Sub

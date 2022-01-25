@@ -16,14 +16,21 @@ Public Sub TransferTable()
     '    Exit Sub
     'End If
 
-    'Set Transfer.SourceKey = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
-    'Set Transfer.DestinationKey = ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(1)
+    Set Transfer.SourceKey = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
+    Set Transfer.DestinationKey = ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(1)
     
-    If GetKeyColumns(Transfer) Then
-        ' continue
-    Else
-        Exit Sub
-    End If
+    'If GetKeyColumns(Transfer) Then
+    '    ' continue
+    'Else
+        'Exit Sub
+    'End If
+    
+    ' TODO Move default Flags somewhere better
+    Transfer.Flags = AddFlag(Transfer.Flags, ClearDestinationFirst)
+    'Transfer.Flags = AddFlag(Transfer.Flags, ReplaceEmptyOnly)
+    'Transfer.Flags = AddFlag(Transfer.Flags, TransferBlanks)
+    'Transfer.Flags = AddFlag(Transfer.Flags, SourceFilteredOnly)
+    Transfer.Flags = AddFlag(Transfer.Flags, DestinationFilteredOnly)
     
     If SetValueMapping(Transfer) Then
         ' continue
@@ -31,6 +38,8 @@ Public Sub TransferTable()
         Exit Sub
     End If
     
+    
+     
     Transfer.Transfer
 End Sub
 
@@ -73,16 +82,18 @@ End Function
 Private Function SetValueMapping(ByVal Transfer As TransferInstruction) As Boolean
     Dim vm As ValueMapperViewModel
     Set vm = New ValueMapperViewModel
-    Set vm.LHS = Transfer.Source
+    Set vm.lhs = Transfer.Source
     Set vm.RHS = Transfer.Destination
     Set vm.KeyColumnLHS = Transfer.SourceKey
     Set vm.KeyColumnRHS = Transfer.DestinationKey
+    vm.Flags = Transfer.Flags
     
     Dim frm As IView
     Set frm = New ValueMapperView
     
     If frm.ShowDialog(vm) Then
         Set Transfer.ValuePairs = vm.checked
+        Transfer.Flags = vm.Flags
         SetValueMapping = True
     End If
 End Function
