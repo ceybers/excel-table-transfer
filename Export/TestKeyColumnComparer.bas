@@ -19,9 +19,9 @@ Public Sub TestCompareKeyColumns()
     Debug.Print "Intersection = " & compare.Intersection.Count
     Debug.Print vbNullString
     
-    Dim MapResult As Variant
-    MapResult = compare.Map
-    SubPasteMap MapResult
+    Dim mapResult As Variant
+    mapResult = compare.Map
+    SubPasteMap mapResult
     Debug.Print "mapped"
 End Sub
 

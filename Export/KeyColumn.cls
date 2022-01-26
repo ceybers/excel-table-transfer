@@ -199,7 +199,7 @@ Public Function Find(ByVal value As Variant) As Long
     'If Not result Is Nothing Then
     '    Find = result.Row
     'End If
-
+    Debug.Print VarType(value)
     If VarType(value) = vbError Then Exit Function
     If VarType(value) = vbEmpty Then Exit Function
     If value = vbNullString Then Exit Function
@@ -266,10 +266,10 @@ Private Function DisjointRangeToArray(ByVal rng As Range) As Variant
     For Each area In rng.Areas
         If VarType(area) = vbArray + vbVariant Then
             For Each vv In area
-                arr(vv.Row) = CStr(vv)
+                arr(vv.Row) = (vv) ' Removed CStr - this was converting errors to text
             Next vv
         Else
-            arr(area.Row) = CStr(area)
+            arr(area.Row) = (area)
         End If
     Next area
     

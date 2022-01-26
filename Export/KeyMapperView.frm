@@ -58,17 +58,17 @@ Private Sub cmbColumnRHS_Change()
 End Sub
 
 Private Sub cmbTableLHS_DropButtonClick()
-    Dim Result As ListObject
-    If TestSelectTable.TrySelectTable(Result) = True Then
-        Set vm.LHSTable = Result
+    Dim result As ListObject
+    If TestSelectTable.TrySelectTable(result) = True Then
+        Set vm.LHSTable = result
     End If
     Me.cmbColumnLHS.SetFocus
 End Sub
 
 Private Sub cmbTableRHS_DropButtonClick()
-    Dim Result As ListObject
-    If TestSelectTable.TrySelectTable(Result) = True Then
-        Set vm.RHSTable = Result
+    Dim result As ListObject
+    If TestSelectTable.TrySelectTable(result) = True Then
+        Set vm.RHSTable = result
     End If
     Me.cmbColumnRHS.SetFocus
 End Sub

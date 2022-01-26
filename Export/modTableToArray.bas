@@ -58,9 +58,9 @@ End Function
 
 Private Function GetDBR(ByVal lo As ListObject) As Variant
     Debug.Assert Not lo Is Nothing
-    Dim Result As Variant
-    Result = lo.DataBodyRange.value
-    GetDBR = Result
+    Dim result As Variant
+    result = lo.DataBodyRange.value
+    GetDBR = result
 End Function
 
 Private Function SetDBR(ByVal lo As ListObject, ByVal arr As Variant) As Boolean

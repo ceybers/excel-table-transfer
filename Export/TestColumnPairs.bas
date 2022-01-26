@@ -26,13 +26,13 @@ Public Sub Test()
     colPairs.Add colPair
     
     'PrintColumnPairs colPairs
-    Dim Result As Variant
+    Dim result As Variant
     
-    Set Result = colPairs.GetPair(RHS:=RHS.ListColumns(1))
-    If Result Is Nothing Then
+    Set result = colPairs.GetPair(RHS:=RHS.ListColumns(1))
+    If result Is Nothing Then
         Debug.Print "Not found"
     Else
-        Debug.Print Result.ToString
+        Debug.Print result.ToString
     End If
     
     Set colPair = ColumnPair.Create(lhs.ListColumns(1), RHS.ListColumns(2))

@@ -123,10 +123,10 @@ Public Function GetPair(Optional ByVal lhs As ListColumn, Optional ByVal RHS As 
 End Function
 
 Public Function TryGetPair(ByRef colPair As ColumnPair, Optional ByVal lhs As ListColumn, Optional ByVal RHS As ListColumn) As Boolean
-    Dim Result As ColumnPair
-    Set Result = GetPair(lhs, RHS)
-    Set colPair = Result
-    If Not Result Is Nothing Then TryGetPair = True
+    Dim result As ColumnPair
+    Set result = GetPair(lhs, RHS)
+    Set colPair = result
+    If Not result Is Nothing Then TryGetPair = True
 End Function
 
 Public Function IsMappedRHS(ByVal lc As ListColumn) As Boolean

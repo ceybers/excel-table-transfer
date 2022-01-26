@@ -2,7 +2,7 @@ Attribute VB_Name = "TestArrayToFilteredRange"
 '@Folder("TableTransferTool")
 Option Explicit
 
-Public Sub Test()
+Private Sub Test()
     Dim lo As ListObject
     Dim lc As ListColumn
     Dim rng As Range
@@ -29,7 +29,7 @@ Public Sub Test()
     'Debug.Print "mask:"
     'PrintArray mask
     
-    DoWork rng, mask
+    'DoWork rng, mask
 End Sub
 
 Private Sub PrintRange(ByVal rng As Range)
