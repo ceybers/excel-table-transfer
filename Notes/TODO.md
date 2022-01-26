@@ -13,9 +13,13 @@
 - [ ] Highlighted of additions/mapped/removals
 - [ ] Transfer include/exclude values by VarType()
 - [ ] Serialize TransferInstruction to/from VeryHidden worksheet
+<<<<<<< HEAD
 - [ ] Cancel/Back/Next/Finish stages (AppContext?)
 - [ ] Map values into newly created columns
 - [ ] Finish mapping without any mapped columns (i.e. to add/remove keys only)
 - [ ] "Transfer" sort order
 - [ ] Match key columns by name
 - [ ] Smart key column guessing (try to find columns with 100% unique values and 1:1 match between src/dst)
+=======
+- [ ] Cancel/Back/Next/Finish stages (AppContext?)
+>>>>>>> d1047d5b227ca4f46c36753b283dc1e01b48b612
