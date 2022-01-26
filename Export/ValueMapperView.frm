@@ -88,6 +88,14 @@ Private Sub cmbUnmapLeft_Click()
     Model.TryUnMap
 End Sub
 
+Private Sub chkShowMappedOnlyLHS_Click()
+    Model.ShowMappedOnlyLHS = Me.chkShowMappedOnlyLHS.value
+End Sub
+
+Private Sub chkShowMappedOnlyRHS_Click()
+    Model.ShowMappedOnlyRHS = Me.chkShowMappedOnlyRHS.value
+End Sub
+
 Private Sub lvLHS_ItemClick(ByVal Item As MSComctlLib.ListItem)
     Model.TrySelectLHS Item
 End Sub

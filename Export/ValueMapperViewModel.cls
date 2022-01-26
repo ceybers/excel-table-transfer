@@ -36,9 +36,32 @@ Private Type TClsValueMapperViewModel
     SelectedValuePair As ColumnPair
     IsAutoMapped As Boolean
     Flags As Integer
+    
+    ShowMappedOnlyLHS As Boolean
+    ShowMappedOnlyRHS As Boolean
 End Type
 
 Private This As TClsValueMapperViewModel
+
+Public Property Get ShowMappedOnlyLHS() As Boolean
+    ShowMappedOnlyLHS = This.ShowMappedOnlyLHS
+End Property
+
+Public Property Let ShowMappedOnlyLHS(ByVal RHS As Boolean)
+    If This.ShowMappedOnlyLHS = RHS Then Exit Property
+    This.ShowMappedOnlyLHS = RHS
+    RaiseEvent CollectionChangedLHS
+End Property
+
+Public Property Get ShowMappedOnlyRHS() As Boolean
+    ShowMappedOnlyRHS = This.ShowMappedOnlyRHS
+End Property
+
+Public Property Let ShowMappedOnlyRHS(ByVal RHS As Boolean)
+    If This.ShowMappedOnlyRHS = RHS Then Exit Property
+    This.ShowMappedOnlyRHS = RHS
+    RaiseEvent CollectionChangedRHS
+End Property
 
 Public Property Get Flags() As Integer
     Flags = This.Flags
@@ -121,7 +144,9 @@ Public Sub LoadLHStoListView(ByVal lv As ListView)
     
     For Each lc In lhs.ListColumns
         If (LHSCriteria = vbNullString) Or (lc.Name Like LHSCriteria & "*") Then
-            Set li = lv.ListItems.Add(key:=lc.Name, text:=lc.Name)
+            If (This.ShowMappedOnlyLHS = False) Or (Not This.ValuePairs.GetPair(lhs:=lc) Is Nothing) Then
+                Set li = lv.ListItems.Add(key:=lc.Name, text:=lc.Name)
+            End If
         End If
     Next lc
     
@@ -163,9 +188,11 @@ Public Sub LoadRHStoListView(ByVal lv As ListView)
     
     For Each lc In RHS.ListColumns
         If RHSCriteria = vbNullString Or lc.Name Like RHSCriteria & "*" Then
-            With lv.ListItems.Add(key:=lc.Name, text:=lc.Name)
-                .ListSubItems.Add text:=vbNullString
-            End With
+            If (This.ShowMappedOnlyRHS = False) Or (This.ValuePairs.IsMappedRHS(lc)) Then
+                With lv.ListItems.Add(key:=lc.Name, text:=lc.Name)
+                    .ListSubItems.Add text:=vbNullString
+                End With
+            End If
         End If
     Next lc
 End Sub
