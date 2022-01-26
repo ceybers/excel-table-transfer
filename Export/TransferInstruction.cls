@@ -142,10 +142,12 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
     Dim oldValue As Variant
     Dim newValue As Variant
     Dim doCopy As Boolean
-        
-    If Destination.DataBodyRange.AutoFilter Then
-        If Not Destination.parent.AutoFilter Is Nothing Then
-            Destination.parent.AutoFilter.ShowAllData
+
+    If HasFlag(This.Flags, DestinationFilteredOnly) = False Then
+        If Destination.DataBodyRange.AutoFilter Then
+            If Not Destination.parent.AutoFilter Is Nothing Then
+                Destination.parent.AutoFilter.ShowAllData
+            End If
         End If
     End If
     
@@ -180,7 +182,11 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
         End If
     Next i
     
-    Destination.DataBodyRange.Value2 = arrRHS
-    
-    Destination.parent.ShowAutoFilter = True
+    If HasFlag(This.Flags, DestinationFilteredOnly) Then
+        ArrayToFilteredRange Destination.DataBodyRange, arrRHS
+    Else
+        Destination.DataBodyRange.Value2 = arrRHS
+        Destination.parent.ShowAutoFilter = True
+    End If
+
 End Sub
