@@ -16,7 +16,7 @@ Private Type TState
     SourceKey As ListColumn
     DestinationKey As ListColumn
     ValuePairs As Collection
-    MapResult As Variant
+    mapResult As Variant
     Flags As Integer
 End Type
 
@@ -71,20 +71,20 @@ Public Property Set ValuePairs(ByVal RHS As Collection)
     Set This.ValuePairs = RHS
 End Property
 
-Public Property Get MapResult() As Variant
-    If IsObject(This.MapResult) Then
-        Set MapResult = This.MapResult
+Public Property Get mapResult() As Variant
+    If IsObject(This.mapResult) Then
+        Set mapResult = This.mapResult
     Else
-        MapResult = This.MapResult
+        mapResult = This.mapResult
     End If
 End Property
 
-Public Property Let MapResult(ByVal RHS As Variant)
-    This.MapResult = RHS
+Public Property Let mapResult(ByVal RHS As Variant)
+    This.mapResult = RHS
 End Property
 
-Public Property Set MapResult(ByVal RHS As Variant)
-    Set This.MapResult = RHS
+Public Property Set mapResult(ByVal RHS As Variant)
+    Set This.mapResult = RHS
 End Property
 
 ' Ctor
@@ -113,7 +113,15 @@ Public Sub Transfer()
     Else
         Debug.Print "Don't clear first"
     End If
-
+        
+    If HasFlag(This.Flags, RemoveUnmapped) Then
+        RemoveUnmappedKeys
+    End If
+    
+    If HasFlag(This.Flags, appendunmapped) Then
+        AppendUnmappedKeys
+    End If
+    
     SetMapResult
     
     Dim colPair As ColumnPair
@@ -126,11 +134,11 @@ Private Sub SetMapResult()
     Dim compare As KeyColumnComparer
     Set compare = KeyColumnComparer.Create(KeyColumn.FromColumn(SourceKey), KeyColumn.FromColumn(DestinationKey))
     
-    MapResult = compare.Map(HasFlag(This.Flags, SourceFilteredOnly), HasFlag(This.Flags, DestinationFilteredOnly))
+    mapResult = compare.Map(HasFlag(This.Flags, SourceFilteredOnly), HasFlag(This.Flags, DestinationFilteredOnly))
 End Sub
 
 Private Sub TransferOne(ByVal colPair As ColumnPair)
-   DoTransfer MapResult, colPair.lhs, colPair.RHS
+   DoTransfer mapResult, colPair.lhs, colPair.RHS
 End Sub
 
 Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal Destination As ListColumn)
@@ -188,5 +196,42 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
         Destination.DataBodyRange.Value2 = arrRHS
         Destination.parent.ShowAutoFilter = True
     End If
+End Sub
 
+Private Sub RemoveUnmappedKeys()
+    ' TODO Refactor
+    Dim comp As KeyColumnComparer
+    Set comp = KeyColumnComparer.Create(KeyColumn.FromColumn(SourceKey), KeyColumn.FromColumn(DestinationKey))
+    
+    Dim cachedMappedResults As Variant
+    cachedMappedResults = comp.Map
+   
+    Dim i As Long
+    Dim rng As Range
+    Set rng = comp.RHS.Range
+    
+    For i = rng.Rows.Count To 1 Step -1
+        If cachedMappedResults(rng.Rows(i).Row) = -1 Then
+             rng.Rows(i).EntireRow.Delete
+        End If
+    Next i
+End Sub
+
+Private Sub AppendUnmappedKeys()
+    ' TODO Refactor
+    Dim comp As KeyColumnComparer
+    Set comp = KeyColumnComparer.Create(KeyColumn.FromColumn(SourceKey), KeyColumn.FromColumn(DestinationKey))
+    
+    Dim lo As ListObject
+    Dim lc As ListColumn
+    Dim lr As ListRow
+    Dim i As Long
+     
+    Set lc = GetListColumnFromRange(comp.RHS.Range)
+    Set lo = lc.parent
+
+    For i = 1 To comp.LeftOnly.Count
+        Set lr = lo.ListRows.Add(alwaysinsert:=True)
+        lr.Range.Cells(1, lc.Index).Value2 = comp.LeftOnly.Item(i)
+    Next i
 End Sub

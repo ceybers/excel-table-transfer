@@ -61,13 +61,11 @@ Public Property Get IsSubsetRHS() As Boolean
     IsSubsetRHS = This.RightOnly.Count = 0
 End Property
 
-
 Public Property Get IsMatch() As Boolean
     IsMatch = IsSubsetLHS And IsSubsetRHS
 End Property
 
 ' Methods
-
 Private Sub TryDoWork()
     If This.lhs Is Nothing Then Exit Sub
     If This.RHS Is Nothing Then Exit Sub
@@ -117,7 +115,10 @@ Public Function Create(ByVal lhs As KeyColumn, ByVal RHS As KeyColumn) As KeyCol
 End Function
 
 Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByVal FilterDestination As Boolean = False) As Variant
-    Dim Result As Variant
+    Debug.Assert Not This.lhs Is Nothing
+    Debug.Assert Not This.RHS Is Nothing
+    
+    Dim result As Variant
     Dim arr As Variant
     Dim i As Long
     
@@ -134,11 +135,11 @@ Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByV
     End If
     
     arr = rhsFlt.GetArray
-    ReDim Result(LBound(arr) To UBound(arr))
+    ReDim result(LBound(arr) To UBound(arr))
     
     For i = LBound(arr) To UBound(arr)
-        Result(i) = lhsFlt.Find(arr(i))
+        result(i) = lhsFlt.Find(arr(i))
     Next i
     
-    Map = Result
+    Map = result
 End Function

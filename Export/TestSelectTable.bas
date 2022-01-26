@@ -17,7 +17,7 @@ Public Function Test() As ListObject
     End If
 End Function
 
-Public Function TrySelectTable(ByRef Result As ListObject) As Boolean
+Public Function TrySelectTable(ByRef result As ListObject) As Boolean
     ' TODO This is being used by key select dialog to choose new tables
     'Err.Raise 5, , "tryselecttable deprec"
     Dim vm As SelectTableViewModel
@@ -28,7 +28,7 @@ Public Function TrySelectTable(ByRef Result As ListObject) As Boolean
     
     If frm.ShowDialog(vm) Then
         If Not vm.SelectedTable Is Nothing Then
-            Set Result = vm.SelectedTable
+            Set result = vm.SelectedTable
             TrySelectTable = True
         End If
     End If
