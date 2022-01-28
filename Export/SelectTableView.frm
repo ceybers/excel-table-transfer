@@ -107,16 +107,36 @@ Private Sub LoadTreeview()
     Next nd
 End Sub
 
+Private Sub UpdateListViewWithSelectedTable()
+    If vm.SelectedTable Is Nothing Then
+        Exit Sub
+    End If
+    
+    Dim nd As Node
+    For Each nd In Me.tvTables.Nodes
+        If nd.key = vm.SelectedTable.Range.Address(external:=True) Then
+            nd.Selected = True
+            nd.EnsureVisible
+            'Me.tvTables.SetFocus
+            Me.cmbOK.Enabled = True
+            Me.cmbOK.SetFocus
+            Exit Sub
+        End If
+    Next nd
+End Sub
+
 Private Sub TryHighlightActive()
     Dim nd As Node
     For Each nd In Me.tvTables.Nodes
         If nd.key = vm.ActiveTable.Range.Address(external:=True) Then
             nd.Selected = True
             nd.EnsureVisible
+            Exit Sub
         End If
     Next nd
 End Sub
 
+' TODO This should be in VM as LoadCollectionToTreeView
 Private Sub TryAddNode(ByVal obj As Object)
     Dim lo As ListObject
     Dim ws As Worksheet
@@ -127,6 +147,7 @@ Private Sub TryAddNode(ByVal obj As Object)
     Dim nd As Node
     Dim image As String
     Dim text As String
+    Dim suffix As String
     
     If TypeOf obj Is Workbook Then
         Set wb = obj
@@ -148,12 +169,16 @@ Private Sub TryAddNode(ByVal obj As Object)
         parent = "[" & lo.parent.parent.Name & "]" & lo.parent.Name
         image = "lo"
         text = lo.Name
+        suffix = ""
+        
         If Not vm.ActiveTable Is Nothing Then
             If vm.ActiveTable.Range.Address(external:=True) = lo.Range.Address(external:=True) Then
+                suffix = " (active)"
                 image = "activeLo"
-                text = text & " (active)"
             End If
         End If
+        
+        text = text & suffix
     End If
     
     For Each nd In Me.tvTables.Nodes
@@ -191,6 +216,8 @@ Private Sub InitializeView()
     
     Set Me.cmbClearSearch.Picture = msoImageList.ListImages.Item("delete").Picture
     Me.txtSearch.SetFocus
+    
+    UpdateListViewWithSelectedTable
 End Sub
 
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean

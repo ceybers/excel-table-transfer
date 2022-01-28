@@ -5,32 +5,35 @@ Option Explicit
 Public Sub TransferTable()
     Dim Transfer As TransferInstruction
     Set Transfer = New TransferInstruction
-    
+    DoTransferTable Transfer
+End Sub
+
+Public Sub DoTransferTable(Transfer As TransferInstruction)
     If Selection.ListObject Is Nothing Then Exit Sub
     Set Transfer.Destination = Selection.ListObject
     
-    Set Transfer.Source = ThisWorkbook.Worksheets(1).ListObjects(1)
-    'If GetSourceTable(Transfer) Then
-    '    ' continue
-    'Else
-    '    Exit Sub
-    'End If
+    'Set Transfer.Source = ThisWorkbook.Worksheets(1).ListObjects(1)
+    If GetSourceTable(Transfer) Then
+        ' continue
+    Else
+        Exit Sub
+    End If
 
-    Set Transfer.SourceKey = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
-    Set Transfer.DestinationKey = ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(1)
+    'Set Transfer.SourceKey = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
+    'Set Transfer.DestinationKey = ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(1)
     
-    'If GetKeyColumns(Transfer) Then
-    '    ' continue
-    'Else
-        'Exit Sub
-    'End If
+    If GetKeyColumns(Transfer) Then
+        ' continue
+    Else
+        Exit Sub
+    End If
     
     ' TODO Move default Flags somewhere better
-    Transfer.Flags = AddFlag(Transfer.Flags, ClearDestinationFirst)
+    ' Transfer.Flags = AddFlag(Transfer.Flags, ClearDestinationFirst)
     'Transfer.Flags = AddFlag(Transfer.Flags, ReplaceEmptyOnly)
     'Transfer.Flags = AddFlag(Transfer.Flags, TransferBlanks)
     'Transfer.Flags = AddFlag(Transfer.Flags, SourceFilteredOnly)
-    Transfer.Flags = AddFlag(Transfer.Flags, DestinationFilteredOnly)
+    ' Transfer.Flags = AddFlag(Transfer.Flags, DestinationFilteredOnly)
     
     If SetValueMapping(Transfer) Then
         ' continue
@@ -38,15 +41,37 @@ Public Sub TransferTable()
         Exit Sub
     End If
     
+    'Dim lhs As ListObject
+    'Dim rhs As ListObject
+    'Set lhs = ThisWorkbook.Worksheets(1).ListObjects(1)
+    'Set rhs = ThisWorkbook.Worksheets(1).ListObjects(2)
     
+    'Transfer.ValuePairs.Add ColumnPair.Create(lhs.ListColumns(2), rhs.ListColumns(2))
+    'Transfer.ValuePairs.Add ColumnPair.Create(lhs.ListColumns(3), rhs.ListColumns(3))
+    'Transfer.ValuePairs.Add ColumnPair.Create(lhs.ListColumns(4), rhs.ListColumns(4))
      
     Transfer.Transfer
+    
+    If HasFlag(Transfer.Flags, saveToHistory) Then
+        Dim history As TransferHistoryViewModel
+        Set history = New TransferHistoryViewModel
+        If history.HasHistory = False Then
+            history.Create
+        End If
+        history.Refresh
+        history.Add Transfer
+        history.Save
+    End If
 End Sub
 
 Private Function GetSourceTable(ByVal Transfer As TransferInstruction) As Boolean
     Dim vm As SelectTableViewModel
     Set vm = New SelectTableViewModel
     Set vm.ActiveTable = Transfer.Destination
+    
+    If Not Transfer.Source Is Nothing Then
+        Set vm.SelectedTable = Transfer.Source
+    End If
     
     Dim frm As IView
     Set frm = New SelectTableView
@@ -83,10 +108,12 @@ Private Function SetValueMapping(ByVal Transfer As TransferInstruction) As Boole
     Dim vm As ValueMapperViewModel
     Set vm = New ValueMapperViewModel
     Set vm.lhs = Transfer.Source
-    Set vm.RHS = Transfer.Destination
+    Set vm.rhs = Transfer.Destination
     Set vm.KeyColumnLHS = Transfer.SourceKey
     Set vm.KeyColumnRHS = Transfer.DestinationKey
     vm.Flags = Transfer.Flags
+    
+    vm.LoadFromTransferInstruction Transfer
     
     Dim frm As IView
     Set frm = New ValueMapperView

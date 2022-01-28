@@ -79,12 +79,12 @@ Public Sub ArrayToFilteredRange(ByVal rng As Range, ByVal arr As Variant)
     
     Dim i As Long
     
-    fst = rng.Rows(1).Row
+    fst = rng.rows(1).row
     
     For Each area In fltRng.Areas
         'Debug.Print area.Address & " of " & rng.Address
-        top = area.Rows(1).Row
-        bot = area.Rows(area.Rows.Count).Row
+        top = area.rows(1).row
+        bot = area.rows(area.rows.Count).row
         hei = bot - top + 1
         'Debug.Print top & " to " & bot & " (" & hei & ")"
         

@@ -223,7 +223,7 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     Me.cmbClearSearchLHS.Picture = msoImageList.ListImages("delete").Picture
     Me.cmbClearSearchRHS.Picture = msoImageList.ListImages("delete").Picture
     
-    Model.Automap
+    Model.AutomapIfEmpty
     
     Me.Show
     

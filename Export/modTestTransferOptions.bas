@@ -16,6 +16,8 @@ Public Enum TransferOptionsEnum
     RemoveUnmapped = 2 ^ 6 ' 64
     appendunmapped = 2 ^ 7 ' 128
     
+    saveToHistory = 2 ^ 8 ' 256
+    
 End Enum
 
 Public Sub Test()

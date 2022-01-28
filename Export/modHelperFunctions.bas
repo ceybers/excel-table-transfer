@@ -2,11 +2,11 @@ Attribute VB_Name = "modHelperFunctions"
 '@Folder "HelperFunctions"
 Option Explicit
 
-Public Function TableFromString(ByVal s As String) As ListObject
+Public Function TableFromString(ByVal S As String) As ListObject
     Dim wb As Workbook, ws As Worksheet, lo As ListObject
     Dim n() As String
     
-    n = Split(s, "\")
+    n = Split(S, "\")
     Debug.Assert LBound(n, 1) = 0
     Debug.Assert UBound(n, 1) = 2
     
@@ -27,4 +27,9 @@ End Function
 Public Function ToKey(ByVal i As Integer) As String
     Debug.Assert (i >= 0 And i <= 999)
     ToKey = "K" & Trim$(Format$(i, "000"))
+End Function
+
+Public Function PasteArrayIntoWorksheet(ByRef arr As Variant, ByVal ws As Worksheet, Optional ByVal row As Long = 1, Optional ByVal column As Long = 1)
+    Debug.Print "PasteArrayIntoWorksheet @ row "; row; ", col "; column
+    ws.Range("A1").Cells(row, column).Resize(UBound(arr, 1), 1).Value2 = arr
 End Function

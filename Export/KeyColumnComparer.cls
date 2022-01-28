@@ -14,7 +14,7 @@ Option Explicit
 
 Private Type TClsCompareKeyColumns
     lhs As KeyColumn
-    RHS As KeyColumn
+    rhs As KeyColumn
     LeftOnly As Collection
     Intersection As Collection
     RightOnly As Collection
@@ -27,17 +27,17 @@ Public Property Get lhs() As KeyColumn
     Set lhs = This.lhs
 End Property
 
-Public Property Set lhs(ByVal RHS As KeyColumn)
-    Set This.lhs = RHS
+Public Property Set lhs(ByVal rhs As KeyColumn)
+    Set This.lhs = rhs
     TryDoWork
 End Property
 
-Public Property Get RHS() As KeyColumn
-    Set RHS = This.RHS
+Public Property Get rhs() As KeyColumn
+    Set rhs = This.rhs
 End Property
 
-Public Property Set RHS(ByVal RHS As KeyColumn)
-    Set This.RHS = RHS
+Public Property Set rhs(ByVal rhs As KeyColumn)
+    Set This.rhs = rhs
     TryDoWork
 End Property
 
@@ -68,7 +68,7 @@ End Property
 ' Methods
 Private Sub TryDoWork()
     If This.lhs Is Nothing Then Exit Sub
-    If This.RHS Is Nothing Then Exit Sub
+    If This.rhs Is Nothing Then Exit Sub
     DoWork
 End Sub
 
@@ -78,7 +78,7 @@ Private Sub DoWork()
     For Each key In lhs.Keys
         Upsert key, 1
     Next
-    For Each key In RHS.Keys
+    For Each key In rhs.Keys
         Upsert key, 2
     Next
     
@@ -108,15 +108,15 @@ Private Sub Upsert(ByVal key As String, ByVal value As Integer)
     End If
 End Sub
 
-Public Function Create(ByVal lhs As KeyColumn, ByVal RHS As KeyColumn) As KeyColumnComparer
+Public Function Create(ByVal lhs As KeyColumn, ByVal rhs As KeyColumn) As KeyColumnComparer
     Set Create = New KeyColumnComparer
     Set Create.lhs = lhs
-    Set Create.RHS = RHS
+    Set Create.rhs = rhs
 End Function
 
 Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByVal FilterDestination As Boolean = False) As Variant
     Debug.Assert Not This.lhs Is Nothing
-    Debug.Assert Not This.RHS Is Nothing
+    Debug.Assert Not This.rhs Is Nothing
     
     Dim result As Variant
     Dim arr As Variant
@@ -129,9 +129,9 @@ Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByV
     End If
     
     Dim rhsFlt As KeyColumn
-    Set rhsFlt = This.RHS
+    Set rhsFlt = This.rhs
     If FilterDestination Then
-        Set rhsFlt = KeyColumn.FromRange(This.RHS.Range, This.RHS.IncludeNumbersAsText, True)
+        Set rhsFlt = KeyColumn.FromRange(This.rhs.Range, This.rhs.IncludeNumbersAsText, True)
     End If
     
     arr = rhsFlt.GetArray

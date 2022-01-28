@@ -46,9 +46,9 @@ Private Function GetVisibilityMask(ByVal lo As ListObject) As Variant
     Dim a As Range
     For i = 1 To maskRng.Areas.Count
         Set a = maskRng.Areas(i)
-        For j = 1 To a.Rows.Count
+        For j = 1 To a.rows.Count
             For k = 1 To a.Columns.Count
-                bitmask(a.Row - origin.Row + 0 + j, k) = 1
+                bitmask(a.row - origin.row + 0 + j, k) = 1
             Next k
         Next j
     Next i
@@ -68,7 +68,7 @@ Private Function SetDBR(ByVal lo As ListObject, ByVal arr As Variant) As Boolean
     Set dbr = lo.DataBodyRange
     Dim arrHeight As Integer: arrHeight = UBound(arr, 1)
     Dim arrWidth As Integer: arrWidth = UBound(arr, 2)
-    Debug.Assert dbr.Rows.Count = arrHeight
+    Debug.Assert dbr.rows.Count = arrHeight
     Debug.Assert dbr.Columns.Count = arrWidth
     
     dbr.Value2 = arr
@@ -76,8 +76,8 @@ Private Function SetDBR(ByVal lo As ListObject, ByVal arr As Variant) As Boolean
 End Function
 
 Private Sub FillTableWithAddresses(ByVal lo As ListObject)
-    Dim C As Range
-    For Each C In lo.DataBodyRange.Cells
-        C.value = CStr(C.Address)
-    Next C
+    Dim c As Range
+    For Each c In lo.DataBodyRange.Cells
+        c.value = CStr(c.Address)
+    Next c
 End Sub

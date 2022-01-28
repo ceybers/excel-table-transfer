@@ -35,40 +35,40 @@ Public Property Get Source() As ListObject
     Set Source = This.Source
 End Property
 
-Public Property Set Source(ByVal RHS As ListObject)
-    Set This.Source = RHS
+Public Property Set Source(ByVal rhs As ListObject)
+    Set This.Source = rhs
 End Property
 
 Public Property Get Destination() As ListObject
     Set Destination = This.Destination
 End Property
 
-Public Property Set Destination(ByVal RHS As ListObject)
-    Set This.Destination = RHS
+Public Property Set Destination(ByVal rhs As ListObject)
+    Set This.Destination = rhs
 End Property
 
 Public Property Get SourceKey() As ListColumn
     Set SourceKey = This.SourceKey
 End Property
 
-Public Property Set SourceKey(ByVal RHS As ListColumn)
-    Set This.SourceKey = RHS
+Public Property Set SourceKey(ByVal rhs As ListColumn)
+    Set This.SourceKey = rhs
 End Property
 
 Public Property Get DestinationKey() As ListColumn
     Set DestinationKey = This.DestinationKey
 End Property
 
-Public Property Set DestinationKey(ByVal RHS As ListColumn)
-    Set This.DestinationKey = RHS
+Public Property Set DestinationKey(ByVal rhs As ListColumn)
+    Set This.DestinationKey = rhs
 End Property
 
 Public Property Get ValuePairs() As Collection
     Set ValuePairs = This.ValuePairs
 End Property
 
-Public Property Set ValuePairs(ByVal RHS As Collection)
-    Set This.ValuePairs = RHS
+Public Property Set ValuePairs(ByVal rhs As Collection)
+    Set This.ValuePairs = rhs
 End Property
 
 Public Property Get mapResult() As Variant
@@ -79,12 +79,12 @@ Public Property Get mapResult() As Variant
     End If
 End Property
 
-Public Property Let mapResult(ByVal RHS As Variant)
-    This.mapResult = RHS
+Public Property Let mapResult(ByVal rhs As Variant)
+    This.mapResult = rhs
 End Property
 
-Public Property Set mapResult(ByVal RHS As Variant)
-    Set This.mapResult = RHS
+Public Property Set mapResult(ByVal rhs As Variant)
+    Set This.mapResult = rhs
 End Property
 
 ' Ctor
@@ -93,8 +93,8 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Methods
-Public Sub Add(ByVal lhs As ListColumn, ByVal RHS As ListColumn)
-    ValuePairs.Add ColumnPair.Create(lhs, RHS)
+Public Sub Add(ByVal lhs As ListColumn, ByVal rhs As ListColumn)
+    ValuePairs.Add ColumnPair.Create(lhs, rhs)
 End Sub
 
 Public Function IsValid() As Boolean
@@ -107,12 +107,6 @@ End Function
 
 Public Sub Transfer()
     If Not IsValid Then Exit Sub
-
-    If HasFlag(This.Flags, ClearDestinationFirst) Then
-        Debug.Print "Clear first"
-    Else
-        Debug.Print "Don't clear first"
-    End If
         
     If HasFlag(This.Flags, RemoveUnmapped) Then
         RemoveUnmappedKeys
@@ -138,7 +132,7 @@ Private Sub SetMapResult()
 End Sub
 
 Private Sub TransferOne(ByVal colPair As ColumnPair)
-   DoTransfer mapResult, colPair.lhs, colPair.RHS
+   DoTransfer mapResult, colPair.lhs, colPair.rhs
 End Sub
 
 Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal Destination As ListColumn)
@@ -161,8 +155,8 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
     
     arrLHS = Source.DataBodyRange.Value2
     arrRHS = Destination.DataBodyRange.Value2
-    arrLHSOffset = Source.DataBodyRange.Row
-    arrRHSOffset = Destination.DataBodyRange.Row
+    arrLHSOffset = Source.DataBodyRange.row
+    arrRHSOffset = Destination.DataBodyRange.row
     
     For i = LBound(Map) To UBound(Map)
         If Map(i) > -1 Then
@@ -208,11 +202,11 @@ Private Sub RemoveUnmappedKeys()
    
     Dim i As Long
     Dim rng As Range
-    Set rng = comp.RHS.Range
+    Set rng = comp.rhs.Range
     
-    For i = rng.Rows.Count To 1 Step -1
-        If cachedMappedResults(rng.Rows(i).Row) = -1 Then
-             rng.Rows(i).EntireRow.Delete
+    For i = rng.rows.Count To 1 Step -1
+        If cachedMappedResults(rng.rows(i).row) = -1 Then
+             rng.rows(i).EntireRow.Delete
         End If
     Next i
 End Sub
@@ -227,7 +221,7 @@ Private Sub AppendUnmappedKeys()
     Dim lr As ListRow
     Dim i As Long
      
-    Set lc = GetListColumnFromRange(comp.RHS.Range)
+    Set lc = GetListColumnFromRange(comp.rhs.Range)
     Set lo = lc.parent
 
     For i = 1 To comp.LeftOnly.Count
@@ -235,3 +229,26 @@ Private Sub AppendUnmappedKeys()
         lr.Range.Cells(1, lc.Index).Value2 = comp.LeftOnly.Item(i)
     Next i
 End Sub
+
+Public Function ToString() As String
+    Dim result As String
+    Dim i As Long
+    
+    result = result & "TRANSFER" & vbCrLf
+    result = result & " SRC," & This.Source.Range.Address(external:=True) & vbCrLf
+    result = result & " SRCKEY," & This.SourceKey.Name & vbCrLf
+    result = result & " DST," & This.Destination.Range.Address(external:=True) & vbCrLf
+    result = result & " DSTKEY," & This.DestinationKey.Name & vbCrLf
+    result = result & " FLAGS," & This.Flags & vbCrLf
+    result = result & " VALUES," & This.ValuePairs.Count & vbCrLf
+    For i = 1 To This.ValuePairs.Count
+         result = result & "  " & This.ValuePairs(i).ToString & vbCrLf
+    Next i
+    result = result & "END"
+    
+    ToString = result
+End Function
+
+Public Function Name() As String
+    Name = This.Source.Name & "." & This.SourceKey.Name & " -> " & This.Destination.Name & "." & This.DestinationKey.Name & " (" & This.ValuePairs.Count & ")"
+End Function

@@ -32,9 +32,9 @@ Private Function GetVisibilityMask(ByVal rng As Range) As Variant
     Dim a As Range
     For i = 1 To maskRng.Areas.Count
         Set a = maskRng.Areas(i)
-        For j = 1 To a.Rows.Count
+        For j = 1 To a.rows.Count
             For k = 1 To a.Columns.Count
-                bitmask(a.Row - origin.Row + 0 + j, k) = 1
+                bitmask(a.row - origin.row + 0 + j, k) = 1
             Next k
         Next j
     Next i

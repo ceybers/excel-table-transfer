@@ -42,11 +42,11 @@ Public Property Get LHSTable() As ListObject
     Set LHSTable = This.LHSTable
 End Property
 
-Public Property Set LHSTable(ByVal RHS As ListObject)
-    If This.LHSTable Is RHS Then Exit Property
-    Set This.LHSTable = RHS
+Public Property Set LHSTable(ByVal rhs As ListObject)
+    If This.LHSTable Is rhs Then Exit Property
+    Set This.LHSTable = rhs
     This.IsDirty = True
-    Debug.Assert Not RHS Is Nothing
+    Debug.Assert Not rhs Is Nothing
     UpdateColumns This.LHSTable, This.LHSColumns
     RaiseEvent PropertyChanged("LHSTable")
     RaiseEvent PropertyChanged("LHSColumns")
@@ -56,9 +56,9 @@ Public Property Get RHSTable() As ListObject
     Set RHSTable = This.RHSTable
 End Property
 
-Public Property Set RHSTable(ByVal RHS As ListObject)
-    If This.RHSTable Is RHS Then Exit Property
-    Set This.RHSTable = RHS
+Public Property Set RHSTable(ByVal rhs As ListObject)
+    If This.RHSTable Is rhs Then Exit Property
+    Set This.RHSTable = rhs
     This.IsDirty = True
     UpdateColumns This.RHSTable, This.RHSColumns
     RaiseEvent PropertyChanged("RHSTable")
@@ -69,30 +69,30 @@ Public Property Get LHSColumns() As Collection
     Set LHSColumns = This.LHSColumns
 End Property
 
-Public Property Set LHSColumns(ByVal RHS As Collection)
-    Set This.LHSColumns = RHS
+Public Property Set LHSColumns(ByVal rhs As Collection)
+    Set This.LHSColumns = rhs
 End Property
 
 Public Property Get RHSColumns() As Collection
     Set RHSColumns = This.RHSColumns
 End Property
 
-Public Property Set RHSColumns(ByVal RHS As Collection)
-    Set This.RHSColumns = RHS
+Public Property Set RHSColumns(ByVal rhs As Collection)
+    Set This.RHSColumns = rhs
 End Property
 
 Public Property Get LHSKeyColumn() As ListColumn
     Set LHSKeyColumn = This.LHSKeyColumn
 End Property
 
-Public Property Set LHSKeyColumn(ByVal RHS As ListColumn)
+Public Property Set LHSKeyColumn(ByVal rhs As ListColumn)
     If Not This.LHSKeyColumn Is Nothing Then
-        If This.LHSKeyColumn.Name = RHS.Name Then Exit Property
+        If This.LHSKeyColumn.Name = rhs.Name Then Exit Property
     End If
     This.IsDirtyQuality = True
     This.IsDirtyMatch = False
     This.IsDirty = True
-    Set This.LHSKeyColumn = RHS
+    Set This.LHSKeyColumn = rhs
     RaiseEvent PropertyChanged("LHSKeyColumn")
 End Property
 
@@ -100,14 +100,14 @@ Public Property Get RHSKeyColumn() As ListColumn
     Set RHSKeyColumn = This.RHSKeyColumn
 End Property
 
-Public Property Set RHSKeyColumn(ByVal RHS As ListColumn)
+Public Property Set RHSKeyColumn(ByVal rhs As ListColumn)
     If Not This.RHSKeyColumn Is Nothing Then
-        If This.RHSKeyColumn.Name = RHS.Name Then Exit Property
+        If This.RHSKeyColumn.Name = rhs.Name Then Exit Property
     End If
     This.IsDirtyQuality = True
     This.IsDirtyMatch = False
     This.IsDirty = True
-    Set This.RHSKeyColumn = RHS
+    Set This.RHSKeyColumn = rhs
     RaiseEvent PropertyChanged("RHSKeyColumn")
 End Property
 

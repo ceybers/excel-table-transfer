@@ -35,29 +35,29 @@ Public Property Get Range() As Range
     Set Range = This.rng
 End Property
 
-Public Property Set Range(ByVal RHS As Range)
-    If Not IsRangeASingleColumn(RHS) Then
+Public Property Set Range(ByVal rhs As Range)
+    If Not IsRangeASingleColumn(rhs) Then
         Err.Raise Number:=vbObjectError + 1, Description:="Cannot create clsKeyColumn with a range that spans multiple columns"
         Exit Property
     End If
-    Set This.rng = RHS
-    LoadRange RHS
+    Set This.rng = rhs
+    LoadRange rhs
 End Property
 
 Public Property Get RespectFilter() As Boolean
     RespectFilter = This.RespectFilter
 End Property
 
-Public Property Let RespectFilter(ByVal RHS As Boolean)
-    This.RespectFilter = RHS
+Public Property Let RespectFilter(ByVal rhs As Boolean)
+    This.RespectFilter = rhs
 End Property
 
 Public Property Get IncludeNumbersAsText() As Boolean
     IncludeNumbersAsText = This.IncludeNumbersAsText
 End Property
 
-Public Property Let IncludeNumbersAsText(ByVal RHS As Boolean)
-    This.IncludeNumbersAsText = RHS
+Public Property Let IncludeNumbersAsText(ByVal rhs As Boolean)
+    This.IncludeNumbersAsText = rhs
 End Property
 
 Public Property Get NonTextCount() As Long
@@ -199,7 +199,7 @@ Public Function Find(ByVal value As Variant) As Long
     'If Not result Is Nothing Then
     '    Find = result.Row
     'End If
-    Debug.Print VarType(value)
+    'Debug.Print VarType(value)
     If VarType(value) = vbError Then Exit Function
     If VarType(value) = vbEmpty Then Exit Function
     If value = vbNullString Then Exit Function
@@ -235,7 +235,7 @@ End Function
 Private Function IsRangeASingleColumn(ByVal rng As Range) As Boolean
     Dim area As Range
     For Each area In rng.Areas
-        If area.Column <> rng.Column Then
+        If area.column <> rng.column Then
             Exit Function
         End If
     Next area
@@ -250,12 +250,12 @@ Private Function DisjointRangeToArray(ByVal rng As Range) As Variant
     Dim lastRow As Long
     Dim thisLastRow As Long
     
-    firstRow = rng.Row
+    firstRow = rng.row
     For Each area In rng.Areas
-        If firstRow > rng.Row Then
-            firstRow = rng.Row
+        If firstRow > rng.row Then
+            firstRow = rng.row
         End If
-        thisLastRow = area.Row + area.Rows.Count - 1
+        thisLastRow = area.row + area.rows.Count - 1
         If thisLastRow > lastRow Then
             lastRow = thisLastRow
         End If
@@ -266,10 +266,10 @@ Private Function DisjointRangeToArray(ByVal rng As Range) As Variant
     For Each area In rng.Areas
         If VarType(area) = vbArray + vbVariant Then
             For Each vv In area
-                arr(vv.Row) = (vv) ' Removed CStr - this was converting errors to text
+                arr(vv.row) = (vv) ' Removed CStr - this was converting errors to text
             Next vv
         Else
-            arr(area.Row) = (area)
+            arr(area.row) = (area)
         End If
     Next area
     

@@ -19,3 +19,7 @@
 - [ ] "Transfer" sort order
 - [ ] Match key columns by name
 - [ ] Smart key column guessing (try to find columns with 100% unique values and 1:1 match between src/dst)
+- [ ] Transfer .NumberFormat from first cell in src column to entire dst column
+- [ ] Transfer ColumnWidths
+- [ ] Transfer font-family, font-size, vertical-alignment, horizontal-alignment, text-wrapping
+- [ ] Change Column Quality icons to reflect desireable values for measures
