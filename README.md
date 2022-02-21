@@ -52,4 +52,4 @@ Options dialog. Self-explanatory.
 
 The tool can optionally store a record of every transfer that is successful. This allows us to recall previous transfers and run them again.
 
-![History](images/History.png)
+![History](images/history.png)
