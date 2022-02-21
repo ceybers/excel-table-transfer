@@ -9,17 +9,19 @@
 - [x] "Show mapped only" x2 for Value Mapper
 - [x] Remove unmapped in source
 - [x] Append unmapped in destination
+- [x] Serialize TransferInstruction to/from VeryHidden worksheet
+- [x] Update git README.md with new screenshots
 - [ ] Option to exclude non-unique keys from mapping (i.e. do not map to key vs map to first occurrence)
 - [ ] Highlighted of additions/mapped/removals
 - [ ] Transfer include/exclude values by VarType()
-- [ ] Serialize TransferInstruction to/from VeryHidden worksheet
 - [ ] Cancel/Back/Next/Finish stages (AppContext?)
 - [ ] Map values into newly created columns
 - [ ] Finish mapping without any mapped columns (i.e. to add/remove keys only)
-- [ ] "Transfer" sort order
+- [ ] "Transfer" sort order (i.e. Sort the keys in destination table by the order they are in the source table)
 - [ ] Match key columns by name
 - [ ] Smart key column guessing (try to find columns with 100% unique values and 1:1 match between src/dst)
 - [ ] Transfer .NumberFormat from first cell in src column to entire dst column
 - [ ] Transfer ColumnWidths
 - [ ] Transfer font-family, font-size, vertical-alignment, horizontal-alignment, text-wrapping
 - [ ] Change Column Quality icons to reflect desireable values for measures
+- [ ] Add splash screen that asks if the table in Selection is the source or destination. This replaces TableSelect as the intial dialog
