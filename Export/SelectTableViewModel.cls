@@ -22,41 +22,41 @@ Private Type TViewModel
     Tables As Collection
 End Type
 
-Private This As TViewModel
+Private this As TViewModel
 
 Public Property Get Tables() As Collection
-    Set Tables = This.Tables
+    Set Tables = this.Tables
 End Property
 
 Public Property Get SelectedTable() As ListObject
-    Set SelectedTable = This.SelectedTable
+    Set SelectedTable = this.SelectedTable
 End Property
 
-Public Property Set SelectedTable(ByVal rhs As ListObject)
-    Set This.SelectedTable = rhs
+Public Property Set SelectedTable(ByVal RHS As ListObject)
+    Set this.SelectedTable = RHS
     RaiseEvent ItemSelected
 End Property
 
 Public Property Get ActiveTable() As ListObject
-    Set ActiveTable = This.ActiveTable
+    Set ActiveTable = this.ActiveTable
 End Property
 
-Public Property Set ActiveTable(ByVal rhs As ListObject)
-    Set This.ActiveTable = rhs
+Public Property Set ActiveTable(ByVal RHS As ListObject)
+    Set this.ActiveTable = RHS
     Load
 End Property
 
 Public Property Get SearchCriteria() As String
-    SearchCriteria = This.SearchCriteria
+    SearchCriteria = this.SearchCriteria
 End Property
 
-Public Property Let SearchCriteria(ByVal rhs As String)
-    This.SearchCriteria = rhs
+Public Property Let SearchCriteria(ByVal RHS As String)
+    this.SearchCriteria = RHS
     Load
 End Property
 
 Private Sub Load()
-    Set This.Tables = GetAllTables
+    Set this.Tables = GetAllTables
     RaiseEvent CollectionChanged
 End Sub
 
@@ -69,7 +69,7 @@ Private Function GetAllTables() As Collection
     For Each wb In Application.Workbooks
         For Each ws In wb.Worksheets
             For Each lo In ws.ListObjects
-                If (This.SearchCriteria = vbNullString) Or (lo.Name Like This.SearchCriteria) Then
+                If (this.SearchCriteria = vbNullString) Or (lo.Name Like this.SearchCriteria) Then
                     GetAllTables.Add lo, lo.Range.Address(external:=True)
                 End If
             Next lo
@@ -80,8 +80,8 @@ End Function
 Public Sub TrySelect(ByVal key As String)
     Dim lo As ListObject
     
-    If Not This.ActiveTable Is Nothing Then
-        If This.ActiveTable.Range.Address(external:=True) = key Then
+    If Not this.ActiveTable Is Nothing Then
+        If this.ActiveTable.Range.Address(external:=True) = key Then
             ' Set selected table to nothing, otherwise we can still double click the active table and
             ' it will close the dialog and return the previously selected valid table
             Set SelectedTable = Nothing
@@ -89,7 +89,7 @@ Public Sub TrySelect(ByVal key As String)
         End If
     End If
     
-    For Each lo In This.Tables
+    For Each lo In this.Tables
         If lo.Range.Address(external:=True) = key Then
             Set SelectedTable = lo
             Exit Sub
@@ -103,6 +103,6 @@ Private Sub Class_Initialize()
 End Sub
 
 Private Function IViewModel_IsValid() As Boolean
-    If This.SelectedTable Is Nothing Then Exit Function
+    If this.SelectedTable Is Nothing Then Exit Function
     IViewModel_IsValid = True
 End Function

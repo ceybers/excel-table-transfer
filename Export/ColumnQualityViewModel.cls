@@ -16,24 +16,24 @@ Private Type TClsColumnQualityViewModel
     Results As KeyColumn
 End Type
 
-Private This As TClsColumnQualityViewModel
+Private this As TClsColumnQualityViewModel
 
 ' Property
 Public Property Get ListColumn() As ListColumn
-    Set ListColumn = This.ListColumn
+    Set ListColumn = this.ListColumn
 End Property
 
-Public Property Set ListColumn(ByVal rhs As ListColumn)
-    Set This.ListColumn = rhs
-    Results = KeyColumn.FromColumn(rhs)
+Public Property Set ListColumn(ByVal RHS As ListColumn)
+    Set this.ListColumn = RHS
+    Results = KeyColumn.FromColumn(RHS)
 End Property
 
 Public Property Get Results() As KeyColumn
-    Results = This.Results
+    Results = this.Results
 End Property
 
-Public Property Let Results(ByVal rhs As KeyColumn)
-    Set This.Results = rhs
+Public Property Let Results(ByVal RHS As KeyColumn)
+    Set this.Results = RHS
 End Property
 
 ' Functions
@@ -44,12 +44,12 @@ End Function
 Public Sub UpdateListView(ByVal lv As ListView)
     Debug.Assert IViewModel_IsValid
     
-    AddListViewItem lv, "Distinct", This.Results.Count, "Tick"
-    AddListViewItem lv, "Unique", This.Results.UniqueKeys.Count, "Tick"
-    AddListViewItem lv, "Non-Text", This.Results.NonTextCount, "Cross"
-    AddListViewItem lv, "Errors", This.Results.ErrorCount, "TraceError"
-    AddListViewItem lv, "Blanks", This.Results.BlankCount, "Cross"
-    AddListViewItem lv, "Count", This.Results.Range.Cells.Count, "AutoSum"
+    AddListViewItem lv, "Distinct", this.Results.Count, "Tick"
+    AddListViewItem lv, "Unique", this.Results.UniqueKeys.Count, "Tick"
+    AddListViewItem lv, "Non-Text", this.Results.NonTextCount, "Cross"
+    AddListViewItem lv, "Errors", this.Results.ErrorCount, "TraceError"
+    AddListViewItem lv, "Blanks", this.Results.BlankCount, "Cross"
+    AddListViewItem lv, "Count", this.Results.Range.Cells.Count, "AutoSum"
     
     With lv.ListItems(lv.ListItems.Count)
         .Bold = True

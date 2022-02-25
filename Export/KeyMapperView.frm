@@ -30,7 +30,7 @@ Private Type TFrmKeyMapper2View
     IsCancelled As Boolean
 End Type
 
-Private This As TFrmKeyMapper2View
+Private this As TFrmKeyMapper2View
 
 Private Sub cmbBack_Click()
     MsgBox "NYI"
@@ -100,14 +100,14 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub OnCancel()
-    This.IsCancelled = True
+    this.IsCancelled = True
     Me.Hide
 End Sub
 
 ' ---
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     Set vm = ViewModel
-    This.IsCancelled = False
+    this.IsCancelled = False
     
     Set msoImageList = modStandardImageList.GetMSOImageList(ICON_SIZE)
     
@@ -118,7 +118,7 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     
     Me.Show
     
-    IView_ShowDialog = Not This.IsCancelled
+    IView_ShowDialog = Not this.IsCancelled
 End Function
 
 Private Sub InitializeTableCombobox(ByVal cmb As ComboBox)
@@ -197,7 +197,7 @@ Private Sub PopulateMatchSets()
     Dim comp As KeyColumnComparer
     Set comp = New KeyColumnComparer
     Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn)
-    Set comp.rhs = KeyColumn.FromColumn(vm.RHSKeyColumn)
+    Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn)
     comp.Map
     
     CollectionToListView comp.LeftOnly, Me.lvSetLHS

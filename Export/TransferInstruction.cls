@@ -20,71 +20,71 @@ Private Type TState
     Flags As Integer
 End Type
 
-Private This As TState
+Private this As TState
 
 ' Properties
 Public Property Get Flags() As Integer
-    Flags = This.Flags
+    Flags = this.Flags
 End Property
 
 Public Property Let Flags(ByVal Flags As Integer)
-    This.Flags = Flags
+    this.Flags = Flags
 End Property
 
 Public Property Get Source() As ListObject
-    Set Source = This.Source
+    Set Source = this.Source
 End Property
 
-Public Property Set Source(ByVal rhs As ListObject)
-    Set This.Source = rhs
+Public Property Set Source(ByVal RHS As ListObject)
+    Set this.Source = RHS
 End Property
 
 Public Property Get Destination() As ListObject
-    Set Destination = This.Destination
+    Set Destination = this.Destination
 End Property
 
-Public Property Set Destination(ByVal rhs As ListObject)
-    Set This.Destination = rhs
+Public Property Set Destination(ByVal RHS As ListObject)
+    Set this.Destination = RHS
 End Property
 
 Public Property Get SourceKey() As ListColumn
-    Set SourceKey = This.SourceKey
+    Set SourceKey = this.SourceKey
 End Property
 
-Public Property Set SourceKey(ByVal rhs As ListColumn)
-    Set This.SourceKey = rhs
+Public Property Set SourceKey(ByVal RHS As ListColumn)
+    Set this.SourceKey = RHS
 End Property
 
 Public Property Get DestinationKey() As ListColumn
-    Set DestinationKey = This.DestinationKey
+    Set DestinationKey = this.DestinationKey
 End Property
 
-Public Property Set DestinationKey(ByVal rhs As ListColumn)
-    Set This.DestinationKey = rhs
+Public Property Set DestinationKey(ByVal RHS As ListColumn)
+    Set this.DestinationKey = RHS
 End Property
 
 Public Property Get ValuePairs() As Collection
-    Set ValuePairs = This.ValuePairs
+    Set ValuePairs = this.ValuePairs
 End Property
 
-Public Property Set ValuePairs(ByVal rhs As Collection)
-    Set This.ValuePairs = rhs
+Public Property Set ValuePairs(ByVal RHS As Collection)
+    Set this.ValuePairs = RHS
 End Property
 
 Public Property Get mapResult() As Variant
-    If IsObject(This.mapResult) Then
-        Set mapResult = This.mapResult
+    If IsObject(this.mapResult) Then
+        Set mapResult = this.mapResult
     Else
-        mapResult = This.mapResult
+        mapResult = this.mapResult
     End If
 End Property
 
-Public Property Let mapResult(ByVal rhs As Variant)
-    This.mapResult = rhs
+Public Property Let mapResult(ByVal RHS As Variant)
+    this.mapResult = RHS
 End Property
 
-Public Property Set mapResult(ByVal rhs As Variant)
-    Set This.mapResult = rhs
+Public Property Set mapResult(ByVal RHS As Variant)
+    Set this.mapResult = RHS
 End Property
 
 ' Ctor
@@ -93,8 +93,8 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Methods
-Public Sub Add(ByVal lhs As ListColumn, ByVal rhs As ListColumn)
-    ValuePairs.Add ColumnPair.Create(lhs, rhs)
+Public Sub Add(ByVal lhs As ListColumn, ByVal RHS As ListColumn)
+    ValuePairs.Add ColumnPair.Create(lhs, RHS)
 End Sub
 
 Public Function IsValid() As Boolean
@@ -108,11 +108,11 @@ End Function
 Public Sub Transfer()
     If Not IsValid Then Exit Sub
         
-    If HasFlag(This.Flags, RemoveUnmapped) Then
+    If HasFlag(this.Flags, RemoveUnmapped) Then
         RemoveUnmappedKeys
     End If
     
-    If HasFlag(This.Flags, appendunmapped) Then
+    If HasFlag(this.Flags, appendunmapped) Then
         AppendUnmappedKeys
     End If
     
@@ -128,11 +128,11 @@ Private Sub SetMapResult()
     Dim compare As KeyColumnComparer
     Set compare = KeyColumnComparer.Create(KeyColumn.FromColumn(SourceKey), KeyColumn.FromColumn(DestinationKey))
     
-    mapResult = compare.Map(HasFlag(This.Flags, SourceFilteredOnly), HasFlag(This.Flags, DestinationFilteredOnly))
+    mapResult = compare.Map(HasFlag(this.Flags, SourceFilteredOnly), HasFlag(this.Flags, DestinationFilteredOnly))
 End Sub
 
 Private Sub TransferOne(ByVal colPair As ColumnPair)
-   DoTransfer mapResult, colPair.lhs, colPair.rhs
+   DoTransfer mapResult, colPair.lhs, colPair.RHS
 End Sub
 
 Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal Destination As ListColumn)
@@ -145,7 +145,7 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
     Dim newValue As Variant
     Dim doCopy As Boolean
 
-    If HasFlag(This.Flags, DestinationFilteredOnly) = False Then
+    If HasFlag(this.Flags, DestinationFilteredOnly) = False Then
         If Destination.DataBodyRange.AutoFilter Then
             If Not Destination.parent.AutoFilter Is Nothing Then
                 Destination.parent.AutoFilter.ShowAllData
@@ -164,11 +164,11 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
             newValue = arrLHS(Map(i) - arrLHSOffset + 1, 1)
             doCopy = True
             
-            If HasFlag(This.Flags, ReplaceEmptyOnly) And (oldValue <> Empty) Then
+            If HasFlag(this.Flags, ReplaceEmptyOnly) And (oldValue <> Empty) Then
                 doCopy = False
             End If
             
-            If (HasFlag(This.Flags, TransferBlanks) = False) And (newValue = Empty) Then
+            If (HasFlag(this.Flags, TransferBlanks) = False) And (newValue = Empty) Then
                 doCopy = False
             End If
             
@@ -176,7 +176,7 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
                 arrRHS(i - arrRHSOffset + 1, 1) = newValue
             End If
         Else ' Row is not mapped by keys
-            If HasFlag(This.Flags, ClearDestinationFirst) Then
+            If HasFlag(this.Flags, ClearDestinationFirst) Then
                 arrRHS(i - arrRHSOffset + 1, 1) = Empty
             Else
                 'arrRHS(i - arrRHSOffset + 1, 1) = "Unmapped"
@@ -184,7 +184,7 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
         End If
     Next i
     
-    If HasFlag(This.Flags, DestinationFilteredOnly) Then
+    If HasFlag(this.Flags, DestinationFilteredOnly) Then
         ArrayToFilteredRange Destination.DataBodyRange, arrRHS
     Else
         Destination.DataBodyRange.Value2 = arrRHS
@@ -202,7 +202,7 @@ Private Sub RemoveUnmappedKeys()
    
     Dim i As Long
     Dim rng As Range
-    Set rng = comp.rhs.Range
+    Set rng = comp.RHS.Range
     
     For i = rng.rows.Count To 1 Step -1
         If cachedMappedResults(rng.rows(i).row) = -1 Then
@@ -221,7 +221,7 @@ Private Sub AppendUnmappedKeys()
     Dim lr As ListRow
     Dim i As Long
      
-    Set lc = GetListColumnFromRange(comp.rhs.Range)
+    Set lc = GetListColumnFromRange(comp.RHS.Range)
     Set lo = lc.parent
 
     For i = 1 To comp.LeftOnly.Count
@@ -235,14 +235,14 @@ Public Function ToString() As String
     Dim i As Long
     
     result = result & "TRANSFER" & vbCrLf
-    result = result & " SRC," & This.Source.Range.Address(external:=True) & vbCrLf
-    result = result & " SRCKEY," & This.SourceKey.Name & vbCrLf
-    result = result & " DST," & This.Destination.Range.Address(external:=True) & vbCrLf
-    result = result & " DSTKEY," & This.DestinationKey.Name & vbCrLf
-    result = result & " FLAGS," & This.Flags & vbCrLf
-    result = result & " VALUES," & This.ValuePairs.Count & vbCrLf
-    For i = 1 To This.ValuePairs.Count
-         result = result & "  " & This.ValuePairs(i).ToString & vbCrLf
+    result = result & " SRC," & this.Source.Range.Address(external:=True) & vbCrLf
+    result = result & " SRCKEY," & this.SourceKey.Name & vbCrLf
+    result = result & " DST," & this.Destination.Range.Address(external:=True) & vbCrLf
+    result = result & " DSTKEY," & this.DestinationKey.Name & vbCrLf
+    result = result & " FLAGS," & this.Flags & vbCrLf
+    result = result & " VALUES," & this.ValuePairs.Count & vbCrLf
+    For i = 1 To this.ValuePairs.Count
+         result = result & "  " & this.ValuePairs(i).ToString & vbCrLf
     Next i
     result = result & "END"
     
@@ -250,5 +250,5 @@ Public Function ToString() As String
 End Function
 
 Public Function Name() As String
-    Name = This.Source.Name & "." & This.SourceKey.Name & " -> " & This.Destination.Name & "." & This.DestinationKey.Name & " (" & This.ValuePairs.Count & ")"
+    Name = this.Source.Name & "." & this.SourceKey.Name & " -> " & this.Destination.Name & "." & this.DestinationKey.Name & " (" & this.ValuePairs.Count & ")"
 End Function

@@ -9,19 +9,38 @@ Public Sub TransferTable()
 End Sub
 
 Public Sub DoTransferTable(Transfer As TransferInstruction)
-    If Selection.ListObject Is Nothing Then Exit Sub
-    Set Transfer.Destination = Selection.ListObject
+    If Selection.ListObject Is Nothing Then GoTo NoTableSelected
     
-    'Set Transfer.Source = ThisWorkbook.Worksheets(1).ListObjects(1)
-    If GetSourceTable(Transfer) Then
-        ' continue
+    Dim firstTable As ListObject
+    Dim secondTable As ListObject
+    
+    Set firstTable = Selection.ListObject
+    
+    Dim IsSource As Boolean
+    Dim IsDestination As Boolean
+    If TryGetSourceOrDestination(IsSource, IsDestination) Then
+        If IsSource Then
+            Set Transfer.Source = firstTable
+        Else
+            Set Transfer.Destination = firstTable
+        End If
+    Else
+        Exit Sub
+    End If
+        
+    If TryGetSecondTable(firstTable, secondTable) Then
+        If IsSource Then
+            Set Transfer.Destination = secondTable
+        Else
+            Set Transfer.Source = secondTable
+        End If
     Else
         Exit Sub
     End If
 
     'Set Transfer.SourceKey = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
     'Set Transfer.DestinationKey = ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(1)
-    
+NoTableSelected:
     If GetKeyColumns(Transfer) Then
         ' continue
     Else
@@ -64,23 +83,35 @@ Public Sub DoTransferTable(Transfer As TransferInstruction)
     End If
 End Sub
 
-Private Function GetSourceTable(ByVal Transfer As TransferInstruction) As Boolean
+Private Function TryGetSecondTable(ByVal SelectedTable As ListObject, ByRef OutTable As ListObject) As Boolean
     Dim vm As SelectTableViewModel
     Set vm = New SelectTableViewModel
-    Set vm.ActiveTable = Transfer.Destination
-    
-    If Not Transfer.Source Is Nothing Then
-        Set vm.SelectedTable = Transfer.Source
-    End If
+    Set vm.ActiveTable = SelectedTable
     
     Dim frm As IView
     Set frm = New SelectTableView
     
     If frm.ShowDialog(vm) Then
         If Not vm.SelectedTable Is Nothing Then
-            Set Transfer.Source = vm.SelectedTable
-            GetSourceTable = True
+            Set OutTable = vm.SelectedTable
+            TryGetSecondTable = True
         End If
+    End If
+End Function
+
+Private Function TryGetSourceOrDestination(ByRef IsSource As Boolean, ByRef IsDestination As Boolean)
+    Dim vm As SourceOrDestinationViewModel
+    Set vm = New SourceOrDestinationViewModel
+    Set vm.ListObject = ThisWorkbook.Worksheets(1).ListObjects(1)
+    
+    Dim view As IView
+    Set view = New SourceOrDestinationView
+    If view.ShowDialog(vm) Then
+        IsSource = vm.IsSource
+        IsDestination = vm.IsDestination
+        TryGetSourceOrDestination = True
+    Else
+        TryGetSourceOrDestination = False
     End If
 End Function
 
@@ -95,6 +126,8 @@ Private Function GetKeyColumns(ByVal Transfer As TransferInstruction) As Boolean
     
     If frm.ShowDialog(vm) Then
         If vm.IsValid Then
+            Set Transfer.Source = vm.LHSTable
+            Set Transfer.Destination = vm.RHSTable
             Set Transfer.SourceKey = vm.LHSKeyColumn
             Set Transfer.DestinationKey = vm.RHSKeyColumn
             GetKeyColumns = True
@@ -108,7 +141,7 @@ Private Function SetValueMapping(ByVal Transfer As TransferInstruction) As Boole
     Dim vm As ValueMapperViewModel
     Set vm = New ValueMapperViewModel
     Set vm.lhs = Transfer.Source
-    Set vm.rhs = Transfer.Destination
+    Set vm.RHS = Transfer.Destination
     Set vm.KeyColumnLHS = Transfer.SourceKey
     Set vm.KeyColumnRHS = Transfer.DestinationKey
     vm.Flags = Transfer.Flags

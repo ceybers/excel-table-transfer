@@ -11,6 +11,7 @@
 - [x] Append unmapped in destination
 - [x] Serialize TransferInstruction to/from VeryHidden worksheet
 - [x] Update git README.md with new screenshots
+- [x] Add splash screen that asks if the table in Selection is the source or destination. This replaces TableSelect as the intial dialog
 - [ ] Option to exclude non-unique keys from mapping (i.e. do not map to key vs map to first occurrence)
 - [ ] Highlighted of additions/mapped/removals
 - [ ] Transfer include/exclude values by VarType()
@@ -24,4 +25,3 @@
 - [ ] Transfer ColumnWidths
 - [ ] Transfer font-family, font-size, vertical-alignment, horizontal-alignment, text-wrapping
 - [ ] Change Column Quality icons to reflect desireable values for measures
-- [ ] Add splash screen that asks if the table in Selection is the source or destination. This replaces TableSelect as the intial dialog

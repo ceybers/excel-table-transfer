@@ -23,14 +23,14 @@ Private Type TView
     IsCancelled As Boolean
 End Type
 
-Private This As TView
+Private this As TView
 
 Private Sub cmbCancel_Click()
     OnCancel
 End Sub
 
 Private Sub cmbClear_Click()
-    This.ViewModel.Clear
+    this.ViewModel.Clear
     UpdateListView
 End Sub
 
@@ -39,26 +39,26 @@ Private Sub cmbLoad_Click()
 End Sub
 
 Private Sub cmbRefresh_Click()
-    This.ViewModel.Refresh
+    this.ViewModel.Refresh
     UpdateListView
 End Sub
 
 Private Sub cmbRemoveWS_Click()
-    This.ViewModel.Remove
+    this.ViewModel.Remove
     MsgBox "Transfer Table History removed!", vbExclamation + vbOKOnly, "Transfer Table History" 'TODO Consts
     OnCancel
 End Sub
 
 Private Sub lvTransferInstructions_DblClick()
-    If Not This.ViewModel.SelectedInstruction Is Nothing Then
+    If Not this.ViewModel.SelectedInstruction Is Nothing Then
         Me.Hide
     End If
 End Sub
 
 Private Sub lvTransferInstructions_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    This.ViewModel.TrySelect Item.key
-    If Not This.ViewModel.SelectedInstruction Is Nothing Then
-        Me.txtTransferInstruction.value = This.ViewModel.SelectedInstruction.ToString
+    this.ViewModel.TrySelect Item.key
+    If Not this.ViewModel.SelectedInstruction Is Nothing Then
+        Me.txtTransferInstruction.value = this.ViewModel.SelectedInstruction.ToString
         Me.cmbLoad.Enabled = True
     End If
 End Sub
@@ -74,25 +74,25 @@ Private Function InitializeView() As Boolean
     InitializeView = True
     Me.cmbLoad.Enabled = False
 
-    If This.ViewModel.HasHistory = False Then
+    If this.ViewModel.HasHistory = False Then
         If vbYes = MsgBox("No history found. Initialize?", vbInformation + vbYesNo + vbDefaultButton1, "Transfer Table History") Then
-            This.ViewModel.Create
+            this.ViewModel.Create
         Else
             InitializeView = False
         End If
     End If
     
-    This.ViewModel.Refresh
-    This.ViewModel.InitializeListView Me.lvTransferInstructions
+    this.ViewModel.Refresh
+    this.ViewModel.InitializeListView Me.lvTransferInstructions
     UpdateListView
 End Function
 
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
-    Set This.ViewModel = ViewModel
+    Set this.ViewModel = ViewModel
     
     If InitializeView Then
         Me.Show
-        IView_ShowDialog = Not This.IsCancelled
+        IView_ShowDialog = Not this.IsCancelled
     Else
         OnCancel
     End If
@@ -100,10 +100,10 @@ End Function
 
 
 Private Sub OnCancel()
-    This.IsCancelled = True
+    this.IsCancelled = True
     Me.Hide
 End Sub
 
 Private Sub UpdateListView()
-    This.ViewModel.ItemsToListView Me.lvTransferInstructions
+    this.ViewModel.ItemsToListView Me.lvTransferInstructions
 End Sub

@@ -29,10 +29,9 @@ Private Type TView
     IsCancelled As Boolean
 End Type
 
-Private This As TView
+Private this As TView
 
 Private Sub cmbCancel_Click()
-    
     OnCancel
 End Sub
 
@@ -40,10 +39,6 @@ Private Sub cmbClearSearch_Click()
     Me.txtSearch = vbNullString
     vm.SearchCriteria = vbNullString
     Me.txtSearch.SetFocus
-End Sub
-
-Private Sub cmbOK_Click()
-    Me.Hide
 End Sub
 
 Private Sub tvTables_DblClick()
@@ -207,7 +202,7 @@ Private Sub AddImageListImage(ByVal il As ImageList, ByVal key As String, ByVal 
 End Sub
 
 Private Sub InitializeView()
-    This.IsCancelled = False
+    this.IsCancelled = False
     Me.txtSearch = vbNullString
     Me.cmbOK.Enabled = False
     
@@ -226,11 +221,11 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     InitializeView
 
     Me.Show
-    IView_ShowDialog = Not This.IsCancelled
+    IView_ShowDialog = Not this.IsCancelled
 End Function
 
 
 Private Sub OnCancel()
-    This.IsCancelled = True
+    this.IsCancelled = True
     Me.Hide
 End Sub

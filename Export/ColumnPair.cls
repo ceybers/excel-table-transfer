@@ -13,50 +13,50 @@ Option Explicit
 
 Private Type TClsColumnPair
     lhs As ListColumn
-    rhs As ListColumn
+    RHS As ListColumn
 End Type
 
-Private This As TClsColumnPair
+Private this As TClsColumnPair
 
 Public Property Get lhs() As ListColumn
-    Set lhs = This.lhs
+    Set lhs = this.lhs
 End Property
 
-Public Property Set lhs(ByVal rhs As ListColumn)
-    Set This.lhs = rhs
+Public Property Set lhs(ByVal RHS As ListColumn)
+    Set this.lhs = RHS
 End Property
 
-Public Property Get rhs() As ListColumn
-    Set rhs = This.rhs
+Public Property Get RHS() As ListColumn
+    Set RHS = this.RHS
 End Property
 
-Public Property Set rhs(ByVal rhs As ListColumn)
-    Set This.rhs = rhs
+Public Property Set RHS(ByVal RHS As ListColumn)
+    Set this.RHS = RHS
 End Property
 
 Public Function IsValid() As Boolean
-    If This.lhs Is Nothing Then Exit Function
-    If This.rhs Is Nothing Then Exit Function
+    If this.lhs Is Nothing Then Exit Function
+    If this.RHS Is Nothing Then Exit Function
     IsValid = True
 End Function
 
-Public Function Create(ByVal lhs As ListColumn, ByVal rhs As ListColumn) As ColumnPair
+Public Function Create(ByVal lhs As ListColumn, ByVal RHS As ListColumn) As ColumnPair
     Set Create = New ColumnPair
     With Create
         Set .lhs = lhs
-        Set .rhs = rhs
+        Set .RHS = RHS
     End With
 End Function
 
-Public Function Equals(ByVal rhs As ColumnPair) As Boolean
-    If rhs Is Nothing Then Exit Function
-    If Not This.lhs Is rhs.lhs Then Exit Function
-    If Not This.rhs Is rhs.rhs Then Exit Function
+Public Function Equals(ByVal RHS As ColumnPair) As Boolean
+    If RHS Is Nothing Then Exit Function
+    If Not this.lhs Is RHS.lhs Then Exit Function
+    If Not this.RHS Is RHS.RHS Then Exit Function
     Equals = True
 End Function
 
 Public Function ToString() As String
     Debug.Assert Not lhs Is Nothing
-    Debug.Assert Not rhs Is Nothing
-    ToString = lhs.Name & "," & rhs.Name
+    Debug.Assert Not RHS Is Nothing
+    ToString = lhs.Name & "," & RHS.Name
 End Function

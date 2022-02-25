@@ -30,7 +30,7 @@ Private Type TFrmKeyMapper2View
     IsCancelled As Boolean
 End Type
 
-Private This As TFrmKeyMapper2View
+Private this As TFrmKeyMapper2View
 
 ' ---
 Private Sub cmbCancel_Click()
@@ -196,14 +196,14 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub OnCancel()
-    This.IsCancelled = True
+    this.IsCancelled = True
     Me.Hide
 End Sub
 
 ' ---
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     Set Model = ViewModel
-    This.IsCancelled = False
+    this.IsCancelled = False
     
     Set msoImageList = New ImageList
     Set msoImageList = modStandardImageList.GetMSOImageList(ICON_SIZE)
@@ -227,7 +227,7 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     
     Me.Show
     
-    IView_ShowDialog = Not This.IsCancelled
+    IView_ShowDialog = Not this.IsCancelled
 End Function
 
 Public Sub LoadFromVM()

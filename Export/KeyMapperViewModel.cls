@@ -32,82 +32,82 @@ Private Type TViewModel
     MatchResults As KeyColumnComparer
 End Type
 
-Private This As TViewModel
+Private this As TViewModel
 
 Public Property Get IsDirty() As Boolean
-    IsDirty = This.IsDirty
+    IsDirty = this.IsDirty
 End Property
 
 Public Property Get LHSTable() As ListObject
-    Set LHSTable = This.LHSTable
+    Set LHSTable = this.LHSTable
 End Property
 
-Public Property Set LHSTable(ByVal rhs As ListObject)
-    If This.LHSTable Is rhs Then Exit Property
-    Set This.LHSTable = rhs
-    This.IsDirty = True
-    Debug.Assert Not rhs Is Nothing
-    UpdateColumns This.LHSTable, This.LHSColumns
+Public Property Set LHSTable(ByVal RHS As ListObject)
+    If this.LHSTable Is RHS Then Exit Property
+    Set this.LHSTable = RHS
+    this.IsDirty = True
+    Debug.Assert Not RHS Is Nothing
+    UpdateColumns this.LHSTable, this.LHSColumns
     RaiseEvent PropertyChanged("LHSTable")
     RaiseEvent PropertyChanged("LHSColumns")
 End Property
 
 Public Property Get RHSTable() As ListObject
-    Set RHSTable = This.RHSTable
+    Set RHSTable = this.RHSTable
 End Property
 
-Public Property Set RHSTable(ByVal rhs As ListObject)
-    If This.RHSTable Is rhs Then Exit Property
-    Set This.RHSTable = rhs
-    This.IsDirty = True
-    UpdateColumns This.RHSTable, This.RHSColumns
+Public Property Set RHSTable(ByVal RHS As ListObject)
+    If this.RHSTable Is RHS Then Exit Property
+    Set this.RHSTable = RHS
+    this.IsDirty = True
+    UpdateColumns this.RHSTable, this.RHSColumns
     RaiseEvent PropertyChanged("RHSTable")
     RaiseEvent PropertyChanged("RHSColumns")
 End Property
 
 Public Property Get LHSColumns() As Collection
-    Set LHSColumns = This.LHSColumns
+    Set LHSColumns = this.LHSColumns
 End Property
 
-Public Property Set LHSColumns(ByVal rhs As Collection)
-    Set This.LHSColumns = rhs
+Public Property Set LHSColumns(ByVal RHS As Collection)
+    Set this.LHSColumns = RHS
 End Property
 
 Public Property Get RHSColumns() As Collection
-    Set RHSColumns = This.RHSColumns
+    Set RHSColumns = this.RHSColumns
 End Property
 
-Public Property Set RHSColumns(ByVal rhs As Collection)
-    Set This.RHSColumns = rhs
+Public Property Set RHSColumns(ByVal RHS As Collection)
+    Set this.RHSColumns = RHS
 End Property
 
 Public Property Get LHSKeyColumn() As ListColumn
-    Set LHSKeyColumn = This.LHSKeyColumn
+    Set LHSKeyColumn = this.LHSKeyColumn
 End Property
 
-Public Property Set LHSKeyColumn(ByVal rhs As ListColumn)
-    If Not This.LHSKeyColumn Is Nothing Then
-        If This.LHSKeyColumn.Name = rhs.Name Then Exit Property
+Public Property Set LHSKeyColumn(ByVal RHS As ListColumn)
+    If Not this.LHSKeyColumn Is Nothing Then
+        If this.LHSKeyColumn.Name = RHS.Name Then Exit Property
     End If
-    This.IsDirtyQuality = True
-    This.IsDirtyMatch = False
-    This.IsDirty = True
-    Set This.LHSKeyColumn = rhs
+    this.IsDirtyQuality = True
+    this.IsDirtyMatch = False
+    this.IsDirty = True
+    Set this.LHSKeyColumn = RHS
     RaiseEvent PropertyChanged("LHSKeyColumn")
 End Property
 
 Public Property Get RHSKeyColumn() As ListColumn
-    Set RHSKeyColumn = This.RHSKeyColumn
+    Set RHSKeyColumn = this.RHSKeyColumn
 End Property
 
-Public Property Set RHSKeyColumn(ByVal rhs As ListColumn)
-    If Not This.RHSKeyColumn Is Nothing Then
-        If This.RHSKeyColumn.Name = rhs.Name Then Exit Property
+Public Property Set RHSKeyColumn(ByVal RHS As ListColumn)
+    If Not this.RHSKeyColumn Is Nothing Then
+        If this.RHSKeyColumn.Name = RHS.Name Then Exit Property
     End If
-    This.IsDirtyQuality = True
-    This.IsDirtyMatch = False
-    This.IsDirty = True
-    Set This.RHSKeyColumn = rhs
+    this.IsDirtyQuality = True
+    this.IsDirtyMatch = False
+    this.IsDirty = True
+    Set this.RHSKeyColumn = RHS
     RaiseEvent PropertyChanged("RHSKeyColumn")
 End Property
 
@@ -128,35 +128,35 @@ Private Sub UpdateColumns(ByVal lo As ListObject, ByVal coll As Collection)
 End Sub
 
 Private Sub Class_Initialize()
-    Set This.LHSColumns = New Collection
-    Set This.RHSColumns = New Collection
+    Set this.LHSColumns = New Collection
+    Set this.RHSColumns = New Collection
 End Sub
 
 Public Sub TrySelectLHS(ByVal key As String)
     If key <> vbNullString Then
-        Set LHSKeyColumn = This.LHSColumns(key)
+        Set LHSKeyColumn = this.LHSColumns(key)
     End If
 End Sub
 
 Public Sub TrySelectRHS(ByVal key As String)
     If key <> vbNullString Then
-        Set RHSKeyColumn = This.RHSColumns(key)
+        Set RHSKeyColumn = this.RHSColumns(key)
     End If
 End Sub
 
 Public Sub DoCheck()
-    Debug.Assert This.IsDirty = True
+    Debug.Assert this.IsDirty = True
     
     'MsgBox "DoWork"
     
-    This.IsDirty = False
+    this.IsDirty = False
     
     RaiseEvent CheckCompleted
 End Sub
 
 Private Function IViewModel_IsValid() As Boolean
-    If This.LHSKeyColumn Is Nothing Then Exit Function
-    If This.RHSKeyColumn Is Nothing Then Exit Function
+    If this.LHSKeyColumn Is Nothing Then Exit Function
+    If this.RHSKeyColumn Is Nothing Then Exit Function
     IViewModel_IsValid = True
 End Function
 
@@ -165,30 +165,30 @@ Public Function IsValid() As Boolean
 End Function
 
 Public Function CanCheck() As Boolean
-    If This.LHSTable Is Nothing Then Exit Function
-    If This.RHSTable Is Nothing Then Exit Function
-    If This.LHSKeyColumn Is Nothing Then Exit Function
-    If This.RHSKeyColumn Is Nothing Then Exit Function
-    If This.IsDirtyQuality = False Then Exit Function
+    If this.LHSTable Is Nothing Then Exit Function
+    If this.RHSTable Is Nothing Then Exit Function
+    If this.LHSKeyColumn Is Nothing Then Exit Function
+    If this.RHSKeyColumn Is Nothing Then Exit Function
+    If this.IsDirtyQuality = False Then Exit Function
     CanCheck = True
 End Function
 
 Public Function CanMatch() As Boolean
-    CanMatch = This.IsDirtyMatch
+    CanMatch = this.IsDirtyMatch
 End Function
 
 Public Function CanContinue() As Boolean
     ' Should only continue if KeyColumnComparer is valid and .Inner.Count > 0
-    CanContinue = (This.IsDirtyQuality = False) And (This.IsDirtyMatch = False)
+    CanContinue = (this.IsDirtyQuality = False) And (this.IsDirtyMatch = False)
 End Function
 
 Public Sub UpdatePreviews()
-    This.IsDirtyQuality = False
-    This.IsDirtyMatch = True
+    this.IsDirtyQuality = False
+    this.IsDirtyMatch = True
     RaiseEvent PreviewChanged
 End Sub
 
 Public Sub UpdateMatch()
-    This.IsDirtyMatch = False
+    this.IsDirtyMatch = False
     RaiseEvent MatchChanged
 End Sub
