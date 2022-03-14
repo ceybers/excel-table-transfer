@@ -30,8 +30,10 @@ Private Sub cmbCancel_Click()
 End Sub
 
 Private Sub cmbClear_Click()
-    this.ViewModel.Clear
-    UpdateListView
+    If vbYes = MsgBox("Remove ALL saved tranfers?", vbExclamation + vbYesNo + vbDefaultButton2) Then
+        this.ViewModel.Clear
+        UpdateListView
+    End If
 End Sub
 
 Private Sub cmbLoad_Click()
@@ -44,9 +46,11 @@ Private Sub cmbRefresh_Click()
 End Sub
 
 Private Sub cmbRemoveWS_Click()
-    this.ViewModel.Remove
-    MsgBox "Transfer Table History removed!", vbExclamation + vbOKOnly, "Transfer Table History" 'TODO Consts
-    OnCancel
+    If vbYes = MsgBox("Remove ENTIRE transfer history (including hidden worksheet)?", vbExclamation + vbYesNo + vbDefaultButton2) Then
+        this.ViewModel.Remove
+        MsgBox "Transfer Table History removed!", vbExclamation + vbOKOnly, "Transfer Table History" 'TODO Consts
+        OnCancel
+    End If
 End Sub
 
 Private Sub lvTransferInstructions_DblClick()

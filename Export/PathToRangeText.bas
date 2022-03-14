@@ -1,4 +1,4 @@
-Attribute VB_Name = "Module1"
+Attribute VB_Name = "PathToRangeText"
 '@Folder("HelperFunctions")
 Option Explicit
 

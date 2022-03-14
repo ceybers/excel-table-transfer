@@ -120,7 +120,7 @@ End Sub
 Public Sub TrySelect(ByVal key As String)
     Dim i As Long
     Debug.Assert Len(key) > 3
-    i = val(Right(key, Len(key) - 3))
+    i = val(Right$(key, Len(key) - 3))
     Debug.Assert i <= Items.Count
     Set SelectedInstruction = Items(i)
 End Sub

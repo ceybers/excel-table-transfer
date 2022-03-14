@@ -29,7 +29,7 @@ Public Function ToKey(ByVal i As Integer) As String
     ToKey = "K" & Trim$(Format$(i, "000"))
 End Function
 
-Public Function PasteArrayIntoWorksheet(ByRef arr As Variant, ByVal ws As Worksheet, Optional ByVal row As Long = 1, Optional ByVal column As Long = 1)
-    Debug.Print "PasteArrayIntoWorksheet @ row "; row; ", col "; column
+Public Sub PasteArrayIntoWorksheet(ByRef arr As Variant, ByVal ws As Worksheet, Optional ByVal row As Long = 1, Optional ByVal column As Long = 1)
+    'Debug.Print "PasteArrayIntoWorksheet @ row "; row; ", col "; column
     ws.Range("A1").Cells(row, column).Resize(UBound(arr, 1), 1).Value2 = arr
-End Function
+End Sub

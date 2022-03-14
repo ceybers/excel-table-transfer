@@ -164,7 +164,7 @@ Private Sub TryAddNode(ByVal obj As Object)
         parent = "[" & lo.parent.parent.Name & "]" & lo.parent.Name
         image = "lo"
         text = lo.Name
-        suffix = ""
+        suffix = vbNullString
         
         If Not vm.ActiveTable Is Nothing Then
             If vm.ActiveTable.Range.Address(external:=True) = lo.Range.Address(external:=True) Then

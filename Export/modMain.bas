@@ -8,7 +8,19 @@ Public Sub TransferTable()
     DoTransferTable Transfer
 End Sub
 
+Public Sub TransferTableFromHistory()
+    Dim vm As TransferHistoryViewModel
+    Set vm = New TransferHistoryViewModel
+    
+    Dim view As IView
+    Set view = New TransferHistoryView
+    If view.ShowDialog(vm) Then
+        DoTransferTable vm.SelectedInstruction
+    End If
+End Sub
+
 Public Sub DoTransferTable(Transfer As TransferInstruction)
+    If Transfer.IsValid = True Then GoTo AlreadyValid
     If Selection.ListObject Is Nothing Then GoTo NoTableSelected
     
     Dim firstTable As ListObject
@@ -53,7 +65,7 @@ NoTableSelected:
     'Transfer.Flags = AddFlag(Transfer.Flags, TransferBlanks)
     'Transfer.Flags = AddFlag(Transfer.Flags, SourceFilteredOnly)
     ' Transfer.Flags = AddFlag(Transfer.Flags, DestinationFilteredOnly)
-    
+AlreadyValid:
     If SetValueMapping(Transfer) Then
         ' continue
     Else
@@ -99,7 +111,7 @@ Private Function TryGetSecondTable(ByVal SelectedTable As ListObject, ByRef OutT
     End If
 End Function
 
-Private Function TryGetSourceOrDestination(ByRef IsSource As Boolean, ByRef IsDestination As Boolean)
+Private Function TryGetSourceOrDestination(ByRef IsSource As Boolean, ByRef IsDestination As Boolean) As Boolean
     Dim vm As SourceOrDestinationViewModel
     Set vm = New SourceOrDestinationViewModel
     Set vm.ListObject = ThisWorkbook.Worksheets(1).ListObjects(1)

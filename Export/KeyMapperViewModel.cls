@@ -144,6 +144,44 @@ Public Sub TrySelectRHS(ByVal key As String)
     End If
 End Sub
 
+Public Sub TryAutoMatch(ByVal leftToRight As Boolean)
+    If Not LHSKeyColumn Is Nothing And Not RHSKeyColumn Is Nothing Then
+        If LHSKeyColumn.Name = RHSKeyColumn.Name Then
+            Exit Sub
+        End If
+    End If
+    
+    Dim searchName As String
+    Dim coll As Collection
+    
+    If leftToRight Then
+        searchName = LHSKeyColumn.Name
+        Set coll = this.RHSColumns
+    Else
+        searchName = RHSKeyColumn.Name
+        Set coll = this.LHSColumns
+    End If
+    
+    Dim lc As ListColumn
+    Dim result As ListColumn
+    For Each lc In coll
+        If lc.Name = searchName Then
+            Set result = lc
+        End If
+    Next lc
+    
+    If Not result Is Nothing Then
+        ' TODO We should not be asking for user input via ViewModel
+        If vbYes = MsgBox("Auto-match column name?", vbQuestion + vbYesNo) Then
+            If leftToRight Then
+                Set RHSKeyColumn = result
+            Else
+                Set LHSKeyColumn = result
+            End If
+        End If
+    End If
+End Sub
+
 Public Sub DoCheck()
     Debug.Assert this.IsDirty = True
     

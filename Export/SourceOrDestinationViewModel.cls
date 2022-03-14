@@ -44,6 +44,6 @@ Public Property Set ListObject(ByVal RHS As ListObject)
 End Property
 
 Private Function IViewModel_IsValid() As Boolean
-    If this.IsSource = False And this.IsDestination = False Then Exit Function
+    If IsSource = False And IsDestination = False Then Exit Function
     IViewModel_IsValid = True
 End Function

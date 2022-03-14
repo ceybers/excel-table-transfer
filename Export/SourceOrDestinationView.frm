@@ -13,10 +13,12 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '@Folder "SourceOrDestination"
 Option Explicit
 Implements IView
 
+'@MemberAttribute VB_VarHelpID, -1
 Private vm As SourceOrDestinationViewModel
 Attribute vm.VB_VarHelpID = -1
 Private Const ICON_SIZE As Long = 64
@@ -36,6 +38,11 @@ End Sub
 Private Sub cmbDestination_Click()
     vm.IsDestination = True
     Me.Hide
+End Sub
+
+Private Sub cmbHistory_Click()
+    OnCancel
+    modMain.TransferTableFromHistory
 End Sub
 
 Private Sub cmbSource_Click()

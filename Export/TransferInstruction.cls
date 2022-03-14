@@ -159,6 +159,10 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
     arrRHSOffset = Destination.DataBodyRange.row
     
     For i = LBound(Map) To UBound(Map)
+        If HasFlag(this.Flags, ClearDestinationFirst) Then
+            arrRHS(i - arrRHSOffset + 1, 1) = Empty
+        End If
+        
         If Map(i) > -1 Then
             oldValue = arrRHS(i - arrRHSOffset + 1, 1)
             newValue = arrLHS(Map(i) - arrLHSOffset + 1, 1)
@@ -175,17 +179,11 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
             If doCopy Then
                 arrRHS(i - arrRHSOffset + 1, 1) = newValue
             End If
-        Else ' Row is not mapped by keys
-            If HasFlag(this.Flags, ClearDestinationFirst) Then
-                arrRHS(i - arrRHSOffset + 1, 1) = Empty
-            Else
-                'arrRHS(i - arrRHSOffset + 1, 1) = "Unmapped"
-            End If
         End If
     Next i
     
     If HasFlag(this.Flags, DestinationFilteredOnly) Then
-        ArrayToFilteredRange Destination.DataBodyRange, arrRHS
+        ArrayToFilteredRange.ArrayToFilteredRange Destination.DataBodyRange, arrRHS
     Else
         Destination.DataBodyRange.Value2 = arrRHS
         Destination.parent.ShowAutoFilter = True

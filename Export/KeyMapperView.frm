@@ -51,15 +51,22 @@ End Sub
 
 Private Sub cmbColumnLHS_Change()
     vm.TrySelectLHS Me.cmbColumnLHS
+    vm.TryAutoMatch True
 End Sub
 
 Private Sub cmbColumnRHS_Change()
     vm.TrySelectRHS Me.cmbColumnRHS
+    vm.TryAutoMatch False
+End Sub
+
+Private Sub cmbHistory_Click()
+    OnCancel
+    modMain.TransferTableFromHistory
 End Sub
 
 Private Sub cmbTableLHS_DropButtonClick()
     Dim result As ListObject
-    If TestSelectTable.TrySelectTable(result) = True Then
+    If TrySelectTable(result) = True Then
         Set vm.LHSTable = result
     End If
     Me.cmbColumnLHS.SetFocus
@@ -67,7 +74,7 @@ End Sub
 
 Private Sub cmbTableRHS_DropButtonClick()
     Dim result As ListObject
-    If TestSelectTable.TrySelectTable(result) = True Then
+    If TrySelectTable(result) = True Then
         Set vm.RHSTable = result
     End If
     Me.cmbColumnRHS.SetFocus
@@ -143,12 +150,14 @@ End Sub
 Private Sub vm_MatchChanged()
     PopulateMatchSets
     UpdateCheckButton
+    Me.cmbNext.SetFocus
 End Sub
 
 Private Sub vm_PreviewChanged()
     PopulateKeyPreview Me.lvQualityLHS, vm.LHSKeyColumn
     PopulateKeyPreview Me.lvQualityRHS, vm.RHSKeyColumn
     UpdateCheckButton
+    Me.cmbCheckKeys.SetFocus
 End Sub
 
 Private Sub vm_PropertyChanged(ByVal propertyName As String)
@@ -174,7 +183,7 @@ Private Sub vm_PropertyChanged(ByVal propertyName As String)
             Me.lvSetRHS.ListItems.Clear
             Me.lvSetInner.ListItems.Clear
             UpdateCheckButton
-           
+            UpdateComboColumn
     End Select
 End Sub
 
@@ -182,6 +191,24 @@ Private Sub UpdateCheckButton()
     Me.cmbCheckQuality.Enabled = vm.CanCheck
     Me.cmbCheckKeys.Enabled = vm.CanMatch
     Me.cmbNext.Enabled = vm.CanContinue
+End Sub
+
+Private Sub UpdateComboColumn()
+    If Not vm.LHSKeyColumn Is Nothing Then
+        If Me.cmbColumnLHS <> vm.LHSKeyColumn.Name Then
+            Me.cmbColumnRHS = vm.LHSKeyColumn.Name
+        End If
+    End If
+    
+    If Not vm.RHSKeyColumn Is Nothing Then
+        If Me.cmbColumnRHS <> vm.RHSKeyColumn.Name Then
+            Me.cmbColumnRHS = vm.RHSKeyColumn.Name
+        End If
+    End If
+
+    If vm.CanCheck Then
+        Me.cmbCheckQuality.SetFocus
+    End If
 End Sub
 
 Private Sub PopulateKeyPreview(ByVal lv As ListView, ByVal lc As ListColumn)

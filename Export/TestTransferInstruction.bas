@@ -37,7 +37,7 @@ Public Sub TestTransfer()
     Transfer.Transfer
 End Sub
 
-Private Function PrintTransferInstruction(ByVal Transfer As TransferInstruction)
+Private Sub PrintTransferInstruction(ByVal Transfer As TransferInstruction)
     Dim i As Long
     
     Debug.Print "TRANSFER"
@@ -51,7 +51,7 @@ Private Function PrintTransferInstruction(ByVal Transfer As TransferInstruction)
          Debug.Print "  " & Transfer.ValuePairs(i).ToString
     Next i
     Debug.Print "END"
-End Function
+End Sub
 
 Private Function GetTestTransferInstruction() As TransferInstruction
     Dim lhs As ListObject
