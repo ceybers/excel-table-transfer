@@ -13,6 +13,21 @@
 - [x] Update git README.md with new screenshots
 - [x] Add splash screen that asks if the table in Selection is the source or destination. This replaces TableSelect as the intial dialog
 - [x] Match key columns by name
+- [ ] Fail gracefully if only one table available
+- [ ] Auto-select table if only one other table available to select, and focus on OK/Next
+- [ ] Check if OK button works like double clicking treeview
+- [ ] Change icons in Key Column Mapper to reflect test results, i.e. green check only if Unique = Count
+- [ ] Add options for insert/removing keys under Key Set Theory
+- [ ] Rename Key Set Theory ListView headers to Orphans and Additions
+- [ ] Default Respect Filters to Yes for both Source and Destination
+- [ ] Consider adding warning for data-loss for: remove orphans, and clear destination column when not a 1:1 match
+- [ ] Default Save Instruction to Yes if workbook already has a history
+- [ ] Transfer History fails on unsaved workbooks
+- [ ] Using Split(curStr, "") in parsing history fails when filename has spaces in it
+- [ ] Suppress prompt to auto-match key column by name when first showing dialog (and before user input)
+- [ ] Add column number (i.e. Column A) to Key Mapping dialog
+- [ ] Flag columns with column-wide formulae in ListView
+- [ ] Option to ignore columns with column-wide formulae in Source and/or Destination from tranfer
 - [ ] Option to exclude non-unique keys from mapping (i.e. do not map to key vs map to first occurrence)
 - [ ] Highlighted of additions/mapped/removals
 - [ ] Transfer include/exclude values by VarType()
@@ -25,3 +40,5 @@
 - [ ] Transfer ColumnWidths
 - [ ] Transfer font-family, font-size, vertical-alignment, horizontal-alignment, text-wrapping
 - [ ] Change Column Quality icons to reflect desireable values for measures
+- [ ] Try and auto-match column when changing tables
+- [ ] Map Value Columns implement multi-select on ListView without breaking single selection buttons e.g. Map
