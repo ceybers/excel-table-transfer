@@ -14,9 +14,9 @@ Public Enum TransferOptionsEnum
     DestinationFilteredOnly = 2 ^ 5 ' 32
     
     RemoveUnmapped = 2 ^ 6 ' 64
-    appendunmapped = 2 ^ 7 ' 128
+    AppendUnmapped = 2 ^ 7 ' 128
     
-    saveToHistory = 2 ^ 8 ' 256
+    SaveToHistory = 2 ^ 8 ' 256
     
     HighlightMapped = 2 ^ 9 ' 512
     
@@ -88,6 +88,6 @@ Private Sub PrintFlags(ByVal Flags As Integer)
     Debug.Print "Has SourceFilteredOnly: " & HasFlag(Flags, SourceFilteredOnly)
     Debug.Print "Has DestinationFilteredOnly: " & HasFlag(Flags, DestinationFilteredOnly)
     Debug.Print "Has RemoveUnmapped: " & HasFlag(Flags, RemoveUnmapped)
-    Debug.Print "Has AppendUnmapped: " & HasFlag(Flags, appendunmapped)
+    Debug.Print "Has AppendUnmapped: " & HasFlag(Flags, AppendUnmapped)
     Debug.Print vbNullString
 End Sub

@@ -2,24 +2,7 @@ Attribute VB_Name = "ListObjectHelpers"
 '@Folder("HelperFunctions")
 Option Explicit
 
-Public Function GetListColumnFromRange(ByVal rng As Range) As ListColumn
-    If rng Is Nothing Then Exit Function
-    If rng.ListObject Is Nothing Then Exit Function
-    If rng.Columns.Count <> 1 Then Exit Function
-    
-    Dim lo As ListObject
-    Dim lc As ListColumn
-    
-    Set lo = rng.ListObject
-    For Each lc In lo.ListColumns
-        If lc.Range.column = rng.Cells(1, 1).column Then
-            Set GetListColumnFromRange = lc
-            Exit Function
-        End If
-    Next lc
-End Function
-
-Public Sub Test()
+Private Sub Test()
     Dim lo As ListObject
     Dim result As String
     
@@ -40,6 +23,23 @@ Public Sub Test()
     
     'Debug.Print lo.Name
 End Sub
+
+Public Function GetListColumnFromRange(ByVal rng As Range) As ListColumn
+    If rng Is Nothing Then Exit Function
+    If rng.ListObject Is Nothing Then Exit Function
+    If rng.Columns.Count <> 1 Then Exit Function
+    
+    Dim lo As ListObject
+    Dim lc As ListColumn
+    
+    Set lo = rng.ListObject
+    For Each lc In lo.ListColumns
+        If lc.Range.column = rng.Cells(1, 1).column Then
+            Set GetListColumnFromRange = lc
+            Exit Function
+        End If
+    Next lc
+End Function
 
 Public Function StringNameToListObject(ByVal stringName As String) As ListObject
     Dim path As String
@@ -163,7 +163,7 @@ Attribute TryGetTableFromText.VB_Description = "test"
     Dim rangeaddress As String
     Dim filename As String
     
-    filename = Module1.GetFilenameFromRangeText(rangetext)
+    filename = WorkbookHelpers.GetFilenameFromRangeText(rangetext)
     If IsWorkbookOpen(filename) Then
         Set wb = Application.Workbooks(filename)
         sheetname = Mid$(rangetext, InStr(rangetext, "]") + 1, InStr(rangetext, "!") - InStr(rangetext, "]") - 1)
@@ -177,15 +177,31 @@ Attribute TryGetTableFromText.VB_Description = "test"
     Else
         MsgBox "TryGetTableFromText DoOpen NYI"
         Dim path As String
-        path = Module1.GetPathFromRangeText(rangetext)
+        path = WorkbookHelpers.GetPathFromRangeText(rangetext)
         'Debug.Print path
         ' Need a flag for Transfer class if we cannot open the workbook from an old serialized instructionf
     End If
 End Function
 
 Public Function GetColumnHeaderFromListColumn(ByVal lc As ListColumn) As String
+    Debug.Assert Not lc Is Nothing
     Dim s As String
     s = lc.Range.EntireColumn.Address
-    s = Mid(s, 2, ((Len(s) - 1) / 2) - 1)
+    s = Mid$(s, 2, ((Len(s) - 1) / 2) - 1)
     GetColumnHeaderFromListColumn = s
+End Function
+
+Public Function ListColumnHasArray(ByVal lc As ListColumn) As Boolean
+    Debug.Assert Not lc Is Nothing
+
+    If IsNull(lc.DataBodyRange.FormulaArray) Then
+        'Debug.Print "cells are different"
+        ListColumnHasArray = False
+    ElseIf Left$(lc.DataBodyRange.FormulaArray, 1) = "=" Then
+        'Debug.Print "same formula"
+        ListColumnHasArray = True
+    Else
+        'Debug.Print "same non-formula"
+        ListColumnHasArray = False
+    End If
 End Function

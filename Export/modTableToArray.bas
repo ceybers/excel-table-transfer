@@ -2,7 +2,6 @@ Attribute VB_Name = "modTableToArray"
 '@Folder "HelperFunctions"
 Option Explicit
 
-
 Public Function GetVisibleTableAsArray(ByVal lo As ListObject) As Variant
     Dim arr As Variant, vismask As Variant
     arr = GetDBR(lo)

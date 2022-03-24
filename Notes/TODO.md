@@ -12,11 +12,9 @@
 ## Table Select
 *None*
 ## Key Mapper
-- [ ] Add options for insert/removing keys under Key Set Theory
-- [ ] Try and auto-match column when changing tables
-- [ ] Smart key column guessing (try to find columns with 100% unique values and 1:1 match between src/dst)
+- [ ] Try and auto-match column when changing tables. Need to handle ComboBox changing from user, and changing from parent ComboBox resetting it.
 ## Column Mapper
-*None*
+- [ ] Highlight mapped cells, differentiating between: 0 → a, a → b, a == b, a → 0 
 ## Transfer History
 - [ ] Transfer History fails on unsaved workbooks
 - [ ] Using Split(curStr, "") in parsing history fails when filename has spaces in it
@@ -52,3 +50,5 @@
 - [x] Default Respect Filters to Yes for both Source and Destination
 - [x] Highlighting of mapped value cells
 - [x] Flag columns with column-wide formulae in ListView
+- [x] Add options for insert/removing keys under Key Set Theory
+- [x] Smart key column guessing (try to find columns with 100% unique values and 1:1 match between src/dst)

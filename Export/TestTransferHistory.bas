@@ -12,7 +12,7 @@ Public Sub Test()
     If view.ShowDialog(vm) Then
         Debug.Assert Not vm.SelectedInstruction Is Nothing
         'Debug.Print "Selected Instruction: " & vm.SelectedInstruction.Name
-        modMain.DoTransferTable vm.SelectedInstruction
+        'modMain.DoTransferTable vm.SelectedInstruction
     Else
         'Debug.Print "FAIL"
     End If

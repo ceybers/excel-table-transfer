@@ -4,33 +4,34 @@ Option Explicit
 
 Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Integer = 8
 
-Public Sub TestTransfer()
+Public Sub TestAutoTransfer()
     Dim transfer As TransferInstruction
     Set transfer = GetTestTransferInstruction
+    
+    PrintTransferInstruction transfer
     
     'SaveTransferInstruction Transfer
     'Exit Sub
     
-    Dim loadedTI As Collection
+    'Dim loadedTI As Collection
     'Set loadedTI = DeserializeTransferInstructions(ThisWorkbook.Worksheets(4))
-    Exit Sub
-    Debug.Print loadedTI.Count
+    'Debug.Print loadedTI.Count
     
-    Debug.Print "Deserialized:"
-    Debug.Print "#1"
+    'Debug.Print "Deserialized:"
+    'Debug.Print "#1"
     'PrintTransferInstruction loadedTI(1)
-    Debug.Print "#2"
+    'Debug.Print "#2"
     'PrintTransferInstruction loadedTI(2)
     
     'loadedTI(2).Transfer
     
-    TransferHistorySerializer.SaveTransferInstructionsFromWorksheet loadedTI, ThisWorkbook.Worksheets(4)
+    'TransferHistorySerializer.SaveTransferInstructionsFromWorksheet loadedTI, ThisWorkbook.Worksheets(4)
     
-    Exit Sub
+    'Exit Sub
     
     With transfer.Destination
         .ListColumns(2).DataBodyRange.Clear
-        .ListColumns(3).DataBodyRange.Clear
+        .ListColumns(1).DataBodyRange.Clear
         .ListColumns(4).DataBodyRange.Clear
     End With
     
@@ -55,26 +56,27 @@ End Sub
 
 Private Function GetTestTransferInstruction() As TransferInstruction
     Dim lhs As ListObject
-    Dim RHS As ListObject
+    Dim rhs As ListObject
     
     Set GetTestTransferInstruction = New TransferInstruction
     
     Set lhs = ThisWorkbook.Worksheets(1).ListObjects(1)
-    Set RHS = ThisWorkbook.Worksheets(1).ListObjects(2)
+    Set rhs = ThisWorkbook.Worksheets(1).ListObjects(2)
     
     With GetTestTransferInstruction
         Set .Source = lhs
-        Set .Destination = RHS
+        Set .Destination = rhs
         
         Set .SourceKey = lhs.ListColumns(1)
-        Set .DestinationKey = RHS.ListColumns(1)
+        Set .DestinationKey = rhs.ListColumns(3)
             
         .Flags = AddFlag(.Flags, ClearDestinationFirst)
         .Flags = AddFlag(.Flags, DestinationFilteredOnly)
+        .Flags = AddFlag(.Flags, HighlightMapped)
     
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(2), RHS.ListColumns(2))
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(3), RHS.ListColumns(3))
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(4), RHS.ListColumns(4))
+        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(2), rhs.ListColumns(1))
+        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(3), rhs.ListColumns(4))
+        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(4), rhs.ListColumns(2))
     End With
 End Function
 

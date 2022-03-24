@@ -33,6 +33,21 @@ End Type
 
 Private this As TFrmKeyMapper2View
 
+Private Sub chkAddNewKeys_Click()
+    If Me.chkAddNewKeys.value = True Then
+        vm.AppendNewKeys = True
+    ElseIf Me.chkAddNewKeys.value = False Then
+        vm.AppendNewKeys = False
+    Else
+        ' Tri state checkbox, do nothing?
+    End If
+    
+End Sub
+
+Private Sub chkRemoveOrphans_Click()
+    vm.RemoveOrphanKeys = Me.chkRemoveOrphans.value
+End Sub
+
 Private Sub cmbBack_Click()
     vm.GoBack = True
     Me.Hide
@@ -53,21 +68,17 @@ End Sub
 
 Private Sub cmbColumnLHS_Change()
     vm.TrySelectLHS Me.cmbColumnLHS
-    If this.IsLoaded Then
-        vm.TryAutoMatch True
-    End If
+    vm.TryAutoMatch True, Not this.IsLoaded
 End Sub
 
 Private Sub cmbColumnRHS_Change()
     vm.TrySelectRHS Me.cmbColumnRHS
-    If this.IsLoaded Then
-        vm.TryAutoMatch False
-    End If
+    vm.TryAutoMatch False, Not this.IsLoaded
 End Sub
 
 Private Sub cmbHistory_Click()
     OnCancel
-    modMain.TransferTableFromHistory
+    'modMain.TransferTableFromHistory
 End Sub
 
 Private Sub cmbTableLHS_DropButtonClick()
@@ -93,12 +104,25 @@ Private Sub ChangeTable(ByVal cmb As ComboBox, ByVal lo As ListObject)
 End Sub
 
 Private Sub PopulateColumns(ByVal cmb As ComboBox, ByVal lo As ListObject)
+    Dim currentColumn As String
+    currentColumn = cmb
+    
+    Dim canRememberColumn As Boolean
+    
     cmb.Clear
     Dim lc As ListColumn
     For Each lc In lo.ListColumns
         cmb.AddItem lc.Name
+        If lc.Name = currentColumn Then
+            canRememberColumn = True
+        End If
     Next lc
-    cmb = cmb.List(0)
+    
+    If canRememberColumn Then
+        cmb = currentColumn
+    Else
+        cmb = cmb.List(0)
+    End If
 End Sub
 
 Private Sub cmbNext_Click()
@@ -152,6 +176,14 @@ Public Sub LoadFromVM()
         vm_PropertyChanged "RHSTable"
         vm_PropertyChanged "RHSColumns"
     End If
+    
+    Me.chkAddNewKeys.value = vm.AppendNewKeys
+    Me.chkRemoveOrphans.value = vm.RemoveOrphanKeys
+    
+    Me.chkAddNewKeys.Enabled = False
+    Me.chkRemoveOrphans.Enabled = False
+    
+    vm.TryGuess
 End Sub
 
 Private Sub vm_MatchChanged()
@@ -180,6 +212,7 @@ Private Sub vm_PropertyChanged(ByVal propertyName As String)
             Me.lvSetRHS.ListItems.Clear
             Me.lvSetInner.ListItems.Clear
             UpdateCheckButton
+            UpdateComboColumn
         Case "RHSTable"
             ChangeTable Me.cmbTableRHS, vm.RHSTable
         Case "RHSColumns"
@@ -231,12 +264,15 @@ Private Sub PopulateMatchSets()
     Dim comp As KeyColumnComparer
     Set comp = New KeyColumnComparer
     Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn)
-    Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn)
+    Set comp.rhs = KeyColumn.FromColumn(vm.RHSKeyColumn)
     comp.Map
     
     CollectionToListView comp.LeftOnly, Me.lvSetLHS, "Additions"
     CollectionToListView comp.Intersection, Me.lvSetInner, "Matches"
     CollectionToListView comp.RightOnly, Me.lvSetRHS, "Orphans"
+
+    Me.chkAddNewKeys.Enabled = (Me.lvSetLHS.ListItems.Count > 0)
+    Me.chkRemoveOrphans.Enabled = (Me.lvSetRHS.ListItems.Count > 0)
 End Sub
 
 Private Sub CollectionToListView(ByVal coll As Collection, ByVal lv As ListView, ByVal header As String)

@@ -1,62 +1,6 @@
-Attribute VB_Name = "TestArrayToFilteredRange"
-'@Folder("TableTransferTool")
+Attribute VB_Name = "ArrayHelpers"
+'@Folder "HelperFunctions"
 Option Explicit
-
-Private Sub Test()
-    Dim lo As ListObject
-    Dim lc As ListColumn
-    Dim rng As Range
-    Dim fltRng As Range
-    
-    Set lo = ThisWorkbook.Worksheets(1).ListObjects(2)
-    Set lc = lo.ListColumns(4)
-    Set rng = lc.DataBodyRange
-    Set fltRng = rng.SpecialCells(xlCellTypeVisible)
-    
-    'Debug.Print "rng:"
-    'PrintRange rng
-    
-    'Debug.Print "fltRng:"
-    'PrintRange fltRng
-    
-    Dim mask As Variant
-    mask = rng.Value2
-    SetArrayElementsToEmpty mask
-    mask(4, 1) = "dd"
-    mask(6, 1) = "ff"
-    mask(7, 1) = "gg"
-    
-    'Debug.Print "mask:"
-    'PrintArray mask
-    
-    'DoWork rng, mask
-End Sub
-
-Private Sub PrintRange(ByVal rng As Range)
-    PrintArray rng.Value2
-End Sub
-
-Private Sub PrintArray(ByVal arr As Variant)
-    Dim i As Long
-    If VarType(arr) = vbArray + vbVariant Then
-        For i = LBound(arr, 1) To UBound(arr, 1)
-            Debug.Print i & ": " & CStr(arr(i, 1)) & " (" & VarType(arr(i, 1)) & ")"
-        Next i
-    Else
-        Debug.Print "0" & ": " & CStr(arr) & " (" & VarType(arr) & ")"
-    End If
-End Sub
-
-Private Sub SetArrayElementsToEmpty(ByRef arr As Variant)
-    Dim i As Long
-    If VarType(arr) = vbArray + vbVariant Then
-        For i = LBound(arr, 1) To UBound(arr, 1)
-            arr(i, 1) = vbEmpty
-        Next i
-    Else
-        arr = vbEmpty
-    End If
-End Sub
 
 Public Sub ArrayToFilteredRange(ByVal rng As Range, ByVal arr As Variant)
     Dim fltRng As Range

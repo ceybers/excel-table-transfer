@@ -6,7 +6,6 @@ Private Const MAGIC_FORMULA As String = "=""HighlightMapped""=""HighlightMapped"
 Private Const MAPPED_COLOR As Long = 10092492
 
 Public Sub ApplyHighlighting(ByVal rng As Range, ByVal DoHighlight As Boolean)
-Attribute ApplyHighlighting.VB_ProcData.VB_Invoke_Func = " \n14"
     Dim fcs As FormatConditions
     Set fcs = Selection.parent.Cells.FormatConditions
     

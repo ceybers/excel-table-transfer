@@ -3,7 +3,7 @@ Attribute VB_Name = "TestSourceOrDestination"
 Option Explicit
 Option Private Module
 
-Public Function Test() As ListObject
+Public Sub Test()
     Dim vm As SourceOrDestinationViewModel
     Set vm = New SourceOrDestinationViewModel
     Set vm.ListObject = ThisWorkbook.Worksheets(1).ListObjects(1)
@@ -15,4 +15,4 @@ Public Function Test() As ListObject
     Else
         Debug.Print "No option selected"
     End If
-End Function
+End Sub

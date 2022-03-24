@@ -14,7 +14,7 @@ Option Explicit
 
 Private Type TClsCompareKeyColumns
     lhs As KeyColumn
-    RHS As KeyColumn
+    rhs As KeyColumn
     LeftOnly As Collection
     Intersection As Collection
     RightOnly As Collection
@@ -23,21 +23,36 @@ End Type
 
 Private this As TClsCompareKeyColumns
 
+Public Property Get Score() As Double
+    Dim total As Long
+    total = this.LeftOnly.Count + this.Intersection.Count + this.RightOnly.Count
+    
+    Score = 0
+    
+    If total < 5 Then Exit Property
+    
+    If total > 0 Then
+        Score = this.Intersection.Count / total
+    End If
+    
+    'Debug.Print "Score: "; score
+End Property
+
 Public Property Get lhs() As KeyColumn
     Set lhs = this.lhs
 End Property
 
-Public Property Set lhs(ByVal RHS As KeyColumn)
-    Set this.lhs = RHS
+Public Property Set lhs(ByVal rhs As KeyColumn)
+    Set this.lhs = rhs
     TryDoWork
 End Property
 
-Public Property Get RHS() As KeyColumn
-    Set RHS = this.RHS
+Public Property Get rhs() As KeyColumn
+    Set rhs = this.rhs
 End Property
 
-Public Property Set RHS(ByVal RHS As KeyColumn)
-    Set this.RHS = RHS
+Public Property Set rhs(ByVal rhs As KeyColumn)
+    Set this.rhs = rhs
     TryDoWork
 End Property
 
@@ -68,7 +83,7 @@ End Property
 ' Methods
 Private Sub TryDoWork()
     If this.lhs Is Nothing Then Exit Sub
-    If this.RHS Is Nothing Then Exit Sub
+    If this.rhs Is Nothing Then Exit Sub
     DoWork
 End Sub
 
@@ -78,7 +93,7 @@ Private Sub DoWork()
     For Each key In lhs.Keys
         Upsert key, 1
     Next
-    For Each key In RHS.Keys
+    For Each key In rhs.Keys
         Upsert key, 2
     Next
     
@@ -108,15 +123,15 @@ Private Sub Upsert(ByVal key As String, ByVal value As Integer)
     End If
 End Sub
 
-Public Function Create(ByVal lhs As KeyColumn, ByVal RHS As KeyColumn) As KeyColumnComparer
+Public Function Create(ByVal lhs As KeyColumn, ByVal rhs As KeyColumn) As KeyColumnComparer
     Set Create = New KeyColumnComparer
     Set Create.lhs = lhs
-    Set Create.RHS = RHS
+    Set Create.rhs = rhs
 End Function
 
 Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByVal FilterDestination As Boolean = False) As Variant
     Debug.Assert Not this.lhs Is Nothing
-    Debug.Assert Not this.RHS Is Nothing
+    Debug.Assert Not this.rhs Is Nothing
     
     Dim result As Variant
     Dim arr As Variant
@@ -129,9 +144,9 @@ Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByV
     End If
     
     Dim rhsFlt As KeyColumn
-    Set rhsFlt = this.RHS
+    Set rhsFlt = this.rhs
     If FilterDestination Then
-        Set rhsFlt = KeyColumn.FromRange(this.RHS.Range, this.RHS.IncludeNumbersAsText, True)
+        Set rhsFlt = KeyColumn.FromRange(this.rhs.Range, this.rhs.IncludeNumbersAsText, True)
     End If
     
     arr = rhsFlt.GetArray

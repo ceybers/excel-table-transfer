@@ -42,7 +42,7 @@ End Sub
 
 Private Sub cmbHistory_Click()
     OnCancel
-    modMain.TransferTableFromHistory
+    'modMain.TransferTableFromHistory
 End Sub
 
 Private Sub cmbSource_Click()

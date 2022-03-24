@@ -54,7 +54,7 @@ Private Function ApplyBitmask(ByVal arr As Variant, ByVal bitmask As Variant) As
     For i = 1 To UBound(arr, 1)
         For j = 1 To UBound(arr, 2)
             If bitmask(i, 1) <> 1 Then ' bitmask is (n x 1), i.e. we only keep 1 column
-                arr(i, j) = myEmpty
+                arr(i, j) = myEmpty ' TODO Change to = Empty?
             End If
         Next j
     Next i

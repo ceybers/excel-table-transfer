@@ -35,29 +35,29 @@ Public Property Get Range() As Range
     Set Range = this.rng
 End Property
 
-Public Property Set Range(ByVal RHS As Range)
-    If Not IsRangeASingleColumn(RHS) Then
+Public Property Set Range(ByVal rhs As Range)
+    If Not IsRangeASingleColumn(rhs) Then
         Err.Raise Number:=vbObjectError + 1, Description:="Cannot create clsKeyColumn with a range that spans multiple columns"
         Exit Property
     End If
-    Set this.rng = RHS
-    LoadRange RHS
+    Set this.rng = rhs
+    LoadRange rhs
 End Property
 
 Public Property Get RespectFilter() As Boolean
     RespectFilter = this.RespectFilter
 End Property
 
-Public Property Let RespectFilter(ByVal RHS As Boolean)
-    this.RespectFilter = RHS
+Public Property Let RespectFilter(ByVal rhs As Boolean)
+    this.RespectFilter = rhs
 End Property
 
 Public Property Get IncludeNumbersAsText() As Boolean
     IncludeNumbersAsText = this.IncludeNumbersAsText
 End Property
 
-Public Property Let IncludeNumbersAsText(ByVal RHS As Boolean)
-    this.IncludeNumbersAsText = RHS
+Public Property Let IncludeNumbersAsText(ByVal rhs As Boolean)
+    this.IncludeNumbersAsText = rhs
 End Property
 
 Public Property Get NonTextCount() As Long

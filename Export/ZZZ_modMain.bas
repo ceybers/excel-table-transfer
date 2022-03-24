@@ -1,14 +1,16 @@
-Attribute VB_Name = "modMain"
+Attribute VB_Name = "ZZZ_modMain"
+'@IgnoreModule EmptyIfBlock
 '@Folder "TableTransfer"
 Option Explicit
+Option Private Module
 
-Public Sub TransferTable()
+Public Sub ZZZ_TransferTable()
     Dim transfer As TransferInstruction
     Set transfer = New TransferInstruction
     DoTransferTable transfer
 End Sub
 
-Public Sub TransferTableFromHistory()
+Public Sub ZZZ_TransferTableFromHistory()
     Dim vm As TransferHistoryViewModel
     Set vm = New TransferHistoryViewModel
     
@@ -19,7 +21,7 @@ Public Sub TransferTableFromHistory()
     End If
 End Sub
 
-Public Sub DoTransferTable(transfer As TransferInstruction)
+Private Sub DoTransferTable(transfer As TransferInstruction)
     If transfer.IsValid = True Then GoTo AlreadyValid
     If Selection.ListObject Is Nothing Then GoTo NoTableSelected
     
@@ -83,7 +85,7 @@ AlreadyValid:
      
     transfer.transfer
     
-    If HasFlag(transfer.Flags, saveToHistory) Then
+    If HasFlag(transfer.Flags, SaveToHistory) Then
         Dim history As TransferHistoryViewModel
         Set history = New TransferHistoryViewModel
         If history.HasHistory = False Then
@@ -153,7 +155,7 @@ Private Function SetValueMapping(ByVal transfer As TransferInstruction) As Boole
     Dim vm As ValueMapperViewModel
     Set vm = New ValueMapperViewModel
     Set vm.lhs = transfer.Source
-    Set vm.RHS = transfer.Destination
+    Set vm.rhs = transfer.Destination
     Set vm.KeyColumnLHS = transfer.SourceKey
     Set vm.KeyColumnRHS = transfer.DestinationKey
     vm.Flags = transfer.Flags

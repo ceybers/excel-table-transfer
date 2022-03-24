@@ -1,4 +1,6 @@
 Attribute VB_Name = "AppContext"
+'@IgnoreModule EmptyIfBlock
+'@Folder "TableTransfer"
 Option Explicit
 
 Private transfer As TransferInstruction
@@ -8,7 +10,7 @@ Private OneTableSelected As ListObject
 
 Private GoBack As Boolean
 
-Public Sub AAA_DoWork()
+Public Sub TransferTable()
     'MsgBox "Welcome to table transfer wizard"
     
     InitializeViewModels
@@ -63,7 +65,7 @@ End Function
 
 Private Function CheckIfSelectionContainsTable() As Boolean
     If Selection.ListObject Is Nothing Then
-    
+        CheckIfSelectionContainsTable = False
     End If
     
     Set OneTableSelected = Selection.ListObject
@@ -132,6 +134,19 @@ Private Function TryGetKeyColumns() As Boolean
             Set transfer.Destination = vm.RHSTable
             Set transfer.SourceKey = vm.LHSKeyColumn
             Set transfer.DestinationKey = vm.RHSKeyColumn
+            
+            If vm.AppendNewKeys Then
+                transfer.Flags = AddFlag(transfer.Flags, AppendUnmapped)
+            Else
+                transfer.Flags = RemoveFlag(transfer.Flags, AppendUnmapped)
+            End If
+            
+            If vm.RemoveOrphanKeys Then
+                transfer.Flags = AddFlag(transfer.Flags, RemoveUnmapped)
+            Else
+                transfer.Flags = RemoveFlag(transfer.Flags, RemoveUnmapped)
+            End If
+            
             TryGetKeyColumns = True
         Else
             MsgBox "Invalid KeyMapperViewModel"
@@ -148,7 +163,7 @@ Private Function TryMapValueColumns() As Boolean
     Set vm = New ValueMapperViewModel
     
     Set vm.lhs = transfer.Source
-    Set vm.RHS = transfer.Destination
+    Set vm.rhs = transfer.Destination
     Set vm.KeyColumnLHS = transfer.SourceKey
     Set vm.KeyColumnRHS = transfer.DestinationKey
     vm.Flags = transfer.Flags
@@ -179,7 +194,7 @@ Private Sub DoTransfer()
     timeTaken = Timer() - timeStart
     
     Dim timeStr As String
-    timeStr = Format(timeTaken, "0.00")
+    timeStr = Format$(timeTaken, "0.00")
     
     Dim completionMessage As String
     completionMessage = "Table transfer complete." & vbCrLf & "Time taken: " & timeStr & " second(s)"
@@ -188,7 +203,7 @@ Private Sub DoTransfer()
 End Sub
 
 Private Sub TrySaveHistory()
-    If HasFlag(transfer.Flags, saveToHistory) Then
+    If HasFlag(transfer.Flags, SaveToHistory) Then
         Dim history As TransferHistoryViewModel
         Set history = New TransferHistoryViewModel
         If history.HasHistory = False Then

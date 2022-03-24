@@ -1,4 +1,5 @@
 Attribute VB_Name = "TestColumnQuality"
+'@IgnoreModule EmptyIfBlock
 '@Folder("ColumnQuality")
 Option Explicit
 Option Private Module

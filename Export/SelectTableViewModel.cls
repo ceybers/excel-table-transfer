@@ -37,8 +37,8 @@ Public Property Get SelectedTable() As ListObject
     Set SelectedTable = this.SelectedTable
 End Property
 
-Public Property Set SelectedTable(ByVal RHS As ListObject)
-    Set this.SelectedTable = RHS
+Public Property Set SelectedTable(ByVal rhs As ListObject)
+    Set this.SelectedTable = rhs
     RaiseEvent ItemSelected
 End Property
 
@@ -46,8 +46,8 @@ Public Property Get ActiveTable() As ListObject
     Set ActiveTable = this.ActiveTable
 End Property
 
-Public Property Set ActiveTable(ByVal RHS As ListObject)
-    Set this.ActiveTable = RHS
+Public Property Set ActiveTable(ByVal rhs As ListObject)
+    Set this.ActiveTable = rhs
     Load
 End Property
 
@@ -55,8 +55,8 @@ Public Property Get SearchCriteria() As String
     SearchCriteria = this.SearchCriteria
 End Property
 
-Public Property Let SearchCriteria(ByVal RHS As String)
-    this.SearchCriteria = RHS
+Public Property Let SearchCriteria(ByVal rhs As String)
+    this.SearchCriteria = rhs
     Load
 End Property
 

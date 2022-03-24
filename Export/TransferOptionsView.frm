@@ -46,7 +46,7 @@ Private Sub CheckBox5_Click()
 End Sub
 
 Private Sub CheckBox6_Click()
-    SetFlag appendunmapped, Me.CheckBox6
+    SetFlag AppendUnmapped, Me.CheckBox6
 End Sub
 
 Private Sub CheckBox7_Click()
@@ -54,7 +54,7 @@ Private Sub CheckBox7_Click()
 End Sub
 
 Private Sub CheckBox8_Click()
-    SetFlag saveToHistory, Me.CheckBox8
+    SetFlag SaveToHistory, Me.CheckBox8
 End Sub
 
 Private Sub CheckBox9_Click()
@@ -103,9 +103,9 @@ Private Sub LoadFlags()
     LoadFlag ReplaceEmptyOnly, Me.CheckBox3
     LoadFlag SourceFilteredOnly, Me.CheckBox4
     LoadFlag DestinationFilteredOnly, Me.CheckBox5
-    LoadFlag appendunmapped, Me.CheckBox6
+    LoadFlag AppendUnmapped, Me.CheckBox6
     LoadFlag RemoveUnmapped, Me.CheckBox7
-    LoadFlag saveToHistory, Me.CheckBox8
+    LoadFlag SaveToHistory, Me.CheckBox8
     LoadFlag HighlightMapped, Me.CheckBox9
 End Sub
 
