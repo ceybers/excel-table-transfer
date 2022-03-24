@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} ValueMapperView
    ClientHeight    =   6525
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   7350
+   ClientWidth     =   9360.001
    OleObjectBlob   =   "ValueMapperView.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -19,8 +19,8 @@ Option Explicit
 Implements IView
 
 '@MemberAttribute VB_VarHelpID, -1
-Private WithEvents Model As ValueMapperViewModel
-Attribute Model.VB_VarHelpID = -1
+Private WithEvents vm As ValueMapperViewModel
+Attribute vm.VB_VarHelpID = -1
 Private Const ICON_SIZE As Integer = 16
 Private msoImageList As ImageList
 
@@ -32,21 +32,26 @@ End Type
 
 Private this As TFrmKeyMapper2View
 
+Private Sub cmbBack_Click()
+    vm.GoBack = True
+    Me.Hide
+End Sub
+
 ' ---
 Private Sub cmbCancel_Click()
     OnCancel
 End Sub
 
 Private Sub cmbAutoMap_Click()
-    Model.Automap
+    vm.Automap
 End Sub
 
 Private Sub cmbClearSearchLHS_Click()
-   Model.LHSCriteria = vbNullString
+   vm.LHSCriteria = vbNullString
 End Sub
 
 Private Sub cmbClearSearchRHS_Click()
-    Model.RHSCriteria = vbNullString
+    vm.RHSCriteria = vbNullString
 End Sub
 
 Private Sub cmbFinish_Click()
@@ -54,68 +59,68 @@ Private Sub cmbFinish_Click()
 End Sub
 
 Private Sub cmbMapRight_Click()
-    Model.TryMap
+    vm.TryMap
 End Sub
 
 Private Sub cmbOptions_Click()
-    Dim vm As TransferOptionsViewModel
-    Set vm = New TransferOptionsViewModel
-    vm.Flags = Model.Flags
+    Dim optionVM As TransferOptionsViewModel
+    Set optionVM = New TransferOptionsViewModel
+    optionVM.Flags = vm.Flags
     
     Dim view As IView
     Set view = New TransferOptionsView
     
-    If view.ShowDialog(vm) Then
-        Model.Flags = vm.Flags
+    If view.ShowDialog(optionVM) Then
+        vm.Flags = optionVM.Flags
     Else
         'Debug.Print "Cancelled"
     End If
 End Sub
 
 Private Sub cmbReset_Click()
-    Model.Reset
+    vm.Reset
 End Sub
 
 Private Sub cmbSelectNone_Click()
-    Model.SelectNone
+    vm.SelectNone
 End Sub
 
 Private Sub cmbSelectAll_Click()
-    Model.SelectAll
+    vm.SelectAll
 End Sub
 
 Private Sub cmbUnmapLeft_Click()
-    Model.TryUnMap
+    vm.TryUnMap
 End Sub
 
 Private Sub chkShowMappedOnlyLHS_Click()
-    Model.ShowMappedOnlyLHS = Me.chkShowMappedOnlyLHS.value
+    vm.ShowMappedOnlyLHS = Me.chkShowMappedOnlyLHS.value
 End Sub
 
 Private Sub chkShowMappedOnlyRHS_Click()
-    Model.ShowMappedOnlyRHS = Me.chkShowMappedOnlyRHS.value
+    vm.ShowMappedOnlyRHS = Me.chkShowMappedOnlyRHS.value
 End Sub
 
 Private Sub lvLHS_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    Model.TrySelectLHS Item
+    vm.TrySelectLHS Item
 End Sub
 
 Private Sub lvRHS_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    Model.TrySelectRHS Item
+    vm.TrySelectRHS Item
 End Sub
 
 Private Sub lvRHS_ItemCheck(ByVal Item As MSComctlLib.ListItem)
-    Model.TryCheck Item
+    vm.TryCheck Item
 End Sub
 
-Private Sub Model_CollectionChangedLHS()
+Private Sub vm_CollectionChangedLHS()
     Dim current As String
     
     If Not Me.lvLHS.SelectedItem Is Nothing Then
         current = Me.lvLHS.SelectedItem.key
     End If
     
-    Model.LoadLHStoListView Me.lvLHS
+    vm.LoadLHStoListView Me.lvLHS
     
     If current <> vbNullString Then
         If Not TryReselectListItem(Me.lvLHS, current) Then
@@ -127,15 +132,15 @@ Private Sub Model_CollectionChangedLHS()
     End If
 End Sub
 
-Private Sub Model_CollectionChangedRHS()
+Private Sub vm_CollectionChangedRHS()
     Dim current As String
     
     If Not Me.lvRHS.SelectedItem Is Nothing Then
         current = Me.lvRHS.SelectedItem.key
     End If
     
-    Model.LoadRHStoListView Me.lvRHS
-    Model.UpdateRHStoListView Me.lvRHS
+    vm.LoadRHStoListView Me.lvRHS
+    vm.UpdateRHStoListView Me.lvRHS
     
     If current <> vbNullString Then
         If Not TryReselectListItem(Me.lvRHS, current) Then
@@ -158,34 +163,34 @@ Private Function TryReselectListItem(ByVal lv As ListView, ByVal key As String) 
     Next i
 End Function
 
-Private Sub Model_MappingChanged()
-    Model.UpdateLHStoListView Me.lvLHS
-    Model.UpdateRHStoListView Me.lvRHS
+Private Sub vm_MappingChanged()
+    vm.UpdateLHStoListView Me.lvLHS
+    vm.UpdateRHStoListView Me.lvRHS
     
-    Me.cmbReset.Enabled = Model.CanReset
-    Me.cmbAutoMap.Enabled = Model.CanAutoMap
-    Me.cmbSelectAll.Enabled = Model.CanSelectAll
-    Me.cmbSelectNone.Enabled = Model.CanSelectNone
+    Me.cmbReset.Enabled = vm.CanReset
+    Me.cmbAutoMap.Enabled = vm.CanAutoMap
+    Me.cmbSelectAll.Enabled = vm.CanSelectAll
+    Me.cmbSelectNone.Enabled = vm.CanSelectNone
     
-    Model_SelectionChanged
+    vm_SelectionChanged
 End Sub
 
-Private Sub Model_SelectionChanged()
-    Me.cmbMapRight.Enabled = Model.CanMapRight
-    Me.cmbUnmapLeft.Enabled = Model.CanUnmapLeft
+Private Sub vm_SelectionChanged()
+    Me.cmbMapRight.Enabled = vm.CanMapRight
+    Me.cmbUnmapLeft.Enabled = vm.CanUnmapLeft
     
-    Me.txtSearchLHS = Model.LHSCriteria
-    Me.txtSearchRHS = Model.RHSCriteria
+    Me.txtSearchLHS = vm.LHSCriteria
+    Me.txtSearchRHS = vm.RHSCriteria
 End Sub
 
 Private Sub txtSearchLHS_Change()
     If IsNull(Me.txtSearchLHS) Then Exit Sub
-    Model.LHSCriteria = Me.txtSearchLHS
+    vm.LHSCriteria = Me.txtSearchLHS
 End Sub
 
 Private Sub txtSearchRHS_Change()
     If IsNull(Me.txtSearchRHS) Then Exit Sub
-    Model.RHSCriteria = Me.txtSearchRHS
+    vm.RHSCriteria = Me.txtSearchRHS
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -202,7 +207,7 @@ End Sub
 
 ' ---
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
-    Set Model = ViewModel
+    Set vm = ViewModel
     this.IsCancelled = False
     
     Set msoImageList = New ImageList
@@ -218,12 +223,12 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     lvLHS_ItemClick Me.lvLHS.ListItems(1)
     lvRHS_ItemClick Me.lvRHS.ListItems(1)
     
-    Model_MappingChanged
+    vm_MappingChanged
     
     Me.cmbClearSearchLHS.Picture = msoImageList.ListImages("delete").Picture
     Me.cmbClearSearchRHS.Picture = msoImageList.ListImages("delete").Picture
     
-    Model.AutomapIfEmpty
+    vm.AutomapIfEmpty
     
     Me.Show
     
@@ -231,8 +236,8 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
 End Function
 
 Public Sub LoadFromVM()
-    Model.InitializeListView Me.lvLHS
-    Model.InitializeListView Me.lvRHS, True
-    Model.LoadLHStoListView Me.lvLHS
-    Model.LoadRHStoListView Me.lvRHS
+    vm.InitializeListView Me.lvLHS
+    vm.InitializeListView Me.lvRHS, True
+    vm.LoadLHStoListView Me.lvLHS
+    vm.LoadRHStoListView Me.lvRHS
 End Sub

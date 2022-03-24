@@ -1,10 +1,7 @@
 # TODO
 
 ## General
-
-- [ ] Fail gracefully if only one table available
-- [ ] Cancel/Back/Next/Finish stages (AppContext?)
-- [ ] Highlighting of additions/mapped/removals
+- [ ] Highlighting of additions/removals
 - [ ] Consider adding warning for data-loss for: remove orphans, and clear destination column when not a 1:1 match
 - [ ] Map values into newly created columns
 - [ ] Finish mapping without any mapped columns (i.e. to add/remove keys only)
@@ -19,18 +16,17 @@
 - [ ] Try and auto-match column when changing tables
 - [ ] Smart key column guessing (try to find columns with 100% unique values and 1:1 match between src/dst)
 ## Column Mapper
-- [ ] Map Value Columns implement multi-select on ListView without breaking single selection buttons e.g. Map
-- [ ] Add column number (i.e. Column A) to Column Mapping dialog
-- [ ] Flag columns with column-wide formulae in ListView
+*None*
 ## Transfer History
 - [ ] Transfer History fails on unsaved workbooks
 - [ ] Using Split(curStr, "") in parsing history fails when filename has spaces in it
 ## Options
-- [ ] Default Respect Filters to Yes for both Source and Destination
 - [ ] Default Save Instruction to Yes if workbook already has a history
 - [ ] Option to ignore columns with column-wide formulae in Source and/or Destination from tranfer
 - [ ] Option to exclude non-unique keys from mapping (i.e. do not map to key vs map to first occurrence)
 - [ ] Option to include/exclude values transfered by VarType()
+## Cancelled
+* ~~Map Value Columns implement multi-select on ListView without breaking single selection buttons e.g. Map~~ ListView control doesn't seem to allow check/uncheck of multiple selected list items.
 ## Complete
 - [x] KeyColumn
 - [x] ColumnPair and ColumnPairs
@@ -50,3 +46,9 @@
 - [x] Change icons in Key Column Mapper to reflect test results, i.e. green check only if Unique = Count
 - [x] Rename Key Set Theory ListView headers to Orphans and Additions
 - [x] Suppress prompt to auto-match key column by name when first showing dialog (and before user input)
+- [x] Cancel/Back/Next/Finish stages (AppContext?)
+- [x] Fail gracefully if only one table available
+- [x] Add column number (i.e. Column A) to Column Mapping dialog
+- [x] Default Respect Filters to Yes for both Source and Destination
+- [x] Highlighting of mapped value cells
+- [x] Flag columns with column-wide formulae in ListView

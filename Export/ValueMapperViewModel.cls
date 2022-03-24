@@ -39,9 +39,19 @@ Private Type TClsValueMapperViewModel
     
     ShowMappedOnlyLHS As Boolean
     ShowMappedOnlyRHS As Boolean
+    
+    GoBack As Boolean
 End Type
 
 Private this As TClsValueMapperViewModel
+
+Public Property Get GoBack() As Boolean
+    GoBack = this.GoBack
+End Property
+
+Public Property Let GoBack(ByVal RHS As Boolean)
+    this.GoBack = RHS
+End Property
 
 Public Property Get ShowMappedOnlyLHS() As Boolean
     ShowMappedOnlyLHS = this.ShowMappedOnlyLHS
@@ -146,6 +156,7 @@ Public Sub LoadLHStoListView(ByVal lv As ListView)
         If (LHSCriteria = vbNullString) Or (lc.Name Like LHSCriteria & "*") Then
             If (this.ShowMappedOnlyLHS = False) Or (Not this.ValuePairs.GetPair(lhs:=lc) Is Nothing) Then
                 Set li = lv.ListItems.Add(key:=lc.Name, text:=lc.Name)
+                li.ListSubItems.Add text:=GetColumnHeaderFromListColumn(lc)
             End If
         End If
     Next lc
@@ -191,6 +202,7 @@ Public Sub LoadRHStoListView(ByVal lv As ListView)
             If (this.ShowMappedOnlyRHS = False) Or (this.ValuePairs.IsMappedRHS(lc)) Then
                 With lv.ListItems.Add(key:=lc.Name, text:=lc.Name)
                     .ListSubItems.Add text:=vbNullString
+                    .ListSubItems.Add text:=GetColumnHeaderFromListColumn(lc)
                 End With
             End If
         End If
@@ -228,6 +240,12 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
             End If
             
             li.checked = this.CheckedValuePairs.IsMappedRHS(lc)
+            
+            If Not IsNull(lc.DataBodyRange.FormulaArray) Then
+                If Left(RHS.DataBodyRange.FormulaArray, 1) = "=" Then
+                    li.SmallIcon = "Fx"
+                End If
+            End If
         End If
     Next li
 End Sub
@@ -254,18 +272,21 @@ Public Sub InitializeListView(ByVal lv As MSComctlLib.ListView, Optional ByVal R
         .Gridlines = True
         .HideSelection = False
         .ColumnHeaders.Clear
-        .ColumnHeaders.Add text:="Column", Width:=140
+        .ColumnHeaders.Add text:="Column", Width:=100
         .LabelEdit = lvwManual
         .FullRowSelect = True
         .CheckBoxes = False
     End With
+    
     If RHS Then
         With lv
             .CheckBoxes = True
             .ColumnHeaders(1).Width = 70
-            .ColumnHeaders.Add text:="Mapped to", Width:=68
+            .ColumnHeaders.Add text:="Mapped to", Width:=128
         End With
     End If
+    
+    lv.ColumnHeaders.Add text:="R1C1", Width:=40
 End Sub
 
 Public Sub TryMap()
@@ -456,9 +477,15 @@ Private Sub TryAutomap()
         If Not RHS Is this.KeyColumnRHS Then
             If TryGetListColumnByName(this.lhs, RHS.Name, lhs) Then
                 If Not lhs Is this.KeyColumnLHS Then
-                    Set colPair = ColumnPair.Create(lhs, RHS)
-                    this.ValuePairs.Add colPair
-                    this.CheckedValuePairs.Add colPair
+                    If IsNull(RHS.DataBodyRange.FormulaArray) Then
+                        Set colPair = ColumnPair.Create(lhs, RHS)
+                        this.ValuePairs.Add colPair
+                        this.CheckedValuePairs.Add colPair
+                    ElseIf Left(RHS.DataBodyRange.FormulaArray, 1) <> "=" Then
+                        Set colPair = ColumnPair.Create(lhs, RHS)
+                        this.ValuePairs.Add colPair
+                        this.CheckedValuePairs.Add colPair
+                    End If
                 End If
             End If
         End If

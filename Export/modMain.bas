@@ -3,9 +3,9 @@ Attribute VB_Name = "modMain"
 Option Explicit
 
 Public Sub TransferTable()
-    Dim Transfer As TransferInstruction
-    Set Transfer = New TransferInstruction
-    DoTransferTable Transfer
+    Dim transfer As TransferInstruction
+    Set transfer = New TransferInstruction
+    DoTransferTable transfer
 End Sub
 
 Public Sub TransferTableFromHistory()
@@ -19,8 +19,8 @@ Public Sub TransferTableFromHistory()
     End If
 End Sub
 
-Public Sub DoTransferTable(Transfer As TransferInstruction)
-    If Transfer.IsValid = True Then GoTo AlreadyValid
+Public Sub DoTransferTable(transfer As TransferInstruction)
+    If transfer.IsValid = True Then GoTo AlreadyValid
     If Selection.ListObject Is Nothing Then GoTo NoTableSelected
     
     Dim firstTable As ListObject
@@ -32,9 +32,9 @@ Public Sub DoTransferTable(Transfer As TransferInstruction)
     Dim IsDestination As Boolean
     If TryGetSourceOrDestination(IsSource, IsDestination) Then
         If IsSource Then
-            Set Transfer.Source = firstTable
+            Set transfer.Source = firstTable
         Else
-            Set Transfer.Destination = firstTable
+            Set transfer.Destination = firstTable
         End If
     Else
         Exit Sub
@@ -42,9 +42,9 @@ Public Sub DoTransferTable(Transfer As TransferInstruction)
         
     If TryGetSecondTable(firstTable, secondTable) Then
         If IsSource Then
-            Set Transfer.Destination = secondTable
+            Set transfer.Destination = secondTable
         Else
-            Set Transfer.Source = secondTable
+            Set transfer.Source = secondTable
         End If
     Else
         Exit Sub
@@ -53,7 +53,7 @@ Public Sub DoTransferTable(Transfer As TransferInstruction)
     'Set Transfer.SourceKey = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
     'Set Transfer.DestinationKey = ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(1)
 NoTableSelected:
-    If GetKeyColumns(Transfer) Then
+    If GetKeyColumns(transfer) Then
         ' continue
     Else
         Exit Sub
@@ -66,7 +66,7 @@ NoTableSelected:
     'Transfer.Flags = AddFlag(Transfer.Flags, SourceFilteredOnly)
     ' Transfer.Flags = AddFlag(Transfer.Flags, DestinationFilteredOnly)
 AlreadyValid:
-    If SetValueMapping(Transfer) Then
+    If SetValueMapping(transfer) Then
         ' continue
     Else
         Exit Sub
@@ -81,16 +81,16 @@ AlreadyValid:
     'Transfer.ValuePairs.Add ColumnPair.Create(lhs.ListColumns(3), rhs.ListColumns(3))
     'Transfer.ValuePairs.Add ColumnPair.Create(lhs.ListColumns(4), rhs.ListColumns(4))
      
-    Transfer.Transfer
+    transfer.transfer
     
-    If HasFlag(Transfer.Flags, saveToHistory) Then
+    If HasFlag(transfer.Flags, saveToHistory) Then
         Dim history As TransferHistoryViewModel
         Set history = New TransferHistoryViewModel
         If history.HasHistory = False Then
             history.Create
         End If
         history.Refresh
-        history.Add Transfer
+        history.Add transfer
         history.Save
     End If
 End Sub
@@ -127,21 +127,21 @@ Private Function TryGetSourceOrDestination(ByRef IsSource As Boolean, ByRef IsDe
     End If
 End Function
 
-Private Function GetKeyColumns(ByVal Transfer As TransferInstruction) As Boolean
+Private Function GetKeyColumns(ByVal transfer As TransferInstruction) As Boolean
     Dim vm As KeyMapperViewModel
     Set vm = New KeyMapperViewModel
-    Set vm.LHSTable = Transfer.Source
-    Set vm.RHSTable = Transfer.Destination
+    Set vm.LHSTable = transfer.Source
+    Set vm.RHSTable = transfer.Destination
     
     Dim frm As IView
     Set frm = New KeyMapperView
     
     If frm.ShowDialog(vm) Then
         If vm.IsValid Then
-            Set Transfer.Source = vm.LHSTable
-            Set Transfer.Destination = vm.RHSTable
-            Set Transfer.SourceKey = vm.LHSKeyColumn
-            Set Transfer.DestinationKey = vm.RHSKeyColumn
+            Set transfer.Source = vm.LHSTable
+            Set transfer.Destination = vm.RHSTable
+            Set transfer.SourceKey = vm.LHSKeyColumn
+            Set transfer.DestinationKey = vm.RHSKeyColumn
             GetKeyColumns = True
         Else
             MsgBox "Invalid VM"
@@ -149,23 +149,23 @@ Private Function GetKeyColumns(ByVal Transfer As TransferInstruction) As Boolean
     End If
 End Function
 
-Private Function SetValueMapping(ByVal Transfer As TransferInstruction) As Boolean
+Private Function SetValueMapping(ByVal transfer As TransferInstruction) As Boolean
     Dim vm As ValueMapperViewModel
     Set vm = New ValueMapperViewModel
-    Set vm.lhs = Transfer.Source
-    Set vm.RHS = Transfer.Destination
-    Set vm.KeyColumnLHS = Transfer.SourceKey
-    Set vm.KeyColumnRHS = Transfer.DestinationKey
-    vm.Flags = Transfer.Flags
+    Set vm.lhs = transfer.Source
+    Set vm.RHS = transfer.Destination
+    Set vm.KeyColumnLHS = transfer.SourceKey
+    Set vm.KeyColumnRHS = transfer.DestinationKey
+    vm.Flags = transfer.Flags
     
-    vm.LoadFromTransferInstruction Transfer
+    vm.LoadFromTransferInstruction transfer
     
     Dim frm As IView
     Set frm = New ValueMapperView
     
     If frm.ShowDialog(vm) Then
-        Set Transfer.ValuePairs = vm.checked
-        Transfer.Flags = vm.Flags
+        Set transfer.ValuePairs = vm.checked
+        transfer.Flags = vm.Flags
         SetValueMapping = True
     End If
 End Function

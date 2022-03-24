@@ -57,6 +57,10 @@ Private Sub CheckBox8_Click()
     SetFlag saveToHistory, Me.CheckBox8
 End Sub
 
+Private Sub CheckBox9_Click()
+    SetFlag HighlightMapped, Me.CheckBox8
+End Sub
+
 Private Sub SetFlag(ByVal flag As TransferOptionsEnum, ByRef cb As MSForms.CheckBox)
     this.ViewModel.Flags = modTestTransferOptions.SetFlag(this.ViewModel.Flags, flag, cb.value)
 End Sub
@@ -102,6 +106,7 @@ Private Sub LoadFlags()
     LoadFlag appendunmapped, Me.CheckBox6
     LoadFlag RemoveUnmapped, Me.CheckBox7
     LoadFlag saveToHistory, Me.CheckBox8
+    LoadFlag HighlightMapped, Me.CheckBox9
 End Sub
 
 Private Sub LoadFlag(ByVal flag As TransferOptionsEnum, ByVal cb As MSForms.CheckBox)

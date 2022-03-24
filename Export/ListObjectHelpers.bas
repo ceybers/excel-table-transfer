@@ -182,3 +182,10 @@ Attribute TryGetTableFromText.VB_Description = "test"
         ' Need a flag for Transfer class if we cannot open the workbook from an old serialized instructionf
     End If
 End Function
+
+Public Function GetColumnHeaderFromListColumn(ByVal lc As ListColumn) As String
+    Dim s As String
+    s = lc.Range.EntireColumn.Address
+    s = Mid(s, 2, ((Len(s) - 1) / 2) - 1)
+    GetColumnHeaderFromListColumn = s
+End Function

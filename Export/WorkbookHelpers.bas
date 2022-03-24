@@ -1,4 +1,4 @@
-Attribute VB_Name = "Module1"
+Attribute VB_Name = "WorkbookHelpers"
 '@Folder("HelperFunctions")
 Option Explicit
 

@@ -18,6 +18,8 @@ Public Enum TransferOptionsEnum
     
     saveToHistory = 2 ^ 8 ' 256
     
+    HighlightMapped = 2 ^ 9 ' 512
+    
 End Enum
 
 Public Sub Test()

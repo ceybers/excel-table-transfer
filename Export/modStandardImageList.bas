@@ -18,6 +18,7 @@ Public Function GetMSOImageList(Optional ByVal iconSize As Integer = 16) As Imag
     AddImageListImage GetMSOImageList, "Tick", "AcceptInvitation", iconSize
     AddImageListImage GetMSOImageList, "Cross", "DeclineInvitation", iconSize
     AddImageListImage GetMSOImageList, "Key", "AdpPrimaryKey", iconSize
+    AddImageListImage GetMSOImageList, "Fx", "TableFormulaDialog", iconSize
 End Function
 
 Private Sub AddImageListImage(ByVal il As ImageList, ByVal key As String, ByVal imageMso As String, ByVal iconSize As Integer)

@@ -18,6 +18,7 @@ Private Type TState
     ValuePairs As Collection
     mapResult As Variant
     Flags As Integer
+    CopiedCells As Range
 End Type
 
 Private this As TState
@@ -105,7 +106,7 @@ Public Function IsValid() As Boolean
     IsValid = True
 End Function
 
-Public Sub Transfer()
+Public Sub transfer()
     If Not IsValid Then Exit Sub
         
     If HasFlag(this.Flags, RemoveUnmapped) Then
@@ -122,6 +123,8 @@ Public Sub Transfer()
     For Each colPair In ValuePairs
         TransferOne colPair
     Next colPair
+    
+    UpdateHighlighting
 End Sub
 
 Private Sub SetMapResult()
@@ -144,7 +147,7 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
     Dim oldValue As Variant
     Dim newValue As Variant
     Dim doCopy As Boolean
-
+    
     If HasFlag(this.Flags, DestinationFilteredOnly) = False Then
         If Destination.DataBodyRange.AutoFilter Then
             If Not Destination.parent.AutoFilter Is Nothing Then
@@ -158,6 +161,8 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
     arrLHSOffset = Source.DataBodyRange.row
     arrRHSOffset = Destination.DataBodyRange.row
     
+    Dim cellRange As Range
+    Dim copiedRange As Range
     For i = LBound(Map) To UBound(Map)
         If HasFlag(this.Flags, ClearDestinationFirst) Then
             arrRHS(i - arrRHSOffset + 1, 1) = Empty
@@ -178,6 +183,13 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
             
             If doCopy Then
                 arrRHS(i - arrRHSOffset + 1, 1) = newValue
+                
+                Set cellRange = Destination.DataBodyRange.Cells(i - arrRHSOffset + 1, 1)
+                If this.CopiedCells Is Nothing Then
+                    Set this.CopiedCells = cellRange
+                Else
+                    Set this.CopiedCells = Application.Union(this.CopiedCells, cellRange)
+                End If
             End If
         End If
     Next i
@@ -250,3 +262,16 @@ End Function
 Public Function Name() As String
     Name = this.Source.Name & "." & this.SourceKey.Name & " -> " & this.Destination.Name & "." & this.DestinationKey.Name & " (" & this.ValuePairs.Count & ")"
 End Function
+
+Public Sub SetDefaultFlags()
+    Flags = 0
+    Flags = AddFlag(Flags, SourceFilteredOnly)
+    Flags = AddFlag(Flags, DestinationFilteredOnly)
+    Flags = AddFlag(Flags, HighlightMapped)
+End Sub
+
+Private Sub UpdateHighlighting()
+    If Not this.CopiedCells Is Nothing Then
+        Highlighting.ApplyHighlighting this.CopiedCells, HasFlag(this.Flags, HighlightMapped)
+    End If
+End Sub

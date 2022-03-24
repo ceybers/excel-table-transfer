@@ -2,11 +2,11 @@ Attribute VB_Name = "modHelperFunctions"
 '@Folder "HelperFunctions"
 Option Explicit
 
-Public Function TableFromString(ByVal S As String) As ListObject
+Public Function TableFromString(ByVal s As String) As ListObject
     Dim wb As Workbook, ws As Worksheet, lo As ListObject
     Dim n() As String
     
-    n = Split(S, "\")
+    n = Split(s, "\")
     Debug.Assert LBound(n, 1) = 0
     Debug.Assert UBound(n, 1) = 2
     

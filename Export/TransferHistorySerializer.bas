@@ -95,25 +95,25 @@ Attribute SaveTransferInstructionsFromWorksheet.VB_Description = "Save a Collect
     Next i
 End Sub
 
-Private Function SerializeTransferInstruction(ByVal Transfer As TransferInstruction) As Variant
+Private Function SerializeTransferInstruction(ByVal transfer As TransferInstruction) As Variant
     Dim c As Long
     Dim i As Long
     Dim result As Variant
     
-    c = 8 + Transfer.ValuePairs.Count
+    c = 8 + transfer.ValuePairs.Count
     
     ReDim result(1 To c, 1 To 1)
     
     result(1, 1) = "TRANSFER"
-    result(2, 1) = " SRC," & Transfer.Source.Range.Address(external:=True)
-    result(3, 1) = " SRCKEY," & Transfer.SourceKey.Name
-    result(4, 1) = " DST," & Transfer.Destination.Range.Address(external:=True)
-    result(5, 1) = " DSTKEY," & Transfer.DestinationKey.Name
-    result(6, 1) = " FLAGS," & Transfer.Flags
-    result(7, 1) = " VALUES," & Transfer.ValuePairs.Count
+    result(2, 1) = " SRC," & transfer.Source.Range.Address(external:=True)
+    result(3, 1) = " SRCKEY," & transfer.SourceKey.Name
+    result(4, 1) = " DST," & transfer.Destination.Range.Address(external:=True)
+    result(5, 1) = " DSTKEY," & transfer.DestinationKey.Name
+    result(6, 1) = " FLAGS," & transfer.Flags
+    result(7, 1) = " VALUES," & transfer.ValuePairs.Count
     
-    For i = 1 To Transfer.ValuePairs.Count
-        result(7 + i, 1) = "  " & Transfer.ValuePairs(i).ToString
+    For i = 1 To transfer.ValuePairs.Count
+        result(7 + i, 1) = "  " & transfer.ValuePairs(i).ToString
     Next i
     
     result(c, 1) = "END"

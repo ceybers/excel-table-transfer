@@ -34,7 +34,8 @@ End Type
 Private this As TFrmKeyMapper2View
 
 Private Sub cmbBack_Click()
-    MsgBox "NYI"
+    vm.GoBack = True
+    Me.Hide
 End Sub
 
 ' ---

@@ -26,6 +26,7 @@ Private Type TViewModel
     IsDirty As Boolean
     IsDirtyQuality As Boolean
     IsDirtyMatch As Boolean
+    GoBack As Boolean
     '---
     QualityLHS As KeyColumn
     QualityRHS As KeyColumn
@@ -34,8 +35,16 @@ End Type
 
 Private this As TViewModel
 
-Public Property Get IsDirty() As Boolean
-    IsDirty = this.IsDirty
+Public Property Get GoBack() As Boolean
+    GoBack = this.GoBack
+End Property
+    
+Public Property Let GoBack(ByVal RHS As Boolean)
+    this.GoBack = RHS
+End Property
+
+Public Property Let IsDirty(ByVal RHS As Boolean)
+    this.IsDirty = RHS
 End Property
 
 Public Property Get LHSTable() As ListObject
