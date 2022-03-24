@@ -19,6 +19,28 @@ Public Function GetListColumnFromRange(ByVal rng As Range) As ListColumn
     Next lc
 End Function
 
+Public Sub Test()
+    Dim lo As ListObject
+    Dim result As String
+    
+    Set lo = ThisWorkbook.Worksheets(1).ListObjects(1)
+    'Debug.Print ListObjectToStringName(lo)
+    
+    result = "'C:\Users\User\Documents\excel-related-table-tool\[Production.xlsm]Sheet1'!$A$1:$C$5"
+    Set lo = StringNameToListObject(result)
+    Debug.Print lo.Name
+    
+    result = "[Production.xlsm]Sheet1!$A$1:$C$5"
+    Set lo = StringNameToListObject(result)
+    Debug.Print lo.Name
+        
+    result = "Sheet1!A1:C10"
+    Set lo = StringNameToListObject(result)
+    Debug.Print lo.Name
+    
+    'Debug.Print lo.Name
+End Sub
+
 Public Function StringNameToListObject(ByVal stringName As String) As ListObject
     Dim path As String
     Dim filename As String
@@ -141,7 +163,7 @@ Attribute TryGetTableFromText.VB_Description = "test"
     Dim rangeaddress As String
     Dim filename As String
     
-    filename = GetFilenameFromRangeText(rangetext)
+    filename = Module1.GetFilenameFromRangeText(rangetext)
     If IsWorkbookOpen(filename) Then
         Set wb = Application.Workbooks(filename)
         sheetname = Mid$(rangetext, InStr(rangetext, "]") + 1, InStr(rangetext, "!") - InStr(rangetext, "]") - 1)
@@ -155,7 +177,7 @@ Attribute TryGetTableFromText.VB_Description = "test"
     Else
         MsgBox "TryGetTableFromText DoOpen NYI"
         Dim path As String
-        path = GetPathFromRangeText(rangetext)
+        path = Module1.GetPathFromRangeText(rangetext)
         'Debug.Print path
         ' Need a flag for Transfer class if we cannot open the workbook from an old serialized instructionf
     End If

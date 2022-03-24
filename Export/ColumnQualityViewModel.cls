@@ -44,12 +44,15 @@ End Function
 Public Sub UpdateListView(ByVal lv As ListView)
     Debug.Assert IViewModel_IsValid
     
-    AddListViewItem lv, "Distinct", this.Results.Count, "Tick"
-    AddListViewItem lv, "Unique", this.Results.UniqueKeys.Count, "Tick"
-    AddListViewItem lv, "Non-Text", this.Results.NonTextCount, "Cross"
-    AddListViewItem lv, "Errors", this.Results.ErrorCount, "TraceError"
-    AddListViewItem lv, "Blanks", this.Results.BlankCount, "Cross"
-    AddListViewItem lv, "Count", this.Results.Range.Cells.Count, "AutoSum"
+    Dim target As Long
+    target = this.Results.Range.Cells.Count
+    
+    AddListViewItem lv, "Distinct", this.Results.Count, target
+    AddListViewItem lv, "Unique", this.Results.UniqueKeys.Count, target
+    AddListViewItem lv, "Non-Text", this.Results.NonTextCount, 0
+    AddListViewItem lv, "Errors", this.Results.ErrorCount, 0
+    AddListViewItem lv, "Blanks", this.Results.BlankCount, 0
+    AddListViewItem lv, "Count", this.Results.Range.Cells.Count, -1
     
     With lv.ListItems(lv.ListItems.Count)
         .Bold = True
@@ -57,7 +60,21 @@ Public Sub UpdateListView(ByVal lv As ListView)
     End With
 End Sub
 
-Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal value As Integer, ByVal icon As String)
+Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal value As Integer, ByVal target As Long)
+    Dim icon As String
+    
+    If value = target Then
+        icon = "Tick"
+    ElseIf value < target And target > 0 Then
+        icon = "TraceError"
+    Else
+        icon = "Cross"
+    End If
+    
+    If target = -1 Then
+        icon = "AutoSum"
+    End If
+    
     With lv.ListItems.Add(text:=caption, icon:=icon, SmallIcon:=icon)
         .ListSubItems.Add text:=value
     End With

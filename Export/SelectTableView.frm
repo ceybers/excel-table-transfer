@@ -41,6 +41,10 @@ Private Sub cmbClearSearch_Click()
     Me.txtSearch.SetFocus
 End Sub
 
+Private Sub cmbOK_Click()
+    Me.Hide
+End Sub
+
 Private Sub tvTables_DblClick()
     If Not vm.SelectedTable Is Nothing Then
         Me.Hide
@@ -220,6 +224,11 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     
     InitializeView
 
+    If vm.AutoSelected Then
+        IView_ShowDialog = True
+        Exit Function
+    End If
+    
     Me.Show
     IView_ShowDialog = Not this.IsCancelled
 End Function

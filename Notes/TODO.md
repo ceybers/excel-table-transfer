@@ -1,5 +1,37 @@
 # TODO
 
+## General
+
+- [ ] Fail gracefully if only one table available
+- [ ] Cancel/Back/Next/Finish stages (AppContext?)
+- [ ] Highlighting of additions/mapped/removals
+- [ ] Consider adding warning for data-loss for: remove orphans, and clear destination column when not a 1:1 match
+- [ ] Map values into newly created columns
+- [ ] Finish mapping without any mapped columns (i.e. to add/remove keys only)
+- [ ] "Transfer" sort order (i.e. Sort the keys in destination table by the order they are in the source table)
+- [ ] Transfer .NumberFormat from first cell in src column to entire dst column
+- [ ] Transfer ColumnWidths
+- [ ] Transfer font-family, font-size, vertical-alignment, horizontal-alignment, text-wrapping
+## Table Select
+*None*
+## Key Mapper
+- [ ] Add options for insert/removing keys under Key Set Theory
+- [ ] Try and auto-match column when changing tables
+- [ ] Smart key column guessing (try to find columns with 100% unique values and 1:1 match between src/dst)
+## Column Mapper
+- [ ] Map Value Columns implement multi-select on ListView without breaking single selection buttons e.g. Map
+- [ ] Add column number (i.e. Column A) to Column Mapping dialog
+- [ ] Flag columns with column-wide formulae in ListView
+## Transfer History
+- [ ] Transfer History fails on unsaved workbooks
+- [ ] Using Split(curStr, "") in parsing history fails when filename has spaces in it
+## Options
+- [ ] Default Respect Filters to Yes for both Source and Destination
+- [ ] Default Save Instruction to Yes if workbook already has a history
+- [ ] Option to ignore columns with column-wide formulae in Source and/or Destination from tranfer
+- [ ] Option to exclude non-unique keys from mapping (i.e. do not map to key vs map to first occurrence)
+- [ ] Option to include/exclude values transfered by VarType()
+## Complete
 - [x] KeyColumn
 - [x] ColumnPair and ColumnPairs
 - [x] ValueMapper2 View and ViewModel
@@ -13,32 +45,8 @@
 - [x] Update git README.md with new screenshots
 - [x] Add splash screen that asks if the table in Selection is the source or destination. This replaces TableSelect as the intial dialog
 - [x] Match key columns by name
-- [ ] Fail gracefully if only one table available
-- [ ] Auto-select table if only one other table available to select, and focus on OK/Next
-- [ ] Check if OK button works like double clicking treeview
-- [ ] Change icons in Key Column Mapper to reflect test results, i.e. green check only if Unique = Count
-- [ ] Add options for insert/removing keys under Key Set Theory
-- [ ] Rename Key Set Theory ListView headers to Orphans and Additions
-- [ ] Default Respect Filters to Yes for both Source and Destination
-- [ ] Consider adding warning for data-loss for: remove orphans, and clear destination column when not a 1:1 match
-- [ ] Default Save Instruction to Yes if workbook already has a history
-- [ ] Transfer History fails on unsaved workbooks
-- [ ] Using Split(curStr, "") in parsing history fails when filename has spaces in it
-- [ ] Suppress prompt to auto-match key column by name when first showing dialog (and before user input)
-- [ ] Add column number (i.e. Column A) to Key Mapping dialog
-- [ ] Flag columns with column-wide formulae in ListView
-- [ ] Option to ignore columns with column-wide formulae in Source and/or Destination from tranfer
-- [ ] Option to exclude non-unique keys from mapping (i.e. do not map to key vs map to first occurrence)
-- [ ] Highlighted of additions/mapped/removals
-- [ ] Transfer include/exclude values by VarType()
-- [ ] Cancel/Back/Next/Finish stages (AppContext?)
-- [ ] Map values into newly created columns
-- [ ] Finish mapping without any mapped columns (i.e. to add/remove keys only)
-- [ ] "Transfer" sort order (i.e. Sort the keys in destination table by the order they are in the source table)
-- [ ] Smart key column guessing (try to find columns with 100% unique values and 1:1 match between src/dst)
-- [ ] Transfer .NumberFormat from first cell in src column to entire dst column
-- [ ] Transfer ColumnWidths
-- [ ] Transfer font-family, font-size, vertical-alignment, horizontal-alignment, text-wrapping
-- [ ] Change Column Quality icons to reflect desireable values for measures
-- [ ] Try and auto-match column when changing tables
-- [ ] Map Value Columns implement multi-select on ListView without breaking single selection buttons e.g. Map
+- [x] Auto-select table if only one other table available to select, and focus on OK/Next
+- [x] Check if OK button works like double clicking treeview
+- [x] Change icons in Key Column Mapper to reflect test results, i.e. green check only if Unique = Count
+- [x] Rename Key Set Theory ListView headers to Orphans and Additions
+- [x] Suppress prompt to auto-match key column by name when first showing dialog (and before user input)

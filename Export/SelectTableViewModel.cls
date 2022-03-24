@@ -20,9 +20,14 @@ Private Type TViewModel
     ActiveTable As ListObject
     SearchCriteria As String
     Tables As Collection
+    AutoSelected As Boolean
 End Type
 
 Private this As TViewModel
+
+Public Property Get AutoSelected() As Boolean
+    AutoSelected = this.AutoSelected
+End Property
 
 Public Property Get Tables() As Collection
     Set Tables = this.Tables
@@ -57,6 +62,9 @@ End Property
 
 Private Sub Load()
     Set this.Tables = GetAllTables
+    
+    TrySelectOther
+    
     RaiseEvent CollectionChanged
 End Sub
 
@@ -96,6 +104,25 @@ Public Sub TrySelect(ByVal key As String)
         End If
     Next lo
     Set SelectedTable = Nothing
+End Sub
+
+Private Sub TrySelectOther()
+    If this.ActiveTable Is Nothing Then
+        Exit Sub
+    End If
+    
+    If this.Tables.Count <> 2 Then
+        Exit Sub
+    End If
+    
+    Dim lo As ListObject
+    For Each lo In this.Tables
+        If lo.Range.Address(external:=True) <> this.ActiveTable.Range.Address(external:=True) Then
+            Set SelectedTable = lo
+            this.AutoSelected = True
+            Exit Sub
+        End If
+    Next lo
 End Sub
 
 Private Sub Class_Initialize()

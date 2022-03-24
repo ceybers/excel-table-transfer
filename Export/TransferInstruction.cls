@@ -183,7 +183,7 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
     Next i
     
     If HasFlag(this.Flags, DestinationFilteredOnly) Then
-        ArrayToFilteredRange.ArrayToFilteredRange Destination.DataBodyRange, arrRHS
+        ArrayToFilteredRange Destination.DataBodyRange, arrRHS
     Else
         Destination.DataBodyRange.Value2 = arrRHS
         Destination.parent.ShowAutoFilter = True

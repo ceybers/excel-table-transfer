@@ -27,6 +27,7 @@ Private msoImageList As ImageList
 Public DEBUG_EVENTS As Boolean
 
 Private Type TFrmKeyMapper2View
+    IsLoaded As Boolean
     IsCancelled As Boolean
 End Type
 
@@ -51,12 +52,16 @@ End Sub
 
 Private Sub cmbColumnLHS_Change()
     vm.TrySelectLHS Me.cmbColumnLHS
-    vm.TryAutoMatch True
+    If this.IsLoaded Then
+        vm.TryAutoMatch True
+    End If
 End Sub
 
 Private Sub cmbColumnRHS_Change()
     vm.TrySelectRHS Me.cmbColumnRHS
-    vm.TryAutoMatch False
+    If this.IsLoaded Then
+        vm.TryAutoMatch False
+    End If
 End Sub
 
 Private Sub cmbHistory_Click()
@@ -66,7 +71,7 @@ End Sub
 
 Private Sub cmbTableLHS_DropButtonClick()
     Dim result As ListObject
-    If TrySelectTable(result) = True Then
+    If TestSelectTable.TrySelectTable(result) = True Then
         Set vm.LHSTable = result
     End If
     Me.cmbColumnLHS.SetFocus
@@ -74,7 +79,7 @@ End Sub
 
 Private Sub cmbTableRHS_DropButtonClick()
     Dim result As ListObject
-    If TrySelectTable(result) = True Then
+    If TestSelectTable.TrySelectTable(result) = True Then
         Set vm.RHSTable = result
     End If
     Me.cmbColumnRHS.SetFocus
@@ -123,6 +128,7 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     
     LoadFromVM
     
+    this.IsLoaded = True
     Me.Show
     
     IView_ShowDialog = Not this.IsCancelled
@@ -227,12 +233,12 @@ Private Sub PopulateMatchSets()
     Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn)
     comp.Map
     
-    CollectionToListView comp.LeftOnly, Me.lvSetLHS
-    CollectionToListView comp.Intersection, Me.lvSetInner
-    CollectionToListView comp.RightOnly, Me.lvSetRHS
+    CollectionToListView comp.LeftOnly, Me.lvSetLHS, "Additions"
+    CollectionToListView comp.Intersection, Me.lvSetInner, "Matches"
+    CollectionToListView comp.RightOnly, Me.lvSetRHS, "Orphans"
 End Sub
 
-Private Sub CollectionToListView(ByVal coll As Collection, ByVal lv As ListView)
+Private Sub CollectionToListView(ByVal coll As Collection, ByVal lv As ListView, ByVal header As String)
     lv.view = lvwReport
     lv.Gridlines = True
     lv.ListItems.Clear
@@ -241,5 +247,6 @@ Private Sub CollectionToListView(ByVal coll As Collection, ByVal lv As ListView)
     For Each v In coll
         lv.ListItems.Add text:=v
     Next v
-    lv.ColumnHeaders.Add text:="Key Items (" & coll.Count & ")"
+    lv.ColumnHeaders.Add text:=header & " (" & coll.Count & ")"
 End Sub
+
