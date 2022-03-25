@@ -163,13 +163,20 @@ End Sub
 
 Public Sub TrySelectLHS(ByVal key As String)
     If key <> vbNullString Then
+        On Error Resume Next
         Set LHSKeyColumn = this.LHSColumns(key)
+        On Error GoTo 0
+        Debug.Assert Not LHSKeyColumn Is Nothing
     End If
 End Sub
 
 Public Sub TrySelectRHS(ByVal key As String)
     If key <> vbNullString Then
+        ' TODO This failed in production
+        On Error Resume Next
         Set RHSKeyColumn = this.RHSColumns(key)
+        On Error GoTo 0
+        Debug.Assert Not RHSKeyColumn Is Nothing
     End If
 End Sub
 

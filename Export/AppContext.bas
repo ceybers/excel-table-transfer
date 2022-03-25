@@ -4,7 +4,7 @@ Attribute VB_Name = "AppContext"
 Option Explicit
 
 Private transfer As TransferInstruction
-Private vm As SelectTableViewModel
+Private SelectTableVM As SelectTableViewModel
 
 Private OneTableSelected As ListObject
 
@@ -14,6 +14,10 @@ Public Sub TransferTable()
     'MsgBox "Welcome to table transfer wizard"
     
     InitializeViewModels
+    
+    ' DEBUG
+    Set transfer.Source = ThisWorkbook.Worksheets(1).ListObjects(1)
+    Set transfer.Destination = ThisWorkbook.Worksheets(1).ListObjects(2)
     
     If CheckTablesAvailable = False Then Exit Sub
     
@@ -52,14 +56,15 @@ Private Sub InitializeViewModels()
     Set transfer = New TransferInstruction
     transfer.SetDefaultFlags
     
-    Set vm = New SelectTableViewModel
+    Set SelectTableVM = New SelectTableViewModel
 End Sub
 
 Private Function CheckTablesAvailable() As Boolean
-    If vm.Tables.Count < 2 Then
+    If SelectTableVM.CanSelect = False Then
         MsgBox "Not enough tables available to start a transfer!", vbExclamation + vbOKOnly
         Exit Function
     End If
+    
     CheckTablesAvailable = True
 End Function
 
@@ -73,6 +78,12 @@ End Function
 
 Private Function TryGetSourceOrDestination() As Boolean
     TryGetSourceOrDestination = True
+    
+    If Not transfer.Source Is Nothing And Not transfer.Destination Is Nothing Then
+        ' Tables already set in TransferInstruction
+        ' TODO Check what happens if we set them, but press Back button on next dialog
+        Exit Function
+    End If
     
     If OneTableSelected Is Nothing Then Exit Function
     
@@ -96,22 +107,25 @@ Private Function TryGetSourceOrDestination() As Boolean
 End Function
 
 Private Function TryGetSecondTable() As Boolean
-    Dim vm As SelectTableViewModel
-    Set vm = New SelectTableViewModel
-    Set vm.ActiveTable = OneTableSelected
+    Set SelectTableVM.ActiveTable = OneTableSelected
+        
+    If Not transfer.Source Is Nothing And Not transfer.Destination Is Nothing Then
+        ' Tables already set in TransferInstruction
+        ' TODO Check what happens if we set them, but press Back button on next dialog
+        ' Might need to implement arg Optional Force as Boolean
+        TryGetSecondTable = True
+        Exit Function
+    End If
     
-    Dim frm As IView
-    Set frm = New SelectTableView
-    
-    If frm.ShowDialog(vm) Then
-        If Not vm.SelectedTable Is Nothing Then
-            If transfer.Source Is Nothing Then
-                Set transfer.Source = vm.SelectedTable
-            Else
-                Set transfer.Destination = vm.SelectedTable
-            End If
-            TryGetSecondTable = True
+    If TrySelectTable(Nothing, SelectTableVM) Then
+        If transfer.Source Is Nothing Then
+            Set transfer.Source = SelectTableVM.SelectedTable
+        ElseIf transfer.Destination Is Nothing Then
+            Set transfer.Destination = SelectTableVM.SelectedTable
+        Else
+            Debug.Assert False
         End If
+        TryGetSecondTable = True
     End If
 End Function
 

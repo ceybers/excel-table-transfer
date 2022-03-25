@@ -2,7 +2,7 @@ Attribute VB_Name = "ListObjectHelpers"
 '@Folder("HelperFunctions")
 Option Explicit
 
-Private Sub Test()
+Private Sub test()
     Dim lo As ListObject
     Dim result As String
     

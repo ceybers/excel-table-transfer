@@ -3,16 +3,20 @@ Attribute VB_Name = "TestSelectTable"
 Option Explicit
 Option Private Module
 
-Public Sub Test()
+Public Sub test()
     Dim vm As SelectTableViewModel
     Set vm = New SelectTableViewModel
     Set vm.ActiveTable = ThisWorkbook.Worksheets(1).ListObjects(1)
     
     Dim view As IView
     Set view = New SelectTableView
-    If view.ShowDialog(vm) Then
-        Debug.Print vm.SelectedTable.Name
+    
+    If TrySelectTable(view, vm) Then
+        Debug.Print "TrySelectTable result: TRUE"
+        Debug.Print " vm.SelectedTable: "; vm.SelectedTable
+        Debug.Print " vm.ActiveTable: "; vm.ActiveTable
+        Debug.Print " vm.AutoSelected: "; vm.AutoSelected
     Else
-        Debug.Print "No table selected"
+        Debug.Print "TrySelectTable result: FALSE"
     End If
 End Sub

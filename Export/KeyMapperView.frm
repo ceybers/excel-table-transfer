@@ -83,7 +83,7 @@ End Sub
 
 Private Sub cmbTableLHS_DropButtonClick()
     Dim result As ListObject
-    If TestSelectTable.TrySelectTable(result) = True Then
+    If TrySelectTable(result) = True Then
         Set vm.LHSTable = result
     End If
     Me.cmbColumnLHS.SetFocus
@@ -91,7 +91,7 @@ End Sub
 
 Private Sub cmbTableRHS_DropButtonClick()
     Dim result As ListObject
-    If TestSelectTable.TrySelectTable(result) = True Then
+    If TrySelectTable(result) = True Then
         Set vm.RHSTable = result
     End If
     Me.cmbColumnRHS.SetFocus

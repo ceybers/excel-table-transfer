@@ -12,18 +12,35 @@ Option Explicit
 Option Compare Text
 Implements IViewModel
 
+Private Const ICON_SIZE As Integer = 16
+
 Public Event CollectionChanged()
 Public Event ItemSelected()
 
 Private Type TViewModel
+    Tables As Collection
     SelectedTable As ListObject
     ActiveTable As ListObject
     SearchCriteria As String
-    Tables As Collection
+    
     AutoSelected As Boolean
 End Type
 
 Private this As TViewModel
+
+Public Property Get CanSelect() As Boolean
+    If this.Tables Is Nothing Then
+        CanSelect = False
+        Exit Property
+    End If
+    
+    If this.Tables.Count < 2 Then
+        CanSelect = False
+        Exit Property
+    End If
+    
+    CanSelect = True
+End Property
 
 Public Property Get AutoSelected() As Boolean
     AutoSelected = this.AutoSelected
@@ -63,6 +80,7 @@ End Property
 Private Sub Load()
     Set this.Tables = GetAllTables
     
+    ' Check if there are exactly 2 tables and one is already set as active
     TrySelectOther
     
     RaiseEvent CollectionChanged
@@ -126,6 +144,7 @@ Private Sub TrySelectOther()
 End Sub
 
 Private Sub Class_Initialize()
+    this.AutoSelected = False
     Load
 End Sub
 
@@ -133,3 +152,86 @@ Private Function IViewModel_IsValid() As Boolean
     If this.SelectedTable Is Nothing Then Exit Function
     IViewModel_IsValid = True
 End Function
+
+Public Sub LoadTreeview(ByVal tv As MSComctlLib.TreeView)
+    With tv
+        .ImageList = GetMSOImageList(ICON_SIZE)
+        
+        .Nodes.Clear
+        .Nodes.Add key:="Root", text:="Excel", image:="Excel"
+        
+        .LineStyle = tvwTreeLines
+        .Appearance = cc3D
+        .Style = tvwTreelinesPlusMinusPictureText
+        .Indentation = ICON_SIZE
+        .LabelEdit = tvwManual
+        .HideSelection = False
+    End With
+    
+    Dim lo As ListObject
+    For Each lo In this.Tables
+        TryAddNode tv, lo.parent.parent
+        TryAddNode tv, lo.parent
+        TryAddNode tv, lo
+    Next lo
+    
+    Dim nd As Node
+    For Each nd In tv.Nodes
+        nd.Expanded = True
+    Next nd
+End Sub
+
+Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
+    Dim lo As ListObject
+    Dim ws As Worksheet
+    Dim wb As Workbook
+    
+    Dim key As String
+    Dim parent As String
+    Dim nd As Node
+    Dim image As String
+    Dim text As String
+    Dim suffix As String
+    
+    If TypeOf obj Is Workbook Then
+        Set wb = obj
+        key = "[" & wb.Name & "]"
+        parent = "Root"
+        image = "wb"
+        text = wb.Name
+        
+    ElseIf TypeOf obj Is Worksheet Then
+        Set ws = obj
+        key = "[" & ws.parent.Name & "]" & ws.Name
+        parent = "[" & ws.parent.Name & "]"
+        image = "ws"
+        text = ws.Name
+        
+    ElseIf TypeOf obj Is ListObject Then
+        Set lo = obj
+        key = lo.Range.Address(external:=True)
+        parent = "[" & lo.parent.parent.Name & "]" & lo.parent.Name
+        image = "lo"
+        text = lo.Name
+        suffix = vbNullString
+        
+        If Not this.ActiveTable Is Nothing Then
+            If this.ActiveTable.Range.Address(external:=True) = lo.Range.Address(external:=True) Then
+                suffix = " (active)"
+                image = "activeLo"
+            End If
+        End If
+        
+        text = text & suffix
+    End If
+    
+    For Each nd In tv.Nodes
+        If nd.key = key Then Exit Sub
+    Next nd
+    
+    tv.Nodes.Add relative:=parent, Relationship:=tvwChild, key:=key, text:=text, image:=image
+    
+    If image = "activeLo" Then
+        tv.Nodes(key).ForeColor = RGB(192, 192, 192)
+    End If
+End Sub

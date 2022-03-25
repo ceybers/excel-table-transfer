@@ -24,8 +24,6 @@ Private Const ICON_SIZE As Integer = 16
 Private msoImageList As ImageList
 
 Private Type TView
-    ' Context as MVVM.IAppContext
-    'ViewModel As SelectTableViewModel
     IsCancelled As Boolean
 End Type
 
@@ -56,7 +54,7 @@ Private Sub tvTables_NodeClick(ByVal Node As MSComctlLib.Node)
 End Sub
 
 Private Sub vm_CollectionChanged()
-    LoadTreeview
+    vm.LoadTreeview Me.tvTables
 End Sub
 
 Private Sub vm_ItemSelected()
@@ -68,7 +66,7 @@ Private Sub vm_ItemSelected()
 End Sub
 
 Private Sub txtSearch_Change()
-    vm.SearchCriteria = txtSearch & "*"
+    vm.SearchCriteria = (txtSearch & "*")
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -78,32 +76,34 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     End If
 End Sub
 
-Private Sub LoadTreeview()
-    With Me.tvTables
-        .ImageList = msoImageList
-        
-        .Nodes.Clear
-        .Nodes.Add key:="Root", text:="Excel", image:="root"
-        
-        .LineStyle = tvwTreeLines
-        .Appearance = cc3D
-        .Style = tvwTreelinesPlusMinusPictureText
-        .Indentation = ICON_SIZE
-        .LabelEdit = tvwManual
-        .HideSelection = False
-    End With
+Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
+    Set vm = ViewModel
     
-    Dim lo As ListObject
-    For Each lo In vm.Tables
-        TryAddNode lo.parent.parent
-        TryAddNode lo.parent
-        TryAddNode lo
-    Next lo
+    InitializeView
     
-    Dim nd As Node
-    For Each nd In Me.tvTables.Nodes
-        nd.Expanded = True
-    Next nd
+    If vm.AutoSelected = True Then
+        IView_ShowDialog = True
+        Exit Function
+    End If
+    
+    If vm.CanSelect Then
+        Me.Show
+    End If
+    
+    IView_ShowDialog = Not this.IsCancelled
+End Function
+
+Private Sub InitializeView()
+    this.IsCancelled = False
+    Me.txtSearch = vbNullString
+    Me.cmbOK.Enabled = False
+    
+    vm.LoadTreeview Me.tvTables
+    
+    Set Me.cmbClearSearch.Picture = GetMSOImageList(ICON_SIZE).ListImages.Item("delete").Picture
+    Me.txtSearch.SetFocus
+    
+    UpdateListViewWithSelectedTable
 End Sub
 
 Private Sub UpdateListViewWithSelectedTable()
@@ -116,123 +116,13 @@ Private Sub UpdateListViewWithSelectedTable()
         If nd.key = vm.SelectedTable.Range.Address(external:=True) Then
             nd.Selected = True
             nd.EnsureVisible
-            'Me.tvTables.SetFocus
+
             Me.cmbOK.Enabled = True
             Me.cmbOK.SetFocus
             Exit Sub
         End If
     Next nd
 End Sub
-
-Private Sub TryHighlightActive()
-    Dim nd As Node
-    For Each nd In Me.tvTables.Nodes
-        If nd.key = vm.ActiveTable.Range.Address(external:=True) Then
-            nd.Selected = True
-            nd.EnsureVisible
-            Exit Sub
-        End If
-    Next nd
-End Sub
-
-' TODO This should be in VM as LoadCollectionToTreeView
-Private Sub TryAddNode(ByVal obj As Object)
-    Dim lo As ListObject
-    Dim ws As Worksheet
-    Dim wb As Workbook
-    
-    Dim key As String
-    Dim parent As String
-    Dim nd As Node
-    Dim image As String
-    Dim text As String
-    Dim suffix As String
-    
-    If TypeOf obj Is Workbook Then
-        Set wb = obj
-        key = "[" & wb.Name & "]"
-        parent = "Root"
-        image = "wb"
-        text = wb.Name
-        
-    ElseIf TypeOf obj Is Worksheet Then
-        Set ws = obj
-        key = "[" & ws.parent.Name & "]" & ws.Name
-        parent = "[" & ws.parent.Name & "]"
-        image = "ws"
-        text = ws.Name
-        
-    ElseIf TypeOf obj Is ListObject Then
-        Set lo = obj
-        key = lo.Range.Address(external:=True)
-        parent = "[" & lo.parent.parent.Name & "]" & lo.parent.Name
-        image = "lo"
-        text = lo.Name
-        suffix = vbNullString
-        
-        If Not vm.ActiveTable Is Nothing Then
-            If vm.ActiveTable.Range.Address(external:=True) = lo.Range.Address(external:=True) Then
-                suffix = " (active)"
-                image = "activeLo"
-            End If
-        End If
-        
-        text = text & suffix
-    End If
-    
-    For Each nd In Me.tvTables.Nodes
-        If nd.key = key Then Exit Sub
-    Next nd
-    
-    Me.tvTables.Nodes.Add relative:=parent, Relationship:=tvwChild, key:=key, text:=text, image:=image
-End Sub
-
-Private Sub PopulateImageList()
-    Dim il As ImageList
-    Set msoImageList = New ImageList
-    Set il = msoImageList
-    
-    AddImageListImage il, "root", "BlogHomePage"
-    AddImageListImage il, "wb", "FileSaveAsExcelXlsx"
-    AddImageListImage il, "ws", "HeaderFooterSheetNameInsert"
-    AddImageListImage il, "lo", "CreateTable"
-    AddImageListImage il, "col", "TableColumnSelect"
-    AddImageListImage il, "activeLo", "TableAutoFormatStyle"
-    AddImageListImage il, "delete", "Delete"
-End Sub
-
-Private Sub AddImageListImage(ByVal il As ImageList, ByVal key As String, ByVal imageMso As String)
-    il.ListImages.Add 1, key, Application.CommandBars.GetImageMso(imageMso, ICON_SIZE, ICON_SIZE)
-End Sub
-
-Private Sub InitializeView()
-    this.IsCancelled = False
-    Me.txtSearch = vbNullString
-    Me.cmbOK.Enabled = False
-    
-    PopulateImageList
-    LoadTreeview
-    
-    Set Me.cmbClearSearch.Picture = msoImageList.ListImages.Item("delete").Picture
-    Me.txtSearch.SetFocus
-    
-    UpdateListViewWithSelectedTable
-End Sub
-
-Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
-    Set vm = ViewModel
-    
-    InitializeView
-
-    If vm.AutoSelected Then
-        IView_ShowDialog = True
-        Exit Function
-    End If
-    
-    Me.Show
-    IView_ShowDialog = Not this.IsCancelled
-End Function
-
 
 Private Sub OnCancel()
     this.IsCancelled = True

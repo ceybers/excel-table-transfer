@@ -3,7 +3,7 @@ Attribute VB_Name = "TestKeyMapper"
 Option Explicit
 Option Private Module
 
-Public Sub Test()
+Public Sub test()
     Dim vm As KeyMapperViewModel
     Dim view As IView
     

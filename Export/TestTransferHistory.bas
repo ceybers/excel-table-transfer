@@ -2,7 +2,7 @@ Attribute VB_Name = "TestTransferHistory"
 '@Folder("TransferHistory")
 Option Explicit
 
-Public Sub Test()
+Public Sub test()
     Dim vm As TransferHistoryViewModel
     Set vm = New TransferHistoryViewModel
     'Set vm.ActiveTable = ThisWorkbook.Worksheets(1).ListObjects(1)

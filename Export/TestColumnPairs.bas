@@ -3,7 +3,7 @@ Attribute VB_Name = "TestColumnPairs"
 Option Explicit
 Option Private Module
 
-Public Sub Test()
+Public Sub test()
     Dim lhs As ListObject
     Dim rhs As ListObject
     
