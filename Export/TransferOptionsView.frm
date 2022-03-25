@@ -58,7 +58,7 @@ Private Sub CheckBox8_Click()
 End Sub
 
 Private Sub CheckBox9_Click()
-    SetFlag HighlightMapped, Me.CheckBox8
+    SetFlag HighlightMapped, Me.CheckBox9
 End Sub
 
 Private Sub SetFlag(ByVal flag As TransferOptionsEnum, ByRef cb As MSForms.CheckBox)

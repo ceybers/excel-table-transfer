@@ -44,6 +44,11 @@ End Function
 Public Sub UpdateListView(ByVal lv As ListView)
     Debug.Assert IViewModel_IsValid
     
+    If this.Results Is Nothing Then
+        AddListViewItem lv, "Empty Table", 0, -2
+        Exit Sub
+    End If
+    
     Dim target As Long
     target = this.Results.Range.Cells.Count
     

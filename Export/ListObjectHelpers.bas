@@ -193,7 +193,9 @@ End Function
 
 Public Function ListColumnHasArray(ByVal lc As ListColumn) As Boolean
     Debug.Assert Not lc Is Nothing
-
+    
+    If lc.DataBodyRange Is Nothing Then Exit Function
+    
     If IsNull(lc.DataBodyRange.FormulaArray) Then
         'Debug.Print "cells are different"
         ListColumnHasArray = False

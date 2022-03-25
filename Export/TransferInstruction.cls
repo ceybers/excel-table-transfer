@@ -101,8 +101,9 @@ End Sub
 Public Function IsValid() As Boolean
     If SourceKey Is Nothing Then Exit Function
     If DestinationKey Is Nothing Then Exit Function
-    If ValuePairs Is Nothing Then Exit Function
-    If ValuePairs.Count = 0 Then Exit Function
+    ' Commented these out, so that we can still transfer Keys across without value columns
+    'If ValuePairs Is Nothing Then Exit Function
+    'If ValuePairs.Count = 0 Then Exit Function
     IsValid = True
 End Function
 
@@ -154,6 +155,17 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
                 Destination.parent.AutoFilter.ShowAllData
             End If
         End If
+    End If
+    
+    If Source.DataBodyRange Is Nothing Then
+        ' This should never happen
+        Exit Sub
+    End If
+    
+    If Destination.DataBodyRange Is Nothing Then
+        ' This will happen when transfering into an empty table without the flag
+        ' append new keys
+        Exit Sub
     End If
     
     arrLHS = Source.DataBodyRange.Value2
@@ -231,12 +243,22 @@ Private Sub AppendUnmappedKeys()
     Dim lr As ListRow
     Dim i As Long
      
-    Set lc = GetListColumnFromRange(comp.rhs.Range)
+    Set lc = DestinationKey 'GetListColumnFromRange(comp.rhs.Range)
     Set lo = lc.parent
 
-    For i = 1 To comp.LeftOnly.Count
+    Dim c As Long
+    If comp.rhs Is Nothing Then
+        c = comp.LHS.Keys.Count
+    Else
+        c = comp.LeftOnly.Count
+    End If
+    For i = 1 To c
         Set lr = lo.ListRows.Add(alwaysinsert:=True)
-        lr.Range.Cells(1, lc.Index).Value2 = comp.LeftOnly.Item(i)
+        If comp.rhs Is Nothing Then
+            lr.Range.Cells(1, lc.Index).Value2 = comp.LHS.Keys(i)
+        Else
+            lr.Range.Cells(1, lc.Index).Value2 = comp.LeftOnly.Item(i)
+        End If
     Next i
 End Sub
 

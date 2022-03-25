@@ -359,14 +359,16 @@ Public Function TryGuess(Optional Force As Boolean = False) As Boolean
             For j = 1 To rhsCount
                 Set comp.rhs = KeyColumn.FromColumn(this.RHSColumns(j))
                 
-                If comp.rhs.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
-                    comp.Map
-
-                    If comp.Score > bestScore Then
-                        'Debug.Print "New best score: " & comp.Score & " (" & i & "," & j & ")"
-                        bestScore = comp.Score
-                        Set bestLHS = this.LHSColumns(i)
-                        Set bestRHS = this.RHSColumns(j)
+                If Not comp.rhs Is Nothing Then
+                    If comp.rhs.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
+                        comp.Map
+    
+                        If comp.Score > bestScore Then
+                            'Debug.Print "New best score: " & comp.Score & " (" & i & "," & j & ")"
+                            bestScore = comp.Score
+                            Set bestLHS = this.LHSColumns(i)
+                            Set bestRHS = this.RHSColumns(j)
+                        End If
                     End If
                 End If
             Next j

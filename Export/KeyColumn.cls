@@ -41,6 +41,10 @@ Public Property Get Range() As Range
 End Property
 
 Public Property Set Range(ByVal rhs As Range)
+    If rhs Is Nothing Then
+        Err.Raise Number:=vbObjectError + 1, Description:="Cannot create clsKeyColumn with a column in an empty table"
+        Exit Property
+    End If
     If Not IsRangeASingleColumn(rhs) Then
         Err.Raise Number:=vbObjectError + 1, Description:="Cannot create clsKeyColumn with a range that spans multiple columns"
         Exit Property
@@ -227,6 +231,10 @@ Public Function Exists(ByVal value As Variant) As Boolean
 End Function
 
 Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As Boolean = False, Optional ByVal Filtered As Boolean = False) As KeyColumn
+    If rng Is Nothing Then
+        'Err.Raise vbObjectError + 3, Err.Source, "Cannot create KeyColumn from empty range (rng is nothing)"
+        Exit Function
+    End If
     Set FromRange = New KeyColumn
     FromRange.RespectFilter = Filtered
     FromRange.IncludeNumbersAsText = IncludeNumbers
@@ -238,6 +246,7 @@ Public Function FromColumn(ByVal lc As ListColumn, Optional ByVal IncludeNumbers
 End Function
 
 Private Function IsRangeASingleColumn(ByVal rng As Range) As Boolean
+    If rng Is Nothing Then Exit Function
     Dim area As Range
     For Each area In rng.Areas
         If area.column <> rng.column Then

@@ -75,6 +75,10 @@ Private Sub cmbCheckQuality_Click()
 End Sub
 
 Private Sub cmbColumnLHS_DropButtonClick()
+    If Me.cmbColumnLHS = vm.LHSKeyColumn.Name Then
+        Exit Sub
+    End If
+    
     vm.TrySelectLHS Me.cmbColumnLHS
     
     If this.IsInitialLoad = False Then
@@ -83,6 +87,10 @@ Private Sub cmbColumnLHS_DropButtonClick()
 End Sub
 
 Private Sub cmbColumnRHS_DropButtonClick()
+    If Me.cmbColumnRHS = vm.RHSKeyColumn.Name Then
+        Exit Sub
+    End If
+    
     vm.TrySelectRHS Me.cmbColumnRHS
     
     If this.IsInitialLoad = False Then
@@ -369,10 +377,13 @@ Private Sub CollectionToListView(ByVal coll As Collection, ByVal lv As ListView,
         .ColumnHeaders.Clear
     End With
     
-    Dim v As Variant
-    For Each v In coll
-        lv.ListItems.Add text:=v
-    Next v
-    
-    lv.ColumnHeaders.Add text:=header & " (" & coll.Count & ")"
+    If coll Is Nothing Then
+        lv.ColumnHeaders.Add text:=header & " (0)"
+    Else
+        Dim v As Variant
+        For Each v In coll
+            lv.ListItems.Add text:=v
+        Next v
+        lv.ColumnHeaders.Add text:=header & " (" & coll.Count & ")"
+    End If
 End Sub

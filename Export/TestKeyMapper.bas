@@ -1,7 +1,7 @@
 Attribute VB_Name = "TestKeyMapper"
 '@Folder("KeyMapper")
 Option Explicit
-'Option Private Module
+Option Private Module
 
 Public Sub TestKeyMapper()
     Dim ti As TransferInstruction

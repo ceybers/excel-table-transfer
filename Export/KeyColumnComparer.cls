@@ -130,8 +130,12 @@ Public Function Create(ByVal LHS As KeyColumn, ByVal rhs As KeyColumn) As KeyCol
 End Function
 
 Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByVal FilterDestination As Boolean = False) As Variant
-    Debug.Assert Not this.LHS Is Nothing
-    Debug.Assert Not this.rhs Is Nothing
+    'Debug.Assert Not this.LHS Is Nothing
+    'Debug.Assert Not this.rhs Is Nothing
+    If this.LHS Is Nothing Or this.rhs Is Nothing Then
+        'Err.Raise vbObjectError + 4, Err.Source, "Cannot Map KeyColumns with an empty table"
+        Exit Function
+    End If
     
     Dim result As Variant
     Dim arr As Variant
