@@ -12,18 +12,18 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Type TClsColumnPair
-    lhs As ListColumn
+    LHS As ListColumn
     rhs As ListColumn
 End Type
 
 Private this As TClsColumnPair
 
-Public Property Get lhs() As ListColumn
-    Set lhs = this.lhs
+Public Property Get LHS() As ListColumn
+    Set LHS = this.LHS
 End Property
 
-Public Property Set lhs(ByVal rhs As ListColumn)
-    Set this.lhs = rhs
+Public Property Set LHS(ByVal rhs As ListColumn)
+    Set this.LHS = rhs
 End Property
 
 Public Property Get rhs() As ListColumn
@@ -35,28 +35,28 @@ Public Property Set rhs(ByVal rhs As ListColumn)
 End Property
 
 Public Function IsValid() As Boolean
-    If this.lhs Is Nothing Then Exit Function
+    If this.LHS Is Nothing Then Exit Function
     If this.rhs Is Nothing Then Exit Function
     IsValid = True
 End Function
 
-Public Function Create(ByVal lhs As ListColumn, ByVal rhs As ListColumn) As ColumnPair
+Public Function Create(ByVal LHS As ListColumn, ByVal rhs As ListColumn) As ColumnPair
     Set Create = New ColumnPair
     With Create
-        Set .lhs = lhs
+        Set .LHS = LHS
         Set .rhs = rhs
     End With
 End Function
 
 Public Function Equals(ByVal rhs As ColumnPair) As Boolean
     If rhs Is Nothing Then Exit Function
-    If Not this.lhs Is rhs.lhs Then Exit Function
+    If Not this.LHS Is rhs.LHS Then Exit Function
     If Not this.rhs Is rhs.rhs Then Exit Function
     Equals = True
 End Function
 
 Public Function ToString() As String
-    Debug.Assert Not lhs Is Nothing
+    Debug.Assert Not LHS Is Nothing
     Debug.Assert Not rhs Is Nothing
-    ToString = lhs.Name & "," & rhs.Name
+    ToString = LHS.Name & "," & rhs.Name
 End Function

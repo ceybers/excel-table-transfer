@@ -54,29 +54,29 @@ Private Sub PrintTransferInstruction(ByVal transfer As TransferInstruction)
     Debug.Print "END"
 End Sub
 
-Private Function GetTestTransferInstruction() As TransferInstruction
-    Dim lhs As ListObject
+Public Function GetTestTransferInstruction() As TransferInstruction
+    Dim LHS As ListObject
     Dim rhs As ListObject
     
     Set GetTestTransferInstruction = New TransferInstruction
     
-    Set lhs = ThisWorkbook.Worksheets(1).ListObjects(1)
+    Set LHS = ThisWorkbook.Worksheets(1).ListObjects(1)
     Set rhs = ThisWorkbook.Worksheets(1).ListObjects(2)
     
     With GetTestTransferInstruction
-        Set .Source = lhs
+        Set .Source = LHS
         Set .Destination = rhs
         
-        Set .SourceKey = lhs.ListColumns(1)
+        Set .SourceKey = LHS.ListColumns(1)
         Set .DestinationKey = rhs.ListColumns(3)
             
         .Flags = AddFlag(.Flags, ClearDestinationFirst)
         .Flags = AddFlag(.Flags, DestinationFilteredOnly)
         .Flags = AddFlag(.Flags, HighlightMapped)
     
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(2), rhs.ListColumns(1))
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(3), rhs.ListColumns(4))
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(4), rhs.ListColumns(2))
+        .ValuePairs.Add ColumnPair.Create(LHS.ListColumns(2), rhs.ListColumns(1))
+        .ValuePairs.Add ColumnPair.Create(LHS.ListColumns(3), rhs.ListColumns(4))
+        .ValuePairs.Add ColumnPair.Create(LHS.ListColumns(4), rhs.ListColumns(2))
     End With
 End Function
 

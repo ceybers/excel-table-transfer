@@ -13,7 +13,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Type TClsCompareKeyColumns
-    lhs As KeyColumn
+    LHS As KeyColumn
     rhs As KeyColumn
     LeftOnly As Collection
     Intersection As Collection
@@ -38,12 +38,12 @@ Public Property Get Score() As Double
     'Debug.Print "Score: "; score
 End Property
 
-Public Property Get lhs() As KeyColumn
-    Set lhs = this.lhs
+Public Property Get LHS() As KeyColumn
+    Set LHS = this.LHS
 End Property
 
-Public Property Set lhs(ByVal rhs As KeyColumn)
-    Set this.lhs = rhs
+Public Property Set LHS(ByVal rhs As KeyColumn)
+    Set this.LHS = rhs
     TryDoWork
 End Property
 
@@ -82,7 +82,7 @@ End Property
 
 ' Methods
 Private Sub TryDoWork()
-    If this.lhs Is Nothing Then Exit Sub
+    If this.LHS Is Nothing Then Exit Sub
     If this.rhs Is Nothing Then Exit Sub
     DoWork
 End Sub
@@ -90,7 +90,7 @@ End Sub
 Private Sub DoWork()
     Set this.Dict = CreateObject("Scripting.Dictionary")
     Dim key As Variant
-    For Each key In lhs.Keys
+    For Each key In LHS.Keys
         Upsert key, 1
     Next
     For Each key In rhs.Keys
@@ -123,14 +123,14 @@ Private Sub Upsert(ByVal key As String, ByVal value As Integer)
     End If
 End Sub
 
-Public Function Create(ByVal lhs As KeyColumn, ByVal rhs As KeyColumn) As KeyColumnComparer
+Public Function Create(ByVal LHS As KeyColumn, ByVal rhs As KeyColumn) As KeyColumnComparer
     Set Create = New KeyColumnComparer
-    Set Create.lhs = lhs
+    Set Create.LHS = LHS
     Set Create.rhs = rhs
 End Function
 
 Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByVal FilterDestination As Boolean = False) As Variant
-    Debug.Assert Not this.lhs Is Nothing
+    Debug.Assert Not this.LHS Is Nothing
     Debug.Assert Not this.rhs Is Nothing
     
     Dim result As Variant
@@ -138,9 +138,9 @@ Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByV
     Dim i As Long
     
     Dim lhsFlt As KeyColumn
-    Set lhsFlt = this.lhs
+    Set lhsFlt = this.LHS
     If FilterSource Then
-        Set lhsFlt = KeyColumn.FromRange(this.lhs.Range, this.lhs.IncludeNumbersAsText, True)
+        Set lhsFlt = KeyColumn.FromRange(this.LHS.Range, this.LHS.IncludeNumbersAsText, True)
     End If
     
     Dim rhsFlt As KeyColumn

@@ -11,6 +11,8 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IViewModel
 
+Private Const BEST_MATCH_DISTINCT_THRESHOLD = 0.75
+
 Public Event PropertyChanged(ByVal propertyName As String)
 Public Event CheckCompleted()
 Public Event PreviewChanged()
@@ -71,27 +73,50 @@ Public Property Get LHSTable() As ListObject
     Set LHSTable = this.LHSTable
 End Property
 
-Public Property Set LHSTable(ByVal rhs As ListObject)
-    If this.LHSTable Is rhs Then Exit Property
-    Set this.LHSTable = rhs
+Public Property Set LHSTable(ByVal lo As ListObject)
+    If lo Is Nothing Then
+        Exit Property
+    End If
+    
+    If this.LHSTable Is lo Then
+        Exit Property
+    End If
+    
+    Set this.LHSTable = lo
     this.IsDirty = True
-    Debug.Assert Not rhs Is Nothing
+    this.IsAutoGuessed = False
+    
     UpdateColumns this.LHSTable, this.LHSColumns
-    RaiseEvent PropertyChanged("LHSTable")
-    RaiseEvent PropertyChanged("LHSColumns")
+    
+    Set LHSKeyColumn = this.LHSColumns.Item(1)
+    
+    RaiseEvent PropertyChanged(KeyMapperEvents.LHS_COLUMNS)
+    RaiseEvent PropertyChanged(KeyMapperEvents.LHS_TABLE)
 End Property
 
 Public Property Get RHSTable() As ListObject
     Set RHSTable = this.RHSTable
 End Property
 
-Public Property Set RHSTable(ByVal rhs As ListObject)
-    If this.RHSTable Is rhs Then Exit Property
-    Set this.RHSTable = rhs
+Public Property Set RHSTable(ByVal lo As ListObject)
+    If lo Is Nothing Then
+        Exit Property
+    End If
+    
+    If this.RHSTable Is lo Then
+        Exit Property
+    End If
+    
+    Set this.RHSTable = lo
     this.IsDirty = True
+    this.IsAutoGuessed = False
+    
     UpdateColumns this.RHSTable, this.RHSColumns
-    RaiseEvent PropertyChanged("RHSTable")
-    RaiseEvent PropertyChanged("RHSColumns")
+    
+    Set RHSKeyColumn = this.RHSColumns.Item(1)
+        
+    RaiseEvent PropertyChanged(KeyMapperEvents.RHS_COLUMNS)
+    RaiseEvent PropertyChanged(KeyMapperEvents.RHS_TABLE)
 End Property
 
 Public Property Get LHSColumns() As Collection
@@ -114,31 +139,54 @@ Public Property Get LHSKeyColumn() As ListColumn
     Set LHSKeyColumn = this.LHSKeyColumn
 End Property
 
-Public Property Set LHSKeyColumn(ByVal rhs As ListColumn)
-    If Not this.LHSKeyColumn Is Nothing Then
-        If this.LHSKeyColumn.Name = rhs.Name Then Exit Property
+Public Property Set LHSKeyColumn(ByVal lo As ListColumn)
+    If Not lo Is Nothing Then
+        If Not this.LHSKeyColumn Is Nothing Then
+            If this.LHSKeyColumn.Name = lo.Name Then Exit Property
+        End If
     End If
     this.IsDirtyQuality = True
     this.IsDirtyMatch = False
     this.IsDirty = True
-    Set this.LHSKeyColumn = rhs
-    RaiseEvent PropertyChanged("LHSKeyColumn")
+    Set this.LHSKeyColumn = lo
+    RaiseEvent PropertyChanged(KeyMapperEvents.LHS_KEY_COLUMN)
 End Property
 
 Public Property Get RHSKeyColumn() As ListColumn
     Set RHSKeyColumn = this.RHSKeyColumn
 End Property
 
-Public Property Set RHSKeyColumn(ByVal rhs As ListColumn)
-    If Not this.RHSKeyColumn Is Nothing Then
-        If this.RHSKeyColumn.Name = rhs.Name Then Exit Property
+Public Property Set RHSKeyColumn(ByVal lo As ListColumn)
+    If Not lo Is Nothing Then
+        If Not this.RHSKeyColumn Is Nothing Then
+            If this.RHSKeyColumn.Name = lo.Name Then Exit Property
+        End If
     End If
     this.IsDirtyQuality = True
     this.IsDirtyMatch = False
     this.IsDirty = True
-    Set this.RHSKeyColumn = rhs
-    RaiseEvent PropertyChanged("RHSKeyColumn")
+    Set this.RHSKeyColumn = lo
+    RaiseEvent PropertyChanged(KeyMapperEvents.RHS_KEY_COLUMN)
 End Property
+
+' --- Subs
+Public Sub LoadFromTransferInstruction(ByVal ti As TransferInstruction)
+    If Not ti.Source Is Nothing Then
+        Set LHSTable = ti.Source
+    End If
+    
+    If Not ti.Source Is Nothing Then
+        Set RHSTable = ti.Destination
+    End If
+    
+    If Not ti.Source Is Nothing Then
+        Set LHSKeyColumn = ti.SourceKey
+    End If
+    
+    If Not ti.Source Is Nothing Then
+        Set RHSKeyColumn = ti.DestinationKey
+    End If
+End Sub
 
 Private Sub UpdateColumns(ByVal lo As ListObject, ByVal coll As Collection)
     ' TODO This fails when selecting new table in key select dialog
@@ -180,10 +228,18 @@ Public Sub TrySelectRHS(ByVal key As String)
     End If
 End Sub
 
-Public Sub TryAutoMatch(ByVal leftToRight As Boolean, ByVal Quiet As Boolean)
+Public Function TryAutoMatch(ByVal leftToRight As Boolean, ByVal Quiet As Boolean) As Boolean
+    If leftToRight And LHSKeyColumn Is Nothing Then
+        Debug.Assert False
+    End If
+    
+    If leftToRight = False And LHSKeyColumn Is Nothing Then
+        Debug.Assert False
+    End If
+    
     If Not LHSKeyColumn Is Nothing And Not RHSKeyColumn Is Nothing Then
         If LHSKeyColumn.Name = RHSKeyColumn.Name Then
-            Exit Sub
+            Exit Function
         End If
     End If
     
@@ -210,7 +266,7 @@ Public Sub TryAutoMatch(ByVal leftToRight As Boolean, ByVal Quiet As Boolean)
         ' TODO We should not be asking for user input via ViewModel
         If Quiet = False Then
             If (vbNo = MsgBox("Auto-match column name?", vbQuestion + vbYesNo)) Then
-                Exit Sub
+                Exit Function
             End If
         End If
         
@@ -219,8 +275,10 @@ Public Sub TryAutoMatch(ByVal leftToRight As Boolean, ByVal Quiet As Boolean)
         Else
             Set LHSKeyColumn = result
         End If
+        
+        TryAutoMatch = True
     End If
-End Sub
+End Function
 
 Public Sub DoCheck()
     Debug.Assert this.IsDirty = True
@@ -271,10 +329,11 @@ Public Sub UpdateMatch()
     RaiseEvent MatchChanged
 End Sub
 
-Public Sub TryGuess(Optional Force As Boolean = False)
-    If this.LHSTable Is Nothing Then Exit Sub
-    If this.RHSTable Is Nothing Then Exit Sub
-    If (Force = False) And (this.IsAutoGuessed) Then Exit Sub
+Public Function TryGuess(Optional Force As Boolean = False) As Boolean
+    Debug.Print "TryGuess()"
+    If this.LHSTable Is Nothing Then Exit Function
+    If this.RHSTable Is Nothing Then Exit Function
+    If (Force = False) And (this.IsAutoGuessed) Then Exit Function
     
     Dim bestScore As Double
     Dim bestLHS As ListColumn
@@ -287,30 +346,66 @@ Public Sub TryGuess(Optional Force As Boolean = False)
     rhsCount = this.RHSColumns.Count
     If lhsCount > 10 Then lhsCount = 10
     If rhsCount > 10 Then rhsCount = 10
-    
+
     Dim i As Long
     Dim j As Long
     Dim thisScore As Double
     Dim comp As KeyColumnComparer
     Set comp = New KeyColumnComparer
     For i = 1 To lhsCount
-        Set comp.lhs = KeyColumn.FromColumn(this.LHSColumns(i))
-        For j = 1 To rhsCount
-            Set comp.rhs = KeyColumn.FromColumn(this.RHSColumns(j))
+        Set comp.LHS = KeyColumn.FromColumn(this.LHSColumns(i))
+        
+        If comp.LHS.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
+            For j = 1 To rhsCount
+                Set comp.rhs = KeyColumn.FromColumn(this.RHSColumns(j))
+                
+                If comp.rhs.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
+                    comp.Map
 
-            comp.Map
-
-            If comp.Score > bestScore Then
-                Debug.Print "New best score: " & comp.Score & " (" & i & "," & j & ")"
-                bestScore = comp.Score
-                Set bestLHS = this.LHSColumns(i)
-                Set bestRHS = this.RHSColumns(j)
-            End If
-        Next j
+                    If comp.Score > bestScore Then
+                        'Debug.Print "New best score: " & comp.Score & " (" & i & "," & j & ")"
+                        bestScore = comp.Score
+                        Set bestLHS = this.LHSColumns(i)
+                        Set bestRHS = this.RHSColumns(j)
+                    End If
+                End If
+            Next j
+        End If
     Next i
+    
+    If bestScore = 0# Then Exit Function
     
     Set LHSKeyColumn = bestLHS
     Set RHSKeyColumn = bestRHS
     
     this.IsAutoGuessed = True
+    TryGuess = True
+End Function
+
+Public Function CanSwap() As Boolean
+    If LHSTable Is Nothing Then Exit Function
+    If RHSTable Is Nothing Then Exit Function
+    If LHSKeyColumn Is Nothing Then Exit Function
+    If RHSKeyColumn Is Nothing Then Exit Function
+    CanSwap = True
+End Function
+
+Public Sub TrySwap()
+    If CanSwap = False Then
+        Exit Sub
+    End If
+    
+    Dim lhsKeyColName As String
+    Dim rhsKeyColName As String
+    
+    lhsKeyColName = this.LHSKeyColumn.Name
+    rhsKeyColName = this.RHSKeyColumn.Name
+    
+    Dim lo As ListObject
+    Set lo = this.LHSTable
+    Set LHSTable = this.RHSTable
+    Set RHSTable = lo
+    
+    TrySelectLHS rhsKeyColName
+    TrySelectRHS lhsKeyColName
 End Sub

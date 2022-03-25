@@ -1,9 +1,35 @@
 Attribute VB_Name = "TestKeyMapper"
 '@Folder("KeyMapper")
 Option Explicit
-Option Private Module
+'Option Private Module
+
+Public Sub TestKeyMapper()
+    Dim ti As TransferInstruction
+    Set ti = GetTestTransferInstruction
+    
+    Dim vm As KeyMapperViewModel
+    Set vm = New KeyMapperViewModel
+    'vm.LoadFromTransferInstruction ti
+    
+    Dim view As IView
+    Set view = New KeyMapperView
+    
+    'Set vm.LHSTable = Nothing ' Fails because property guards against null
+    'Set vm.RHSTable = Nothing ' Fails because property guards against null
+    
+    Set vm.LHSTable = ti.Source
+    Set vm.RHSTable = ti.Destination
+    
+    If view.ShowDialog(vm) Then
+        Debug.Print "ShowDialog true"
+    Else
+        Debug.Print "ShowDialog false"
+    End If
+End Sub
 
 Public Sub test()
+    Debug.Assert True
+    
     Dim vm As KeyMapperViewModel
     Dim view As IView
     
@@ -30,7 +56,7 @@ Public Sub TestRemoveUnmappedKeys()
     Dim comp As KeyColumnComparer
     
     Set comp = New KeyColumnComparer
-    Set comp.lhs = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1))
+    Set comp.LHS = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1))
     Set comp.rhs = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(2))
 
     Dim mapResult As Variant
@@ -43,7 +69,7 @@ Public Sub TestAppendUnmappedKeys()
     Dim comp As KeyColumnComparer
     
     Set comp = New KeyColumnComparer
-    Set comp.lhs = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1))
+    Set comp.LHS = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1))
     Set comp.rhs = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(2))
 
     Dim mapResult As Variant

@@ -27,6 +27,11 @@ End Type
 
 Private this As TClsKeyColumn
 
+Public Property Get DistinctPercentage() As Double
+    If this.rng.Cells.Count = 0 Then Exit Property
+    DistinctPercentage = this.Distinct.Count / this.rng.Cells.Count
+End Property
+
 Public Property Get GetArray() As Variant
     GetArray = this.Array
 End Property

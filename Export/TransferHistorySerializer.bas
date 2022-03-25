@@ -23,7 +23,7 @@ Public Function LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As 
     Dim att As String
     Dim val As String
     
-    Dim lhs As String
+    Dim LHS As String
     Dim rhs As String
     
     Dim ti As TransferInstruction
@@ -59,9 +59,9 @@ Public Function LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As 
                         ti.Flags = val
                 End Select
             Case 2
-                lhs = Split(curArr(2), ",")(0)
+                LHS = Split(curArr(2), ",")(0)
                 rhs = Split(curArr(2), ",")(1)
-                ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns(lhs), ti.Destination.ListColumns(rhs))
+                ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns(LHS), ti.Destination.ListColumns(rhs))
                 'Debug.Print lhs; " -> "; rhs
         End Select
     Next i

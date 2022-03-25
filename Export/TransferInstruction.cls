@@ -94,8 +94,8 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Methods
-Public Sub Add(ByVal lhs As ListColumn, ByVal rhs As ListColumn)
-    ValuePairs.Add ColumnPair.Create(lhs, rhs)
+Public Sub Add(ByVal LHS As ListColumn, ByVal rhs As ListColumn)
+    ValuePairs.Add ColumnPair.Create(LHS, rhs)
 End Sub
 
 Public Function IsValid() As Boolean
@@ -135,7 +135,7 @@ Private Sub SetMapResult()
 End Sub
 
 Private Sub TransferOne(ByVal colPair As ColumnPair)
-   DoTransfer mapResult, colPair.lhs, colPair.rhs
+   DoTransfer mapResult, colPair.LHS, colPair.rhs
 End Sub
 
 Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal Destination As ListColumn)

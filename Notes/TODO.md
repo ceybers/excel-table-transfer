@@ -12,7 +12,7 @@
 ## Table Select
 *None*
 ## Key Mapper
-- [ ] Try and auto-match column when changing tables. Need to handle ComboBox changing from user, and changing from parent ComboBox resetting it.
+*None*
 ## Column Mapper
 - [ ] Highlight mapped cells, differentiating between: 0 → a, a → b, a == b, a → 0 
 ## Transfer History
@@ -51,4 +51,5 @@
 - [x] Highlighting of mapped value cells
 - [x] Flag columns with column-wide formulae in ListView
 - [x] Add options for insert/removing keys under Key Set Theory
-- [x] Smart key column guessing (try to find columns with 100% unique values and 1:1 match between src/dst)
+- [x] Smart key column guessing (try to find columns with ~~100~~ >75% unique values ~~and 1:1 match between src/dst~~ and best % match)
+- [x] Try and auto-match column when changing tables. Need to handle ComboBox changing from user, and changing from parent ComboBox resetting it.

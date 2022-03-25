@@ -26,13 +26,19 @@ Private msoImageList As ImageList
 
 Public DEBUG_EVENTS As Boolean
 
+Private Const NO_TABLE_SELECTED As String = "(No table selected)"
+
 Private Type TFrmKeyMapper2View
+    SelectTableVM As SelectTableViewModel
     IsLoaded As Boolean
     IsCancelled As Boolean
+    IsInitialLoad As Boolean
+    IsUserChangingTable As Boolean
 End Type
 
 Private this As TFrmKeyMapper2View
 
+' --- Controls
 Private Sub chkAddNewKeys_Click()
     If Me.chkAddNewKeys.value = True Then
         vm.AppendNewKeys = True
@@ -41,7 +47,6 @@ Private Sub chkAddNewKeys_Click()
     Else
         ' Tri state checkbox, do nothing?
     End If
-    
 End Sub
 
 Private Sub chkRemoveOrphans_Click()
@@ -53,7 +58,10 @@ Private Sub cmbBack_Click()
     Me.Hide
 End Sub
 
-' ---
+Private Sub cmbBestMatch_Click()
+    vm.TryGuess
+End Sub
+
 Private Sub cmbCancel_Click()
     OnCancel
 End Sub
@@ -66,14 +74,20 @@ Private Sub cmbCheckQuality_Click()
     vm.UpdatePreviews
 End Sub
 
-Private Sub cmbColumnLHS_Change()
+Private Sub cmbColumnLHS_DropButtonClick()
     vm.TrySelectLHS Me.cmbColumnLHS
-    vm.TryAutoMatch True, Not this.IsLoaded
+    
+    If this.IsInitialLoad = False Then
+        vm.TryAutoMatch leftToRight:=True, Quiet:=False
+    End If
 End Sub
 
-Private Sub cmbColumnRHS_Change()
+Private Sub cmbColumnRHS_DropButtonClick()
     vm.TrySelectRHS Me.cmbColumnRHS
-    vm.TryAutoMatch False, Not this.IsLoaded
+    
+    If this.IsInitialLoad = False Then
+        vm.TryAutoMatch leftToRight:=False, Quiet:=False
+    End If
 End Sub
 
 Private Sub cmbHistory_Click()
@@ -81,24 +95,43 @@ Private Sub cmbHistory_Click()
     'modMain.TransferTableFromHistory
 End Sub
 
+Private Sub cmbMatchLTR_Click()
+    vm.TryAutoMatch True, True
+End Sub
+
+Private Sub cmbMatchRTL_Click()
+    vm.TryAutoMatch False, True
+End Sub
+
+Private Sub cmbSwap_Click()
+    vm.TrySwap
+End Sub
+
 Private Sub cmbTableLHS_DropButtonClick()
-    Dim result As ListObject
-    If TrySelectTable(result) = True Then
-        Set vm.LHSTable = result
+    If TrySelectTable(Nothing, this.SelectTableVM) Then
+        Set vm.LHSTable = this.SelectTableVM.SelectedTable
     End If
+    
     Me.cmbColumnLHS.SetFocus
 End Sub
 
 Private Sub cmbTableRHS_DropButtonClick()
-    Dim result As ListObject
-    If TrySelectTable(result) = True Then
-        Set vm.RHSTable = result
+    If TrySelectTable(Nothing, this.SelectTableVM) Then
+        Set vm.RHSTable = this.SelectTableVM.SelectedTable
     End If
+    
     Me.cmbColumnRHS.SetFocus
 End Sub
 
+Private Sub cmbNext_Click()
+    Me.Hide
+End Sub
+
+' --- Subs
 Private Sub ChangeTable(ByVal cmb As ComboBox, ByVal lo As ListObject)
-    cmb.RemoveItem (0)
+    Debug.Assert cmb.ListCount > 0
+    
+    cmb.RemoveItem 0
     cmb.AddItem lo.Name
     cmb = lo.Name
 End Sub
@@ -108,11 +141,14 @@ Private Sub PopulateColumns(ByVal cmb As ComboBox, ByVal lo As ListObject)
     currentColumn = cmb
     
     Dim canRememberColumn As Boolean
-    
+    canRememberColumn = False
+
     cmb.Clear
+
     Dim lc As ListColumn
     For Each lc In lo.ListColumns
         cmb.AddItem lc.Name
+        
         If lc.Name = currentColumn Then
             canRememberColumn = True
         End If
@@ -123,10 +159,6 @@ Private Sub PopulateColumns(ByVal cmb As ComboBox, ByVal lo As ListObject)
     Else
         cmb = cmb.List(0)
     End If
-End Sub
-
-Private Sub cmbNext_Click()
-    Me.Hide
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -143,6 +175,11 @@ End Sub
 
 ' ---
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
+    DEBUG_EVENTS = True
+    this.IsInitialLoad = True
+    
+    Set this.SelectTableVM = New SelectTableViewModel
+    
     Set vm = ViewModel
     this.IsCancelled = False
     
@@ -151,9 +188,13 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     InitializeTableCombobox Me.cmbTableLHS
     InitializeTableCombobox Me.cmbTableRHS
     
-    LoadFromVM
+    LoadTablesFromVM
+    LoadFlagsFromVM
+    vm.TryGuess
     
     this.IsLoaded = True
+    
+    this.IsInitialLoad = False
     Me.Show
     
     IView_ShowDialog = Not this.IsCancelled
@@ -162,28 +203,37 @@ End Function
 Private Sub InitializeTableCombobox(ByVal cmb As ComboBox)
     With cmb
         .Clear
-        .AddItem "(No table selected)"
-        .value = "(No table selected)"
+        .AddItem NO_TABLE_SELECTED
+        .value = NO_TABLE_SELECTED
     End With
 End Sub
 
-Public Sub LoadFromVM()
+Public Sub LoadTablesFromVM()
     If Not vm.LHSTable Is Nothing Then
-        vm_PropertyChanged "LHSTable"
-        vm_PropertyChanged "LHSColumns"
-    End If
-    If Not vm.RHSTable Is Nothing Then
-        vm_PropertyChanged "RHSTable"
-        vm_PropertyChanged "RHSColumns"
+        vm_PropertyChanged KeyMapperEvents.LHS_TABLE
+        vm_PropertyChanged KeyMapperEvents.LHS_KEY_COLUMN
     End If
     
+    If Not vm.LHSKeyColumn Is Nothing Then
+        'vm_PropertyChanged KeyMapperEvents.LHS_KEY_COLUMN
+    End If
+    
+    If Not vm.RHSTable Is Nothing Then
+        vm_PropertyChanged KeyMapperEvents.RHS_TABLE
+        vm_PropertyChanged KeyMapperEvents.RHS_KEY_COLUMN
+    End If
+    
+    If Not vm.RHSKeyColumn Is Nothing Then
+        'vm_PropertyChanged KeyMapperEvents.RHS_KEY_COLUMN
+    End If
+End Sub
+
+Public Sub LoadFlagsFromVM()
     Me.chkAddNewKeys.value = vm.AppendNewKeys
     Me.chkRemoveOrphans.value = vm.RemoveOrphanKeys
     
     Me.chkAddNewKeys.Enabled = False
     Me.chkRemoveOrphans.Enabled = False
-    
-    vm.TryGuess
 End Sub
 
 Private Sub vm_MatchChanged()
@@ -202,29 +252,62 @@ End Sub
 Private Sub vm_PropertyChanged(ByVal propertyName As String)
     If DEBUG_EVENTS = True Then Debug.Print "Property changed: " & propertyName
     Select Case propertyName
-        Case "LHSTable"
+        Case KeyMapperEvents.LHS_TABLE
+            'this.IsInitialLoad = True
             ChangeTable Me.cmbTableLHS, vm.LHSTable
-        Case "LHSColumns"
             PopulateColumns Me.cmbColumnLHS, vm.LHSTable
-        Case "LHSKeyColumn"
-            Me.lvQualityLHS.ListItems.Clear
-            Me.lvSetLHS.ListItems.Clear
-            Me.lvSetRHS.ListItems.Clear
-            Me.lvSetInner.ListItems.Clear
-            UpdateCheckButton
-            UpdateComboColumn
-        Case "RHSTable"
+            TryAutoMatchAgain leftToRight:=False
+            this.IsInitialLoad = False
+            'this.IsUserChangingTable = False
+        'Case KeyMapperEvents.LHS_COLUMNS
+            
+        Case KeyMapperEvents.LHS_KEY_COLUMN
+            ResetQualityControls LHS:=True
+        Case KeyMapperEvents.RHS_TABLE
+            'this.IsInitialLoad = True
             ChangeTable Me.cmbTableRHS, vm.RHSTable
-        Case "RHSColumns"
             PopulateColumns Me.cmbColumnRHS, vm.RHSTable
-        Case "RHSKeyColumn"
-            Me.lvQualityRHS.ListItems.Clear
-            Me.lvSetLHS.ListItems.Clear
-            Me.lvSetRHS.ListItems.Clear
-            Me.lvSetInner.ListItems.Clear
-            UpdateCheckButton
-            UpdateComboColumn
+            TryAutoMatchAgain leftToRight:=True
+            this.IsInitialLoad = False
+            'this.IsUserChangingTable = False
+        'Case KeyMapperEvents.RHS_COLUMNS
+            
+        Case KeyMapperEvents.RHS_KEY_COLUMN
+            ResetQualityControls rhs:=True
     End Select
+    
+    Me.cmbSwap.Enabled = vm.CanSwap
+    If Me.cmbColumnLHS = Me.cmbColumnRHS Then
+        Me.cmbMatchLTR.Enabled = False
+        Me.cmbMatchRTL.Enabled = False
+    Else
+        Me.cmbMatchLTR.Enabled = True
+        Me.cmbMatchRTL.Enabled = True
+    End If
+End Sub
+
+Private Sub TryAutoMatchAgain(ByVal leftToRight As Boolean)
+    'If this.IsInitialLoad = True Then Exit Sub
+    If vm.TryAutoMatch(leftToRight, True) = False Then
+        vm.TryGuess
+    End If
+End Sub
+
+Private Sub ResetQualityControls(Optional ByVal LHS As Boolean, Optional ByVal rhs As Boolean)
+    If LHS Then
+        Me.lvQualityLHS.ListItems.Clear
+    End If
+
+    If rhs Then
+        Me.lvQualityRHS.ListItems.Clear
+    End If
+
+    Me.lvSetLHS.ListItems.Clear
+    Me.lvSetInner.ListItems.Clear
+    Me.lvSetRHS.ListItems.Clear
+
+    UpdateCheckButton
+    UpdateComboColumn
 End Sub
 
 Private Sub UpdateCheckButton()
@@ -236,7 +319,7 @@ End Sub
 Private Sub UpdateComboColumn()
     If Not vm.LHSKeyColumn Is Nothing Then
         If Me.cmbColumnLHS <> vm.LHSKeyColumn.Name Then
-            Me.cmbColumnRHS = vm.LHSKeyColumn.Name
+            Me.cmbColumnLHS = vm.LHSKeyColumn.Name
         End If
     End If
     
@@ -258,12 +341,13 @@ Private Sub PopulateKeyPreview(ByVal lv As ListView, ByVal lc As ListColumn)
     Set vm.ListColumn = lc
     vm.InitializeListView lv
     vm.UpdateListView lv
+    Set vm = Nothing
 End Sub
 
 Private Sub PopulateMatchSets()
     Dim comp As KeyColumnComparer
     Set comp = New KeyColumnComparer
-    Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn)
+    Set comp.LHS = KeyColumn.FromColumn(vm.LHSKeyColumn)
     Set comp.rhs = KeyColumn.FromColumn(vm.RHSKeyColumn)
     comp.Map
     
@@ -273,17 +357,22 @@ Private Sub PopulateMatchSets()
 
     Me.chkAddNewKeys.Enabled = (Me.lvSetLHS.ListItems.Count > 0)
     Me.chkRemoveOrphans.Enabled = (Me.lvSetRHS.ListItems.Count > 0)
+
+    Set comp = Nothing
 End Sub
 
 Private Sub CollectionToListView(ByVal coll As Collection, ByVal lv As ListView, ByVal header As String)
-    lv.view = lvwReport
-    lv.Gridlines = True
-    lv.ListItems.Clear
-    lv.ColumnHeaders.Clear
+    With lv
+        .view = lvwReport
+        .Gridlines = True
+        .ListItems.Clear
+        .ColumnHeaders.Clear
+    End With
+    
     Dim v As Variant
     For Each v In coll
         lv.ListItems.Add text:=v
     Next v
+    
     lv.ColumnHeaders.Add text:=header & " (" & coll.Count & ")"
 End Sub
-
