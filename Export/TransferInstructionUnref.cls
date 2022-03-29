@@ -19,72 +19,81 @@ Private Type TState
     DestinationKey As String
     ValuePairs As Variant
     Flags As Integer
+    LastRun As Date
 End Type
 
 Private this As TState
+
+Public Property Get LastRun() As Date
+    LastRun = this.LastRun
+End Property
+
+Public Property Let LastRun(ByVal rhs As Date)
+    this.LastRun = rhs
+End Property
 
 Public Property Get SourceFilename() As String
     SourceFilename = this.SourceFilename
 End Property
 
-Public Property Let SourceFilename(ByVal RHS As String)
-    this.SourceFilename = RHS
+Public Property Let SourceFilename(ByVal rhs As String)
+    this.SourceFilename = rhs
 End Property
 
 Public Property Get DestinationFilename() As String
     DestinationFilename = this.DestinationFilename
 End Property
 
-Public Property Let DestinationFilename(ByVal RHS As String)
-    this.DestinationFilename = RHS
+Public Property Let DestinationFilename(ByVal rhs As String)
+    this.DestinationFilename = rhs
 End Property
 
 Public Property Get Source() As String
     Source = this.Source
 End Property
 
-Public Property Let Source(ByVal RHS As String)
-    this.Source = RHS
+Public Property Let Source(ByVal rhs As String)
+    this.Source = rhs
 End Property
 
 Public Property Get Destination() As String
     Destination = this.Destination
 End Property
 
-Public Property Let Destination(ByVal RHS As String)
-    this.Destination = RHS
+Public Property Let Destination(ByVal rhs As String)
+    this.Destination = rhs
 End Property
 
 Public Property Get SourceKey() As String
     SourceKey = this.SourceKey
 End Property
 
-Public Property Let SourceKey(ByVal RHS As String)
-    this.SourceKey = RHS
+Public Property Let SourceKey(ByVal rhs As String)
+    this.SourceKey = rhs
 End Property
 
 Public Property Get DestinationKey() As String
     DestinationKey = this.DestinationKey
 End Property
 
-Public Property Let DestinationKey(ByVal RHS As String)
-    this.DestinationKey = RHS
+Public Property Let DestinationKey(ByVal rhs As String)
+    this.DestinationKey = rhs
 End Property
 
 Public Property Get ValuePairs() As Variant
     Let ValuePairs = this.ValuePairs
 End Property
 
-Public Property Let ValuePairs(ByVal RHS As Variant)
-    Let this.ValuePairs = RHS
+Public Property Let ValuePairs(ByVal rhs As Variant)
+    Let this.ValuePairs = rhs
 End Property
 
 Public Property Get Flags() As Integer
     Flags = this.Flags
 End Property
 
-Public Property Let Flags(ByVal RHS As Integer)
-    this.Flags = RHS
+Public Property Let Flags(ByVal rhs As Integer)
+    this.Flags = rhs
 End Property
 
 ' TODO Invert this so that TI can try and load from a TIUnref
@@ -94,6 +103,7 @@ Public Function AsReferenced() As TransferInstruction
     Set ti = New TransferInstruction
     
     ti.Flags = this.Flags
+    'ti.LastRun = this.LastRun
     
     Dim wb As Workbook
     Dim wbLHS As Workbook
@@ -129,4 +139,25 @@ Public Function AsReferenced() As TransferInstruction
     Set AsReferenced = ti
 End Function
 
-   
+Public Sub LoadFromRange(ByVal rng As Range)
+    Dim c As Long
+    c = 12 + rng.offset(10, 2).Value2
+    
+    Dim arr As Variant
+    arr = rng.Resize(c, 4).Value2
+    
+    Debug.Assert arr(1, 1) = "TRANSFER"
+    Debug.Assert arr(c, 1) = "END"
+    
+    this.SourceFilename = arr(5, 3)
+    this.DestinationFilename = arr(5, 4)
+    this.Source = arr(8, 3)
+    this.Destination = arr(8, 4)
+    this.SourceKey = arr(9, 3)
+    this.DestinationKey = arr(9, 4)
+    this.Flags = arr(10, 3)
+    
+    Dim vpArr As Variant
+    vpArr = rng.offset(11, 2).Resize(c - 12, 2).Value2
+    this.ValuePairs = vpArr
+End Sub

@@ -21,8 +21,8 @@ Private Const NOT_MAPPED As String = "(Not mapped)"
 Private Const KEY_COLUMN As String = "(Key column)"
 
 Private Type TClsValueMapperViewModel
-    LHS As ListObject
-    RHS As ListObject
+    lhs As ListObject
+    rhs As ListObject
     LHSCriteria As String
     RHSCriteria As String
     KeyColumnLHS As ListColumn
@@ -49,17 +49,17 @@ Public Property Get GoBack() As Boolean
     GoBack = this.GoBack
 End Property
 
-Public Property Let GoBack(ByVal RHS As Boolean)
-    this.GoBack = RHS
+Public Property Let GoBack(ByVal rhs As Boolean)
+    this.GoBack = rhs
 End Property
 
 Public Property Get ShowMappedOnlyLHS() As Boolean
     ShowMappedOnlyLHS = this.ShowMappedOnlyLHS
 End Property
 
-Public Property Let ShowMappedOnlyLHS(ByVal RHS As Boolean)
-    If this.ShowMappedOnlyLHS = RHS Then Exit Property
-    this.ShowMappedOnlyLHS = RHS
+Public Property Let ShowMappedOnlyLHS(ByVal rhs As Boolean)
+    If this.ShowMappedOnlyLHS = rhs Then Exit Property
+    this.ShowMappedOnlyLHS = rhs
     RaiseEvent CollectionChangedLHS
 End Property
 
@@ -67,9 +67,9 @@ Public Property Get ShowMappedOnlyRHS() As Boolean
     ShowMappedOnlyRHS = this.ShowMappedOnlyRHS
 End Property
 
-Public Property Let ShowMappedOnlyRHS(ByVal RHS As Boolean)
-    If this.ShowMappedOnlyRHS = RHS Then Exit Property
-    this.ShowMappedOnlyRHS = RHS
+Public Property Let ShowMappedOnlyRHS(ByVal rhs As Boolean)
+    If this.ShowMappedOnlyRHS = rhs Then Exit Property
+    this.ShowMappedOnlyRHS = rhs
     RaiseEvent CollectionChangedRHS
 End Property
 
@@ -77,53 +77,53 @@ Public Property Get Flags() As Integer
     Flags = this.Flags
 End Property
 
-Public Property Let Flags(ByVal RHS As Integer)
-    this.Flags = RHS
+Public Property Let Flags(ByVal rhs As Integer)
+    this.Flags = rhs
 End Property
 
 Public Property Get KeyColumnLHS() As ListColumn
     Set KeyColumnLHS = this.KeyColumnLHS
 End Property
 
-Public Property Set KeyColumnLHS(ByVal RHS As ListColumn)
-    Set this.KeyColumnLHS = RHS
+Public Property Set KeyColumnLHS(ByVal rhs As ListColumn)
+    Set this.KeyColumnLHS = rhs
 End Property
 
 Public Property Get KeyColumnRHS() As ListColumn
     Set KeyColumnRHS = this.KeyColumnRHS
 End Property
 
-Public Property Set KeyColumnRHS(ByVal RHS As ListColumn)
-    Set this.KeyColumnRHS = RHS
+Public Property Set KeyColumnRHS(ByVal rhs As ListColumn)
+    Set this.KeyColumnRHS = rhs
 End Property
 
 Public Property Get checked() As Collection
     Set checked = this.CheckedValuePairs.Item
 End Property
 
-Public Property Get LHS() As ListObject
-    Set LHS = this.LHS
+Public Property Get lhs() As ListObject
+    Set lhs = this.lhs
 End Property
 
-Public Property Set LHS(ByVal RHS As ListObject)
-    Set this.LHS = RHS
+Public Property Set lhs(ByVal rhs As ListObject)
+    Set this.lhs = rhs
 End Property
 
-Public Property Get RHS() As ListObject
-    Set RHS = this.RHS
+Public Property Get rhs() As ListObject
+    Set rhs = this.rhs
 End Property
 
-Public Property Set RHS(ByVal RHS As ListObject)
-    Set this.RHS = RHS
+Public Property Set rhs(ByVal rhs As ListObject)
+    Set this.rhs = rhs
 End Property
 
 Public Property Get LHSCriteria() As String
     LHSCriteria = this.LHSCriteria
 End Property
 
-Public Property Let LHSCriteria(ByVal RHS As String)
-    If this.LHSCriteria = RHS Then Exit Property
-    this.LHSCriteria = RHS
+Public Property Let LHSCriteria(ByVal rhs As String)
+    If this.LHSCriteria = rhs Then Exit Property
+    this.LHSCriteria = rhs
     RaiseEvent CollectionChangedLHS
 End Property
 
@@ -131,9 +131,9 @@ Public Property Get RHSCriteria() As String
     RHSCriteria = this.RHSCriteria
 End Property
 
-Public Property Let RHSCriteria(ByVal RHS As String)
-    If this.RHSCriteria = RHS Then Exit Property
-    this.RHSCriteria = RHS
+Public Property Let RHSCriteria(ByVal rhs As String)
+    If this.RHSCriteria = rhs Then Exit Property
+    this.RHSCriteria = rhs
     RaiseEvent CollectionChangedRHS
 End Property
 
@@ -152,9 +152,9 @@ Public Sub LoadLHStoListView(ByVal lv As ListView)
     
     lv.ListItems.Clear
     
-    For Each lc In LHS.ListColumns
+    For Each lc In lhs.ListColumns
         If (LHSCriteria = vbNullString) Or (lc.Name Like LHSCriteria & "*") Then
-            If (this.ShowMappedOnlyLHS = False) Or (Not this.ValuePairs.GetPair(LHS:=lc) Is Nothing) Then
+            If (this.ShowMappedOnlyLHS = False) Or (Not this.ValuePairs.GetPair(lhs:=lc) Is Nothing) Then
                 Set li = lv.ListItems.Add(key:=lc.Name, text:=lc.Name)
                 li.ListSubItems.Add text:=GetColumnHeaderFromListColumn(lc)
             End If
@@ -169,10 +169,10 @@ Public Sub UpdateLHStoListView(ByVal lv As ListView)
     Dim lc As ListColumn
     
     For Each li In lv.ListItems
-        If TryGetListColumnByName(this.LHS, li.key, lc) Then
+        If TryGetListColumnByName(this.lhs, li.key, lc) Then
             If lc Is this.KeyColumnLHS Then
                 li.SmallIcon = "Key"
-            ElseIf this.ValuePairs.GetPair(LHS:=lc) Is Nothing Then
+            ElseIf this.ValuePairs.GetPair(lhs:=lc) Is Nothing Then
                 li.SmallIcon = "Cross"
             Else
                 li.SmallIcon = "Tick"
@@ -185,7 +185,7 @@ Private Function IsMappedLHS(ByVal columnName As String) As Boolean
     Err.Raise 5, , "no"
     Dim colPair As ColumnPair
     For Each colPair In this.ValuePairs
-        If colPair.LHS.Name = columnName Then
+        If colPair.lhs.Name = columnName Then
             IsMappedLHS = True
             Exit Function
         End If
@@ -197,7 +197,7 @@ Public Sub LoadRHStoListView(ByVal lv As ListView)
     
     lv.ListItems.Clear
     
-    For Each lc In RHS.ListColumns
+    For Each lc In rhs.ListColumns
         If RHSCriteria = vbNullString Or lc.Name Like RHSCriteria & "*" Then
             If (this.ShowMappedOnlyRHS = False) Or (this.ValuePairs.IsMappedRHS(lc)) Then
                 With lv.ListItems.Add(key:=lc.Name, text:=lc.Name)
@@ -217,7 +217,7 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
     Dim mappedTo As ColumnPair
     
     For Each li In lv.ListItems
-        If TryGetListColumnByName(this.RHS, li.key, lc) Then
+        If TryGetListColumnByName(this.rhs, li.key, lc) Then
             If lc Is this.KeyColumnRHS Then
                 li.SmallIcon = "Key"
                 With li.ListSubItems(1)
@@ -225,10 +225,10 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
                     .ForeColor = RGB(212, 175, 55)
                 End With
             ElseIf this.ValuePairs.IsMappedRHS(lc) Then
-                Set mappedTo = this.ValuePairs.GetPair(RHS:=lc)
+                Set mappedTo = this.ValuePairs.GetPair(rhs:=lc)
                 li.SmallIcon = "Tick"
                 With li.ListSubItems(1)
-                    .text = mappedTo.LHS.Name
+                    .text = mappedTo.lhs.Name
                     .ForeColor = RGB(0, 0, 0)
                 End With
             Else
@@ -251,8 +251,8 @@ End Sub
 Private Function GetMappedTo(ByVal columnName As String) As String
     Dim colPair As ColumnPair
     For Each colPair In this.ValuePairs
-        If colPair.RHS.Name = columnName Then
-            GetMappedTo = colPair.LHS.Name
+        If colPair.rhs.Name = columnName Then
+            GetMappedTo = colPair.lhs.Name
             Exit Function
         End If
     Next colPair
@@ -262,7 +262,7 @@ Private Function IsColumnMapped(ByVal columnName As String) As Boolean
     IsColumnMapped = Not GetMappedTo(columnName) = vbNullString
 End Function
 
-Public Sub InitializeListView(ByVal lv As MSComctlLib.ListView, Optional ByVal RHS As Boolean = False)
+Public Sub InitializeListView(ByVal lv As MSComctlLib.ListView, Optional ByVal rhs As Boolean = False)
     With lv
         .Appearance = cc3D
         .BorderStyle = ccNone
@@ -276,7 +276,7 @@ Public Sub InitializeListView(ByVal lv As MSComctlLib.ListView, Optional ByVal R
         .CheckBoxes = False
     End With
     
-    If RHS Then
+    If rhs Then
         With lv
             .CheckBoxes = True
             .ColumnHeaders(1).Width = 70
@@ -320,20 +320,20 @@ Public Sub TryUnMap()
 End Sub
 
 Private Function DoesMappingExist(ByVal colPair As ColumnPair) As Boolean
-    Dim RHS As ColumnPair
-    For Each RHS In this.ValuePairs
+    Dim rhs As ColumnPair
+    For Each rhs In this.ValuePairs
         'If colPair.Equals(rhs) Then
-        If colPair.RHS Is RHS.RHS Then
+        If colPair.rhs Is rhs.rhs Then
             DoesMappingExist = True
             Exit Function
         End If
-    Next RHS
+    Next rhs
 End Function
 
 Private Function IsMappingSelected(ByVal columnName As String) As Boolean
     Dim colPair As ColumnPair
     For Each colPair In this.CheckedValuePairs ' TODO DRY
-        If colPair.RHS.Name = columnName Then
+        If colPair.rhs.Name = columnName Then
             IsMappingSelected = True
             Exit Function
         End If
@@ -344,10 +344,10 @@ Public Sub TryCheck(ByVal Item As MSComctlLib.ListItem)
     Dim lc As ListColumn
     Dim colPair As ColumnPair
     
-    If TryGetListColumnByName(this.RHS, Item.key, lc) Then
+    If TryGetListColumnByName(this.rhs, Item.key, lc) Then
         If Item.checked Then
             If this.ValuePairs.IsMappedRHS(lc) Then
-                If this.ValuePairs.TryGetPair(colPair:=colPair, RHS:=lc) Then
+                If this.ValuePairs.TryGetPair(colPair:=colPair, rhs:=lc) Then
                     this.CheckedValuePairs.Add colPair
                 End If
             Else
@@ -355,7 +355,7 @@ Public Sub TryCheck(ByVal Item As MSComctlLib.ListItem)
             End If
         Else
             If this.ValuePairs.IsMappedRHS(lc) Then
-                If this.ValuePairs.TryGetPair(colPair:=colPair, RHS:=lc) Then
+                If this.ValuePairs.TryGetPair(colPair:=colPair, rhs:=lc) Then
                     this.CheckedValuePairs.Remove colPair
                 Else
                     Debug.Print "TryCheck Failed"
@@ -369,7 +369,7 @@ End Sub
 
 Public Sub TrySelectLHS(ByVal Item As MSComctlLib.ListItem)
     Dim lc As ListColumn
-    If TryGetListColumnByName(this.LHS, Item.key, lc) Then
+    If TryGetListColumnByName(this.lhs, Item.key, lc) Then
         Set this.SelectedLHS = lc
     End If
 
@@ -378,12 +378,12 @@ End Sub
 
 Public Sub TrySelectRHS(ByVal Item As MSComctlLib.ListItem)
     Dim lc As ListColumn
-    If TryGetListColumnByName(this.RHS, Item.key, lc) Then
+    If TryGetListColumnByName(this.rhs, Item.key, lc) Then
         Set this.SelectedRHS = lc
     End If
     
     Dim colPair As ColumnPair
-    Set colPair = this.ValuePairs.GetPair(RHS:=lc)
+    Set colPair = this.ValuePairs.GetPair(rhs:=lc)
     Set this.SelectedValuePair = colPair
 
     RaiseEvent SelectionChanged
@@ -467,23 +467,23 @@ Public Sub AutomapIfEmpty()
 End Sub
 
 Private Sub TryAutomap()
-    Dim LHS As ListColumn
-    Dim RHS As ListColumn
+    Dim lhs As ListColumn
+    Dim rhs As ListColumn
     Dim colPair As ColumnPair
     
-    For Each RHS In this.RHS.ListColumns
-        If Not RHS Is this.KeyColumnRHS Then
-            If TryGetListColumnByName(this.LHS, RHS.Name, LHS) Then
-                If Not LHS Is this.KeyColumnLHS Then
-                    If ListColumnHasArray(RHS) = False Then
-                        Set colPair = ColumnPair.Create(LHS, RHS)
+    For Each rhs In this.rhs.ListColumns
+        If Not rhs Is this.KeyColumnRHS Then
+            If TryGetListColumnByName(this.lhs, rhs.Name, lhs) Then
+                If Not lhs Is this.KeyColumnLHS Then
+                    If ListColumnHasArray(rhs) = False Then
+                        Set colPair = ColumnPair.Create(lhs, rhs)
                         this.ValuePairs.Add colPair
                         this.CheckedValuePairs.Add colPair
                     End If
                 End If
             End If
         End If
-    Next RHS
+    Next rhs
 
     this.IsAutoMapped = True
     RaiseEvent MappingChanged

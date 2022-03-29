@@ -23,17 +23,17 @@ Public Property Get ListColumn() As ListColumn
     Set ListColumn = this.ListColumn
 End Property
 
-Public Property Set ListColumn(ByVal RHS As ListColumn)
-    Set this.ListColumn = RHS
-    Results = KeyColumn.FromColumn(RHS)
+Public Property Set ListColumn(ByVal rhs As ListColumn)
+    Set this.ListColumn = rhs
+    Results = KeyColumn.FromColumn(rhs)
 End Property
 
 Public Property Get Results() As KeyColumn
     Set Results = this.Results
 End Property
 
-Public Property Let Results(ByVal RHS As KeyColumn)
-    Set this.Results = RHS
+Public Property Let Results(ByVal rhs As KeyColumn)
+    Set this.Results = rhs
 End Property
 
 ' Functions

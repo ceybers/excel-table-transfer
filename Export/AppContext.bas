@@ -193,8 +193,8 @@ Private Function TryMapValueColumns() As Boolean
     Dim vm As ValueMapperViewModel
     Set vm = New ValueMapperViewModel
     
-    Set vm.LHS = transfer.Source
-    Set vm.RHS = transfer.Destination
+    Set vm.lhs = transfer.Source
+    Set vm.rhs = transfer.Destination
     Set vm.KeyColumnLHS = transfer.SourceKey
     Set vm.KeyColumnRHS = transfer.DestinationKey
     vm.Flags = transfer.Flags

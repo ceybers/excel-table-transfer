@@ -12,51 +12,51 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Type TClsColumnPair
-    LHS As ListColumn
-    RHS As ListColumn
+    lhs As ListColumn
+    rhs As ListColumn
 End Type
 
 Private this As TClsColumnPair
 
-Public Property Get LHS() As ListColumn
-    Set LHS = this.LHS
+Public Property Get lhs() As ListColumn
+    Set lhs = this.lhs
 End Property
 
-Public Property Set LHS(ByVal RHS As ListColumn)
-    Set this.LHS = RHS
+Public Property Set lhs(ByVal rhs As ListColumn)
+    Set this.lhs = rhs
 End Property
 
-Public Property Get RHS() As ListColumn
-    Set RHS = this.RHS
+Public Property Get rhs() As ListColumn
+    Set rhs = this.rhs
 End Property
 
-Public Property Set RHS(ByVal RHS As ListColumn)
-    Set this.RHS = RHS
+Public Property Set rhs(ByVal rhs As ListColumn)
+    Set this.rhs = rhs
 End Property
 
 Public Function IsValid() As Boolean
-    If this.LHS Is Nothing Then Exit Function
-    If this.RHS Is Nothing Then Exit Function
+    If this.lhs Is Nothing Then Exit Function
+    If this.rhs Is Nothing Then Exit Function
     IsValid = True
 End Function
 
-Public Function Create(ByVal LHS As ListColumn, ByVal RHS As ListColumn) As ColumnPair
+Public Function Create(ByVal lhs As ListColumn, ByVal rhs As ListColumn) As ColumnPair
     Set Create = New ColumnPair
     With Create
-        Set .LHS = LHS
-        Set .RHS = RHS
+        Set .lhs = lhs
+        Set .rhs = rhs
     End With
 End Function
 
-Public Function Equals(ByVal RHS As ColumnPair) As Boolean
-    If RHS Is Nothing Then Exit Function
-    If Not this.LHS Is RHS.LHS Then Exit Function
-    If Not this.RHS Is RHS.RHS Then Exit Function
+Public Function Equals(ByVal rhs As ColumnPair) As Boolean
+    If rhs Is Nothing Then Exit Function
+    If Not this.lhs Is rhs.lhs Then Exit Function
+    If Not this.rhs Is rhs.rhs Then Exit Function
     Equals = True
 End Function
 
 Public Function ToString() As String
-    Debug.Assert Not LHS Is Nothing
-    Debug.Assert Not RHS Is Nothing
-    ToString = LHS.Name & "," & RHS.Name
+    Debug.Assert Not lhs Is Nothing
+    Debug.Assert Not rhs Is Nothing
+    ToString = lhs.Name & "," & rhs.Name
 End Function

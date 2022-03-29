@@ -32,8 +32,8 @@ Public Property Get Limit() As Double
     Limit = this.Limit
 End Property
 
-Public Property Let Limit(ByVal RHS As Double)
-    this.Limit = RHS
+Public Property Let Limit(ByVal rhs As Double)
+    this.Limit = rhs
 End Property
 
 Public Property Get DistinctPercentage() As Double
@@ -49,33 +49,33 @@ Public Property Get Range() As Range
     Set Range = this.rng
 End Property
 
-Public Property Set Range(ByVal RHS As Range)
-    If RHS Is Nothing Then
+Public Property Set Range(ByVal rhs As Range)
+    If rhs Is Nothing Then
         Err.Raise Number:=vbObjectError + 1, Description:="Cannot create clsKeyColumn with a column in an empty table"
         Exit Property
     End If
-    If Not IsRangeASingleColumn(RHS) Then
+    If Not IsRangeASingleColumn(rhs) Then
         Err.Raise Number:=vbObjectError + 1, Description:="Cannot create clsKeyColumn with a range that spans multiple columns"
         Exit Property
     End If
-    Set this.rng = RHS
-    LoadRange RHS
+    Set this.rng = rhs
+    LoadRange rhs
 End Property
 
 Public Property Get RespectFilter() As Boolean
     RespectFilter = this.RespectFilter
 End Property
 
-Public Property Let RespectFilter(ByVal RHS As Boolean)
-    this.RespectFilter = RHS
+Public Property Let RespectFilter(ByVal rhs As Boolean)
+    this.RespectFilter = rhs
 End Property
 
 Public Property Get IncludeNumbersAsText() As Boolean
     IncludeNumbersAsText = this.IncludeNumbersAsText
 End Property
 
-Public Property Let IncludeNumbersAsText(ByVal RHS As Boolean)
-    this.IncludeNumbersAsText = RHS
+Public Property Let IncludeNumbersAsText(ByVal rhs As Boolean)
+    this.IncludeNumbersAsText = rhs
 End Property
 
 Public Property Get NonTextCount() As Long
@@ -167,6 +167,7 @@ Private Sub ProcessVariants(ByVal v As Variant)
 End Sub
 
 Private Sub AppendOrIncrement(ByVal value As String)
+    ' Debug.Print "AppendOrIncrement"; this.Dict.Count
     If this.Dict.Exists(value) Then
         this.Dict.Item(value) = this.Dict.Item(value) + 1
     Else
@@ -254,7 +255,9 @@ Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As B
     Set FromRange = New KeyColumn
     FromRange.RespectFilter = Filtered
     FromRange.IncludeNumbersAsText = IncludeNumbers
-    FromRange.Limit = Limit
+    If Limit > 0 Then
+        FromRange.Limit = Limit
+    End If
     Set FromRange.Range = rng
 End Function
 
@@ -307,3 +310,6 @@ Private Function DisjointRangeToArray(ByVal rng As Range) As Variant
     DisjointRangeToArray = arr
 End Function
 
+Private Sub Class_Initialize()
+    this.Limit = 2147483647
+End Sub

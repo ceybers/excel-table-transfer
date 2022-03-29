@@ -45,28 +45,28 @@ Public Property Get AppendNewKeys() As Boolean
     AppendNewKeys = this.AppendNewKeys
 End Property
     
-Public Property Let AppendNewKeys(ByVal RHS As Boolean)
-    this.AppendNewKeys = RHS
+Public Property Let AppendNewKeys(ByVal rhs As Boolean)
+    this.AppendNewKeys = rhs
 End Property
 
 Public Property Get RemoveOrphanKeys() As Boolean
     RemoveOrphanKeys = this.RemoveOrphanKeys
 End Property
     
-Public Property Let RemoveOrphanKeys(ByVal RHS As Boolean)
-    this.RemoveOrphanKeys = RHS
+Public Property Let RemoveOrphanKeys(ByVal rhs As Boolean)
+    this.RemoveOrphanKeys = rhs
 End Property
 
 Public Property Get GoBack() As Boolean
     GoBack = this.GoBack
 End Property
     
-Public Property Let GoBack(ByVal RHS As Boolean)
-    this.GoBack = RHS
+Public Property Let GoBack(ByVal rhs As Boolean)
+    this.GoBack = rhs
 End Property
 
-Public Property Let IsDirty(ByVal RHS As Boolean)
-    this.IsDirty = RHS
+Public Property Let IsDirty(ByVal rhs As Boolean)
+    this.IsDirty = rhs
 End Property
 
 Public Property Get LHSTable() As ListObject
@@ -123,16 +123,16 @@ Public Property Get LHSColumns() As Collection
     Set LHSColumns = this.LHSColumns
 End Property
 
-Public Property Set LHSColumns(ByVal RHS As Collection)
-    Set this.LHSColumns = RHS
+Public Property Set LHSColumns(ByVal rhs As Collection)
+    Set this.LHSColumns = rhs
 End Property
 
 Public Property Get RHSColumns() As Collection
     Set RHSColumns = this.RHSColumns
 End Property
 
-Public Property Set RHSColumns(ByVal RHS As Collection)
-    Set this.RHSColumns = RHS
+Public Property Set RHSColumns(ByVal rhs As Collection)
+    Set this.RHSColumns = rhs
 End Property
 
 Public Property Get LHSKeyColumn() As ListColumn
@@ -358,15 +358,15 @@ Public Function TryGuess(Optional Force As Boolean = False) As Boolean
     Dim comp As KeyColumnComparer
     Set comp = New KeyColumnComparer
     For i = 1 To lhsCount
-        Set comp.LHS = KeyColumn.FromColumn(this.LHSColumns(i), False, 1000)
+        Set comp.lhs = KeyColumn.FromColumn(this.LHSColumns(i), False, 1000)
         'PrintTime "KeyColumn.FromColumn(this.LHSColumns(i))"
-        If comp.LHS.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
+        If comp.lhs.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
             For j = 1 To rhsCount
                 If (Timer() - startTime) > timeLimit Then GoTo TimeLimitExceeded
-                Set comp.RHS = KeyColumn.FromColumn(this.RHSColumns(j), False, 1000)
+                Set comp.rhs = KeyColumn.FromColumn(this.RHSColumns(j), False, 1000)
                 'PrintTime "KeyColumn.FromColumn(this.RHSColumns(i))"
-                If Not comp.RHS Is Nothing Then
-                    If comp.RHS.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
+                If Not comp.rhs Is Nothing Then
+                    If comp.rhs.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
                         comp.Map
     
                         If comp.Score > bestScore Then

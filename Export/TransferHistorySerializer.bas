@@ -36,8 +36,8 @@ Public Function LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As 
     Dim att As String
     Dim val As String
     
-    Dim LHS As String
-    Dim RHS As String
+    Dim lhs As String
+    Dim rhs As String
     
     Dim curArr As Variant
     Dim ti As TransferInstructionUnref
@@ -73,8 +73,8 @@ Public Function LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As 
                 End Select
                 
             Case 2
-                LHS = Split(curArr(2), ",")(0)
-                RHS = Split(curArr(2), ",")(1)
+                lhs = Split(curArr(2), ",")(0)
+                rhs = Split(curArr(2), ",")(1)
                 ' This will fail if columns have commas in them
         End Select
     Next i
@@ -101,8 +101,8 @@ Public Function ZZ_LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) 
     Dim att As String
     Dim val As String
     
-    Dim LHS As String
-    Dim RHS As String
+    Dim lhs As String
+    Dim rhs As String
     
     Dim ti As TransferInstruction
     Dim tis As Collection
@@ -137,11 +137,11 @@ Public Function ZZ_LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) 
                         ti.Flags = val
                 End Select
             Case 2
-                LHS = Split(curArr(2), ",")(0)
-                RHS = Split(curArr(2), ",")(1)
+                lhs = Split(curArr(2), ",")(0)
+                rhs = Split(curArr(2), ",")(1)
                 
                 If Not ti.Source Is Nothing And Not ti.Destination Is Nothing Then
-                    ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns(LHS), ti.Destination.ListColumns(RHS))
+                    ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns(lhs), ti.Destination.ListColumns(rhs))
                 End If
         End Select
     Next i

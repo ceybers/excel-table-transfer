@@ -49,6 +49,10 @@ Private Sub chkAddNewKeys_Click()
     End If
 End Sub
 
+Private Sub chkLimitKeyCheck_Click()
+    Me.txtLimitKeyValue.Enabled = Me.chkLimitKeyCheck.value
+End Sub
+
 Private Sub chkRemoveOrphans_Click()
     vm.RemoveOrphanKeys = Me.chkRemoveOrphans.value
 End Sub
@@ -169,6 +173,16 @@ Private Sub PopulateColumns(ByVal cmb As ComboBox, ByVal lo As ListObject)
     End If
 End Sub
 
+Private Sub txtLimitKeyValue_Exit(ByVal Cancel As MSForms.ReturnBoolean)
+    If Not IsNumeric(Me.txtLimitKeyValue.value) Then
+        Cancel = True
+    ElseIf CLng(Me.txtLimitKeyValue.value) < 1 Then
+        Cancel = True
+    ElseIf CLng(Me.txtLimitKeyValue.value) > 10000 Then
+        Cancel = True
+    End If
+End Sub
+
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
         Cancel = True
@@ -274,7 +288,7 @@ Private Sub vm_PropertyChanged(ByVal propertyName As String)
         'Case KeyMapperEvents.LHS_COLUMNS
             
         Case KeyMapperEvents.LHS_KEY_COLUMN
-            ResetQualityControls LHS:=True
+            ResetQualityControls lhs:=True
         Case KeyMapperEvents.RHS_TABLE
             'this.IsInitialLoad = True
             ChangeTable Me.cmbTableRHS, vm.RHSTable
@@ -285,7 +299,7 @@ Private Sub vm_PropertyChanged(ByVal propertyName As String)
         'Case KeyMapperEvents.RHS_COLUMNS
             
         Case KeyMapperEvents.RHS_KEY_COLUMN
-            ResetQualityControls RHS:=True
+            ResetQualityControls rhs:=True
     End Select
     
     Me.cmbSwap.Enabled = vm.CanSwap
@@ -305,12 +319,12 @@ Private Sub TryAutoMatchAgain(ByVal leftToRight As Boolean)
     End If
 End Sub
 
-Private Sub ResetQualityControls(Optional ByVal LHS As Boolean, Optional ByVal RHS As Boolean)
-    If LHS Then
+Private Sub ResetQualityControls(Optional ByVal lhs As Boolean, Optional ByVal rhs As Boolean)
+    If lhs Then
         Me.lvQualityLHS.ListItems.Clear
     End If
 
-    If RHS Then
+    If rhs Then
         Me.lvQualityRHS.ListItems.Clear
     End If
 
@@ -359,9 +373,19 @@ End Sub
 Private Sub PopulateMatchSets()
     Dim comp As KeyColumnComparer
     Set comp = New KeyColumnComparer
-    Set comp.LHS = KeyColumn.FromColumn(vm.LHSKeyColumn)
-    Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn)
-    comp.Map
+    
+    If Me.chkLimitKeyCheck.value = True Then
+        Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn, False, Me.txtLimitKeyValue.value)
+        Set comp.rhs = KeyColumn.FromColumn(vm.RHSKeyColumn, False, Me.txtLimitKeyValue.value)
+    Else
+        Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn)
+        Set comp.rhs = KeyColumn.FromColumn(vm.RHSKeyColumn)
+    End If
+    
+    ' This maps the keys to their location in the other array
+    ' It doesn't calculate LeftOny/Intersection/RightOnly -
+    ' this is done on Set .LHS/.RHS
+    'comp.Map
     
     CollectionToListView comp.LeftOnly, Me.lvSetLHS, "Additions"
     CollectionToListView comp.Intersection, Me.lvSetInner, "Matches"

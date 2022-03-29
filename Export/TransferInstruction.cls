@@ -19,11 +19,25 @@ Private Type TState
     mapResult As Variant
     Flags As Integer
     CopiedCells As Range
+    LastRun As Date
+    UnRef As TransferInstructionUnref
 End Type
 
 Private this As TState
 
 ' Properties
+Public Property Get UnRef() As TransferInstructionUnref
+    Set UnRef = this.UnRef
+End Property
+
+Public Property Set UnRef(ByVal rhs As TransferInstructionUnref)
+    Set this.UnRef = rhs
+End Property
+
+Public Property Get LastRun() As Date
+    LastRun = this.LastRun
+End Property
+
 Public Property Get Flags() As Integer
     Flags = this.Flags
 End Property
@@ -36,40 +50,40 @@ Public Property Get Source() As ListObject
     Set Source = this.Source
 End Property
 
-Public Property Set Source(ByVal RHS As ListObject)
-    Set this.Source = RHS
+Public Property Set Source(ByVal rhs As ListObject)
+    Set this.Source = rhs
 End Property
 
 Public Property Get Destination() As ListObject
     Set Destination = this.Destination
 End Property
 
-Public Property Set Destination(ByVal RHS As ListObject)
-    Set this.Destination = RHS
+Public Property Set Destination(ByVal rhs As ListObject)
+    Set this.Destination = rhs
 End Property
 
 Public Property Get SourceKey() As ListColumn
     Set SourceKey = this.SourceKey
 End Property
 
-Public Property Set SourceKey(ByVal RHS As ListColumn)
-    Set this.SourceKey = RHS
+Public Property Set SourceKey(ByVal rhs As ListColumn)
+    Set this.SourceKey = rhs
 End Property
 
 Public Property Get DestinationKey() As ListColumn
     Set DestinationKey = this.DestinationKey
 End Property
 
-Public Property Set DestinationKey(ByVal RHS As ListColumn)
-    Set this.DestinationKey = RHS
+Public Property Set DestinationKey(ByVal rhs As ListColumn)
+    Set this.DestinationKey = rhs
 End Property
 
 Public Property Get ValuePairs() As Collection
     Set ValuePairs = this.ValuePairs
 End Property
 
-Public Property Set ValuePairs(ByVal RHS As Collection)
-    Set this.ValuePairs = RHS
+Public Property Set ValuePairs(ByVal rhs As Collection)
+    Set this.ValuePairs = rhs
 End Property
 
 Public Property Get mapResult() As Variant
@@ -80,12 +94,12 @@ Public Property Get mapResult() As Variant
     End If
 End Property
 
-Public Property Let mapResult(ByVal RHS As Variant)
-    this.mapResult = RHS
+Public Property Let mapResult(ByVal rhs As Variant)
+    this.mapResult = rhs
 End Property
 
-Public Property Set mapResult(ByVal RHS As Variant)
-    Set this.mapResult = RHS
+Public Property Set mapResult(ByVal rhs As Variant)
+    Set this.mapResult = rhs
 End Property
 
 ' Ctor
@@ -94,8 +108,8 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Methods
-Public Sub Add(ByVal LHS As ListColumn, ByVal RHS As ListColumn)
-    ValuePairs.Add ColumnPair.Create(LHS, RHS)
+Public Sub Add(ByVal lhs As ListColumn, ByVal rhs As ListColumn)
+    ValuePairs.Add ColumnPair.Create(lhs, rhs)
 End Sub
 
 Public Function IsValid() As Boolean
@@ -136,7 +150,7 @@ Private Sub SetMapResult()
 End Sub
 
 Private Sub TransferOne(ByVal colPair As ColumnPair)
-   DoTransfer mapResult, colPair.LHS, colPair.RHS
+   DoTransfer mapResult, colPair.lhs, colPair.rhs
 End Sub
 
 Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal Destination As ListColumn)
@@ -212,6 +226,8 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
         Destination.DataBodyRange.Value2 = arrRHS
         Destination.parent.ShowAutoFilter = True
     End If
+    
+    this.LastRun = Now()
 End Sub
 
 Private Sub RemoveUnmappedKeys()
@@ -224,7 +240,7 @@ Private Sub RemoveUnmappedKeys()
    
     Dim i As Long
     Dim rng As Range
-    Set rng = comp.RHS.Range
+    Set rng = comp.rhs.Range
     
     For i = rng.rows.Count To 1 Step -1
         If cachedMappedResults(rng.rows(i).row) = -1 Then
@@ -247,15 +263,15 @@ Private Sub AppendUnmappedKeys()
     Set lo = lc.parent
 
     Dim c As Long
-    If comp.RHS Is Nothing Then
-        c = comp.LHS.Keys.Count
+    If comp.rhs Is Nothing Then
+        c = comp.lhs.Keys.Count
     Else
         c = comp.LeftOnly.Count
     End If
     For i = 1 To c
         Set lr = lo.ListRows.Add(alwaysinsert:=True)
-        If comp.RHS Is Nothing Then
-            lr.Range.Cells(1, lc.Index).Value2 = comp.LHS.Keys(i)
+        If comp.rhs Is Nothing Then
+            lr.Range.Cells(1, lc.Index).Value2 = comp.lhs.Keys(i)
         Else
             lr.Range.Cells(1, lc.Index).Value2 = comp.LeftOnly.Item(i)
         End If
@@ -300,4 +316,114 @@ Private Sub UpdateHighlighting()
     If Not this.CopiedCells Is Nothing Then
         Highlighting.ApplyHighlighting this.CopiedCells, HasFlag(this.Flags, HighlightMapped)
     End If
+End Sub
+
+Public Sub LoadFlags()
+    If this.UnRef Is Nothing Then Exit Sub
+    this.Flags = this.UnRef.Flags
+End Sub
+
+Public Function TryLoadKeyColumns() As Boolean
+    If this.UnRef Is Nothing Then Exit Function
+    TryLoadKeyColumns = True
+    
+    Dim lc As ListColumn
+    
+    On Error Resume Next
+    Set lc = this.Source.ListColumns(this.UnRef.SourceKey)
+    On Error GoTo 0
+    If Not lc Is Nothing Then
+        Set this.SourceKey = lc
+    Else
+        TryLoadKeyColumns = False
+    End If
+    
+    On Error Resume Next
+    Set lc = this.Destination.ListColumns(this.UnRef.DestinationKey)
+    On Error GoTo 0
+    If Not lc Is Nothing Then
+        Set this.DestinationKey = lc
+    Else
+        TryLoadKeyColumns = False
+    End If
+End Function
+
+Public Function TryLoadValuePairs() As Boolean
+    If this.UnRef Is Nothing Then Exit Function
+    TryLoadValuePairs = True
+    
+    Dim vp As Variant
+    vp = this.UnRef.ValuePairs
+    
+    CollectionHelpers.ClearCollection this.ValuePairs
+    
+    Dim i As Long
+    For i = 1 To UBound(vp, 1)
+        Dim lhs As ListColumn
+        Dim rhs As ListColumn
+        On Error Resume Next
+        Set lhs = this.Source.ListColumns(vp(i, 1))
+        Set rhs = this.Destination.ListColumns(vp(i, 2))
+        On Error GoTo 0
+        If Not lhs Is Nothing And Not rhs Is Nothing Then
+            this.ValuePairs.Add ColumnPair.Create(lhs, rhs)
+        Else
+            TryLoadValuePairs = False
+        End If
+    Next i
+End Function
+
+Public Sub SaveToRange(ByVal rng As Range)
+    Dim c As Long
+    c = 12 + this.ValuePairs.Count
+
+    Dim arr() As String
+    ReDim arr(1 To c, 1 To 4)
+    
+    arr(1, 1) = "TRANSFER"
+    arr(2, 2) = "NAME"
+    arr(3, 2) = "TIME"
+    arr(4, 2) = "PATH"
+    arr(5, 2) = "FN"
+    arr(6, 2) = "SHEET"
+    arr(7, 2) = "RNG"
+    arr(8, 2) = "TBL"
+    arr(9, 2) = "KEYS"
+    arr(10, 2) = "FLAGS"
+    arr(11, 2) = "PAIRS"
+    arr(c, 1) = "END"
+    
+    arr(2, 3) = Name
+    arr(3, 3) = this.LastRun
+    
+    arr(4, 3) = this.Source.parent.parent.path
+    arr(5, 3) = this.Source.parent.parent.Name
+    arr(6, 3) = this.Source.parent.Name
+    arr(7, 3) = this.Source.Range.Address
+    arr(8, 3) = this.Source.Name
+    arr(9, 3) = this.SourceKey.Name
+    
+    arr(4, 4) = this.Destination.parent.parent.path
+    arr(5, 4) = this.Destination.parent.parent.Name
+    arr(6, 4) = this.Destination.parent.Name
+    arr(7, 4) = this.Destination.Range.Address
+    arr(8, 4) = this.Destination.Name
+    arr(9, 4) = this.DestinationKey.Name
+    
+    arr(10, 3) = this.Flags
+    arr(11, 3) = this.ValuePairs.Count
+    
+    Dim n As Long
+    n = 12
+    Dim cp As ColumnPair
+    For Each cp In this.ValuePairs
+        arr(n, 3) = cp.lhs.Name
+        arr(n, 4) = cp.rhs.Name
+        n = n + 1
+    Next cp
+    
+    Set rng = rng.Resize(c, 4)
+    
+    rng.Value2 = arr
+    'rng.Select
 End Sub

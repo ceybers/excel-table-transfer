@@ -24,8 +24,8 @@ Public Property Get Flags() As Integer
     Flags = this.Flags
 End Property
 
-Public Property Let Flags(ByVal RHS As Integer)
-    this.Flags = RHS
+Public Property Let Flags(ByVal rhs As Integer)
+    this.Flags = rhs
 End Property
 
 Private Function IViewModel_IsValid() As Boolean
