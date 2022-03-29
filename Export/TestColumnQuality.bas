@@ -4,7 +4,7 @@ Attribute VB_Name = "TestColumnQuality"
 Option Explicit
 Option Private Module
 
-Public Sub test()
+Public Sub Test()
     Dim vm As ColumnQualityViewModel
     Dim view As IView
     

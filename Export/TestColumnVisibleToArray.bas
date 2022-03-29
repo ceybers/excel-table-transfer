@@ -3,7 +3,7 @@ Attribute VB_Name = "TestColumnVisibleToArray"
 Option Explicit
 Option Private Module
 
-Public Sub test()
+Public Sub Test()
     Dim wb As Workbook
     Dim ws As Worksheet
     Dim lo As ListObject

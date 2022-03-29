@@ -155,7 +155,7 @@ Private Function SetValueMapping(ByVal transfer As TransferInstruction) As Boole
     Dim vm As ValueMapperViewModel
     Set vm = New ValueMapperViewModel
     Set vm.LHS = transfer.Source
-    Set vm.rhs = transfer.Destination
+    Set vm.RHS = transfer.Destination
     Set vm.KeyColumnLHS = transfer.SourceKey
     Set vm.KeyColumnRHS = transfer.DestinationKey
     vm.Flags = transfer.Flags

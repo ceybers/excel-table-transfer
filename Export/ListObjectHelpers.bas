@@ -2,24 +2,37 @@ Attribute VB_Name = "ListObjectHelpers"
 '@Folder("HelperFunctions")
 Option Explicit
 
-Private Sub test()
+Private Sub Test()
     Dim lo As ListObject
     Dim result As String
     
     Set lo = ThisWorkbook.Worksheets(1).ListObjects(1)
     'Debug.Print ListObjectToStringName(lo)
     
-    result = "'C:\Users\User\Documents\excel-related-table-tool\[Production.xlsm]Sheet1'!$A$1:$C$5"
-    Set lo = StringNameToListObject(result)
-    Debug.Print lo.Name
+    'result = "'C:\Users\User\Documents\excel-related-table-tool\[Production.xlsm]Sheet1'!$A$1:$C$5"
+    'Set lo = StringNameToListObject(result)
+    If lo Is Nothing Then
+        Debug.Print "Path Filename Worksheet Range [FAIL]"
+    Else
+        Debug.Print "Path Filename Worksheet Range [OK]"
+    End If
     
-    result = "[Production.xlsm]Sheet1!$A$1:$C$5"
+    result = "[Production.xlsm]Sheet1!$A$1:$C$5" ' Closed file
+    result = "[Development.xlsm]Sheet1!$A$1:$C$5"
     Set lo = StringNameToListObject(result)
-    Debug.Print lo.Name
+    If lo Is Nothing Then
+        Debug.Print "     Filename Worksheet Range [FAIL]"
+    Else
+        Debug.Print "     Filename Worksheet Range [OK]"
+    End If
         
     result = "Sheet1!A1:C10"
     Set lo = StringNameToListObject(result)
-    Debug.Print lo.Name
+    If lo Is Nothing Then
+        Debug.Print "              Worksheet Range [FAIL]"
+    Else
+        Debug.Print "              Worksheet Range [OK]"
+    End If
     
     'Debug.Print lo.Name
 End Sub
@@ -73,6 +86,7 @@ Public Function StringNameToListObject(ByVal stringName As String) As ListObject
         Debug.Print "Filename="; filename
         Debug.Print "Worksheetname="; worksheetName
         Debug.Print "Range="; rangetext
+        Stop
     End If
     
     Dim wb As Workbook
@@ -87,7 +101,7 @@ Public Function StringNameToListObject(ByVal stringName As String) As ListObject
     
     If TryGetWorkSheet(wb, worksheetName, ws) Then
         Set rng = ws.Range(rangetext)
-        Debug.Print rng.Address
+        'Debug.Print rng.Address
         If rng.ListObject Is Nothing Then
             Debug.Print "Table doesn't exist more"
         Else
@@ -97,7 +111,7 @@ Public Function StringNameToListObject(ByVal stringName As String) As ListObject
         Debug.Print "Worksheet doesn't exist more"
     End If
     
-    Debug.Print vbNullString
+    'Debug.Print vbNullString
 End Function
 
 Private Function TryGetWorkSheet(ByVal wb As Workbook, ByVal worksheetName As String, ByRef ws As Worksheet) As Boolean
@@ -143,8 +157,21 @@ Public Function ListObjectToStringName(ByVal lo As ListObject, Optional ByVal Sh
     End If
 End Function
 
+Public Function TryGetListColumnFromText(ByVal columnName As String, ByVal lo As ListObject, ByRef outLC As ListColumn) As Boolean
+    If lo Is Nothing Then Exit Function
+    
+    Dim lc As ListColumn
+    For Each lc In lo.ListColumns
+        If lc.Name = columnName Then
+            Set outLC = lc
+            TryGetListColumnFromText = True
+            Exit Function
+        End If
+    Next lc
+End Function
+
 '@Description "test"
-Public Function TryGetTableFromText(ByVal rangetext As String, Optional ByVal openIfClosed As Boolean = False) As ListObject
+Public Function TryGetTableFromText(ByVal rangetext As String, ByRef outListObject As ListObject, Optional ByVal openIfClosed As Boolean = False) As Boolean
 Attribute TryGetTableFromText.VB_Description = "test"
     ' Debug.Print "RR"; rangeText
     
@@ -172,8 +199,12 @@ Attribute TryGetTableFromText.VB_Description = "test"
         'Debug.Print rangeaddress
         Set rng = ws.Range(rangeaddress)
         'Debug.Print rng.Address
-        If rng.ListObject Is Nothing Then Err.Raise 5, , "TryGetTableFromText failed"
-        Set TryGetTableFromText = rng.ListObject
+        'If rng.ListObject Is Nothing Then Err.Raise 5, , "TryGetTableFromText failed"
+        
+        If Not rng.ListObject Is Nothing Then
+            Set outListObject = rng.ListObject
+            TryGetTableFromText = True
+        End If
     Else
         MsgBox "TryGetTableFromText DoOpen NYI"
         Dim path As String
@@ -206,4 +237,21 @@ Public Function ListColumnHasArray(ByVal lc As ListColumn) As Boolean
         'Debug.Print "same non-formula"
         ListColumnHasArray = False
     End If
+End Function
+
+Public Function TryGetListObjectFromWorkbook(ByVal wb As Workbook, ByVal loName As String, ByRef outLO As ListObject) As Boolean
+    If wb Is Nothing Then Exit Function
+    
+    Dim ws As Worksheet
+    Dim lo As ListObject
+    
+    For Each ws In wb.Worksheets
+        For Each lo In ws.ListObjects
+            If lo.Name = loName Then
+                Set outLO = lo
+                TryGetListObjectFromWorkbook = True
+                Exit Function
+            End If
+        Next lo
+    Next ws
 End Function

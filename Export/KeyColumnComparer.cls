@@ -14,7 +14,7 @@ Option Explicit
 
 Private Type TClsCompareKeyColumns
     LHS As KeyColumn
-    rhs As KeyColumn
+    RHS As KeyColumn
     LeftOnly As Collection
     Intersection As Collection
     RightOnly As Collection
@@ -42,17 +42,17 @@ Public Property Get LHS() As KeyColumn
     Set LHS = this.LHS
 End Property
 
-Public Property Set LHS(ByVal rhs As KeyColumn)
-    Set this.LHS = rhs
+Public Property Set LHS(ByVal RHS As KeyColumn)
+    Set this.LHS = RHS
     TryDoWork
 End Property
 
-Public Property Get rhs() As KeyColumn
-    Set rhs = this.rhs
+Public Property Get RHS() As KeyColumn
+    Set RHS = this.RHS
 End Property
 
-Public Property Set rhs(ByVal rhs As KeyColumn)
-    Set this.rhs = rhs
+Public Property Set RHS(ByVal RHS As KeyColumn)
+    Set this.RHS = RHS
     TryDoWork
 End Property
 
@@ -83,7 +83,7 @@ End Property
 ' Methods
 Private Sub TryDoWork()
     If this.LHS Is Nothing Then Exit Sub
-    If this.rhs Is Nothing Then Exit Sub
+    If this.RHS Is Nothing Then Exit Sub
     DoWork
 End Sub
 
@@ -93,7 +93,7 @@ Private Sub DoWork()
     For Each key In LHS.Keys
         Upsert key, 1
     Next
-    For Each key In rhs.Keys
+    For Each key In RHS.Keys
         Upsert key, 2
     Next
     
@@ -123,16 +123,16 @@ Private Sub Upsert(ByVal key As String, ByVal value As Integer)
     End If
 End Sub
 
-Public Function Create(ByVal LHS As KeyColumn, ByVal rhs As KeyColumn) As KeyColumnComparer
+Public Function Create(ByVal LHS As KeyColumn, ByVal RHS As KeyColumn) As KeyColumnComparer
     Set Create = New KeyColumnComparer
     Set Create.LHS = LHS
-    Set Create.rhs = rhs
+    Set Create.RHS = RHS
 End Function
 
 Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByVal FilterDestination As Boolean = False) As Variant
     'Debug.Assert Not this.LHS Is Nothing
     'Debug.Assert Not this.rhs Is Nothing
-    If this.LHS Is Nothing Or this.rhs Is Nothing Then
+    If this.LHS Is Nothing Or this.RHS Is Nothing Then
         'Err.Raise vbObjectError + 4, Err.Source, "Cannot Map KeyColumns with an empty table"
         Exit Function
     End If
@@ -148,9 +148,9 @@ Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByV
     End If
     
     Dim rhsFlt As KeyColumn
-    Set rhsFlt = this.rhs
+    Set rhsFlt = this.RHS
     If FilterDestination Then
-        Set rhsFlt = KeyColumn.FromRange(this.rhs.Range, this.rhs.IncludeNumbersAsText, True)
+        Set rhsFlt = KeyColumn.FromRange(this.RHS.Range, this.RHS.IncludeNumbersAsText, True)
     End If
     
     arr = rhsFlt.GetArray

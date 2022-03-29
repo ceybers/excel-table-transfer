@@ -23,24 +23,24 @@ Public Property Get IsSource() As Boolean
     IsSource = this.IsSource
 End Property
 
-Public Property Let IsSource(ByVal rhs As Boolean)
-    this.IsSource = rhs
+Public Property Let IsSource(ByVal RHS As Boolean)
+    this.IsSource = RHS
 End Property
 
 Public Property Get IsDestination() As Boolean
     IsDestination = this.IsDestination
 End Property
 
-Public Property Let IsDestination(ByVal rhs As Boolean)
-    this.IsDestination = rhs
+Public Property Let IsDestination(ByVal RHS As Boolean)
+    this.IsDestination = RHS
 End Property
 
 Public Property Get ListObject() As ListObject
     Set ListObject = this.ListObject
 End Property
 
-Public Property Set ListObject(ByVal rhs As ListObject)
-    Set this.ListObject = rhs
+Public Property Set ListObject(ByVal RHS As ListObject)
+    Set this.ListObject = RHS
 End Property
 
 Private Function IViewModel_IsValid() As Boolean

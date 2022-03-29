@@ -10,7 +10,17 @@ Private OneTableSelected As ListObject
 
 Private GoBack As Boolean
 
+Public Function PrintTime(ByVal message As String, Optional ByVal Reset As Boolean)
+    Static startTime As Double
+    If Reset Or (startTime = 0) Then
+        startTime = Timer()
+    End If
+    Debug.Print message & " " & (Timer() - startTime)
+End Function
+
 Public Sub TransferTable()
+    PrintTime "Start", True
+       
     'MsgBox "Welcome to table transfer wizard"
     
     InitializeViewModels
@@ -20,13 +30,16 @@ Public Sub TransferTable()
     Set transfer.Destination = ThisWorkbook.Worksheets(1).ListObjects(2)
     
     If CheckTablesAvailable = False Then Exit Sub
+    PrintTime "CheckTablesAvailable"
     
 Rewind1:
     CheckIfSelectionContainsTable
     
     If TryGetSourceOrDestination = False Then Exit Sub
+    PrintTime "TryGetSourceOrDestination"
     
     If TryGetSecondTable = False Then Exit Sub
+    PrintTime "TryGetSecondTable"
     
 Rewind2:
     If TryGetKeyColumns = False Then Exit Sub
@@ -36,7 +49,8 @@ Rewind2:
         Set transfer.Destination = Nothing
         GoTo Rewind1
     End If
-
+    PrintTime "TryGetKeyColumns"
+    
 Rewind3:
     If TryMapValueColumns = False Then Exit Sub
     If GoBack Then
@@ -44,12 +58,15 @@ Rewind3:
         ' ???
         GoTo Rewind2
     End If
+    PrintTime "TryMapValueColumns"
     
-'NoRewind
+    'NoRewind
     DoTransfer
+    PrintTime "DoTransfer"
     
-'NoRewind
+    'NoRewind
     TrySaveHistory
+    PrintTime "TrySaveHistory"
 End Sub
 
 Private Sub InitializeViewModels()
@@ -177,7 +194,7 @@ Private Function TryMapValueColumns() As Boolean
     Set vm = New ValueMapperViewModel
     
     Set vm.LHS = transfer.Source
-    Set vm.rhs = transfer.Destination
+    Set vm.RHS = transfer.Destination
     Set vm.KeyColumnLHS = transfer.SourceKey
     Set vm.KeyColumnRHS = transfer.DestinationKey
     vm.Flags = transfer.Flags

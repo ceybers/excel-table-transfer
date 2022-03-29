@@ -13,7 +13,7 @@ Option Explicit
 
 Private Type TClsColumnPair
     LHS As ListColumn
-    rhs As ListColumn
+    RHS As ListColumn
 End Type
 
 Private this As TClsColumnPair
@@ -22,41 +22,41 @@ Public Property Get LHS() As ListColumn
     Set LHS = this.LHS
 End Property
 
-Public Property Set LHS(ByVal rhs As ListColumn)
-    Set this.LHS = rhs
+Public Property Set LHS(ByVal RHS As ListColumn)
+    Set this.LHS = RHS
 End Property
 
-Public Property Get rhs() As ListColumn
-    Set rhs = this.rhs
+Public Property Get RHS() As ListColumn
+    Set RHS = this.RHS
 End Property
 
-Public Property Set rhs(ByVal rhs As ListColumn)
-    Set this.rhs = rhs
+Public Property Set RHS(ByVal RHS As ListColumn)
+    Set this.RHS = RHS
 End Property
 
 Public Function IsValid() As Boolean
     If this.LHS Is Nothing Then Exit Function
-    If this.rhs Is Nothing Then Exit Function
+    If this.RHS Is Nothing Then Exit Function
     IsValid = True
 End Function
 
-Public Function Create(ByVal LHS As ListColumn, ByVal rhs As ListColumn) As ColumnPair
+Public Function Create(ByVal LHS As ListColumn, ByVal RHS As ListColumn) As ColumnPair
     Set Create = New ColumnPair
     With Create
         Set .LHS = LHS
-        Set .rhs = rhs
+        Set .RHS = RHS
     End With
 End Function
 
-Public Function Equals(ByVal rhs As ColumnPair) As Boolean
-    If rhs Is Nothing Then Exit Function
-    If Not this.LHS Is rhs.LHS Then Exit Function
-    If Not this.rhs Is rhs.rhs Then Exit Function
+Public Function Equals(ByVal RHS As ColumnPair) As Boolean
+    If RHS Is Nothing Then Exit Function
+    If Not this.LHS Is RHS.LHS Then Exit Function
+    If Not this.RHS Is RHS.RHS Then Exit Function
     Equals = True
 End Function
 
 Public Function ToString() As String
     Debug.Assert Not LHS Is Nothing
-    Debug.Assert Not rhs Is Nothing
-    ToString = LHS.Name & "," & rhs.Name
+    Debug.Assert Not RHS Is Nothing
+    ToString = LHS.Name & "," & RHS.Name
 End Function

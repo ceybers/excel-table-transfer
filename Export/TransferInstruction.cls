@@ -36,40 +36,40 @@ Public Property Get Source() As ListObject
     Set Source = this.Source
 End Property
 
-Public Property Set Source(ByVal rhs As ListObject)
-    Set this.Source = rhs
+Public Property Set Source(ByVal RHS As ListObject)
+    Set this.Source = RHS
 End Property
 
 Public Property Get Destination() As ListObject
     Set Destination = this.Destination
 End Property
 
-Public Property Set Destination(ByVal rhs As ListObject)
-    Set this.Destination = rhs
+Public Property Set Destination(ByVal RHS As ListObject)
+    Set this.Destination = RHS
 End Property
 
 Public Property Get SourceKey() As ListColumn
     Set SourceKey = this.SourceKey
 End Property
 
-Public Property Set SourceKey(ByVal rhs As ListColumn)
-    Set this.SourceKey = rhs
+Public Property Set SourceKey(ByVal RHS As ListColumn)
+    Set this.SourceKey = RHS
 End Property
 
 Public Property Get DestinationKey() As ListColumn
     Set DestinationKey = this.DestinationKey
 End Property
 
-Public Property Set DestinationKey(ByVal rhs As ListColumn)
-    Set this.DestinationKey = rhs
+Public Property Set DestinationKey(ByVal RHS As ListColumn)
+    Set this.DestinationKey = RHS
 End Property
 
 Public Property Get ValuePairs() As Collection
     Set ValuePairs = this.ValuePairs
 End Property
 
-Public Property Set ValuePairs(ByVal rhs As Collection)
-    Set this.ValuePairs = rhs
+Public Property Set ValuePairs(ByVal RHS As Collection)
+    Set this.ValuePairs = RHS
 End Property
 
 Public Property Get mapResult() As Variant
@@ -80,12 +80,12 @@ Public Property Get mapResult() As Variant
     End If
 End Property
 
-Public Property Let mapResult(ByVal rhs As Variant)
-    this.mapResult = rhs
+Public Property Let mapResult(ByVal RHS As Variant)
+    this.mapResult = RHS
 End Property
 
-Public Property Set mapResult(ByVal rhs As Variant)
-    Set this.mapResult = rhs
+Public Property Set mapResult(ByVal RHS As Variant)
+    Set this.mapResult = RHS
 End Property
 
 ' Ctor
@@ -94,8 +94,8 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Methods
-Public Sub Add(ByVal LHS As ListColumn, ByVal rhs As ListColumn)
-    ValuePairs.Add ColumnPair.Create(LHS, rhs)
+Public Sub Add(ByVal LHS As ListColumn, ByVal RHS As ListColumn)
+    ValuePairs.Add ColumnPair.Create(LHS, RHS)
 End Sub
 
 Public Function IsValid() As Boolean
@@ -136,7 +136,7 @@ Private Sub SetMapResult()
 End Sub
 
 Private Sub TransferOne(ByVal colPair As ColumnPair)
-   DoTransfer mapResult, colPair.LHS, colPair.rhs
+   DoTransfer mapResult, colPair.LHS, colPair.RHS
 End Sub
 
 Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal Destination As ListColumn)
@@ -224,7 +224,7 @@ Private Sub RemoveUnmappedKeys()
    
     Dim i As Long
     Dim rng As Range
-    Set rng = comp.rhs.Range
+    Set rng = comp.RHS.Range
     
     For i = rng.rows.Count To 1 Step -1
         If cachedMappedResults(rng.rows(i).row) = -1 Then
@@ -247,14 +247,14 @@ Private Sub AppendUnmappedKeys()
     Set lo = lc.parent
 
     Dim c As Long
-    If comp.rhs Is Nothing Then
+    If comp.RHS Is Nothing Then
         c = comp.LHS.Keys.Count
     Else
         c = comp.LeftOnly.Count
     End If
     For i = 1 To c
         Set lr = lo.ListRows.Add(alwaysinsert:=True)
-        If comp.rhs Is Nothing Then
+        If comp.RHS Is Nothing Then
             lr.Range.Cells(1, lc.Index).Value2 = comp.LHS.Keys(i)
         Else
             lr.Range.Cells(1, lc.Index).Value2 = comp.LeftOnly.Item(i)
@@ -282,7 +282,11 @@ Public Function ToString() As String
 End Function
 
 Public Function Name() As String
-    Name = this.Source.Name & "." & this.SourceKey.Name & " -> " & this.Destination.Name & "." & this.DestinationKey.Name & " (" & this.ValuePairs.Count & ")"
+    If Not this.Source Is Nothing And Not this.Destination Is Nothing Then
+        Name = this.Source.Name & "." & this.SourceKey.Name & " -> " & this.Destination.Name & "." & this.DestinationKey.Name & " (" & this.ValuePairs.Count & ")"
+    Else
+        Name = "unknown transfer instruction (could not de-serialize)"
+    End If
 End Function
 
 Public Sub SetDefaultFlags()

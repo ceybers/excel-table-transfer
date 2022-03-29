@@ -4,7 +4,85 @@ Option Explicit
 
 Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Integer = 8
 
+Public Sub Test()
+    Dim result As Variant
+    Set result = LoadTransferInstructionsFromWorksheet(ThisWorkbook.Worksheets("CAETransferTableHistory"))
+    
+    Dim ti As TransferInstructionUnref
+    Set ti = result(1)
+    
+    Debug.Print ti.Flags
+End Sub
+
 Public Function LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As Variant
+    Dim TransferInstructions
+    Set TransferInstructions = New Collection
+    
+    Dim rng As Range
+    Set rng = ws.UsedRange
+    
+    Dim arr As Variant
+    arr = rng.Value2
+    
+    If IsEmpty(arr) Then
+        Set LoadTransferInstructionsFromWorksheet = Nothing
+        Exit Function
+    End If
+    
+    Dim c As Long
+    c = UBound(arr, 1)
+    
+   
+    Dim att As String
+    Dim val As String
+    
+    Dim LHS As String
+    Dim RHS As String
+    
+    Dim curArr As Variant
+    Dim ti As TransferInstructionUnref
+    Dim i As Long
+    For i = 1 To c
+        curArr = Split(arr(i, 1), " ")
+        
+        Debug.Print UBound(curArr, 1)
+        Select Case UBound(curArr, 1)
+            Case 0
+                If curArr(0) = "TRANSFER" Then
+                    Set ti = New TransferInstructionUnref
+                ElseIf curArr(0) = "END" Then
+                    TransferInstructions.Add ti
+                    Set ti = Nothing
+                End If
+                
+            Case 1
+                att = Split(curArr(1), ",")(0)
+                val = Split(curArr(1), ",")(1)
+                
+                Select Case att
+                    Case "SRC"
+                        ti.Source = val
+                    Case "DST"
+                        ti.Destination = val
+                    Case "SRCKEY"
+                        ti.SourceKey = val
+                    Case "DSTKEY"
+                        ti.DestinationKey = val
+                    Case "FLAGS"
+                        ti.Flags = val
+                End Select
+                
+            Case 2
+                LHS = Split(curArr(2), ",")(0)
+                RHS = Split(curArr(2), ",")(1)
+                ' This will fail if columns have commas in them
+        End Select
+    Next i
+    
+    Set LoadTransferInstructionsFromWorksheet = TransferInstructions
+End Function
+
+Public Function ZZ_LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As Variant
     Dim rng As Range
     Set rng = ws.UsedRange
     
@@ -12,7 +90,7 @@ Public Function LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As 
     arr = ws.UsedRange.Value2
     
     If IsEmpty(arr) Then ' TODO check if vbarray+vbvariant and not single cell
-        Set LoadTransferInstructionsFromWorksheet = Nothing
+        Set ZZ_LoadTransferInstructionsFromWorksheet = Nothing
         Exit Function
     End If
     
@@ -24,7 +102,7 @@ Public Function LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As 
     Dim val As String
     
     Dim LHS As String
-    Dim rhs As String
+    Dim RHS As String
     
     Dim ti As TransferInstruction
     Dim tis As Collection
@@ -48,25 +126,27 @@ Public Function LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As 
                 val = Split(curArr(1), ",")(1)
                 Select Case att
                     Case "SRC"
-                        Set ti.Source = TryGetTableFromText(val)
+                        TryGetTableFromText val, ti.Source
                     Case "DST"
-                        Set ti.Destination = TryGetTableFromText(val)
+                        TryGetTableFromText val, ti.Destination
                     Case "SRCKEY"
-                        Set ti.SourceKey = ti.Source.ListColumns(val)
+                        TryGetListColumnFromText val, ti.Source, ti.SourceKey
                     Case "DSTKEY"
-                        Set ti.DestinationKey = ti.Destination.ListColumns(val)
+                        TryGetListColumnFromText val, ti.Destination, ti.DestinationKey
                     Case "FLAGS"
                         ti.Flags = val
                 End Select
             Case 2
                 LHS = Split(curArr(2), ",")(0)
-                rhs = Split(curArr(2), ",")(1)
-                ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns(LHS), ti.Destination.ListColumns(rhs))
-                'Debug.Print lhs; " -> "; rhs
+                RHS = Split(curArr(2), ",")(1)
+                
+                If Not ti.Source Is Nothing And Not ti.Destination Is Nothing Then
+                    ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns(LHS), ti.Destination.ListColumns(RHS))
+                End If
         End Select
     Next i
     
-    Set LoadTransferInstructionsFromWorksheet = tis
+    Set ZZ_LoadTransferInstructionsFromWorksheet = tis
 End Function
 
 '@Description "Save a Collection of TransferInstruction to a worksheet"

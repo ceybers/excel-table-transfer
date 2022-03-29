@@ -183,7 +183,8 @@ End Sub
 
 ' ---
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
-    DEBUG_EVENTS = True
+    PrintTime "KeyMapperView"
+    DEBUG_EVENTS = False
     this.IsInitialLoad = True
     
     Set this.SelectTableVM = New SelectTableViewModel
@@ -197,8 +198,11 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     InitializeTableCombobox Me.cmbTableRHS
     
     LoadTablesFromVM
+    PrintTime "LoadTablesFromVM"
     LoadFlagsFromVM
+    PrintTime "LoadFlagsFromVM"
     vm.TryGuess
+    PrintTime "TryGuess"
     
     this.IsLoaded = True
     
@@ -281,7 +285,7 @@ Private Sub vm_PropertyChanged(ByVal propertyName As String)
         'Case KeyMapperEvents.RHS_COLUMNS
             
         Case KeyMapperEvents.RHS_KEY_COLUMN
-            ResetQualityControls rhs:=True
+            ResetQualityControls RHS:=True
     End Select
     
     Me.cmbSwap.Enabled = vm.CanSwap
@@ -301,12 +305,12 @@ Private Sub TryAutoMatchAgain(ByVal leftToRight As Boolean)
     End If
 End Sub
 
-Private Sub ResetQualityControls(Optional ByVal LHS As Boolean, Optional ByVal rhs As Boolean)
+Private Sub ResetQualityControls(Optional ByVal LHS As Boolean, Optional ByVal RHS As Boolean)
     If LHS Then
         Me.lvQualityLHS.ListItems.Clear
     End If
 
-    If rhs Then
+    If RHS Then
         Me.lvQualityRHS.ListItems.Clear
     End If
 
@@ -356,7 +360,7 @@ Private Sub PopulateMatchSets()
     Dim comp As KeyColumnComparer
     Set comp = New KeyColumnComparer
     Set comp.LHS = KeyColumn.FromColumn(vm.LHSKeyColumn)
-    Set comp.rhs = KeyColumn.FromColumn(vm.RHSKeyColumn)
+    Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn)
     comp.Map
     
     CollectionToListView comp.LeftOnly, Me.lvSetLHS, "Additions"

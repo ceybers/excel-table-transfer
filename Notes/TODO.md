@@ -4,7 +4,6 @@
 - [ ] Highlighting of additions/removals
 - [ ] Consider adding warning for data-loss for: remove orphans, and clear destination column when not a 1:1 match
 - [ ] Map values into newly created columns
-- [ ] Finish mapping without any mapped columns (i.e. to add/remove keys only)
 - [ ] "Transfer" sort order (i.e. Sort the keys in destination table by the order they are in the source table)
 - [ ] Transfer .NumberFormat from first cell in src column to entire dst column
 - [ ] Transfer ColumnWidths
@@ -53,3 +52,5 @@
 - [x] Add options for insert/removing keys under Key Set Theory
 - [x] Smart key column guessing (try to find columns with ~~100~~ >75% unique values ~~and 1:1 match between src/dst~~ and best % match)
 - [x] Try and auto-match column when changing tables. Need to handle ComboBox changing from user, and changing from parent ComboBox resetting it.
+- [x] Finish mapping without any mapped columns (i.e. to add/remove keys only)
+- [x] Limited Key Auto-Guess to first 1000 cells per column, and 3 second timeout to find an answer

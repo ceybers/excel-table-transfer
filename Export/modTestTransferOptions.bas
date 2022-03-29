@@ -22,7 +22,7 @@ Public Enum TransferOptionsEnum
     
 End Enum
 
-Public Sub test()
+Public Sub Test()
     Dim vm As TransferOptionsViewModel
     Set vm = New TransferOptionsViewModel
     vm.Flags = ClearDestinationFirst + ReplaceEmptyOnly + DestinationFilteredOnly

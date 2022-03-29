@@ -3,7 +3,7 @@ Attribute VB_Name = "TestKeyColumn"
 Option Explicit
 Option Private Module
 
-Public Sub test()
+Public Sub Test()
     Dim ws As Worksheet
     Dim rng As Range
     Dim key As KeyColumn

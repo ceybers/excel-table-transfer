@@ -23,9 +23,18 @@ Private Type TClsKeyColumn
     NonTextCount As Long
     Array As Variant
     RespectFilter As Boolean
+    Limit As Long
 End Type
 
 Private this As TClsKeyColumn
+
+Public Property Get Limit() As Double
+    Limit = this.Limit
+End Property
+
+Public Property Let Limit(ByVal RHS As Double)
+    this.Limit = RHS
+End Property
 
 Public Property Get DistinctPercentage() As Double
     If this.rng.Cells.Count = 0 Then Exit Property
@@ -40,33 +49,33 @@ Public Property Get Range() As Range
     Set Range = this.rng
 End Property
 
-Public Property Set Range(ByVal rhs As Range)
-    If rhs Is Nothing Then
+Public Property Set Range(ByVal RHS As Range)
+    If RHS Is Nothing Then
         Err.Raise Number:=vbObjectError + 1, Description:="Cannot create clsKeyColumn with a column in an empty table"
         Exit Property
     End If
-    If Not IsRangeASingleColumn(rhs) Then
+    If Not IsRangeASingleColumn(RHS) Then
         Err.Raise Number:=vbObjectError + 1, Description:="Cannot create clsKeyColumn with a range that spans multiple columns"
         Exit Property
     End If
-    Set this.rng = rhs
-    LoadRange rhs
+    Set this.rng = RHS
+    LoadRange RHS
 End Property
 
 Public Property Get RespectFilter() As Boolean
     RespectFilter = this.RespectFilter
 End Property
 
-Public Property Let RespectFilter(ByVal rhs As Boolean)
-    this.RespectFilter = rhs
+Public Property Let RespectFilter(ByVal RHS As Boolean)
+    this.RespectFilter = RHS
 End Property
 
 Public Property Get IncludeNumbersAsText() As Boolean
     IncludeNumbersAsText = this.IncludeNumbersAsText
 End Property
 
-Public Property Let IncludeNumbersAsText(ByVal rhs As Boolean)
-    this.IncludeNumbersAsText = rhs
+Public Property Let IncludeNumbersAsText(ByVal RHS As Boolean)
+    this.IncludeNumbersAsText = RHS
 End Property
 
 Public Property Get NonTextCount() As Long
@@ -110,16 +119,23 @@ Private Sub LoadRange(ByVal rng As Range)
         End If
     End If
     
+    Dim n As Long
     For Each a In rng.Areas
         v = a.Value2
         If VarType(v) = vbArray + vbVariant Then
             For Each vv In v
                 ProcessVariants vv
+                n = n + 1
+                If n > this.Limit Then GoTo LimitReached
             Next vv
         Else
             ProcessVariants v
+            n = n + 1
+            If n > this.Limit Then GoTo LimitReached
         End If
     Next a
+    
+LimitReached:
     
     SetUnique
     SetDistinct
@@ -230,7 +246,7 @@ Public Function Exists(ByVal value As Variant) As Boolean
     Exists = this.Dict.Exists(value)
 End Function
 
-Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As Boolean = False, Optional ByVal Filtered As Boolean = False) As KeyColumn
+Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As Boolean = False, Optional ByVal Filtered As Boolean = False, Optional ByVal Limit As Long) As KeyColumn
     If rng Is Nothing Then
         'Err.Raise vbObjectError + 3, Err.Source, "Cannot create KeyColumn from empty range (rng is nothing)"
         Exit Function
@@ -238,11 +254,12 @@ Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As B
     Set FromRange = New KeyColumn
     FromRange.RespectFilter = Filtered
     FromRange.IncludeNumbersAsText = IncludeNumbers
+    FromRange.Limit = Limit
     Set FromRange.Range = rng
 End Function
 
-Public Function FromColumn(ByVal lc As ListColumn, Optional ByVal IncludeNumbers As Boolean = False) As KeyColumn
-    Set FromColumn = FromRange(lc.DataBodyRange, IncludeNumbers)
+Public Function FromColumn(ByVal lc As ListColumn, Optional ByVal IncludeNumbers As Boolean = False, Optional ByVal Limit As Long) As KeyColumn
+    Set FromColumn = FromRange(lc.DataBodyRange, IncludeNumbers, False, Limit)
 End Function
 
 Private Function IsRangeASingleColumn(ByVal rng As Range) As Boolean

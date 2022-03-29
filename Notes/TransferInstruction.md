@@ -1,5 +1,19 @@
 # Transfer Instruction
 
+## Naming Restrictions
+
+### Tables
+* Must start with A-z, _ or \
+* Rest is A-z, 0-9, ., _
+* Cannot use names C, c, R, r
+* Cannot be the same as cell references
+* Cannot use spaces
+* Maximum length 255
+
+### Columns
+* Special characters: tab, LF, CR, ,:.[]#'"{}$^&*+==<>/
+* Require escaping: [, ], #, '
+## ?
 Source ListObject
 Destination ListObject
 SourceKey ListColumn

@@ -5,8 +5,8 @@ Option Explicit
 Option Private Module
 
 '@ExcelHotkey p
-Public Sub test()
-Attribute test.VB_ProcData.VB_Invoke_Func = "p\n14"
+Public Sub Test()
+Attribute Test.VB_ProcData.VB_Invoke_Func = "p\n14"
     Dim vm As ValueMapperViewModel
     Dim view As IView
     
@@ -20,7 +20,7 @@ Attribute test.VB_ProcData.VB_Invoke_Func = "p\n14"
     'vview.DEBUG_EVENTS = True
     
     Set vm.LHS = ThisWorkbook.Worksheets(1).ListObjects(1)
-    Set vm.rhs = ThisWorkbook.Worksheets(1).ListObjects(2)
+    Set vm.RHS = ThisWorkbook.Worksheets(1).ListObjects(2)
     
     Set vm.KeyColumnLHS = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
     Set vm.KeyColumnRHS = ThisWorkbook.Worksheets(2).ListObjects(1).ListColumns(1)
