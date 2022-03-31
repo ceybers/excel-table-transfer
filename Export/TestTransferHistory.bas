@@ -3,28 +3,27 @@ Attribute VB_Name = "TestTransferHistory"
 Option Explicit
 
 Public Sub ATest()
-    Dim rng As Range
-    Set rng = ActiveWorkbook.Worksheets("CAETransferTableHistory").Range("L1")
-    
     Dim tiUr As TransferInstructionUnref
-    Set tiUr = New TransferInstructionUnref
-    tiUr.LoadFromRange rng
+    TransferHistorySerializer.TryLoad tiUr
     
     Dim ti As TransferInstruction
     Set ti = New TransferInstruction
     
-    Set ti.Source = ThisWorkbook.Worksheets(1).ListObjects(1)
-    Set ti.Destination = ThisWorkbook.Worksheets(1).ListObjects(2)
+    'Set ti.Source = ThisWorkbook.Worksheets(1).ListObjects(1)
+    'Set ti.Destination = ThisWorkbook.Worksheets(1).ListObjects(2)
     Set ti.UnRef = tiUr
     
     ti.LoadFlags
+    Debug.Print "ti.TryLoadTables "; ti.TryLoadTables
     Debug.Print "ti.TryLoadKeyColumns "; ti.TryLoadKeyColumns
     Debug.Print "ti.TryLoadValuePairs "; ti.TryLoadValuePairs
     
-    ti.transfer
+    Debug.Print "ti.Transfer "; ti.Transfer
     
-    Set rng = ActiveWorkbook.Worksheets("CAETransferTableHistory").Range("L20")
-    ti.SaveToRange rng
+    'Set rng = ActiveWorkbook.Worksheets("CAETransferTableHistory").Range("L20")
+    'ti.SaveToRange rng
+    
+    ' TransferHistorySerializer.TrySave ti
     'Stop
 End Sub
 

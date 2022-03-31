@@ -11,6 +11,8 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Type TState
+    SourceSheet As String
+    DestinationSheet As String
     SourceFilename As String
     DestinationFilename As String
     Source As String
@@ -30,6 +32,22 @@ End Property
 
 Public Property Let LastRun(ByVal rhs As Date)
     this.LastRun = rhs
+End Property
+
+Public Property Get SourceSheet() As String
+    SourceSheet = this.SourceSheet
+End Property
+
+Public Property Let SourceSheet(ByVal rhs As String)
+    this.SourceSheet = rhs
+End Property
+
+Public Property Get DestinationSheet() As String
+    DestinationSheet = this.DestinationSheet
+End Property
+
+Public Property Let DestinationSheet(ByVal rhs As String)
+    this.DestinationSheet = rhs
 End Property
 
 Public Property Get SourceFilename() As String
@@ -139,18 +157,21 @@ Public Function AsReferenced() As TransferInstruction
     Set AsReferenced = ti
 End Function
 
-Public Sub LoadFromRange(ByVal rng As Range)
+Public Function LoadFromRange(ByVal rng As Range) As Boolean
     Dim c As Long
     c = 12 + rng.offset(10, 2).Value2
     
     Dim arr As Variant
     arr = rng.Resize(c, 4).Value2
     
-    Debug.Assert arr(1, 1) = "TRANSFER"
-    Debug.Assert arr(c, 1) = "END"
+    If arr(1, 1) <> "TRANSFER" Or arr(c, 1) <> "END" Then
+        Exit Function
+    End If
     
     this.SourceFilename = arr(5, 3)
     this.DestinationFilename = arr(5, 4)
+    this.SourceSheet = arr(6, 3)
+    this.DestinationSheet = arr(6, 4)
     this.Source = arr(8, 3)
     this.Destination = arr(8, 4)
     this.SourceKey = arr(9, 3)
@@ -160,4 +181,6 @@ Public Sub LoadFromRange(ByVal rng As Range)
     Dim vpArr As Variant
     vpArr = rng.offset(11, 2).Resize(c - 12, 2).Value2
     this.ValuePairs = vpArr
-End Sub
+    
+    LoadFromRange = True
+End Function

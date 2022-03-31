@@ -121,8 +121,8 @@ Public Function IsValid() As Boolean
     IsValid = True
 End Function
 
-Public Sub transfer()
-    If Not IsValid Then Exit Sub
+Public Function Transfer() As Boolean
+    If Not IsValid Then Exit Function
         
     If HasFlag(this.Flags, RemoveUnmapped) Then
         RemoveUnmappedKeys
@@ -140,7 +140,9 @@ Public Sub transfer()
     Next colPair
     
     UpdateHighlighting
-End Sub
+
+    Transfer = True
+End Function
 
 Private Sub SetMapResult()
     Dim compare As KeyColumnComparer
@@ -298,7 +300,7 @@ Public Function ToString() As String
 End Function
 
 Public Function Name() As String
-    If Not this.Source Is Nothing And Not this.Destination Is Nothing Then
+    If IsValid Then
         Name = this.Source.Name & "." & this.SourceKey.Name & " -> " & this.Destination.Name & "." & this.DestinationKey.Name & " (" & this.ValuePairs.Count & ")"
     Else
         Name = "unknown transfer instruction (could not de-serialize)"
@@ -323,6 +325,47 @@ Public Sub LoadFlags()
     this.Flags = this.UnRef.Flags
 End Sub
 
+Public Function TryLoadTables() As Boolean
+    If this.UnRef Is Nothing Then Exit Function
+
+    Dim wbLHS As Workbook
+    Dim wbRHS As Workbook
+    
+    If ListObjectHelpers.TryGetWorkbook(this.UnRef.SourceFilename, wbLHS) = False Then
+        Exit Function
+    End If
+    
+    If ListObjectHelpers.TryGetWorkbook(this.UnRef.DestinationFilename, wbRHS) = False Then
+        Exit Function
+    End If
+    
+    Dim wsLHS As Worksheet
+    Dim wsRHS As Worksheet
+
+    On Error Resume Next
+    Set wsLHS = wbLHS.Worksheets(this.UnRef.SourceSheet)
+    Set wsRHS = wbRHS.Worksheets(this.UnRef.DestinationSheet)
+    On Error GoTo 0
+    
+    If wsLHS Is Nothing Then Exit Function
+    If wsRHS Is Nothing Then Exit Function
+    
+    Dim loLHS As ListObject
+    Dim loRHS As ListObject
+
+    On Error Resume Next
+    Set loLHS = wsLHS.ListObjects(this.UnRef.Source)
+    Set loRHS = wsRHS.ListObjects(this.UnRef.Destination)
+    On Error GoTo 0
+    
+    If loLHS Is Nothing Then Exit Function
+    If loRHS Is Nothing Then Exit Function
+    
+    Set this.Source = loLHS
+    Set this.Destination = loRHS
+    
+    TryLoadTables = True
+End Function
 Public Function TryLoadKeyColumns() As Boolean
     If this.UnRef Is Nothing Then Exit Function
     TryLoadKeyColumns = True
@@ -338,6 +381,7 @@ Public Function TryLoadKeyColumns() As Boolean
         TryLoadKeyColumns = False
     End If
     
+    Set lc = Nothing
     On Error Resume Next
     Set lc = this.Destination.ListColumns(this.UnRef.DestinationKey)
     On Error GoTo 0

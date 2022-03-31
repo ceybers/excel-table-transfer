@@ -5,10 +5,10 @@ Option Explicit
 Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Integer = 8
 
 Public Sub TestAutoTransfer()
-    Dim transfer As TransferInstruction
-    Set transfer = GetTestTransferInstruction
+    Dim Transfer As TransferInstruction
+    Set Transfer = GetTestTransferInstruction
     
-    PrintTransferInstruction transfer
+    PrintTransferInstruction Transfer
     
     'SaveTransferInstruction Transfer
     'Exit Sub
@@ -29,27 +29,27 @@ Public Sub TestAutoTransfer()
     
     'Exit Sub
     
-    With transfer.Destination
+    With Transfer.Destination
         .ListColumns(2).DataBodyRange.Clear
         .ListColumns(3).DataBodyRange.Clear
         .ListColumns(4).DataBodyRange.Clear
     End With
     
-    transfer.transfer
+    Transfer.Transfer
 End Sub
 
-Private Sub PrintTransferInstruction(ByVal transfer As TransferInstruction)
+Private Sub PrintTransferInstruction(ByVal Transfer As TransferInstruction)
     Dim i As Long
     
     Debug.Print "TRANSFER"
-    Debug.Print " SRC," & transfer.Source.Range.Address(external:=True)
-    Debug.Print " SRCKEY," & transfer.SourceKey.Name
-    Debug.Print " DST," & transfer.Destination.Range.Address(external:=True)
-    Debug.Print " DSTKEY," & transfer.DestinationKey.Name
-    Debug.Print " FLAGS," & transfer.Flags
-    Debug.Print " VALUES," & transfer.ValuePairs.Count
-    For i = 1 To transfer.ValuePairs.Count
-         Debug.Print "  " & transfer.ValuePairs(i).ToString
+    Debug.Print " SRC," & Transfer.Source.Range.Address(external:=True)
+    Debug.Print " SRCKEY," & Transfer.SourceKey.Name
+    Debug.Print " DST," & Transfer.Destination.Range.Address(external:=True)
+    Debug.Print " DSTKEY," & Transfer.DestinationKey.Name
+    Debug.Print " FLAGS," & Transfer.Flags
+    Debug.Print " VALUES," & Transfer.ValuePairs.Count
+    For i = 1 To Transfer.ValuePairs.Count
+         Debug.Print "  " & Transfer.ValuePairs(i).ToString
     Next i
     Debug.Print "END"
 End Sub

@@ -114,7 +114,7 @@ Public Function StringNameToListObject(ByVal stringName As String) As ListObject
     'Debug.Print vbNullString
 End Function
 
-Private Function TryGetWorkSheet(ByVal wb As Workbook, ByVal worksheetName As String, ByRef ws As Worksheet) As Boolean
+Public Function TryGetWorkSheet(ByVal wb As Workbook, ByVal worksheetName As String, ByRef ws As Worksheet) As Boolean
     Dim curWS As Worksheet
     For Each curWS In wb.Worksheets
         If curWS.Name = worksheetName Then
@@ -124,18 +124,20 @@ Private Function TryGetWorkSheet(ByVal wb As Workbook, ByVal worksheetName As St
     Next curWS
 End Function
 
-Private Function TryGetWorkbook(ByVal filename As String, ByRef wb As Workbook, Optional path As String = vbNullString) As Boolean
+Public Function TryGetWorkbook(ByVal filename As String, ByRef wb As Workbook, Optional path As String = vbNullString) As Boolean
     Dim curWB As Workbook
     For Each curWB In Application.Workbooks
         If path = vbNullString Then
             If curWB.Name = filename Then
                 Set wb = curWB
                 TryGetWorkbook = True
+                Exit Function
             End If
         Else
             If curWB.fullname = path & filename Then
                 Set wb = curWB
                 TryGetWorkbook = True
+                Exit Function
             End If
         End If
     Next curWB

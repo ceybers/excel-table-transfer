@@ -39,7 +39,7 @@ End Sub
 
 Public Sub Save()
     Worksheet.UsedRange.EntireRow.Delete
-    TransferHistorySerializer.SaveTransferInstructionsFromWorksheet Items, Worksheet
+    SaveTransferInstructionsFromWorksheet Items, Worksheet
 End Sub
 
 Public Sub Refresh()
