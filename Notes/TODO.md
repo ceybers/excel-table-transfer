@@ -1,27 +1,134 @@
 # TODO
-
-## General
-- [ ] Highlighting of additions/removals
-- [ ] Consider adding warning for data-loss for: remove orphans, and clear destination column when not a 1:1 match
-- [ ] Map values into newly created columns
-- [ ] "Transfer" sort order (i.e. Sort the keys in destination table by the order they are in the source table)
-- [ ] Transfer .NumberFormat from first cell in src column to entire dst column
-- [ ] Transfer ColumnWidths
-- [ ] Transfer font-family, font-size, vertical-alignment, horizontal-alignment, text-wrapping
-## Table Select
-*None*
-## Key Mapper
-*None*
-## Column Mapper
-- [ ] Highlight mapped cells, differentiating between: 0 → a, a → b, a == b, a → 0 
-## Transfer History
-- [ ] Transfer History fails on unsaved workbooks
-- [ ] Using Split(curStr, "") in parsing history fails when filename has spaces in it
-## Options
+## Persistence
+- [ ] Remember Key Column in each mapped ListObject.
+- [ ] Remember if this ListObject was the Source or Destination.
+- [ ] Option to lock this ListObject as a Source or Destination.
+- [ ] Remember each Transfer Transaction.
+- [ ] When repeating a saved Transaction, do not duplicate it. Rather, update the previous iteration.
+- [ ] Try and match Transactions to the currently open Workbooks, even if the filenames are different, but the ListObject name and mapped column names are still the same.
+- [ ] Option to Try and open workbook to repeat a Transaction
+- [ ] Handle case where Workbook is Protected and we cannot add a hidden History worksheet.
+- [ ] Consider using CustomXML instead of a VeryHidden Workbook for History.
+- [ ] Consider using a file in %APDDATA% for user-level persistence.
+- [ ] Re-run all saved transactions where the files are currently open. (i.e., This is the Destination, and we want to bulk transfer in from multiple Sources.)
 - [ ] Default Save Instruction to Yes if workbook already has a history
-- [ ] Option to ignore columns with column-wide formulae in Source and/or Destination from tranfer
-- [ ] Option to exclude non-unique keys from mapping (i.e. do not map to key vs map to first occurrence)
-- [ ] Option to include/exclude values transfered by VarType()
+## Transfer Modes
+- [ ] Match Keys only (with highlights on Destination)
+- [ ] Match Keys only, and store results on a new Workbook (Additions, Matched, Orphans, statistics)
+- [ ] Match Keys and highlight affected Value cells (Dry-run)
+- [ ] Match Keys and update Values in Destination
+- [ ] Match data and store results on a new Workbook (Change Data Capture)
+- [ ] Option to Sort Destination based on order of Source Keys.
+- [ ] Option to update a named cell in the Destination sheet with the time and date of a successful transfer.
+- [ ] Option to update a named cell in the Destination sheet with a new UUID on a successful transfer. This will be the same UUID used to identify the transaction in the Persistent history.
+## ListObjects Selection
+- [ ] Option to display selected ListObject in a new Window, split vertically behind the dialog
+- [ ] Change dialog box to display two TreeViews for Source and Destination
+- [ ] Consider allowing the same Workbook as Source and Destination if it has more than 1 ListObject
+- [ ] Option to filter by similar name (try either Source or Destination as prefix of the other)
+- [ ] Once a ListObject is selected, option to filter the other TreeView to Workbooks > Worksheets > ListObjects with the same ListObject name.
+- [ ] Indicate via icon if Workbook is:
+  - Stored online
+  - Stored on OneDrive (required user persistent storage to retain the path)
+  - Unsaved (never been saved, not to be confused with changes not yet saved)
+  - Opened as Read-only
+  - Based on a Query (e.g., Sharepoint Export to Excel, or PowerQuery Load to Table)
+  - Protection is enabled (halting state if Transfer Mode is to make changes)
+- [ ] Option to indicate size (cols x rows) of ListObjects.
+- [ ] Option to hide ListObjects smaller or greater than a certain size.
+- [ ] Option to hide ListObjects on Worksheets that are Hidden.
+## Key Column Mapping
+- [ ] Behaviour when not a 1:1 match
+  - Append key only
+  - Append key and values
+  - Needs to integrate to Append/Insert Sort Order preservation
+  - Remove mapped values only
+  - Remove all values except key
+  - Remove entire row
+  - Right Anti Join (remove all rows in Destination that are present in Source)
+- [ ] Consider changing above behaviour for separate logic for Additions, Intersection, and Orphans.
+  - This will let us do things like generate a new Workbook with a list of Keys that only exist in the Source, or that only exist in the Destination.
+- [ ] Behaviour on non-text Keys
+  - Skip, Halt (one set for Source, one set for Destination)
+  - On a VarType basis, and an override for all non-text
+  - Option to convert numeric integers to text. (Integers can be valid Primary Keys, after all.)
+  - Option to permanently prefix numeric integers
+- [ ] Option to halt if either column is non-unique (i.e., Has duplicates)
+- [ ] Option to remove unmapped columns
+- [ ] Option to create new columns in Destination for mapped columns (i.e., map from Source into new columns with same name)
+- [ ] Indicate columns that are text-only and 100% unique
+- [ ] Indicate columns that have Formulae (Calculated Columns)
+- [ ] Indicate columns that have Cell Protection (whether or not the Worksheet is currently Protected)
+- [ ] Indicate columns that have Data Validation
+- [ ] Analysis on a column to determine if it contains only one VarType, or if it is mixed
+- [ ] Option to Hide unsuitable column types
+- [ ] Indicate columns which include errors
+- [ ] Indicate columns which include blanks
+- [ ] Option to display selected columns in new Window, split vertically
+- [ ] Option to limit analysis on a potential Key Column to the first n result.
+- [ ] Progress bar and elapsed time when analysing two potential key columns and their intersection.
+- [ ] Auto Map by:
+  - Name (exact)
+  - Name (similar, i.e. LHS/RHS prefix)
+  - Content (highest % intersection)
+- [ ] Behaviour when mapping non-unique keys
+  - On Source: Skip if non-unique, map from first match only, or halt
+  - On Destination: Skip if non-unique, map into first match only, map into all matches, or halt
+## Value Column Mapping
+- [ ] Rewrite "Clear Column First" behaviour
+  - Clear entire column (regardless of mapping)
+  - Clear mapped cells in this column first
+- [ ] Display Width and/or Hidden state of columns in UI
+- [ ] Display whether column has Data Validation applied
+- [ ] Display whether column has Cell Protection (`.Locked`) applied
+- [ ] Fix "Auto Map" enabled state bug
+## Cell to Cell Mapping
+- [ ] Option to handle keywords in values, e.g., "Confirm", "Default", "TBC"
+  - Do/Do not transfer from source
+  - Do/Do not transfer into destination
+- [ ] Behaviour when Source and Destination Value are different VarTypes
+  - Only transfer if VarType is the same
+  - List of option buttons for both Source and Destination, listing what to do (Skip, Halt, Transfer)
+- [ ] Option to transfer via Copy and Paste instead of `.Value2`. This is mainly to preserve Rich Data Types.
+- [ ] Option to transfer results of a formula if the Source cell is a formula.
+## Preview
+- [ ] Warn if Auto Save is enabled on Destination sheet
+- [ ] Preview changes in UserForm
+- [ ] Preview changes on Worksheet
+  - This requires us to implement Undo functionality.
+  - Since we can store Before and After in Change Data, we should be able to restore as long as we still have the variables in scope.
+- [ ] Show a summary of how many rows, columns, and cells we will be affecting. (Both mapped cells, and changed cells.)
+- [ ] Add Progress Bar dialog box with time elapsed counter.
+- [ ] Warnings if any action will result in data loss (removing rows, clearing entire columns)
+## Filters
+- [ ] Behaviour for filtered rows on Source and on Destination
+  - Include filtered, Exclude filtered
+  - Can we differentiate between excluded by Filter and manually Hidden?
+- [ ] Behaviour for hidden columns on Source and on Destination
+  - As above, Include or Exclude
+  - i.e., Transfer values from hidden mapped columns in Source, and Transfer values into hidden mapped columns in Destination
+## Highlighting
+- [ ] Behaviour for highlighting:
+  - Highlight additions (0 → a)
+  - Highlight changes (a → b)
+  - Highlight mapped but unchanged (a == b) (i.e., Validated as still the same)
+  - Highlight mapped but still empty (0 → 0)
+  - Highlight removals (a → 0)
+- [ ] Option to remove all existing highlighting before adding new highlights.
+- [ ] Option to remove all highlighting and not add any more (overrides above settings).
+- [ ] Option to do nothing (leave as-is)
+## Formatting 
+- [ ] Consider transferring (on a column basis):
+  - Column Width
+  - Foreground and background colors
+  - Font family and font size
+  - Vertical- and horizontal- alignment
+  - Text Wrapping
+  - Indent Level
+  - Number formatting
+  - Cell Style
+  - Data Validation
+  - Conditional Formatting
 ## Cancelled
 * ~~Map Value Columns implement multi-select on ListView without breaking single selection buttons e.g. Map~~ ListView control doesn't seem to allow check/uncheck of multiple selected list items.
 ## Complete
@@ -54,3 +161,4 @@
 - [x] Try and auto-match column when changing tables. Need to handle ComboBox changing from user, and changing from parent ComboBox resetting it.
 - [x] Finish mapping without any mapped columns (i.e. to add/remove keys only)
 - [x] Limited Key Auto-Guess to first 1000 cells per column, and 3 second timeout to find an answer
+- [x] Option to ignore columns with column-wide formulae in Source and/or Destination from tranfer
