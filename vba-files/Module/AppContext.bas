@@ -30,8 +30,8 @@ Public Sub TransferTable()
     End If
     
     ' DEBUG
-    Set Transfer.Source = ThisWorkbook.Worksheets(1).ListObjects(1)
-    Set Transfer.Destination = ThisWorkbook.Worksheets(1).ListObjects(2)
+    'Set Transfer.Source = ThisWorkbook.Worksheets(1).ListObjects(1)
+    'Set Transfer.Destination = ThisWorkbook.Worksheets(1).ListObjects(2)
     
     If CheckTablesAvailable = False Then Exit Sub
     PrintTime "CheckTablesAvailable"
@@ -96,6 +96,8 @@ Private Function TryLoadHistory() As Boolean
             TryLoadHistory = False
         End If
         'Debug.Print Transfer.TryLoadValuePairs
+    Else
+        TryLoadHistory = False
     End If
 End Function
 

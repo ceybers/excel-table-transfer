@@ -5,6 +5,7 @@ Option Explicit
 Option Private Module
 
 Public Sub ZZZ_TransferTable()
+    'TEST
     Dim Transfer As TransferInstruction
     Set Transfer = New TransferInstruction
     DoTransferTable Transfer
