@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} TablePropView 
    Caption         =   "Table Properties"
-   ClientHeight    =   6555
+   ClientHeight    =   8895.001
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   6180
+   ClientWidth     =   6165
    OleObjectBlob   =   "TablePropView.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -40,6 +40,10 @@ Private Sub cmdActivateListObject_Click()
     mViewModel.DoActiveListObject
 End Sub
 
+Private Sub Frame5_Click()
+
+End Sub
+
 Private Function IView_ShowDialog(ByVal ViewModel As Object) As Boolean
     Set mViewModel = ViewModel
     This.IsCancelled = False
@@ -64,7 +68,16 @@ Private Sub UpdateControls()
 End Sub
 
 Private Sub InitializeLabelPictures()
-    Set Me.Label1.Picture = Application.CommandBars.GetImageMso("TableInsert", 32, 32)
-    Set Me.Label7.Picture = Application.CommandBars.GetImageMso("RelationshipsEditRelationships", 32, 32)
-    Set Me.Label8.Picture = Application.CommandBars.GetImageMso("FieldsMenu", 32, 32)
+    Set Me.lblPicDetails.Picture = Application.CommandBars.GetImageMso("TablePropertiesDialog", 32, 32)
+    Set Me.lblPicDirection.Picture = Application.CommandBars.GetImageMso("RelationshipsEditRelationships", 32, 32)
+    Set Me.lblPicHighlighting.Picture = Application.CommandBars.GetImageMso("HighlightFilters", 32, 32)
+    Set Me.lblPicKey.Picture = Application.CommandBars.GetImageMso("AdpDiagramKeys", 32, 32)
+    Set Me.lblPicLocation.Picture = Application.CommandBars.GetImageMso("FileFind", 32, 32)
+    Set Me.lblPicProfile.Picture = Application.CommandBars.GetImageMso("EnterpriseProjectProfiles", 32, 32)
+    Set Me.lblPicProtection.Picture = Application.CommandBars.GetImageMso("SheetProtect", 32, 32)
+    Set Me.lblPicTimestamp.Picture = Application.CommandBars.GetImageMso("ViewAllProposals", 32, 32)
+End Sub
+
+Private Sub UserForm_Click()
+
 End Sub
