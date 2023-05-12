@@ -11,11 +11,20 @@ Option Explicit
 
 Private Type TState
     ListColumn As ListColumn
+    Selected As Boolean
 End Type
 Private This As TState
 
 Public Property Get Name() As String
     Name = This.ListColumn.Name
+End Property
+
+Public Property Get Selected() As Boolean
+    Selected = This.Selected
+End Property
+
+Public Property Let Selected(ByVal vNewValue As Boolean)
+    This.Selected = vNewValue
 End Property
 
 Public Property Get ColumnType() As String
@@ -26,28 +35,28 @@ Public Property Get R1C1() As String
     R1C1 = GetR1C1(This.ListColumn)
 End Property
 
-Public Property Get Blanks() As String
+Public Property Get Blanks() As Long
     Blanks = ColumnHasBlanks(This.ListColumn)
 End Property
 
-Public Property Get Errors() As String
+Public Property Get Errors() As Long
     Errors = ColumnHasErrors(This.ListColumn)
 End Property
 
-Public Property Get Locked() As String
+Public Property Get Locked() As Long
     Locked = ColumnIsLocked(This.ListColumn)
 End Property
 
-Public Property Get Formula() As String
+Public Property Get Formula() As Long
     Formula = ColumnHasFormulae(This.ListColumn)
 End Property
 
-Public Property Get Validation() As String
+Public Property Get Validation() As Long
     Validation = ColumnHasValidation(This.ListColumn)
 End Property
 
-Public Property Get Unique() As String
-    Unique = "Mixed"
+Public Property Get Unique() As Long
+    Unique = ColumnIsUnique(This.ListColumn)
 End Property
     
 Public Sub Load(ByVal ListColumn As ListColumn)

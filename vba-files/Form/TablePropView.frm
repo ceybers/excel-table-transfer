@@ -58,9 +58,9 @@ Private Sub Initalize()
 End Sub
 
 Private Sub UpdateControls()
-    Me.txtTableName = mViewModel.TableName
-    Me.txtWorkSheetName = mViewModel.WorkSheetName
-    Me.txtWorkBookName = mViewModel.WorkBookName
+    Me.txtTableName.Value = mViewModel.TableName
+    Me.txtWorkSheetName.Value = mViewModel.WorkSheetName
+    Me.txtWorkBookName.Value = mViewModel.WorkBookName
 End Sub
 
 Private Sub InitializeLabelPictures()

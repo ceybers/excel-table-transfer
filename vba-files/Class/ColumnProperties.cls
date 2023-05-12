@@ -38,7 +38,7 @@ Private Sub Class_Initialize()
     Set This.Item = New Collection
 End Sub
 
-Public Sub LoadListView(ByVal ListView As ListView)
+Public Sub LoadListView(ByVal ListView As MSComctlLib.ListView)
     Dim Converter As IValueConverter
     Set Converter = New ColumnPropToListItem
     
@@ -50,3 +50,12 @@ Public Sub LoadListView(ByVal ListView As ListView)
     Next ColumnProperty
 End Sub
 
+Public Function GetSelected() As Collection
+    Set GetSelected = New Collection
+    Dim ColumnProperty As ColumnProperty
+    For Each ColumnProperty In This.Item
+        If ColumnProperty.Selected Then
+            GetSelected.Add Item:=ColumnProperty, Key:=ColumnProperty.Name
+        End If
+    Next ColumnProperty
+End Function

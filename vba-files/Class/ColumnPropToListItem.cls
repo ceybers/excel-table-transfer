@@ -24,12 +24,12 @@ Private Sub IValueConverter_Convert(ByVal Control As Object, ByVal Object As Obj
     Set ListItem = ListView.ListItems.Add(Text:=ColumnProperty.Name)
     ListItem.ListSubItems.Add Text:=ColumnProperty.ColumnType
     ListItem.ListSubItems.Add Text:=ColumnProperty.R1C1
-    ListItem.ListSubItems.Add Text:=ColumnProperty.Blanks
-    ListItem.ListSubItems.Add Text:=ColumnProperty.Errors
-    ListItem.ListSubItems.Add Text:=ColumnProperty.Locked
-    ListItem.ListSubItems.Add Text:=ColumnProperty.Formula
-    ListItem.ListSubItems.Add Text:=ColumnProperty.Validation
-    ListItem.ListSubItems.Add Text:=ColumnProperty.Unique
+    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Blanks)
+    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Errors)
+    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Locked)
+    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Formula)
+    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Validation)
+    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Unique)
 End Sub
 
 Private Sub IValueConverter_Initialize(ByVal Control As Object)
