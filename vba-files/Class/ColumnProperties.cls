@@ -12,8 +12,18 @@ Option Explicit
 Private Type TState
     ListObject As ListObject
     Item As Collection
+    Selected As ColumnProperty
+    ActivateOnWorksheet As Boolean
 End Type
 Private This As TState
+
+Public Property Get ActivateOnWorksheet() As Boolean
+    ActivateOnWorksheet = This.ActivateOnWorksheet
+End Property
+
+Public Property Let ActivateOnWorksheet(ByVal vNewValue As Boolean)
+    This.ActivateOnWorksheet = vNewValue
+End Property
 
 Public Property Get Name() As String
     Name = This.ListObject.Name
@@ -56,6 +66,18 @@ Public Function GetSelected() As Collection
     For Each ColumnProperty In This.Item
         If ColumnProperty.Selected Then
             GetSelected.Add Item:=ColumnProperty, Key:=ColumnProperty.Name
+        End If
+    Next ColumnProperty
+End Function
+
+Public Function TrySelectByName(ByVal Name As String) As Boolean
+    Dim ColumnProperty As ColumnProperty
+    For Each ColumnProperty In This.Item
+        If ColumnProperty.Name = Name Then
+            Set This.Selected = ColumnProperty
+            If This.ActivateOnWorksheet Then ColumnProperty.Activate
+            TrySelectByName = True
+            Exit Function
         End If
     Next ColumnProperty
 End Function

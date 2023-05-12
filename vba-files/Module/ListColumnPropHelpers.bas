@@ -119,3 +119,34 @@ Public Function ColumnIsUnique(ByVal ListColumn As ListColumn) As Result
         ColumnIsUnique = Result.None
     End If
 End Function
+
+Public Function GetVarTypeOfColumnRange(ByVal Range As Range) As Long
+    Debug.Assert Not Range Is Nothing
+    Debug.Assert Range.Columns.Count = 1
+    
+    Dim Result As Long
+    
+    Dim ValueVariant As Variant
+    ValueVariant = Range.Value
+    
+    If Range.Rows.Count = 1 Then
+        GetVarTypeOfColumnRange = VarType(ValueVariant)
+        Exit Function
+    End If
+    
+    Dim i As Long
+    For i = 1 To UBound(ValueVariant, 1)
+        Select Case VarType(ValueVariant(i, 1))
+            Case vbString:
+                Result = IIf(Result = vbEmpty Or Result = vbString, vbString, vbVariant)
+            Case vbDouble:
+                Result = IIf(Result = vbEmpty Or Result = vbDouble, vbDouble, vbVariant)
+            Case vbCurrency:
+                Result = IIf(Result = vbEmpty Or Result = vbCurrency, vbCurrency, vbVariant)
+            Case vbDate:
+                Result = IIf(Result = vbEmpty Or Result = vbDate, vbDate, vbVariant)
+        End Select
+    Next i
+    
+    GetVarTypeOfColumnRange = Result
+End Function

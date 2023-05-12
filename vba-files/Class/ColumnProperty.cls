@@ -28,7 +28,7 @@ Public Property Let Selected(ByVal vNewValue As Boolean)
 End Property
 
 Public Property Get ColumnType() As String
-    ColumnType = "Mixed"
+    ColumnType = VarTypeValueToString(GetVarTypeOfColumnRange(This.ListColumn.DataBodyRange))
 End Property
 
 Public Property Get R1C1() As String
@@ -62,3 +62,24 @@ End Property
 Public Sub Load(ByVal ListColumn As ListColumn)
     Set This.ListColumn = ListColumn
 End Sub
+
+Public Sub Activate()
+    This.ListColumn.DataBodyRange.Select
+End Sub
+
+Private Function VarTypeValueToString(ByVal Value As Long) As String
+    Select Case Value
+        Case vbEmpty:
+            VarTypeValueToString = "Empty"
+        Case vbDouble:
+            VarTypeValueToString = "Number"
+        Case vbString:
+            VarTypeValueToString = "Text"
+        Case vbDate:
+            VarTypeValueToString = "Date"
+        Case vbCurrency:
+            VarTypeValueToString = "Currency"
+        Case vbVariant:
+            VarTypeValueToString = "Mixed"
+    End Select
+End Function

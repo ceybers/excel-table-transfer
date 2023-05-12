@@ -23,6 +23,10 @@ Private Type TState
 End Type
 Private This As TState
 
+Private Sub chkDeferActivationOnWorksheet_Click()
+    mViewModel.ColumnProperties.ActivateOnWorksheet = Me.chkDeferActivationOnWorksheet.Value
+End Sub
+
 Private Sub cmdCancel_Click()
     OnCancel
 End Sub
@@ -78,6 +82,9 @@ Private Sub InitializeLabelPictures()
     Set Me.lblPicTimestamp.Picture = Application.CommandBars.GetImageMso("ViewAllProposals", 32, 32)
 End Sub
 
-Private Sub UserForm_Click()
-
+Private Sub lvStarredColumns_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    If mViewModel.ColumnProperties.TrySelectByName(Item.Text) Then
+        'noop
+    End If
 End Sub
+
