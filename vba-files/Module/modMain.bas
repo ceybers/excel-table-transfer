@@ -12,9 +12,9 @@ Attribute AAATest.VB_Description = "AAATest"
     Set view = New TablePropView
     
     If view.ShowDialog(vm) Then
-        Debug.Print "true"
+        Debug.Print "view.ShowDialog(vm) = True"
     Else
-        Debug.Print "false"
+        Debug.Print "view.ShowDialog(vm) = False"
     End If
 End Sub
 

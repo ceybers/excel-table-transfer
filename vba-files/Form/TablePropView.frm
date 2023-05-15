@@ -23,8 +23,9 @@ Private Type TState
 End Type
 Private This As TState
 
-Private Sub chkDeferActivationOnWorksheet_Click()
-    mViewModel.ColumnProperties.ActivateOnWorksheet = Me.chkDeferActivationOnWorksheet.Value
+Private Sub cmdApply_Click()
+    mViewModel.ApplyViewModelCommand.Execute
+    UpdateControls
 End Sub
 
 Private Sub cmdCancel_Click()
@@ -41,11 +42,19 @@ Private Sub OnCancel()
 End Sub
 
 Private Sub cmdActivateListObject_Click()
-    mViewModel.DoActiveListObject
+    mViewModel.ActivateListObjectCommand.Execute
+    UpdateControls
 End Sub
 
-Private Sub Frame5_Click()
+Private Sub cmdResetValueColumns_Click()
+    mViewModel.ColumnProperties.Reset
+End Sub
 
+Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
+    If CloseMode = VbQueryClose.vbFormControlMenu Then
+        Cancel = True
+        OnCancel
+    End If
 End Sub
 
 Private Function IView_ShowDialog(ByVal ViewModel As Object) As Boolean
@@ -63,12 +72,21 @@ Private Sub Initalize()
     UpdateControls
     InitializeLabelPictures
     mViewModel.ColumnProperties.LoadListView Me.lvStarredColumns
+    mViewModel.KeyColumns.LoadComboBox Me.cboPreferKeyColumn
 End Sub
 
 Private Sub UpdateControls()
     Me.txtTableName.Value = mViewModel.TableName
     Me.txtWorkSheetName.Value = mViewModel.WorkSheetName
     Me.txtWorkBookName.Value = mViewModel.WorkBookName
+    
+    Me.optLocationLocal = (mViewModel.WorkbookProperty.StorageLocation = LocalStorage)
+    Me.optLocationNetwork = (mViewModel.WorkbookProperty.StorageLocation = RemoteStorage)
+    Me.optLocationOneDrive = (mViewModel.WorkbookProperty.StorageLocation = OneDriveStorage)
+    Me.optLocationSharePoint = (mViewModel.WorkbookProperty.StorageLocation = SharePointStorage)
+    
+    mViewModel.ActivateListObjectCommand.UpdateCommandButton Me.cmdActivateListObject
+    mViewModel.ApplyViewModelCommand.UpdateCommandButton Me.cmdApply
 End Sub
 
 Private Sub InitializeLabelPictures()
@@ -84,7 +102,18 @@ End Sub
 
 Private Sub lvStarredColumns_ItemClick(ByVal Item As MSComctlLib.ListItem)
     If mViewModel.ColumnProperties.TrySelectByName(Item.Text) Then
-        'noop
+        mViewModel.IsDirty = True
+        mViewModel.ApplyViewModelCommand.UpdateCommandButton Me.cmdApply
     End If
 End Sub
 
+Private Sub cboPreferKeyColumn_Change()
+    If mViewModel.KeyColumns.TrySelectByName(Me.cboPreferKeyColumn.Value) Then
+        mViewModel.IsDirty = True
+        mViewModel.ApplyViewModelCommand.UpdateCommandButton Me.cmdApply
+    End If
+End Sub
+
+Private Sub chkDeferActivationOnWorksheet_Click()
+    mViewModel.ColumnProperties.ActivateOnWorksheet = Me.chkDeferActivationOnWorksheet.Value
+End Sub

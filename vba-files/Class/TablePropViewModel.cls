@@ -14,8 +14,39 @@ Event PropertyChanged(ByVal PropertyName As String)
 Private Type TState
     ListObject As ListObject
     ColumnProperties As ColumnProperties
+    KeyColumns As KeyColumns
+    WorkbookProperty As WorkbookProperty
+    
+    ActivateListObjectCommand As ActivateListObjectCommand
+    ApplyViewModelCommand As ApplyViewModelCommand
+    
+    IsDirty As Boolean
 End Type
 Private This As TState
+
+Public Property Get IsDirty() As Boolean
+    IsDirty = This.IsDirty
+End Property
+
+Public Property Let IsDirty(ByVal vNewValue As Boolean)
+    This.IsDirty = vNewValue
+End Property
+
+Public Property Get ApplyViewModelCommand() As ApplyViewModelCommand
+    Set ApplyViewModelCommand = This.ApplyViewModelCommand
+End Property
+
+Public Property Get ActivateListObjectCommand() As ActivateListObjectCommand
+    Set ActivateListObjectCommand = This.ActivateListObjectCommand
+End Property
+
+Public Property Get WorkbookProperty() As WorkbookProperty
+    Set WorkbookProperty = This.WorkbookProperty
+End Property
+
+Public Property Get KeyColumns() As KeyColumns
+    Set KeyColumns = This.KeyColumns
+End Property
 
 Public Property Get ColumnProperties() As ColumnProperties
     Set ColumnProperties = This.ColumnProperties
@@ -34,9 +65,22 @@ Public Property Get WorkBookName() As String
 End Property
 
 Public Sub Load(ByVal ListObject As ListObject)
+    Set This.WorkbookProperty = New WorkbookProperty
+    Set This.WorkbookProperty.Workbook = ListObject.Parent.Parent
+    
     Set This.ListObject = ListObject
+    
     Set This.ColumnProperties = New ColumnProperties
     This.ColumnProperties.Load ListObject
+    
+    Set This.KeyColumns = New KeyColumns
+    This.KeyColumns.Load ListObject
+    
+    Set This.ActivateListObjectCommand = New ActivateListObjectCommand
+    This.ActivateListObjectCommand.Create ListObject
+    
+    Set This.ApplyViewModelCommand = New ApplyViewModelCommand
+    This.ApplyViewModelCommand.Create Me
 End Sub
 
 Private Sub OnPropertyChanged(ByVal PropertyName As String)
@@ -46,4 +90,11 @@ End Sub
 
 Public Sub DoActiveListObject()
     This.ListObject.Parent.Activate
+End Sub
+
+Public Sub Apply()
+    If IsDirty Then
+        ' Do apply and save settings
+        This.IsDirty = False
+    End If
 End Sub

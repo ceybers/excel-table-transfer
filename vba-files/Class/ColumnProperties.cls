@@ -9,6 +9,9 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+Event SelectedChanged()
+Event CollectionChanged()
+
 Private Type TState
     ListObject As ListObject
     Item As Collection
@@ -58,8 +61,10 @@ Public Sub LoadListView(ByVal ListView As MSComctlLib.ListView)
     For Each ColumnProperty In This.Item
         Converter.Convert ListView, ColumnProperty
     Next ColumnProperty
+    RaiseEvent CollectionChanged
 End Sub
 
+' TODO Rename this. Selected is the one that has the focus. This should get GetAllChecked or something to that effect.
 Public Function GetSelected() As Collection
     Set GetSelected = New Collection
     Dim ColumnProperty As ColumnProperty
@@ -77,6 +82,25 @@ Public Function TrySelectByName(ByVal Name As String) As Boolean
             Set This.Selected = ColumnProperty
             If This.ActivateOnWorksheet Then ColumnProperty.Activate
             TrySelectByName = True
+            Exit Function
+        End If
+    Next ColumnProperty
+End Function
+
+Public Sub Reset()
+    For Each ColumnProperty In This.Item
+        If ColumnProperty.Name = Name Then
+            Set This.Selected = False
+        End If
+    Next ColumnProperty
+    Set This.Selected = Nothing
+    RaiseEvent SelectedChanged
+End Sub
+
+Public Function CanReset() As Boolean
+    For Each ColumnProperty In This.Item
+        If ColumnProperty.Selected = True Then
+            CanReset = True
             Exit Function
         End If
     Next ColumnProperty
