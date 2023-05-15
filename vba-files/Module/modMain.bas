@@ -43,6 +43,14 @@ Public Sub DoPrint()
     Next CustomXMLPart
 End Sub
 
+'@EntryPoint "DoReset"
+Public Sub DoReset()
+    Dim XMLSettings As XMLSettings
+    Set XMLSettings = New XMLSettings
+    XMLSettings.Load ThisWorkbook
+    XMLSettings.Reset
+End Sub
+
 Private Sub PrintCustomXMLPart(ByVal CustomXMLPart As CustomXMLPart)
     Debug.Print "CustomXMLPart.ID: "; CustomXMLPart.ID
     Debug.Print "CustomXMLPart.NamespaceURI: "; CustomXMLPart.NamespaceURI
