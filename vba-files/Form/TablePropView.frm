@@ -13,10 +13,12 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'@Folder "MVVM"
 Option Explicit
 Implements iview
 
 Private WithEvents mViewModel As TablePropViewModel
+Attribute mViewModel.VB_VarHelpID = -1
 
 Private Type TState
     IsCancelled As Boolean
@@ -50,6 +52,15 @@ Private Sub cmdResetValueColumns_Click()
     mViewModel.ColumnProperties.Reset
 End Sub
 
+Private Sub mViewModel_PropertyChanged(ByVal PropertyName As String)
+    ' Why isn't this Event triggering?
+    Debug.Print "mViewModel_PropertyChanged()"
+    Select Case PropertyName
+        Case "SavedKeyColumnName":
+            mViewModel.KeyColumns.LoadComboBox Me.cboPreferKeyColumn
+    End Select
+End Sub
+
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
         Cancel = True
@@ -71,6 +82,7 @@ End Function
 Private Sub Initalize()
     UpdateControls
     InitializeLabelPictures
+    
     mViewModel.ColumnProperties.LoadListView Me.lvStarredColumns
     mViewModel.KeyColumns.LoadComboBox Me.cboPreferKeyColumn
 End Sub

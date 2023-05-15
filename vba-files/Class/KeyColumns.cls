@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("TestTableProperties")
+'@Folder "Model"
 Option Explicit
 
 Event SelectedChanged()
@@ -30,7 +30,7 @@ Public Sub Load(ByVal ListObject As ListObject)
 End Sub
 
 Public Property Get Selected() As ColumnProperty
-
+    Set Selected = This.Selected
 End Property
 
 Public Property Set Selected(ByVal vNewValue As ColumnProperty)
@@ -72,8 +72,14 @@ Public Sub LoadComboBox(ByVal ComboBox As ComboBox)
     Next ColumnProperty
     
     ' This will always be > 0 because we add an "(undefined)" default item
-    If This.Item.Count > 0 Then
-        TrySelectByName This.Item.Item(1).Name
+    'If This.Item.Count > 0 Then
+    '    TrySelectByName This.Item.Item(1).Name
+    'End If
+    
+    If Not This.Selected Is Nothing Then
+        ComboBox.Value = This.Selected.Name
+        TrySelectByName This.Selected.Name
+        ' TODO Should not the combobox be conditionally executed if TrySelect works?
     End If
 End Sub
 
@@ -86,7 +92,7 @@ Public Function TrySelectByName(ByVal Name As String) As Boolean
     
     Dim ColumnProperty As ColumnProperty
     For Each ColumnProperty In This.Item
-        If ColumnProperty.Name = Name Then
+        If ColumnProperty.Name = Name Then ' TODO InStr this because of (non-text) etc. suffixes
             Set Selected = ColumnProperty
             TrySelectByName = True
             Exit Function

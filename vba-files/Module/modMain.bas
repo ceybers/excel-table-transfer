@@ -1,4 +1,5 @@
 Attribute VB_Name = "modMain"
+'@Folder "Main"
 Option Explicit
 
 '@Description "AAATest"
@@ -17,4 +18,3 @@ Attribute AAATest.VB_Description = "AAATest"
         Debug.Print "view.ShowDialog(vm) = False"
     End If
 End Sub
-
