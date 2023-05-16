@@ -7,140 +7,107 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("VBAProject")
+'@Folder "SomeSettingsModel"
 Option Explicit
 Implements ISettings
 
-Private Const FIRST_CHILD As String = "TableTransferTool"
-Private Const DEFAULT_XML As String = "<TableTransferTool><Flags/><Settings/><History/><Tables/></TableTransferTool>"
-Private Const FLAGS_NODE As String = "//TableTransferTool/Flags"
-Private Const SETTINGS_NODE As String = "//TableTransferTool/Settings"
+Private Const FLAGS_NODE As String = "Flags"
+Private Const SETTINGS_NODE As String = "Settings"
+Private Const COLLECTIONS_NODE As String = "Collections"
+Private Const COLLECTION_NODE As String = "Collection"
+Private Const ITEM_NODE As String = "Item"
+Private Const TRUE_SYMBOL As String = "TRUE"
+Private Const FALSE_SYMBOL As String = "FALSE"
 
 Private Type TState
-    CustomXMLParts As CustomXMLParts
-    CustomXMLPart As CustomXMLPart
-    XMLDoc As MSXML2.DOMDocument60 ' Are we still using this?
+    Parent As XMLSettingsModel
+    XPathPrefix As String
 End Type
 Private This As TState
 
-Public Sub Load(ByVal Workbook As Workbook)
-    Set This.CustomXMLParts = Workbook.CustomXMLParts
-    
-    If Not AlreadyExistsInWorkbook Then AddToWorkbook
-    
-    GetMyXMLDoc
-End Sub
+Private Property Get CustomXMLPart() As CustomXMLPart
+    Debug.Assert Not This.Parent Is Nothing
+    Debug.Assert Not This.Parent.CustomXMLPart Is Nothing
+    Set CustomXMLPart = This.Parent.CustomXMLPart
+End Property
 
-Public Sub Reset()
-    If This.CustomXMLPart Is Nothing Then Exit Sub
-    This.CustomXMLPart.Delete
-End Sub
+Public Property Get XPathPrefix() As String
+    XPathPrefix = This.XPathPrefix
+End Property
 
-Private Sub AddToWorkbook()
-    This.CustomXMLParts.Add XML:=DEFAULT_XML
-End Sub
+Public Property Let XPathPrefix(ByVal vNewValue As String)
+    This.XPathPrefix = vNewValue
+End Property
 
-Private Function StringToXML(ByVal XMLString As String) As MSXML2.DOMDocument60
-    Set StringToXML = New MSXML2.DOMDocument60
-    StringToXML.LoadXML XMLString
-End Function
-
-Private Function IsMyXMLDoc(ByVal CustomXMLPart As CustomXMLPart) As Boolean
-    IsMyXMLDoc = (StringToXML(CustomXMLPart.XML).FirstChild.BaseName = FIRST_CHILD)
-End Function
-
-Private Function AlreadyExistsInWorkbook() As Boolean
-   Dim CustomXMLPart As CustomXMLPart
-   For Each CustomXMLPart In This.CustomXMLParts
-        If IsMyXMLDoc(CustomXMLPart) Then
-            AlreadyExistsInWorkbook = True
-            Exit Function
-        End If
-    Next CustomXMLPart
-End Function
-
-Private Function GetMyXMLDoc() As Boolean
-    Dim CustomXMLPart As CustomXMLPart
-    For Each CustomXMLPart In This.CustomXMLParts
-        If IsMyXMLDoc(CustomXMLPart) Then
-            Set This.CustomXMLPart = CustomXMLPart
-            Set This.XMLDoc = StringToXML(CustomXMLPart.XML)
-            GetMyXMLDoc = True
-            Exit Function
-        End If
-    Next CustomXMLPart
-End Function
-
-Public Function HasFlag(ByVal FlagName As String) As Boolean
-    Dim Result As CustomXMLNode
-    Set Result = This.CustomXMLPart.SelectSingleNode(FLAGS_NODE & "/" & FlagName)
-    HasFlag = Not Result Is Nothing
-End Function
-
-Public Sub SetFlag(ByVal FlagName As String, ByVal FlagValue As Boolean)
-    Dim Result As CustomXMLNode
-    Set Result = This.CustomXMLPart.SelectSingleNode(FLAGS_NODE & "/" & FlagName)
-    If Result Is Nothing Then
-        Dim FlagNode As CustomXMLNode
-        Set FlagNode = This.CustomXMLPart.SelectSingleNode(FLAGS_NODE)
-        FlagNode.AppendChildNode Name:=FlagName, NodeValue:=CStr(FlagValue)
-    Else
-        Result.Text = CStr(FlagValue)
-    End If
-End Sub
- 
-Public Function GetFlag(ByVal FlagName As String) As Boolean
-    ' TODO Consider Implement TryGetFlag(ByVal FlagName, ByRef Result) as Boolean
-    If Not HasFlag(FlagName) Then Exit Function
-    
-    Dim Result As CustomXMLNode
-    Set Result = This.CustomXMLPart.SelectSingleNode(FLAGS_NODE & "/" & FlagName)
-    GetFlag = CBool(Result.Text)
-End Function
-
-Public Function HasSetting(ByVal SettingName As String) As Boolean
-    Dim Result As CustomXMLNode
-    Set Result = This.CustomXMLPart.SelectSingleNode(SETTINGS_NODE & "/" & SettingName)
-    HasSetting = Not Result Is Nothing
-End Function
-
-Public Sub SetSetting(ByVal SettingName As String, ByVal SettingValue As String)
-    Dim Result As CustomXMLNode
-    Set Result = This.CustomXMLPart.SelectSingleNode(SETTINGS_NODE & "/" & SettingName)
-    If Result Is Nothing Then
-        Dim SettingNode As CustomXMLNode
-        Set SettingNode = This.CustomXMLPart.SelectSingleNode(SETTINGS_NODE)
-        SettingNode.AppendChildNode Name:=SettingName, NodeValue:=SettingValue
-    Else
-        Result.Text = SettingValue
-    End If
-End Sub
-
-Public Function GetSetting(ByVal SettingName As String) As String
-    If Not HasSetting(SettingName) Then Exit Function
-    
-    Dim Result As CustomXMLNode
-    Set Result = This.CustomXMLPart.SelectSingleNode(SETTINGS_NODE & "/" & SettingName)
-    GetSetting = Result.Text
-End Function
-
-Private Sub ISettings_Load(Optional ByVal Object As Object)
-    Debug.Assert TypeOf Object Is Workbook
-    Me.Load Object
-End Sub
-
-Private Sub ISettings_Save()
-    ' Automatically saves
-End Sub
-
-Private Sub ISettings_Reset()
-    Me.Reset
+Public Sub SetParent(ByVal Parent As XMLSettingsModel)
+    Set This.Parent = Parent
 End Sub
 
 Private Function ISettings_GetFlag(ByVal FlagName As String) As Boolean
-    ISettings_GetFlag = Me.GetFlag(FlagName)
+    Dim XPath As String
+    XPath = XPathPrefix & "/" & FLAGS_NODE & "/" & FlagName
+    
+    Dim Result As CustomXMLNode
+    Set Result = CustomXMLPart.SelectSingleNode(XPath)
+    
+    If Not Result Is Nothing Then
+        Select Case UCase(Result.Text)
+            Case TRUE_SYMBOL:
+                ISettings_GetFlag = True
+            Case FALSE_SYMBOL:
+                ISettings_GetFlag = False
+            Case Else:
+                Debug.Assert False
+        End Select
+    End If
 End Function
 
-Private Sub ISettings_SetFlag(ByVal FlagName As String, ByVal FlagValue As Boolean)
-    Me.SetFlag FlagName, FlagValue
+Private Sub ISettings_SetFlag(ByVal FlagName As String, ByVal Value As Boolean)
+    Dim XPath As String
+    XPath = XPathPrefix & "/" & FLAGS_NODE & "/" & FlagName
+    
+    UpsertText CustomXMLPart, XPath, IIf(Value, TRUE_SYMBOL, FALSE_SYMBOL)
+End Sub
+
+Private Function ISettings_GetSetting(ByVal SettingName As String) As String
+    Dim XPath As String
+    XPath = XPathPrefix & "/" & SETTINGS_NODE & "/" & SettingName
+    
+    Dim Result As CustomXMLNode
+    Set Result = CustomXMLPart.SelectSingleNode(XPath)
+    
+    If Not Result Is Nothing Then
+        ISettings_GetSetting = Result.Text
+    End If
+End Function
+
+Private Sub ISettings_SetSetting(ByVal SettingName As String, ByVal Value As String)
+    Dim XPath As String
+    XPath = XPathPrefix & "/" & SETTINGS_NODE & "/" & SettingName
+    
+    UpsertText CustomXMLPart, XPath, Value
+End Sub
+
+Private Function ISettings_GetCollection(ByVal CollectionName As String) As Collection
+    Set ISettings_GetCollection = New Collection
+    
+    Dim XPath As String
+    XPath = XPathPrefix & "/" & COLLECTIONS_NODE & "/" & COLLECTION_NODE & "[@Name='" & CollectionName & "']/" & ITEM_NODE
+    
+    Dim Results As CustomXMLNodes
+    Set Results = CustomXMLPart.SelectNodes(XPath)
+    
+    If Not Results Is Nothing Then
+        Dim Item As CustomXMLNode
+        For Each Item In Results
+            ISettings_GetCollection.Add Item:=Item.Text
+        Next
+    End If
+End Function
+
+Private Sub ISettings_SetCollection(ByVal CollectionName As String, ByVal Collection As Collection)
+    Dim XPath As String
+    XPath = XPathPrefix & "/" & COLLECTIONS_NODE & "/" & COLLECTION_NODE & "[@Name='" & CollectionName & "']"
+    
+    UpsertCollection CustomXMLPart, XPath, Collection
 End Sub

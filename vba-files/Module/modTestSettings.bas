@@ -1,22 +1,31 @@
 Attribute VB_Name = "modTestSettings"
-'@Folder("VBAProject")
+'@Folder "SomeSettingsModel"
 Option Explicit
 
-Public Sub AAATEST()
-    Dim s As SettingsModel
-    Set s = SettingsModel.Create(ActiveWorkbook)
-    's.Delete
-    'Stop
+Public Sub TestXMLSettingsModel()
+    Dim s As XMLSettingsModel
+    Set s = XMLSettingsModel.Create(ActiveWorkbook, "TestSettings")
+    's.Reset
     
     TestWorkbook s
     TestTable s
     TestCollection s
     
     s.DebugPrint
+    Debug.Print "END"
+    Debug.Print "---"
+    
 End Sub
 
+Public Sub ZZZTestDeleteXMLSettings()
+    Dim s As XMLSettingsModel
+    Set s = XMLSettingsModel.Create(ActiveWorkbook, "TestSettings")
+    s.Delete
+End Sub
 
-Private Sub TestCollection(ByVal s As SettingsModel)
+Private Sub TestCollection(ByVal s As ISettingsModel)
+    Debug.Print "Testing Collection Function"
+    
     Dim Coll As Collection
     Set Coll = New Collection
     Coll.Add Item:="Alpha"
@@ -24,38 +33,43 @@ Private Sub TestCollection(ByVal s As SettingsModel)
     Coll.Add Item:="Charlie"
     Coll.Add Item:="Delta"
     
+    Debug.Print " Setting Collection1..."
     s.Workbook.SetCollection "Collection1", Coll
     
     Set Coll = Nothing
     
+    Debug.Print " Getting Collection1..."
     Set Coll = s.Workbook.GetCollection("Collection1")
     
-    Debug.Print "Coll count = "; Coll.Count
+    Debug.Print " Coll count = "; Coll.Count
+    
+    Debug.Print "---"
 End Sub
 
-Private Sub TestTable(ByVal s As SettingsModel)
-    Dim t As ISomeSettings
-    Set t = s.Tables.Item(1)
+Private Sub TestTable(ByVal s As ISettingsModel)
+    Debug.Print "Testing Table-level Functions"
+    Dim t As ISettings
+    Set t = s.Table("Table9")
     
-    Dim tt As SomeSettings
+    Dim tt As XMLSettings
     
     Dim IsFoobar1 As Boolean
     IsFoobar1 = t.GetFlag("foobar2")
-    Debug.Print "Foobar1 (before) = "; IsFoobar1
+    Debug.Print " Foobar1 (before) = "; IsFoobar1
     
     IsFoobar1 = Not IsFoobar1
     
     t.SetFlag "foobar2", IsFoobar1
     
     IsFoobar1 = t.GetFlag("foobar2")
-    Debug.Print "Foobar1 (after) = "; IsFoobar1
+    Debug.Print " Foobar1 (after) = "; IsFoobar1
     
-    Debug.Print "---"
+    Debug.Print ""
     
     Dim BarFoo As String
     
     BarFoo = t.GetSetting("barfoo")
-    Debug.Print "Barfoo (before) = "; BarFoo
+    Debug.Print " Barfoo (before) = "; BarFoo
     
     If Len(BarFoo) > 12 Then BarFoo = vbNullString
     BarFoo = BarFoo & " lorem"
@@ -63,30 +77,31 @@ Private Sub TestTable(ByVal s As SettingsModel)
     t.SetSetting "barfoo", BarFoo
 
     BarFoo = t.GetSetting("barfoo")
-    Debug.Print "Barfoo (after) = "; BarFoo
+    Debug.Print " Barfoo (after) = "; BarFoo
     
     Debug.Print "---"
 End Sub
 
-Private Sub TestWorkbook(ByVal s As SettingsModel)
+Private Sub TestWorkbook(ByVal s As ISettingsModel)
+    Debug.Print "Testing Workbook-level Functions"
     Dim FooBar As Boolean
     
     FooBar = s.Workbook.GetFlag("foobar")
-    Debug.Print "Foobar (before) = "; FooBar
+    Debug.Print " Foobar (before) = "; FooBar
     
     FooBar = Not FooBar
     
     s.Workbook.SetFlag "foobar", FooBar
 
     FooBar = s.Workbook.GetFlag("foobar")
-    Debug.Print "Foobar (after) = "; FooBar
+    Debug.Print " Foobar (after) = "; FooBar
     
-    Debug.Print "---"
+    Debug.Print ""
     
     Dim BarFoo As String
     
     BarFoo = s.Workbook.GetSetting("barfoo")
-    Debug.Print "Barfoo (before) = "; BarFoo
+    Debug.Print " Barfoo (before) = "; BarFoo
     
     If Len(BarFoo) > 12 Then BarFoo = vbNullString
     BarFoo = BarFoo & " lorem"
@@ -94,7 +109,7 @@ Private Sub TestWorkbook(ByVal s As SettingsModel)
     s.Workbook.SetSetting "barfoo", BarFoo
 
     BarFoo = s.Workbook.GetSetting("barfoo")
-    Debug.Print "Barfoo (after) = "; BarFoo
+    Debug.Print " Barfoo (after) = "; BarFoo
     
     Debug.Print "---"
 End Sub

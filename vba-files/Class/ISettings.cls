@@ -8,20 +8,24 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Interface
+'@Folder "SomeSettingsModel"
 Option Explicit
-
-Public Sub Load(Optional ByVal Object As Object)
-End Sub
-
-Public Sub Save()
-End Sub
-
-Public Sub Reset()
-End Sub
 
 Public Function GetFlag(ByVal FlagName As String) As Boolean
 End Function
 
-Public Sub SetFlag(ByVal FlagName As String, ByVal FlagValue As Boolean)
+Public Sub SetFlag(ByVal FlagName As String, ByVal Value As Boolean)
+End Sub
+
+Public Function GetSetting(ByVal SettingName As String) As String
+End Function
+
+Public Sub SetSetting(ByVal SettingName As String, ByVal Value As String)
+End Sub
+
+Public Function GetCollection(ByVal CollectionName As String) As Collection
+End Function
+
+Public Sub SetCollection(ByVal CollectionName As String, ByVal Collection As Collection)
 End Sub
 
