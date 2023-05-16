@@ -36,3 +36,11 @@ s.Table("Table1").SetFlag("Barfoo", TRUE)
 - `SetSetting(ByVal SettingName As String, ByVal Value As String)`
 - `GetCollection(ByVal CollectionName As String) As Collection`
 - `SetCollection(ByVal CollectionName As String, ByVal Collection As Collection)`
+
+## Files
+The following files are needed to implement in other proejcts:
+- ISettings.cls
+- ISettingsModel.cls
+- XMLSettings.cls
+- XMLSettingsModel.cls
+- CustomXMLNodeHelpers.bas
