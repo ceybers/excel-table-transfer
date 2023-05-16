@@ -2,7 +2,7 @@ Attribute VB_Name = "modTestPerTable"
 '@Folder("VBAProject")
 Option Explicit
 
-Public Sub AAATESTA()
+Public Sub BBBTEST()
     Dim XMLSettingsPerTable As XMLSettingsPerTable
     Set XMLSettingsPerTable = New XMLSettingsPerTable
     XMLSettingsPerTable.Load ThisWorkbook, "Table1"

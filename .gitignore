@@ -2,5 +2,6 @@
 logs
 /xvba_excel_backup
 .gitignore
-Sheet*.cls
+Sheet?.cls
+Sheet??.cls
 ~$*.xls*
