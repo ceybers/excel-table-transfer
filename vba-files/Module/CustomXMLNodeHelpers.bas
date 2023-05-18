@@ -1,5 +1,5 @@
 Attribute VB_Name = "CustomXMLNodeHelpers"
-'@Folder "SomeSettingsModel"
+'@Folder "PersistentStorage.XMLSettings"
 Option Explicit
 
 Private Const ITEM_NODE As String = "Item"

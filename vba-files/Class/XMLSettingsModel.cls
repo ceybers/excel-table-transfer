@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "SomeSettingsModel"
+'@Folder "PersistentStorage.XMLSettings"
 Option Explicit
 Implements ISettingsModel
 
@@ -40,23 +40,13 @@ Public Property Get CustomXMLPart() As CustomXMLPart
     Set CustomXMLPart = GetCustomXMLPart()
 End Property
 
-'Public Property Get WorkbookSettings() As ISomeSettings
-'    Set WorkbookSettings = This.WorkbookSettings
-'End Property
-
-'Public Property Set WorkbookSettings(ByVal vNewValue As ISomeSettings)
-'    Set This.WorkbookSettings = vNewValue
-'End Property
-
-'Public Property Get TableSettings() As Collection
-'    Set TableSettings = This.TableSettings
-'End Property
-
 Private Sub Class_Initialize()
     Set This.TableSettings = New Collection
 End Sub
 
+'@Description "Creates a new XMLSettingsModel for the given Workbook and RootNode."
 Public Function Create(ByVal Workbook As Workbook, ByVal RootNode As String) As XMLSettingsModel
+Attribute Create.VB_Description = "Creates a new XMLSettingsModel for the given Workbook and RootNode."
     Set Create = New XMLSettingsModel
     Create.RootNode = RootNode
     Create.Load Workbook
@@ -64,6 +54,7 @@ End Function
 
 '@Description "Loads the Workbook settings and any Table settings from the Workbook's CustomXMLPart."
 Public Sub Load(ByVal Workbook As Workbook)
+Attribute Load.VB_Description = "Loads the Workbook settings and any Table settings from the Workbook's CustomXMLPart."
     Set This.Workbook = Workbook
     
     AddWorkbookSettings
@@ -120,6 +111,7 @@ End Function
 
 '@Description "Gets the CustomXMLPart in this Workbook that has the same root node as our settings. If it doesn't exist, we create an empty one."
 Private Function GetCustomXMLPart() As CustomXMLPart
+Attribute GetCustomXMLPart.VB_Description = "Gets the CustomXMLPart in this Workbook that has the same root node as our settings. If it doesn't exist, we create an empty one."
     Dim Result As CustomXMLNode
     Dim CustomXMLPart As CustomXMLPart
     For Each CustomXMLPart In Workbook.CustomXMLParts
@@ -136,6 +128,7 @@ End Function
 
 '@Description "Removes any existing CustomXMLPart, and replaces it with an empty root node."
 Public Sub Reset()
+Attribute Reset.VB_Description = "Removes any existing CustomXMLPart, and replaces it with an empty root node."
     ' If there was no existing CustomXMLPart, we would have created a new empty one in GetCustomXMLPart().
     ' It is easier to just do this, delete it, then create an empty one again.
     GetCustomXMLPart.Delete
@@ -145,6 +138,7 @@ End Sub
 
 '@Description "Removes the CustomXMLPart from the Workbook."
 Public Sub Delete()
+Attribute Delete.VB_Description = "Removes the CustomXMLPart from the Workbook."
     If Not CustomXMLPart Is Nothing Then
         GetCustomXMLPart().Delete
     End If
@@ -156,6 +150,7 @@ End Sub
 
 '@Description "Debug.Print's the CustomXMLPart's XML as a string."
 Public Sub DebugPrint()
+Attribute DebugPrint.VB_Description = "Debug.Print's the CustomXMLPart's XML as a string."
     Debug.Print CustomXMLPart.XML
 End Sub
 

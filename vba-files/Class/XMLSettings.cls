@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "SomeSettingsModel"
+'@Folder "PersistentStorage.XMLSettings"
 Option Explicit
 Implements ISettings
 
@@ -51,7 +51,7 @@ Private Function ISettings_GetFlag(ByVal FlagName As String) As Boolean
     Set Result = CustomXMLPart.SelectSingleNode(XPath)
     
     If Not Result Is Nothing Then
-        Select Case UCase(Result.Text)
+        Select Case UCase$(Result.Text)
             Case TRUE_SYMBOL:
                 ISettings_GetFlag = True
             Case FALSE_SYMBOL:
