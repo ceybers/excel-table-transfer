@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+'@Folder "MVVM.TableProps.ViewModel"
 Option Explicit
 
 Event PropertyChanged(ByVal PropertyName As String)
@@ -19,6 +20,8 @@ Private Type TState
     
     ActivateListObjectCommand As ActivateListObjectCommand
     ApplyViewModelCommand As ApplyViewModelCommand
+    
+    SettingsModel As ISettingsModel
     
     IsDirty As Boolean
 End Type
@@ -76,11 +79,39 @@ Public Sub Load(ByVal ListObject As ListObject)
     Set This.KeyColumns = New KeyColumns
     This.KeyColumns.Load ListObject
     
+    LoadCommands
+    
+    LoadSettings
+End Sub
+
+Private Sub LoadCommands()
     Set This.ActivateListObjectCommand = New ActivateListObjectCommand
-    This.ActivateListObjectCommand.Create ListObject
+    This.ActivateListObjectCommand.Create This.ListObject
     
     Set This.ApplyViewModelCommand = New ApplyViewModelCommand
     This.ApplyViewModelCommand.Create Me
+End Sub
+
+
+Private Sub LoadSettings()
+    Set This.SettingsModel = XMLSettingsModel.Create(This.ListObject.Parent, "TableProperties")
+    
+    Dim TableSettings As ISettings
+    Set TableSettings = This.SettingsModel.Table(This.ListObject.Name)
+    
+    Dim SavedKeyColumnName As String
+    SavedKeyColumnName = TableSettings.GetSetting("KeyColumn")
+    
+    Debug.Print "Restored SavedKeyColumnName = '"; SavedKeyColumnName; "'"
+    If This.KeyColumns.TrySelectByName(SavedKeyColumnName) Then
+        Debug.Print "TrySelect worked"
+        OnPropertyChanged "SavedKeyColumnName"
+    Else
+        Debug.Print "TrySelect failed"
+    End If
+End Sub
+
+Private Sub SaveSettings()
 End Sub
 
 Private Sub OnPropertyChanged(ByVal PropertyName As String)
@@ -95,6 +126,14 @@ End Sub
 Public Sub Apply()
     If IsDirty Then
         ' Do apply and save settings
+        Dim vNewValue As String
+        Debug.Print "Saving column name..."
+        
+        If Not This.KeyColumns.Selected Is Nothing Then
+            vNewValue = This.KeyColumns.Selected.Name
+        End If
+        
+        This.SettingsModel.Table(This.ListObject.Name).SetSettings "KeyColumn", vNewValue
         This.IsDirty = False
     End If
 End Sub

@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Model"
+'@Folder "MVVM.TableProps.Model"
 Option Explicit
 
 Event SelectedChanged()
@@ -48,7 +48,7 @@ Private Sub LoadCollection()
     Next ListColumn
 End Sub
 
-Private Sub Class_Initialize()
+Private Sub class_initialize()
     Set This.Item = New Collection
 End Sub
 

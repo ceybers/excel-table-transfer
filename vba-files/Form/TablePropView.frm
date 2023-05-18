@@ -13,9 +13,10 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder "MVVM"
+
+'@Folder "MVVM.TableProps.View"
 Option Explicit
-Implements iview
+'Implements iview
 
 Private WithEvents mViewModel As TablePropViewModel
 Attribute mViewModel.VB_VarHelpID = -1

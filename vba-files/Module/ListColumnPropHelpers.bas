@@ -1,5 +1,5 @@
 Attribute VB_Name = "ListColumnPropHelpers"
-'@Folder "Helpers"
+'@Folder "Helpers.ListColumn"
 Option Explicit
 
 Private Const NONE_CAPTION As String = "None"

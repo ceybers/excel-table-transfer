@@ -1,15 +1,15 @@
-Attribute VB_Name = "modMain"
-'@Folder "Main"
+Attribute VB_Name = "RunTablePropView"
+'@Folder "MVVM.TableProps"
 Option Explicit
 
-'@Description "AAATest"
-Public Sub AAATest()
-Attribute AAATest.VB_Description = "AAATest"
+'@Description "DoRun"
+Public Sub DoRun()
+Attribute DoRun.VB_Description = "AAATest"
     Dim vm As TablePropViewModel
     Set vm = New TablePropViewModel
     vm.Load ThisWorkbook.Worksheets(1).ListObjects(1)
     
-    Dim view As iview
+    Dim view As TablePropView
     Set view = New TablePropView
     
     If view.ShowDialog(vm) Then

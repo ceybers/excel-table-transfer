@@ -7,9 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Converters"
+'@Folder "MVVM.TableProps.Converters"
 Option Explicit
-Implements IValueConverter
+'Implements IValueConverter
 
 Private Const DEFAULT_ITEM As String = "(undefined)"
 
