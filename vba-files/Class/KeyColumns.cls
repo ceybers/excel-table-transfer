@@ -10,13 +10,13 @@ Attribute VB_Exposed = False
 '@Folder "MVVM.TableProps.Model"
 Option Explicit
 
-Event SelectedChanged()
-Event CollectionChanged()
+Private Const NOT_TEXT_SUFFIX As String = " (non-text)"
+Private Const NOT_UNIQUE_SUFFIX As String = " (not unique)"
+Private Const UNDEFINED_COLUMN As String = "(No key column set)"
 
 Private Type TState
     ListObject As ListObject
-    Item As Collection
-    Selected As ColumnProperty
+    Item As Scripting.Dictionary
 End Type
 Private This As TState
 
@@ -24,79 +24,41 @@ Public Property Get Name() As String
     Name = This.ListObject.Name
 End Property
 
+Private Sub Class_Initialize()
+    Set This.Item = New Scripting.Dictionary
+End Sub
+
 Public Sub Load(ByVal ListObject As ListObject)
     Set This.ListObject = ListObject
     LoadCollection
 End Sub
 
-Public Property Get Selected() As ColumnProperty
-    Set Selected = This.Selected
-End Property
-
-Public Property Set Selected(ByVal vNewValue As ColumnProperty)
-    If Not This.Selected Is Nothing Then
-        If This.Selected.Name = vNewValue.Name Then
-            Exit Property
-        End If
-    End If
-    
-    Set This.Selected = vNewValue
-    RaiseEvent SelectedChanged
-End Property
-
-
 Private Sub LoadCollection()
+    This.Item.Add Key:=UNDEFINED_COLUMN, Item:=UNDEFINED_COLUMN
+    
     Dim ListColumn As ListColumn
-    Dim ColumnProperty As ColumnProperty
     For Each ListColumn In This.ListObject.ListColumns
+        Dim ColumnProperty As ColumnProperty
         Set ColumnProperty = New ColumnProperty
         ColumnProperty.Load ListColumn
-        This.Item.Add ColumnProperty, Key:=ListColumn.Name
+        This.Item.Add Key:=ListColumn.Name, Item:=GetNameWithSuffix(ColumnProperty)
     Next ListColumn
-    RaiseEvent CollectionChanged
 End Sub
 
-Private Sub Class_Initialize()
-    Set This.Item = New Collection
-End Sub
-
-Public Sub LoadComboBox(ByVal ComboBox As ComboBox)
-    Dim Converter As IValueConverter
-    Set Converter = New ColumnPropToComboBox
+Private Function GetNameWithSuffix(ByVal ColumnProperty As ColumnProperty) As String
+    GetNameWithSuffix = ColumnProperty.Name
     
-    Converter.Initialize ComboBox 'CHK
-    
-    Dim ColumnProperty As ColumnProperty
-    For Each ColumnProperty In This.Item
-        Converter.Convert ComboBox, ColumnProperty
-    Next ColumnProperty
-    
-    ' This will always be > 0 because we add an "(undefined)" default item
-    'If This.Item.Count > 0 Then
-    '    TrySelectByName This.Item.Item(1).Name
-    'End If
-    
-    If Not This.Selected Is Nothing Then
-        ComboBox.Value = This.Selected.Name
-        TrySelectByName This.Selected.Name
-        ' TODO Should not the combobox be conditionally executed if TrySelect works?
-    End If
-End Sub
-
-Public Function TrySelectByName(ByVal Name As String) As Boolean
-    If Not This.Selected Is Nothing Then
-        If This.Selected.Name = Name Then
-            Exit Function
-        End If
+    If ColumnProperty.ColumnType <> "Text" Then
+        GetNameWithSuffix = ColumnProperty.Name & NOT_TEXT_SUFFIX
+        Exit Function
     End If
     
-    Dim ColumnProperty As ColumnProperty
-    For Each ColumnProperty In This.Item
-        If ColumnProperty.Name = Name Then ' TODO InStr this because of (non-text) etc. suffixes
-            Set Selected = ColumnProperty
-            TrySelectByName = True
-            Exit Function
-        End If
-    Next ColumnProperty
+    If ColumnProperty.Unique <> All Then
+        GetNameWithSuffix = ColumnProperty.Name & NOT_UNIQUE_SUFFIX
+        Exit Function
+    End If
 End Function
 
+Public Function GetDictionary() As Scripting.Dictionary
+    Set GetDictionary = This.Item
+End Function

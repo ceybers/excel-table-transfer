@@ -20,6 +20,10 @@ Public Property Get Name() As String
     Name = This.ListColumn.Name
 End Property
 
+Public Property Get ListColumn() As ListColumn
+    Set ListColumn = This.ListColumn
+End Property
+
 Public Property Get Selected() As Boolean
     Selected = This.Selected
 End Property

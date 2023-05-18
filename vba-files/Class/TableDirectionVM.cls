@@ -11,6 +11,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IViewModel
 Implements INotifyPropertyChanged
+Implements IChangeTracking
 
 Private Const DIRECTION_ISNEITHER As String = "DIRECTION_ISNEITHER"
 Private Const DIRECTION_ISSOURCE As String = "DIRECTION_ISSOURCE"
@@ -21,6 +22,7 @@ Private Const DIRECTION_CONDITION_CRITERIA As String = "DIRECTION_CONDITION_CRIT
 Private Type TState
     Notifier As INotifyPropertyChanged
     Settings As ISettings
+    IsChanged As Boolean
     
     IsNeither As Boolean
     IsSource As Boolean
@@ -50,6 +52,7 @@ End Sub
 
 Private Sub OnPropertyChanged(ByVal PropertyName As String)
     INotifyPropertyChanged_OnPropertyChanged Me, PropertyName
+    This.IsChanged = True
 End Sub
 
 Private Sub Class_Initialize()
@@ -172,9 +175,20 @@ Private Sub LoadSelectedConditionDirection()
 End Sub
 
 Public Sub Commit()
+    If This.IsChanged = False Then Exit Sub
     This.Settings.SetFlag DIRECTION_ISNEITHER, IsNeither
     This.Settings.SetFlag DIRECTION_ISSOURCE, IsSource
     This.Settings.SetFlag DIRECTION_ISDESTIATION, IsDestination
     This.Settings.SetFlag DIRECTION_CONDITION, IsOnCondition
     This.Settings.SetSetting DIRECTION_CONDITION_CRITERIA, SelectedConditionDirection
 End Sub
+
+Private Property Get IChangeTracking_IsChanged() As Boolean
+   IChangeTracking_IsChanged = IsChanged
+End Property
+
+Private Sub IChangeTracking_AcceptChanges()
+    Commit
+    This.IsChanged = False
+End Sub
+

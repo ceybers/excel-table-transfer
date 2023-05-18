@@ -17,11 +17,11 @@ End Type
 Private This As TState
 
 Public Function CanExecute() As Boolean
-    CanExecute = This.ViewModel.IsDirty
+    CanExecute = True 'This.ViewModel.IsDirty
 End Function
 
 Public Sub Execute()
-    This.ViewModel.Apply
+    'This.ViewModel.Apply
 End Sub
 
 Public Sub Create(ByVal ViewModel As TablePropViewModel)

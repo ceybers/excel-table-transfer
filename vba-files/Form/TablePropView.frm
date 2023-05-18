@@ -121,6 +121,9 @@ Private Sub BindControls()
         .BindPropertyPath ViewModel, "TableDirectionVM.ConditionDirections", Me.cboPreferDirectionLocation, "List", OneWayToSource
         .BindPropertyPath ViewModel, "TableDirectionVM.SelectedConditionDirection", Me.cboPreferDirectionLocation, "Value", TwoWayBinding
         
+        .BindPropertyPath ViewModel, "TablePreferKeyVM.Columns", Me.cboPreferKeyColumn, "List", OneTimeBinding
+        .BindPropertyPath ViewModel, "TablePreferKeyVM.SelectedColumn", Me.cboPreferKeyColumn, "Value", TwoWayBinding
+        
         '.BindPropertyPath ViewModel, "Countries", Me.ListView1, "ListItems", OneWayToSource, CountryToListViewConverter
         '.BindPropertyPath ViewModel, "Country", Me.ListView1, "SelectedItem"
         '.BindPropertyPath ViewModel, "Country", Me.TextBox1, "Value"
