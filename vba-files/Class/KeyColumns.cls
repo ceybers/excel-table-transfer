@@ -56,7 +56,7 @@ Private Sub LoadCollection()
     RaiseEvent CollectionChanged
 End Sub
 
-Private Sub class_initialize()
+Private Sub Class_Initialize()
     Set This.Item = New Collection
 End Sub
 

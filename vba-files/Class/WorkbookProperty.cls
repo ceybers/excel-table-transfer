@@ -58,3 +58,19 @@ Public Property Get ProtectStructure() As Boolean
     ProtectStructure = This.Workbook.ProtectStructure
 End Property
 
+Public Function ToString(ByVal Location As ttWorkbookLocation) As String
+    Select Case Location
+        Case Undefined:
+            ToString = "Undefined"
+        Case LocalStorage:
+            ToString = "LocalStorage"
+        Case RemoteStorage:
+            ToString = "RemoteStorage"
+        Case OneDriveStorage:
+            ToString = "OneDriveStorage"
+        Case SharePointStorage:
+            ToString = "SharePointStorage"
+        Case UnsavedStorage:
+            ToString = "UnsavedStorage"
+    End Select
+End Function

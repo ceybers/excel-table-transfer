@@ -13,93 +13,138 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 '@Folder "MVVM.TableProps.View"
 Option Explicit
-'Implements iview
-
-Private WithEvents mViewModel As TablePropViewModel
-Attribute mViewModel.VB_VarHelpID = -1
-
-Private Type TState
+Implements IView
+Implements ICancellable
+ 
+Private Type TView
+    Context As IAppContext
     IsCancelled As Boolean
+    ViewModel As TablePropViewModel
 End Type
-Private This As TState
+Private This As TView
 
-Private Sub cmdApply_Click()
-    mViewModel.ApplyViewModelCommand.Execute
-    UpdateControls
-End Sub
+Private Property Get IView_ViewModel() As Object
+    Set IView_ViewModel = This.ViewModel
+End Property
 
-Private Sub cmdCancel_Click()
-    OnCancel
-End Sub
+Public Property Get ViewModel() As TablePropViewModel
+    Set ViewModel = This.ViewModel
+End Property
 
-Private Sub cmdOK_Click()
-    Me.Hide
-End Sub
+Public Property Set ViewModel(ByVal vNewValue As TablePropViewModel)
+    Set This.ViewModel = vNewValue
+End Property
 
-Private Sub OnCancel()
-    This.IsCancelled = True
-    Me.Hide
-End Sub
+Public Property Get Context() As IAppContext
+    Set Context = This.Context
+End Property
 
-Private Sub cmdActivateListObject_Click()
-    mViewModel.ActivateListObjectCommand.Execute
-    UpdateControls
-End Sub
-
-Private Sub cmdResetValueColumns_Click()
-    mViewModel.ColumnProperties.Reset
-End Sub
-
-Private Sub mViewModel_PropertyChanged(ByVal PropertyName As String)
-    ' Why isn't this Event triggering?
-    Debug.Print "mViewModel_PropertyChanged()"
-    Select Case PropertyName
-        Case "SavedKeyColumnName":
-            mViewModel.KeyColumns.LoadComboBox Me.cboPreferKeyColumn
-    End Select
-End Sub
-
+Public Property Set Context(ByVal vNewValue As IAppContext)
+    Set This.Context = vNewValue
+End Property
+ 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
         Cancel = True
         OnCancel
     End If
 End Sub
+ 
+Private Sub OnCancel()
+    This.IsCancelled = True
+    Me.Hide
+End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As Boolean
-    Set mViewModel = ViewModel
-    This.IsCancelled = False
+Private Property Get ICancellable_IsCancelled() As Boolean
+    ICancellable_IsCancelled = This.IsCancelled
+End Property
+
+Private Sub ICancellable_OnCancel()
+    OnCancel
+End Sub
+
+Private Sub IView_Show()
+    IView_ShowDialog
+End Sub
+ 
+Private Sub IView_Hide()
+    Me.Hide
+End Sub
+
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As TablePropViewModel) As IView
+    Dim Result As TablePropView
+    Set Result = New TablePropView
     
-    Initalize
+    Set Result.Context = Context
+    Set Result.ViewModel = ViewModel
+
+    Set Create = Result
+End Function
+
+Private Function IView_ShowDialog() As Boolean
+    InitializeLabelPictures
+    InitializeControls
+    BindControls
+    BindCommands
     
-    Me.Show
+    Me.Show vbModal
     
     IView_ShowDialog = Not This.IsCancelled
 End Function
 
-Private Sub Initalize()
-    UpdateControls
-    InitializeLabelPictures
-    
-    mViewModel.ColumnProperties.LoadListView Me.lvStarredColumns
-    mViewModel.KeyColumns.LoadComboBox Me.cboPreferKeyColumn
+Private Sub InitializeControls()
+    '@Ignore ArgumentWithIncompatibleObjectType
+    'CountryToListViewConverter.InitializeListView Me.ListView1
+    '@Ignore ArgumentWithIncompatibleObjectType
+    'CitytoListViewConverter.InitializeListView Me.ListView2
 End Sub
 
-Private Sub UpdateControls()
-    Me.txtTableName.Value = mViewModel.TableName
-    Me.txtWorkSheetName.Value = mViewModel.WorkSheetName
-    Me.txtWorkBookName.Value = mViewModel.WorkBookName
+Private Sub BindControls()
+    With Context.BindingManager
+        .BindPropertyPath ViewModel, "TableDetailsVM.TableName", Me.txtTableName, "Value", OneTimeBinding
+        .BindPropertyPath ViewModel, "TableDetailsVM.WorkSheetName", Me.txtWorkSheetName, "Value", OneTimeBinding
+        .BindPropertyPath ViewModel, "TableDetailsVM.WorkBookName", Me.txtWorkBookName, "Value", OneTimeBinding
+        
+        .BindPropertyPath ViewModel, "TableLocationVM.IsLocalStorage", Me.optLocationLocal, "Value", OneTimeBinding
+        .BindPropertyPath ViewModel, "TableLocationVM.IsNetworkStorage", Me.optLocationNetwork, "Value", OneTimeBinding
+        .BindPropertyPath ViewModel, "TableLocationVM.IsOneDriveStorage", Me.optLocationOneDrive, "Value", OneTimeBinding
+        .BindPropertyPath ViewModel, "TableLocationVM.IsSharePointStorage", Me.optLocationSharePoint, "Value", OneTimeBinding
+        
+        .BindPropertyPath ViewModel, "TableDirectionVM.IsNeither", Me.optDirectionNeither, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "TableDirectionVM.IsSource", Me.optDirectionSource, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "TableDirectionVM.IsDestination", Me.optDirectionDestination, "Value", TwoWayBinding
+        
+        .BindPropertyPath ViewModel, "TableDirectionVM.IsOnCondition", Me.chkPreferDirectionCondition, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "TableDirectionVM.IsOnCondition", Me.cboPreferDirectionLocation, "Enabled", TwoWayBinding
+        .BindPropertyPath ViewModel, "TableDirectionVM.ConditionDirections", Me.cboPreferDirectionLocation, "List", OneWayToSource
+        .BindPropertyPath ViewModel, "TableDirectionVM.SelectedConditionDirection", Me.cboPreferDirectionLocation, "Value", TwoWayBinding
+        
+        '.BindPropertyPath ViewModel, "Countries", Me.ListView1, "ListItems", OneWayToSource, CountryToListViewConverter
+        '.BindPropertyPath ViewModel, "Country", Me.ListView1, "SelectedItem"
+        '.BindPropertyPath ViewModel, "Country", Me.TextBox1, "Value"
+        
+        '.BindPropertyPath ViewModel, "CityViewModel.Cities", Me.ListView2, "ListItems", OneWayToSource, CitytoListViewConverter
+        '.BindPropertyPath ViewModel, "CityViewModel.SelectedCityKey", Me.ListView2, "SelectedItem", TwoWayBinding, CitytoListViewConverter
+        '.BindPropertyPath ViewModel, "CityViewModel.Cities", Me.ComboBox1, "List", OneWayToSource, CityToComboBoxConverter
+        '.BindPropertyPath ViewModel, "CityViewModel.SelectedCityKey", Me.ComboBox1, "Value", TwoWayBinding, CityToComboBoxConverter
+        
+        '.BindPropertyPath ViewModel, "CityViewModel.SelectedCityKey", Me.Label2, "Caption"
+    End With
+End Sub
+
+Private Sub BindCommands()
+    Dim OKView As ICommand
+    Set OKView = OKViewCommand.Create(Context, Me, ViewModel)
     
-    Me.optLocationLocal = (mViewModel.WorkbookProperty.StorageLocation = LocalStorage)
-    Me.optLocationNetwork = (mViewModel.WorkbookProperty.StorageLocation = RemoteStorage)
-    Me.optLocationOneDrive = (mViewModel.WorkbookProperty.StorageLocation = OneDriveStorage)
-    Me.optLocationSharePoint = (mViewModel.WorkbookProperty.StorageLocation = SharePointStorage)
+    Dim CancelView As ICommand
+    Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
     
-    mViewModel.ActivateListObjectCommand.UpdateCommandButton Me.cmdActivateListObject
-    mViewModel.ApplyViewModelCommand.UpdateCommandButton Me.cmdApply
+    With This.Context.CommandManager
+        .BindCommand Context, ViewModel, OKView, Me.cmdOK
+        .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
+    End With
 End Sub
 
 Private Sub InitializeLabelPictures()
@@ -111,22 +156,4 @@ Private Sub InitializeLabelPictures()
     Set Me.lblPicProfile.Picture = Application.CommandBars.GetImageMso("EnterpriseProjectProfiles", 32, 32)
     Set Me.lblPicProtection.Picture = Application.CommandBars.GetImageMso("SheetProtect", 32, 32)
     Set Me.lblPicTimestamp.Picture = Application.CommandBars.GetImageMso("ViewAllProposals", 32, 32)
-End Sub
-
-Private Sub lvStarredColumns_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    If mViewModel.ColumnProperties.TrySelectByName(Item.Text) Then
-        mViewModel.IsDirty = True
-        mViewModel.ApplyViewModelCommand.UpdateCommandButton Me.cmdApply
-    End If
-End Sub
-
-Private Sub cboPreferKeyColumn_Change()
-    If mViewModel.KeyColumns.TrySelectByName(Me.cboPreferKeyColumn.Value) Then
-        mViewModel.IsDirty = True
-        mViewModel.ApplyViewModelCommand.UpdateCommandButton Me.cmdApply
-    End If
-End Sub
-
-Private Sub chkDeferActivationOnWorksheet_Click()
-    mViewModel.ColumnProperties.ActivateOnWorksheet = Me.chkDeferActivationOnWorksheet.Value
 End Sub

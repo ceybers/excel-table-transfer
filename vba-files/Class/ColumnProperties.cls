@@ -48,21 +48,21 @@ Private Sub LoadCollection()
     Next ListColumn
 End Sub
 
-Private Sub class_initialize()
+Private Sub Class_Initialize()
     Set This.Item = New Collection
 End Sub
 
 Public Sub LoadListView(ByVal ListView As MSComctlLib.ListView)
-    Dim Converter As IValueConverter
-    Set Converter = New ColumnPropToListItem
-    
-    Converter.Initialize ListView 'CHK
-    
-    Dim ColumnProperty As ColumnProperty
-    For Each ColumnProperty In This.Item
-        Converter.Convert ListView, ColumnProperty
-    Next ColumnProperty
-    RaiseEvent CollectionChanged
+    'Dim Converter As IValueConverter
+    'Set Converter = New ColumnPropToListItem
+    '
+    'Converter.Initialize ListView 'CHK
+    '
+    'Dim ColumnProperty As ColumnProperty
+    'For Each ColumnProperty In This.Item
+    '    Converter.Convert ListView, ColumnProperty
+    'Next ColumnProperty
+    'RaiseEvent CollectionChanged
 End Sub
 
 ' TODO Rename this. Selected is the one that has the focus. This should get GetAllChecked or something to that effect.
@@ -89,13 +89,13 @@ Public Function TrySelectByName(ByVal Name As String) As Boolean
 End Function
 
 Public Sub Reset()
-    For Each ColumnProperty In This.Item
-        If ColumnProperty.Name = Name Then
-            Set This.Selected = False
-        End If
-    Next ColumnProperty
-    Set This.Selected = Nothing
-    RaiseEvent SelectedChanged
+    'For Each ColumnProperty In This.Item
+    '    If ColumnProperty.Name = Name Then
+    '        Set This.Selected = False
+    '    End If
+    'Next ColumnProperty
+    'Set This.Selected = Nothing
+    'RaiseEvent SelectedChanged
 End Sub
 
 Public Function CanReset() As Boolean

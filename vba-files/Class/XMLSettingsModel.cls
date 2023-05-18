@@ -40,7 +40,7 @@ Public Property Get CustomXMLPart() As CustomXMLPart
     Set CustomXMLPart = GetCustomXMLPart()
 End Property
 
-Private Sub class_initialize()
+Private Sub Class_Initialize()
     Set This.TableSettings = New Collection
 End Sub
 
@@ -129,6 +129,7 @@ End Function
 '@Description "Removes any existing CustomXMLPart, and replaces it with an empty root node."
 Public Sub Reset()
 Attribute Reset.VB_Description = "Removes any existing CustomXMLPart, and replaces it with an empty root node."
+    If Me Is XMLSettingsModel Then Err.Raise Number:=42, Description:="Cannot Reset on predeclared instance of XMLSettingsModel"
     ' If there was no existing CustomXMLPart, we would have created a new empty one in GetCustomXMLPart().
     ' It is easier to just do this, delete it, then create an empty one again.
     GetCustomXMLPart.Delete
