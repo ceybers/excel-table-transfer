@@ -51,7 +51,7 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         .ListItems.Clear
         .ColumnHeaders.Clear
         .ColumnHeaders.Add Text:="Country Name"
-        .view = lvwReport
+        .View = lvwReport
         .Gridlines = True
         .LabelEdit = lvwManual
         .HideSelection = False

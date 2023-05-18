@@ -96,6 +96,7 @@ End Function
 
 Private Sub InitializeControls()
     '@Ignore ArgumentWithIncompatibleObjectType
+    ColumnPropToListViewConverter.InitializeListView Me.lvStarredColumns
     'CountryToListViewConverter.InitializeListView Me.ListView1
     '@Ignore ArgumentWithIncompatibleObjectType
     'CitytoListViewConverter.InitializeListView Me.ListView2
@@ -124,6 +125,8 @@ Private Sub BindControls()
         .BindPropertyPath ViewModel, "TablePreferKeyVM.Columns", Me.cboPreferKeyColumn, "List", OneTimeBinding
         .BindPropertyPath ViewModel, "TablePreferKeyVM.SelectedColumn", Me.cboPreferKeyColumn, "Value", TwoWayBinding
         
+        .BindPropertyPath ViewModel, "TableStarColumnsVM.Columns", Me.lvStarredColumns, "ListItems", TwoWayBinding, ColumnPropToListViewConverter
+        '.BindPropertyPath ViewModel, "TableStarColumnsVM.SelectedColumn", Me.lvStarredColumns, "SelectedItem", TwoWayBinding, ColumnPropToListViewConverter
         '.BindPropertyPath ViewModel, "Countries", Me.ListView1, "ListItems", OneWayToSource, CountryToListViewConverter
         '.BindPropertyPath ViewModel, "Country", Me.ListView1, "SelectedItem"
         '.BindPropertyPath ViewModel, "Country", Me.TextBox1, "Value"
@@ -144,9 +147,13 @@ Private Sub BindCommands()
     Dim CancelView As ICommand
     Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
     
+    Dim ResetStarColumns As ICommand
+    Set ResetStarColumns = ResetStarColumnsCommand.Create(Context, Me, ViewModel.TableStarColumnsVM)
+    
     With This.Context.CommandManager
         .BindCommand Context, ViewModel, OKView, Me.cmdOK
         .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
+        .BindCommand Context, ViewModel.TableStarColumnsVM, ResetStarColumns, Me.cmdResetValueColumns
     End With
 End Sub
 

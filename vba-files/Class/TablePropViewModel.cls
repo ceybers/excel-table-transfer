@@ -25,6 +25,7 @@ Private Type TState
     TableLocationVM As TableLocationVM
     TableDirectionVM As TableDirectionVM
     TablePreferKeyVM As TablePreferKeyVM
+    TableStarColumnsVM As TableStarColumnsVM
 End Type
 Private This As TState
 
@@ -54,6 +55,7 @@ Private Sub Class_Initialize()
     Set This.TableLocationVM = New TableLocationVM
     Set This.TableDirectionVM = New TableDirectionVM
     Set This.TablePreferKeyVM = New TablePreferKeyVM
+    Set This.TableStarColumnsVM = New TableStarColumnsVM
 End Sub
 
 '---
@@ -72,6 +74,11 @@ End Property
 Public Property Get TablePreferKeyVM() As TablePreferKeyVM
     Set TablePreferKeyVM = This.TablePreferKeyVM
 End Property
+
+Public Property Get TableStarColumnsVM() As TableStarColumnsVM
+    Set TableStarColumnsVM = This.TableStarColumnsVM
+End Property
+
 '---
 Public Property Get Foobar() As String
     Foobar = This.Foobar
@@ -95,11 +102,13 @@ Public Sub Load(ByVal ListObject As ListObject)
     This.TableLocationVM.Load Workbook
     This.TableDirectionVM.Load ListObject, This.TableSettings
     This.TablePreferKeyVM.Load ListObject, This.TableSettings
+    This.TableStarColumnsVM.Load ListObject, This.TableSettings
 End Sub
 
 Public Sub Commit()
     CommitChanges This.TableDirectionVM
     CommitChanges This.TablePreferKeyVM
+    CommitChanges This.TableStarColumnsVM
 End Sub
 
 Private Sub CommitChanges(ByVal ChangeTracker As IChangeTracking)

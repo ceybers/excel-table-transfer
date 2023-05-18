@@ -12,6 +12,7 @@ Option Explicit
 
 Private Type TState
     ListColumn As ListColumn
+    Checked As Boolean
     Selected As Boolean
 End Type
 Private This As TState
@@ -30,6 +31,14 @@ End Property
 
 Public Property Let Selected(ByVal vNewValue As Boolean)
     This.Selected = vNewValue
+End Property
+
+Public Property Get Checked() As Boolean
+    Checked = This.Checked
+End Property
+
+Public Property Let Checked(ByVal vNewValue As Boolean)
+    This.Checked = vNewValue
 End Property
 
 Public Property Get ColumnType() As String

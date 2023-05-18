@@ -9,13 +9,13 @@ Public Sub DoTest()
     Dim ctx As IAppContext
     Set ctx = New AppContext
     
-    Dim vm As CountryViewModel
-    Set vm = New CountryViewModel
+    Dim VM As CountryViewModel
+    Set VM = New CountryViewModel
     
-    Dim view As IView
-    Set view = GeographyView.Create(ctx, vm)
+    Dim View As IView
+    Set View = GeographyView.Create(ctx, VM)
     
-    With view
+    With View
         If .ShowDialog() Then
             If DO_DEBUG Then Debug.Print "GeographyView.ShowDialog(vm) returned True"
         Else

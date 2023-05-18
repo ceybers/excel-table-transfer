@@ -55,7 +55,7 @@ Private Sub IValueConverter_Initialize(ByVal Control As Object)
         .Appearance = cc3D
         .BorderStyle = ccNone
         .CheckBoxes = True
-        .view = lvwReport
+        .View = lvwReport
         .Gridlines = True
         .FullRowSelect = True
         .LabelEdit = lvwManual

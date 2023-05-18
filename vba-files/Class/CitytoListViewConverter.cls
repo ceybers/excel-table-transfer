@@ -66,7 +66,7 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         .ColumnHeaders.Add Text:="Airport Code"
         .Appearance = cc3D
         .BorderStyle = ccNone
-        .view = lvwReport
+        .View = lvwReport
         .Gridlines = True
         .LabelEdit = lvwManual
         .HideSelection = False

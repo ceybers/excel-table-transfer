@@ -9,17 +9,17 @@ Public Sub DoRun()
     Dim ctx As IAppContext
     Set ctx = New AppContext
     
-    Dim vm As TablePropViewModel
-    Set vm = New TablePropViewModel
-    vm.Load ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
+    Dim VM As TablePropViewModel
+    Set VM = New TablePropViewModel
+    VM.Load ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
 
-    Dim view As IView
-    Set view = TablePropView.Create(ctx, vm)
+    Dim View As IView
+    Set View = TablePropView.Create(ctx, VM)
     
-    With view
+    With View
         If .ShowDialog() Then
             If DO_DEBUG Then Debug.Print "TablePropView.ShowDialog(vm) returned True"
-            vm.Commit
+            VM.Commit
         Else
             If DO_DEBUG Then Debug.Print "TablePropView.ShowDialog(vm) returned False"
         End If

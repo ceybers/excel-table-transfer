@@ -59,11 +59,7 @@ Public Sub Create(ByVal Source As Object, ByVal SourcePropertyPath As String, By
     Set mListView = Target
     This.TargetProperty = TargetProperty
     
-    If TargetProperty = "SelectedItem" Then
-        This.BindingMode = TwoWayBinding
-    Else
-        This.BindingMode = OneWayBinding
-    End If
+    This.BindingMode = BindingMode
     
     If Not ValueConverter Is Nothing Then
         Set This.ValueConverter = ValueConverter
@@ -72,14 +68,20 @@ Public Sub Create(ByVal Source As Object, ByVal SourcePropertyPath As String, By
     TryUpdateTarget
 End Sub
 
+Private Sub mListView_ItemCheck(ByVal Item As MSComctlLib.ListItem)
+    If DO_DEBUG Then Debug.Print "ListViewPropertyBinding mListView_ItemCheck()"
+    
+    TryUpdateSource
+End Sub
+
 Private Sub mListView_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    If DO_DEBUG Then Debug.Print "ListViewPropertyBinding lv_ItemClick()"
+    If DO_DEBUG Then Debug.Print "ListViewPropertyBinding mListView_ItemClick()"
     
     TryUpdateSource
 End Sub
 
 Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
-    If DO_DEBUG Then Debug.Print "ListViewPropertyBinding vm_PropertyChanged()"
+    If DO_DEBUG Then Debug.Print "ListViewPropertyBinding IHandlePropertyChanged_HandlePropertyChanged()"
     If Not Source Is This.ViewModel Then Exit Sub
     If PropertyName <> This.SourcePropertyPath Then Exit Sub
     
@@ -113,7 +115,8 @@ Private Sub TryUpdateSource()
     If This.TargetProperty = "SelectedItem" Then
         UpdateSource
     Else
-        Debug.Assert False
+        UpdateSource
+        'Debug.Assert False
     End If
 End Sub
 
@@ -163,9 +166,9 @@ Private Sub UpdateSource()
     Dim vNewValue As Variant
     Set vNewValue = CallByName(mListView, This.TargetProperty, VbGet)
     
-    'If Not This.ValueConverter Is Nothing Then
-    '    This.ValueConverter.ConvertBack Me
-    'Else
+    If Not This.ValueConverter Is Nothing Then
+        This.ValueConverter.ConvertBack Me
+    Else
         CallByName This.ViewModel, This.SourcePropertyPath, VbLet, vNewValue
-    'End If
+    End If
 End Sub

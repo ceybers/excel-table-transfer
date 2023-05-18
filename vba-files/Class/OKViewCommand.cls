@@ -24,11 +24,11 @@ Public Property Set Context(ByVal vNewValue As IAppContext)
     Set mAppContext = vNewValue
 End Property
 
-Public Property Get view() As IView
-    Set view = mView
+Public Property Get View() As IView
+    Set View = mView
 End Property
 
-Public Property Set view(ByVal vNewValue As IView)
+Public Property Set View(ByVal vNewValue As IView)
     Set mView = vNewValue
 End Property
 
@@ -44,13 +44,13 @@ Private Property Get ICommand_Caption() As String
     ICommand_Caption = "OK"
 End Property
 
-Public Function Create(ByVal Context As IAppContext, ByVal view As IView, ByVal ViewModel As IViewModel) _
+Public Function Create(ByVal Context As IAppContext, ByVal View As IView, ByVal ViewModel As IViewModel) _
     As OKViewCommand
     Dim Result As OKViewCommand
     Set Result = New OKViewCommand
     With Result
         Set .Context = Context
-        Set .view = view
+        Set .View = View
         Set .ViewModel = ViewModel
     End With
     Set Create = Result
