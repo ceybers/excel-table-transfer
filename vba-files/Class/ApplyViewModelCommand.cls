@@ -15,6 +15,7 @@ Private Type TState
     ViewModel As TablePropViewModel
     CanExecute As Boolean
 End Type
+'@Ignore MoveFieldCloserToUsage
 Private This As TState
 
 Public Function CanExecute() As Boolean

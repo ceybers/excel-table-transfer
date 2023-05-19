@@ -119,7 +119,7 @@ Public Sub TrySetColumnSelected(ByVal ColumnKey As String, ByVal vNewValue As Bo
     Set ColumnProperty = This.Columns.Item(ColumnKey)
     If ColumnProperty.Selected = vNewValue Then Exit Sub
     ColumnProperty.Selected = vNewValue
-    OnPropertyChanged "ColumnSelectedChanged"
+    'OnPropertyChanged "ColumnSelectedChanged"
 End Sub
 
 Public Function CanReset() As Boolean

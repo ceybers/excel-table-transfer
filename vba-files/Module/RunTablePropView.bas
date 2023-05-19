@@ -4,7 +4,7 @@ Option Explicit
 
 Private Const DO_DEBUG As Boolean = False
 
-'@Description "DoRunTableProp"
+'@Description "DoRun"
 Public Sub DoRunTableProp()
 Attribute DoRunTableProp.VB_Description = "DoRun"
     Dim ctx As IAppContext

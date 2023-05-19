@@ -146,7 +146,7 @@ Private Sub UpdateListViewListItems()
     
     mListView.ListItems.Clear
     
-    Dim NewList As Scripting.Dictionary
+    Dim NewList As Object
     Set NewList = CallByName(This.ViewModel, This.SourcePropertyPath, VbGet)
         
     If Not This.ValueConverter Is Nothing Then
