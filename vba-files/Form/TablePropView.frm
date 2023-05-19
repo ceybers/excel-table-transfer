@@ -45,7 +45,14 @@ End Property
 Public Property Set Context(ByVal vNewValue As IAppContext)
     Set This.Context = vNewValue
 End Property
- 
+
+' TODO Hacky shim fix
+Private Sub mpgTabs_Change()
+    If Me.mpgTabs.Value = 1 Then ' second tab has the LV
+        This.ViewModel.TableStarColumnsVM.Repaint
+    End If
+End Sub
+
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
         Cancel = True

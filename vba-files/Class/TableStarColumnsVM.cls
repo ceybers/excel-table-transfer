@@ -139,3 +139,9 @@ Public Sub DoReset()
         TrySetColumnChecked Key, False
     Next Key
 End Sub
+
+' TODO Shim fix for issue where ListView checkboxes disappear after swithching tabs with a MultiPage control.
+' https://www.mrexcel.com/board/threads/checkboxes-on-listview-disappear.716653/
+Public Sub Repaint()
+    OnPropertyChanged "Columns"
+End Sub
