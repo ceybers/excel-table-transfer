@@ -107,6 +107,7 @@ Private Property Get IChangeTracking_IsChanged() As Boolean
 End Property
 
 Private Sub IChangeTracking_AcceptChanges()
+    If This.IsChanged = False Then Exit Sub
     Commit
     This.IsChanged = False
 End Sub

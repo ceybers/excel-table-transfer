@@ -10,4 +10,6 @@ Public Sub DebugPrintXML()
     Dim XSettingsModel As XMLSettingsModel
     Set XSettingsModel = SettingsModel
     XSettingsModel.DebugPrint
+
+    Stop
 End Sub

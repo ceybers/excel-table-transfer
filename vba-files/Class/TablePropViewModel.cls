@@ -129,6 +129,8 @@ Public Sub Load(ByVal ListObject As ListObject)
     TableHighlightingVM.Load ListObject
     TableTimestampVM.Load ListObject, This.TableSettings
     TableProtectionVM.Load ListObject, This.TableSettings
+    
+    Commit ' Since we don't have a method to reset .IsChanged, we'll just resave the XML
 End Sub
 
 Public Sub Commit()
