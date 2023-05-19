@@ -83,3 +83,11 @@ End Function
 Public Function GetByKey(ByVal Key As String) As PickableTable
     Set GetByKey = This.Item.Item(Key)
 End Function
+
+Public Function GetByListObject(ByVal ListObject As ListObject) As PickableTable
+    Dim TempPickableTable As PickableTable
+    Set TempPickableTable = PickableTable.Create(ListObject)
+    
+    If Not This.Item.Exists(TempPickableTable.Key) Then Exit Function
+    Set GetByListObject = This.Item.Item(TempPickableTable.Key)
+End Function

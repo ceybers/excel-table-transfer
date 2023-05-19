@@ -108,11 +108,6 @@ End Function
 Public Sub Load(ByVal ListObject As ListObject)
     Debug.Assert Not Me Is TablePickerViewModel
     
-    Dim Worksheet As Worksheet
-    Dim Workbook As Workbook
-    Set Worksheet = ListObject.Parent
-    Set Workbook = Worksheet.Parent
-    
     Set This.PickableTables = New PickableTables
     This.PickableTables.Load Application
 End Sub
@@ -164,4 +159,12 @@ Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object,
             This.PickableTables.Reload
             OnPropertyChanged "Item"
     End Select
+End Sub
+
+Public Sub SelectByListObject(ByVal ListObject As ListObject)
+    Dim PickableTable As PickableTable
+    Set PickableTable = This.PickableTables.GetByListObject(ListObject)
+    If PickableTable Is Nothing Then Exit Sub
+    PickableTable.Checked = True
+    Set Selected = PickableTable
 End Sub

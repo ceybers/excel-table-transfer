@@ -81,12 +81,23 @@ Public Property Let EnableReadonly(ByVal vNewValue As Boolean)
 End Property
 
 '---
-Public Sub Load(ByVal ListObject As ListObject)
-    'Dim Worksheet As Worksheet
-    'Dim Workbook As Workbook
-    'Set Worksheet = ListObject.Parent
-    'Set Workbook = Worksheet.Parent
+Public Sub Load(ByVal SrcTable As ListObject, ByVal DstTable As ListObject)
+    Set This.SrcTableVM = TablePickerViewModel.Create(SrcTable, "Source Table", Source, This.Notifier)
+    Set This.DstTableVM = TablePickerViewModel.Create(DstTable, "Destination Table", Destination, This.Notifier)
     
-    Set This.SrcTableVM = TablePickerViewModel.Create(ListObject, "Source Table", Source, This.Notifier)
-    Set This.DstTableVM = TablePickerViewModel.Create(ListObject, "Destination Table", Destination, This.Notifier)
+    If Not SrcTable Is Nothing Then
+        This.SrcTableVM.SelectByListObject SrcTable
+    End If
+    
+    If Not DstTable Is Nothing Then
+        This.DstTableVM.SelectByListObject DstTable
+    End If
+    
+    TrySelectOtherIfOnlyOne
+End Sub
+
+'@Description "If there are only two tables to choose from, and one is already selected on load, automatically select the other table."
+Private Sub TrySelectOtherIfOnlyOne()
+Attribute TrySelectOtherIfOnlyOne.VB_Description = "If there are only two tables to choose from, and one is already selected on load, automatically select the other table."
+    ' TODO NYI
 End Sub
