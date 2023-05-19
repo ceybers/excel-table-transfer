@@ -22,7 +22,7 @@ Private Type TState
     
     SelectedColumn As String
     Columns As Scripting.Dictionary
-    KeyColumns As KeyColumns
+    KeyColumns As KeyColumnProps
 End Type
 Private This As TState
 
@@ -50,7 +50,7 @@ End Sub
 Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
     'Set This.Columns = New Scripting.Dictionary
-    Set This.KeyColumns = New KeyColumns
+    Set This.KeyColumns = New KeyColumnProps
 End Sub
 
 '---
