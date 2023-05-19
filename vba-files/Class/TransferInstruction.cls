@@ -103,7 +103,7 @@ Public Property Set mapResult(ByVal rhs As Variant)
 End Property
 
 ' Ctor
-Private Sub Class_Initialize()
+Private Sub class_initialize()
     Set ValuePairs = New Collection
 End Sub
 

@@ -15,7 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
-'@Folder("TransferOptions")
+'@Folder "MVVM.TransferOptions"
 Option Explicit
 Implements IView
 
@@ -63,7 +63,7 @@ Private Sub CheckBox9_Click()
 End Sub
 
 Private Sub SetFlag(ByVal flag As TransferOptionsEnum, ByRef cb As MSForms.CheckBox)
-    this.ViewModel.Flags = modTestTransferOptions.SetFlag(this.ViewModel.Flags, flag, cb.value)
+    this.ViewModel.Flags = TestTransferOptions.SetFlag(this.ViewModel.Flags, flag, cb.value)
 End Sub
 
 ' ---
@@ -111,5 +111,5 @@ Private Sub LoadFlags()
 End Sub
 
 Private Sub LoadFlag(ByVal flag As TransferOptionsEnum, ByVal cb As MSForms.CheckBox)
-    cb.value = modTestTransferOptions.HasFlag(this.ViewModel.Flags, flag)
+    cb.value = TestTransferOptions.HasFlag(this.ViewModel.Flags, flag)
 End Sub

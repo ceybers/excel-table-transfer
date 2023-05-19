@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@IgnoreModule UnassignedVariableUsage
 '@PredeclaredId
-'@Folder("KeyColumn")
+'@Folder "MVVM.Models.KeyColumn"
 Option Explicit
 
 Private Type TClsKeyColumn
@@ -310,6 +310,6 @@ Private Function DisjointRangeToArray(ByVal rng As Range) As Variant
     DisjointRangeToArray = arr
 End Function
 
-Private Sub Class_Initialize()
+Private Sub class_initialize()
     this.Limit = 2147483647
 End Sub

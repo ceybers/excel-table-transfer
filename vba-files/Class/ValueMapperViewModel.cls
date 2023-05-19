@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "ValueMapper"
+'@Folder "MVVM.ValueMapper"
 Option Explicit
 Option Compare Text
 Implements IViewModel
@@ -137,7 +137,7 @@ Public Property Let RHSCriteria(ByVal rhs As String)
     RaiseEvent CollectionChangedRHS
 End Property
 
-Private Sub Class_Initialize()
+Private Sub class_initialize()
     Set this.ValuePairs = New ColumnPairs
     Set this.CheckedValuePairs = New ColumnPairs
 End Sub

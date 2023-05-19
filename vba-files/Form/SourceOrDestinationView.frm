@@ -15,7 +15,8 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
-'@Folder "SourceOrDestination"
+
+'@Folder "MVVM.SourceOrDestination"
 Option Explicit
 Implements IView
 

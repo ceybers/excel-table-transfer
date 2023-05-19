@@ -1,5 +1,5 @@
-Attribute VB_Name = "modTestTransferOptions"
-'@Folder("TransferOptions")
+Attribute VB_Name = "TestTransferOptions"
+'@Folder "MVVM.TransferOptions"
 Option Explicit
 Option Private Module
 

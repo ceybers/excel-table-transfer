@@ -1,5 +1,5 @@
 Attribute VB_Name = "modSelectTable"
-'@Folder("SelectTable")
+'@Folder "MVVM.SelectTable"
 Option Explicit
 
 Public Function TrySelectTable(Optional ByRef frm As IView, Optional ByRef vm As SelectTableViewModel) As Boolean

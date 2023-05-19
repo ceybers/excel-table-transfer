@@ -1,5 +1,5 @@
 Attribute VB_Name = "WorksheetHelpers"
-'@Folder("HelperFunctions")
+'@Folder "Common.Helpers.Worksheet"
 Option Explicit
 
 Public Function TryGetWorksheetByName(ByVal worksheetName As String, ByRef Worksheet As Worksheet) As Boolean

@@ -1,5 +1,5 @@
 Attribute VB_Name = "modHelperFunctions"
-'@Folder "HelperFunctions"
+'@Folder "Common.Helpers"
 Option Explicit
 
 Public Function TableFromString(ByVal s As String) As ListObject

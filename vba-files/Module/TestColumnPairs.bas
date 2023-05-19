@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestColumnPairs"
-'@Folder "ColumnPairs"
+'@Folder "MVVM.Models.ColumnPairs"
 Option Explicit
 Option Private Module
 

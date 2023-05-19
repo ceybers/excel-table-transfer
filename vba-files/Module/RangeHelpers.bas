@@ -1,5 +1,5 @@
 Attribute VB_Name = "RangeHelpers"
-'@Folder("HelperFunctions")
+'@Folder "Common.Helpers.Range"
 Option Explicit
 
 Private Sub TestAppendRange()

@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "ColumnPairs"
+'@Folder "MVVM.Models.ColumnPairs"
 Option Explicit
 
 Private Type TClsColumnPair

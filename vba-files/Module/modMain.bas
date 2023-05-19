@@ -1,4 +1,4 @@
-Attribute VB_Name = "AppContext"
+Attribute VB_Name = "modMain"
 '@IgnoreModule EmptyIfBlock
 '@Folder "TableTransfer"
 Option Explicit

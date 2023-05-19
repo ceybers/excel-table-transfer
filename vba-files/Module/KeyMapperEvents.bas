@@ -1,5 +1,5 @@
 Attribute VB_Name = "KeyMapperEvents"
-'@Folder("KeyMapper")
+'@Folder "MVVM.KeyMapper"
 Option Explicit
 
 Public Const LHS_TABLE As String = "LHSTable"

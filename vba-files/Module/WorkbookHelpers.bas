@@ -1,5 +1,5 @@
 Attribute VB_Name = "WorkbookHelpers"
-'@Folder("HelperFunctions")
+'@Folder "Common.Helpers.Workbook"
 Option Explicit
 
 Public Function GetPathFromRangeText(ByVal payload As String) As String

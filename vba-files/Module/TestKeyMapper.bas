@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestKeyMapper"
-'@Folder("KeyMapper")
+'@Folder "MVVM.KeyMapper"
 Option Explicit
 Option Private Module
 

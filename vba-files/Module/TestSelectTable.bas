@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestSelectTable"
-'@Folder("SelectTable")
+'@Folder "MVVM.SelectTable"
 Option Explicit
 Option Private Module
 

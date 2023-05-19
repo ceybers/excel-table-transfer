@@ -1,5 +1,5 @@
 Attribute VB_Name = "modStandardImageList"
-'@Folder "HelperFunctions"
+'@Folder "MVVM.Common"
 Option Explicit
 
 Public Function GetMSOImageList(Optional ByVal iconSize As Integer = 16) As ImageList

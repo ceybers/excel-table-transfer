@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("KeyMapper")
+'@Folder "MVVM.KeyMapper"
 Option Explicit
 Implements IViewModel
 
@@ -204,7 +204,7 @@ Private Sub UpdateColumns(ByVal lo As ListObject, ByVal coll As Collection)
     Next lc
 End Sub
 
-Private Sub Class_Initialize()
+Private Sub class_initialize()
     Set this.LHSColumns = New Collection
     Set this.RHSColumns = New Collection
 End Sub

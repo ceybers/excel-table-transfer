@@ -14,7 +14,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
-'@Folder("ColumnQuality")
+'@Folder "MVVM.ColumnQuality"
 Option Explicit
 Implements IView
  

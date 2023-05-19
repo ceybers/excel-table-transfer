@@ -1,6 +1,6 @@
 Attribute VB_Name = "TestValueMapper"
 '@IgnoreModule EmptyIfBlock
-'@Folder "ValueMapper"
+'@Folder "MVVM.ValueMapper"
 Option Explicit
 Option Private Module
 

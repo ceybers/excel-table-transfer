@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Interface
-'@Folder("Abstractions")
+'@Folder "PersistentSettings.Abstract"
 Option Explicit
 
 Public Sub Load(Optional ByVal Workbook As Object)

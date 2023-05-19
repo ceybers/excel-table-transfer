@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("SelectTable")
+'@Folder "MVVM.SelectTable"
 Option Explicit
 Option Compare Text
 Implements IViewModel
@@ -143,7 +143,7 @@ Private Sub TrySelectOther()
     Next lo
 End Sub
 
-Private Sub Class_Initialize()
+Private Sub class_initialize()
     this.AutoSelected = False
     Load
 End Sub

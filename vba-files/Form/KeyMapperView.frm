@@ -15,7 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
-'@Folder "KeyMapper"
+'@Folder "MVVM.KeyMapper"
 Option Explicit
 Implements IView
 

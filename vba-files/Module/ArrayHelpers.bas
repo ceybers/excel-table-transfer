@@ -1,5 +1,5 @@
 Attribute VB_Name = "ArrayHelpers"
-'@Folder "HelperFunctions"
+'@Folder "Common.Helpers.Array"
 Option Explicit
 
 Public Sub ArrayToFilteredRange(ByVal rng As Range, ByVal arr As Variant)

@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestSourceOrDestination"
-'@Folder "SourceOrDestination"
+'@Folder "MVVM.SourceOrDestination"
 Option Explicit
 Option Private Module
 

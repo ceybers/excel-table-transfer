@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestKeyColumnComparer"
-'@Folder("KeyColumn")
+'@Folder "MVVM.Models.KeyColumn"
 Option Explicit
 Option Private Module
 

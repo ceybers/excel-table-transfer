@@ -1,5 +1,5 @@
 Attribute VB_Name = "KeyColumnToListView"
-'@Folder("KeyColumn")
+'@Folder "MVVM.Models.KeyColumn"
 Option Explicit
 
 

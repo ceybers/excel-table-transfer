@@ -1,5 +1,5 @@
 Attribute VB_Name = "modTableToArray"
-'@Folder "HelperFunctions"
+'@Folder "Common.Helpers"
 Option Explicit
 
 Public Function GetVisibleTableAsArray(ByVal lo As ListObject) As Variant
