@@ -184,12 +184,12 @@ Private Sub BindCommands()
 End Sub
 
 Private Sub InitializeLabelPictures()
-    Set Me.lblPicDetails.Picture = Application.CommandBars.GetImageMso("TablePropertiesDialog", 32, 32)
-    Set Me.lblPicDirection.Picture = Application.CommandBars.GetImageMso("RelationshipsEditRelationships", 32, 32)
-    Set Me.lblPicHighlighting.Picture = Application.CommandBars.GetImageMso("HighlightFilters", 32, 32)
-    Set Me.lblPicKey.Picture = Application.CommandBars.GetImageMso("AdpDiagramKeys", 32, 32)
-    Set Me.lblPicLocation.Picture = Application.CommandBars.GetImageMso("FileFind", 32, 32)
-    Set Me.lblPicProfile.Picture = Application.CommandBars.GetImageMso("EnterpriseProjectProfiles", 32, 32)
-    Set Me.lblPicProtection.Picture = Application.CommandBars.GetImageMso("SheetProtect", 32, 32)
-    Set Me.lblPicTimestamp.Picture = Application.CommandBars.GetImageMso("ViewAllProposals", 32, 32)
+    ApplyImageMSOtoLabel Me.lblPicDetails, "TablePropertiesDialog"
+    ApplyImageMSOtoLabel Me.lblPicDirection, "RelationshipsEditRelationships"
+    ApplyImageMSOtoLabel Me.lblPicHighlighting, "HighlightFilters"
+    ApplyImageMSOtoLabel Me.lblPicKey, "AdpDiagramKeys"
+    ApplyImageMSOtoLabel Me.lblPicLocation, "FileFind"
+    ApplyImageMSOtoLabel Me.lblPicProfile, "EnterpriseProjectProfiles"
+    ApplyImageMSOtoLabel Me.lblPicProtection, "SheetProtect"
+    ApplyImageMSOtoLabel Me.lblPicTimestamp, "ViewAllProposals"
 End Sub

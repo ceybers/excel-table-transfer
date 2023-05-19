@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} TablePickerView 
-   Caption         =   "TablePickerView"
-   ClientHeight    =   6375
+   Caption         =   "Select Source and Destination Tables"
+   ClientHeight    =   8085
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   5430
+   ClientWidth     =   10710
    OleObjectBlob   =   "TablePickerView.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -98,11 +98,14 @@ End Function
 Private Sub InitializeControls()
     '@Ignore ArgumentWithIncompatibleObjectType
      PickableTablesToListViewConv.InitializeListView Me.lvSrcTables
+    '@Ignore ArgumentWithIncompatibleObjectType
+     PickableTablesToListViewConv.InitializeListView Me.lvDstTables
 End Sub
 
 Private Sub BindControls()
     With Context.BindingManager
         .BindPropertyPath ViewModel, "SourceTables", Me.lvSrcTables, "ListItems", TwoWayBinding, PickableTablesToListViewConv
+        .BindPropertyPath ViewModel, "DestinationTables", Me.lvDstTables, "ListItems", TwoWayBinding, PickableTablesToListViewConv
         '.BindPropertyPath ViewModel, "TableDetailsVM.TableName", Me.txtTableName, "Value", OneTimeBinding
         '.BindPropertyPath ViewModel, "TableDetailsVM.WorkSheetName", Me.txtWorkSheetName, "Value", OneTimeBinding
         '.BindPropertyPath ViewModel, "TableDetailsVM.WorkBookName", Me.txtWorkBookName, "Value", OneTimeBinding
@@ -113,14 +116,14 @@ Private Sub BindControls()
 End Sub
 
 Private Sub BindCommands()
-    'Dim OKView As ICommand
-    'Set OKView = OKViewCommand.Create(Context, Me, ViewModel)
+    Dim OKView As ICommand
+    Set OKView = OKViewCommand.Create(Context, Me, ViewModel)
     
     Dim CancelView As ICommand
     Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
     
     With This.Context.CommandManager
-        '.BindCommand Context, ViewModel, OKView, Me.cmdOK
+        .BindCommand Context, ViewModel, OKView, Me.cmdOK
         .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
         '.BindCommand Context, ViewModel, DirectionSource, Me.cmbDirectionSource
         '.BindCommand Context, ViewModel, DirectionDestination, Me.cmbDirectionDestination
@@ -128,7 +131,6 @@ Private Sub BindCommands()
 End Sub
 
 Private Sub InitializeLabelPictures()
-    Set Me.lblPicHeader.Picture = Application.CommandBars.GetImageMso("TablePropertiesDialog", 32, 32)
+    ApplyImageMSOtoLabel Me.lblPicHeader, "TablePropertiesDialog"
+    ApplyImageMSOtoLabel Me.lblPicOptions, "TablePropertiesDialog"
 End Sub
-
-

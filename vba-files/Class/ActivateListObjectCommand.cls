@@ -32,7 +32,7 @@ End Function
 Public Sub Execute()
     Workbook.Activate
     Worksheet.Activate
-    This.ListObject.DataBodyRange.Cells(1, 1).Select
+    This.ListObject.DataBodyRange.Cells.Item(1, 1).Select
 End Sub
 
 Public Sub Create(ByVal ListObject As ListObject)

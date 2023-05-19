@@ -17,10 +17,17 @@ Private Type TState
 
     SourceTables As PickableTables
     DestinationTables As PickableTables
+    
+    Source As ListObject
+    Destination As ListObject
 End Type
 Private This As TState
 
 Private Function IViewModel_IsValid() As Boolean
+    If This.Source Is Nothing Then Exit Function
+    If This.Destination Is Nothing Then Exit Function
+    If This.Source Is This.Destination Then Exit Function
+    
     IViewModel_IsValid = True
 End Function
 
@@ -56,6 +63,30 @@ Public Property Get DestinationTables() As PickableTables
     Set DestinationTables = This.DestinationTables
 End Property
 
+Public Property Get Source() As ListObject
+    Set Source = This.Source
+End Property
+
+Public Property Set Source(ByVal vNewValue As ListObject)
+    If Not This.Source Is Nothing Then
+        If This.Source Is vNewValue Then Exit Property
+    End If
+    Set This.Source = vNewValue
+    OnPropertyChanged "Source"
+End Property
+
+Public Property Get Destination() As ListObject
+    Set Destination = This.Destination
+End Property
+
+Public Property Set Destination(ByVal vNewValue As ListObject)
+    If Not This.Destination Is Nothing Then
+        If This.Destination Is vNewValue Then Exit Property
+    End If
+    Set This.Destination = vNewValue
+    OnPropertyChanged "Destination"
+End Property
+
 '---
 Public Sub Load(ByVal ListObject As ListObject)
     Dim Worksheet As Worksheet
@@ -77,6 +108,14 @@ Public Sub TrySetColumnChecked(ByVal PropertyPath As String, ByVal ItemKey As St
     
     If PickableTable.Checked = vNewValue Then Exit Sub
     PickableTable.Checked = vNewValue
+    
+    If vNewValue Then
+        If PropertyPath = "SourceTables" Then
+            Set Source = PickableTable.ListObject
+        ElseIf PropertyPath = "DestinationTables" Then
+            Set Destination = PickableTable.ListObject
+        End If
+    End If
     'OnPropertyChanged "zzzTablePickerViewModel.TrySetColumnChecked"
 End Sub
 

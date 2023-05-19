@@ -127,8 +127,8 @@ Private Sub BindCommands()
 End Sub
 
 Private Sub InitializeLabelPictures()
-    Set Me.lblPicDetails.Picture = Application.CommandBars.GetImageMso("TablePropertiesDialog", 32, 32)
-    Set Me.cmbDirectionSource.Picture = Application.CommandBars.GetImageMso("FileOpen", 32, 32)
-    Set Me.cmbDirectionDestination.Picture = Application.CommandBars.GetImageMso("FileSave", 32, 32)
+    ApplyImageMSOtoLabel Me.lblPicDetails, "TablePropertiesDialog"
+    ApplyImageMSOtoLabel Me.cmbDirectionSource, "FileOpen"
+    ApplyImageMSOtoLabel Me.cmbDirectionDestination, "FileSave"
 End Sub
 

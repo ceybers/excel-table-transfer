@@ -40,21 +40,25 @@ End Property
 
 '@Description "Name of the underlying ListObject."
 Public Property Get Name() As String
+Attribute Name.VB_Description = "Name of the underlying ListObject."
     Name = This.Name
 End Property
 
 '@Description "Size of the table as a string formatted as R1C1"
 Public Property Get Size() As String
+Attribute Size.VB_Description = "Size of the table as a string formatted as R1C1"
     Size = This.Size
 End Property
 
 '@Description "Name of the underlying Worksheet."
 Public Property Get WorksheetName() As String
+Attribute WorksheetName.VB_Description = "Name of the underlying Worksheet."
     WorksheetName = This.ListObject.Parent.Name
 End Property
 
 '@Description "Name of the underlying Workbook."
 Public Property Get WorkbookName() As String
+Attribute WorkbookName.VB_Description = "Name of the underlying Workbook."
     WorkbookName = This.ListObject.Parent.Parent.Name
 End Property
 
@@ -91,7 +95,7 @@ Public Sub Load(ByVal ListObject As ListObject)
 End Sub
 
 Public Function Create(ByVal ListObject As ListObject) As PickableTable
-    Dim Result As New PickableTable
+    Dim Result As PickableTable
     Set Result = New PickableTable
     With Result
         .Load ListObject

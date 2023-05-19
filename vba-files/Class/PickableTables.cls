@@ -45,6 +45,7 @@ End Sub
 Private Function IsFiltered(ByVal PickableTable As PickableTable) As Boolean
     ' check if we are hiding protected files and this file is protected
     ' etc etc
+    IsFiltered = False
 End Function
 
 Public Function GetByKey(ByVal Key As String) As PickableTable

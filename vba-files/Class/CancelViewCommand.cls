@@ -12,7 +12,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements ICommand
 
-Private mView As ICancellable
+Private mView As IView
 Private mAppContext As IAppContext
 Private mViewModel As IViewModel
 
@@ -62,5 +62,7 @@ End Function
 
 Private Sub ICommand_Execute()
     'Debug.Print "CancelViewCommand executing"
-    mView.OnCancel
+    Dim Cancellable As ICancellable
+    Set Cancellable = mView
+    Cancellable.OnCancel
 End Sub

@@ -58,13 +58,21 @@ Private Sub LoadListItem(ByVal PickableTable As PickableTable, ByVal ListView As
         Set ListItem = ListView.ListItems.Add(Key:=PickableTable.Key, Text:=PickableTable.Name)
     End If
     
+    Dim ForeColor As Long
+    ForeColor = IIf(PickableTable.Enabled, vbBlack, vbGrayText)
+    
     ListItem.ListSubItems.Add Text:=PickableTable.WorksheetName
     ListItem.ListSubItems.Add Text:=PickableTable.WorkbookName
     ListItem.ListSubItems.Add Text:="Local"
-    ListItem.ListSubItems.Add Text:="No"
+    ListItem.ListSubItems.Add Text:="Yes"
     ListItem.ListSubItems.Add Text:="No"
     
-    ListItem.ForeColor = IIf(PickableTable.Enabled, vbBlack, vbGrayText)
+    ListItem.ForeColor = ForeColor
+    Dim ListSubItem As ListSubItem
+    For Each ListSubItem In ListItem.ListSubItems
+        ListSubItem.ForeColor = ForeColor
+    Next ListSubItem
+    
     ListItem.Bold = PickableTable.Checked
     ListItem.Checked = PickableTable.Checked
     ListItem.Selected = PickableTable.Selected
@@ -90,6 +98,7 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         .View = lvwReport
         .Gridlines = True
         .FullRowSelect = True
+        .HideSelection = False
         .LabelEdit = lvwManual
     End With
 End Sub
