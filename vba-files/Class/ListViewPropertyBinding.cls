@@ -13,7 +13,7 @@ Option Explicit
 Implements IPropertyBinding
 Implements IHandlePropertyChanged
 
-Private Const DO_DEBUG As Boolean = False
+Private Const DO_DEBUG As Boolean = True
 
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents mListView As MSComctlLib.ListView

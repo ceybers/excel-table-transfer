@@ -46,6 +46,7 @@ Private Sub InitializeBindingStrategies()
         .Add Item:=New ListViewBindingStrategy, Key:="MSComctlLib.ListView"
         .Add Item:=New TreeViewBindingStrategy, Key:="MSComctlLib.TreeView"
         .Add Item:=New CommandButtonBindingStrategy, Key:="MSForms.CommandButton"
+        .Add Item:=New FrameBindingStrategy, Key:="MSForms.Frame"
     End With
 End Sub
 
@@ -74,13 +75,15 @@ Public Sub BindPropertyPath(ByVal Source As Object, ByVal SourcePropertyPath As 
     End If
     
     If TypeOf ThisBindingPath.Object Is INotifyPropertyChanged Then
-        Dim SourceTypeName As String
-        SourceTypeName = TypeName(ThisBindingPath.Object)
-        If Not This.HandledViewModels.Exists(SourceTypeName) Then
+        'Dim SourceTypeName As String
+        'SourceTypeName = TypeName(ThisBindingPath.Object)
+        Dim SourceInstance As Object
+        Set SourceInstance = ThisBindingPath.Object
+        If Not This.HandledViewModels.Exists(SourceInstance) Then
             Dim Notifier As INotifyPropertyChanged
             Set Notifier = ThisBindingPath.Object
             Notifier.RegisterHandler Me
-            This.HandledViewModels.Add Key:=SourceTypeName, Item:=SourceTypeName
+            This.HandledViewModels.Add Key:=SourceInstance, Item:=SourceInstance
         End If
     End If
     

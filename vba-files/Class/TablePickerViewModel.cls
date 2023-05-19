@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "MVVM.TablePicker.ViewModel"
+'@Folder "MVVM.TableMapper.ViewModel"
 Option Explicit
 Implements IViewModel
 Implements INotifyPropertyChanged
@@ -15,19 +15,13 @@ Implements INotifyPropertyChanged
 Private Type TState
     Notifier As INotifyPropertyChanged
 
-    SourceTables As PickableTables
-    DestinationTables As PickableTables
-    
-    Source As ListObject
-    Destination As ListObject
+    Caption As String
+    Selected As PickableTable
+    PickableTables As PickableTables
 End Type
 Private This As TState
 
 Private Function IViewModel_IsValid() As Boolean
-    If This.Source Is Nothing Then Exit Function
-    If This.Destination Is Nothing Then Exit Function
-    If This.Source Is This.Destination Then Exit Function
-    
     IViewModel_IsValid = True
 End Function
 
@@ -49,42 +43,31 @@ End Sub
 
 Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
-
-    Set This.SourceTables = New PickableTables
-    Set This.DestinationTables = New PickableTables
 End Sub
-
 '---
-Public Property Get SourceTables() As PickableTables
-    Set SourceTables = This.SourceTables
+
+Public Property Get Selected() As PickableTable
+    Set Selected = This.Selected
 End Property
 
-Public Property Get DestinationTables() As PickableTables
-    Set DestinationTables = This.DestinationTables
-End Property
-
-Public Property Get Source() As ListObject
-    Set Source = This.Source
-End Property
-
-Public Property Set Source(ByVal vNewValue As ListObject)
-    If Not This.Source Is Nothing Then
-        If This.Source Is vNewValue Then Exit Property
+Public Property Set Selected(ByVal vNewValue As PickableTable)
+    If Not This.Selected Is Nothing Then
+        If This.Selected Is vNewValue Then Exit Property
     End If
-    Set This.Source = vNewValue
-    OnPropertyChanged "Source"
+    Set This.Selected = vNewValue
+    OnPropertyChanged "Selected"
 End Property
 
-Public Property Get Destination() As ListObject
-    Set Destination = This.Destination
+Public Property Get Item() As Scripting.Dictionary
+    Set Item = This.PickableTables.Item
 End Property
 
-Public Property Set Destination(ByVal vNewValue As ListObject)
-    If Not This.Destination Is Nothing Then
-        If This.Destination Is vNewValue Then Exit Property
-    End If
-    Set This.Destination = vNewValue
-    OnPropertyChanged "Destination"
+Public Property Get Caption() As String
+    Caption = This.Caption
+End Property
+
+Public Property Let Caption(ByVal vNewValue As String)
+    This.Caption = vNewValue
 End Property
 
 '---
@@ -94,39 +77,27 @@ Public Sub Load(ByVal ListObject As ListObject)
     Set Worksheet = ListObject.Parent
     Set Workbook = Worksheet.Parent
     
-    This.SourceTables.Load Application
-    This.DestinationTables.Load Application
-    'Stop
+    Set This.PickableTables = New PickableTables
+    This.PickableTables.Load Application
 End Sub
 
+'---
 Public Sub TrySetColumnChecked(ByVal PropertyPath As String, ByVal ItemKey As String, ByVal vNewValue As Boolean)
-    Dim PickableTables As PickableTables
-    Set PickableTables = CallByName(Me, PropertyPath, VbGet)
-    
     Dim PickableTable As PickableTable
-    Set PickableTable = PickableTables.GetByKey(ItemKey)
+    Set PickableTable = This.PickableTables.Item(ItemKey)
     
     If PickableTable.Checked = vNewValue Then Exit Sub
     PickableTable.Checked = vNewValue
     
     If vNewValue Then
-        If PropertyPath = "SourceTables" Then
-            Set Source = PickableTable.ListObject
-        ElseIf PropertyPath = "DestinationTables" Then
-            Set Destination = PickableTable.ListObject
-        End If
+        Set Selected = PickableTable
     End If
-    'OnPropertyChanged "zzzTablePickerViewModel.TrySetColumnChecked"
 End Sub
 
 Public Sub TrySetColumnSelected(ByVal PropertyPath As String, ByVal ItemKey As String, ByVal vNewValue As Boolean)
-    Dim PickableTables As PickableTables
-    Set PickableTables = CallByName(Me, PropertyPath, VbGet)
-    
     Dim PickableTable As PickableTable
-    Set PickableTable = PickableTables.GetByKey(ItemKey)
+    Set PickableTable = This.PickableTables.Item(ItemKey)
     
     If PickableTable.Selected = vNewValue Then Exit Sub
     PickableTable.Selected = vNewValue
-    'OnPropertyChanged "zzzTablePickerViewModel.TrySetColumnSelected"
 End Sub

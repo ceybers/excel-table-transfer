@@ -23,7 +23,6 @@ End Sub
 
 Private Sub INotifyPropertyChanged_OnPropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
     Dim vTest As Boolean
-    vTest = (PropertyName = "SelectedCityKey")
     
     Dim Handler As IHandlePropertyChanged
     For Each Handler In This.Handlers

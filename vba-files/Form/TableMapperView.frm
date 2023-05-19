@@ -1,19 +1,19 @@
 VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} TablePickerView 
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} TableMapperView 
    Caption         =   "Select Source and Destination Tables"
    ClientHeight    =   8085
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   10710
-   OleObjectBlob   =   "TablePickerView.frx":0000
+   OleObjectBlob   =   "TableMapperView.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
-Attribute VB_Name = "TablePickerView"
+Attribute VB_Name = "TableMapperView"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder "MVVM.TablePicker.View"
+'@Folder "MVVM.TableMapper.View"
 Option Explicit
 Implements IView
 Implements ICancellable
@@ -21,7 +21,7 @@ Implements ICancellable
 Private Type TView
     Context As IAppContext
     IsCancelled As Boolean
-    ViewModel As TablePickerViewModel
+    ViewModel As TableMapperViewModel
 End Type
 Private This As TView
 
@@ -29,11 +29,11 @@ Private Property Get IView_ViewModel() As Object
     Set IView_ViewModel = This.ViewModel
 End Property
 
-Public Property Get ViewModel() As TablePickerViewModel
+Public Property Get ViewModel() As TableMapperViewModel
     Set ViewModel = This.ViewModel
 End Property
 
-Public Property Set ViewModel(ByVal vNewValue As TablePickerViewModel)
+Public Property Set ViewModel(ByVal vNewValue As TableMapperViewModel)
     Set This.ViewModel = vNewValue
 End Property
 
@@ -73,9 +73,9 @@ Private Sub IView_Hide()
     Me.Hide
 End Sub
 
-Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As TablePickerViewModel) As IView
-    Dim Result As TablePickerView
-    Set Result = New TablePickerView
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As TableMapperViewModel) As IView
+    Dim Result As TableMapperView
+    Set Result = New TableMapperView
     
     Set Result.Context = Context
     Set Result.ViewModel = ViewModel
@@ -104,14 +104,13 @@ End Sub
 
 Private Sub BindControls()
     With Context.BindingManager
-        .BindPropertyPath ViewModel, "SourceTables", Me.lvSrcTables, "ListItems", TwoWayBinding, PickableTablesToListViewConv
-        .BindPropertyPath ViewModel, "DestinationTables", Me.lvDstTables, "ListItems", TwoWayBinding, PickableTablesToListViewConv
-        '.BindPropertyPath ViewModel, "TableDetailsVM.TableName", Me.txtTableName, "Value", OneTimeBinding
-        '.BindPropertyPath ViewModel, "TableDetailsVM.WorkSheetName", Me.txtWorkSheetName, "Value", OneTimeBinding
-        '.BindPropertyPath ViewModel, "TableDetailsVM.WorkBookName", Me.txtWorkBookName, "Value", OneTimeBinding
-    
-        '.BindPropertyPath ViewModel, "TableLocationVM.Locations", Me.cboStorageLocation, "List", OneTimeBinding
-        '.BindPropertyPath ViewModel, "TableLocationVM.SelectedLocation", Me.cboStorageLocation, "Value", OneTimeBinding
+        .BindPropertyPath ViewModel, "DummyBoolean", Me.cmdOK, "Enabled", OneTimeBinding
+        
+        '.BindPropertyPath ViewModel, "SrcTableVM.Caption", Me.fraSrc, "Caption", OneTimeBinding
+        .BindPropertyPath ViewModel, "SrcTableVM.Item", Me.lvSrcTables, "ListItems", TwoWayBinding, PickableTablesToListViewConv
+        
+        '.BindPropertyPath ViewModel, "DstTableVM.Caption", Me.fraDst, "Caption", OneTimeBinding
+        .BindPropertyPath ViewModel, "DstTableVM.Item", Me.lvDstTables, "ListItems", TwoWayBinding, PickableTablesToListViewConv
     End With
 End Sub
 

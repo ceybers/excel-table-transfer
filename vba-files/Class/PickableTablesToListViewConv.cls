@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "MVVM.TablePicker.Converters"
+'@Folder "MVVM.TableMapper.Converters"
 Option Explicit
 Implements IValueConverter
 
@@ -22,8 +22,6 @@ Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBindin
     
     Dim VM As TablePickerViewModel
     Set VM = PropertyBinding.Source
-    Dim PickableTables As PickableTables
-    Set PickableTables = CallByName(VM, PropertyBinding.SourcePropertyPath, VbGet)
     
     Dim ListItem As ListItem
     For Each ListItem In ListView.ListItems
@@ -36,11 +34,13 @@ Private Sub ConvertSelectedItem(ByVal SelectedItemKey As String, ByVal ListView 
     Stop
 End Sub
 
-Private Sub ConvertListItems(ByVal PickableTables As PickableTables, ByVal ListView As ListView)
-    Dim PickableTable As PickableTable
-    For Each PickableTable In PickableTables.Item
+Private Sub ConvertListItems(ByVal Dictionary As Scripting.Dictionary, ByVal ListView As ListView)
+    Dim Key As Variant
+    For Each Key In Dictionary.Keys
+        Dim PickableTable As PickableTable
+        Set PickableTable = Dictionary.Item(Key)
         LoadListItem PickableTable, ListView
-    Next PickableTable
+    Next Key
 End Sub
 
 Private Sub LoadListItem(ByVal PickableTable As PickableTable, ByVal ListView As ListView)
@@ -102,4 +102,3 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         .LabelEdit = lvwManual
     End With
 End Sub
-

@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "MVVM.TablePicker.Model"
+'@Folder "MVVM.TableMapper.Model"
 Option Explicit
 
 Private Type TPickableTable

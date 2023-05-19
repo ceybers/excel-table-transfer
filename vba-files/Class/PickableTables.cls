@@ -8,27 +8,29 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder("MVVM.TablePicker.Model")
+'@Folder "MVVM.TableMapper.Model"
 Option Explicit
 
 Private Type TPickableTables
-    Item As Collection ' of type PickableTable
+    Item As Scripting.Dictionary ' of type PickableTable
     ShowSmallTables As Boolean
     ShowProtectedWorksheets As Boolean
 End Type
 Private This As TPickableTables
 
 Private Sub Class_Initialize()
-    Set This.Item = New Collection
+    Set This.Item = New Scripting.Dictionary
 End Sub
 
 '@Enumerator
-Public Property Get Item() As Collection
+Public Property Get Item() As Scripting.Dictionary
 Attribute Item.VB_UserMemId = -4
     Set Item = This.Item
 End Property
 
 Public Sub Load(ByVal Application As Application)
+    Debug.Assert Not Me Is PickableTables
+    
     Dim Workbook As Workbook
     Dim Worksheet As Worksheet
     Dim ListObject As ListObject
@@ -36,7 +38,9 @@ Public Sub Load(ByVal Application As Application)
     For Each Workbook In Application.Workbooks
         For Each Worksheet In Workbook.Worksheets
             For Each ListObject In Worksheet.ListObjects
-                This.Item.Add PickableTable.Create(ListObject)
+                Dim ThisPickableTable As PickableTable
+                Set ThisPickableTable = PickableTable.Create(ListObject)
+                This.Item.Add Key:=ThisPickableTable.Key, Item:=ThisPickableTable
             Next ListObject
         Next Worksheet
     Next Workbook
@@ -49,11 +53,5 @@ Private Function IsFiltered(ByVal PickableTable As PickableTable) As Boolean
 End Function
 
 Public Function GetByKey(ByVal Key As String) As PickableTable
-    Dim PickableTable As PickableTable
-    For Each PickableTable In This.Item
-        If PickableTable.Key = Key Then
-            Set GetByKey = PickableTable
-            Exit Function
-        End If
-    Next PickableTable
+    Set GetByKey = This.Item.Item(Key)
 End Function
