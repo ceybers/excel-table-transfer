@@ -97,7 +97,7 @@ Public Sub Commit()
 End Sub
 
 Private Property Get IChangeTracking_IsChanged() As Boolean
-   IChangeTracking_IsChanged = IsChanged
+   IChangeTracking_IsChanged = This.IsChanged
 End Property
 
 Private Sub IChangeTracking_AcceptChanges()

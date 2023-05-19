@@ -16,16 +16,24 @@ Private Const SETTINGS_NODE As String = "TableTransferTool"
 
 Private Type TState
     Notifier As INotifyPropertyChanged
-    
-    Foobar As String
-    
     TableSettings As ISettings
     
+    ' General tab
     TableDetailsVM As TableDetailsVM
     TableLocationVM As TableLocationVM
     TableDirectionVM As TableDirectionVM
+
+    ' Columns tab
     TablePreferKeyVM As TablePreferKeyVM
     TableStarColumnsVM As TableStarColumnsVM
+    
+    ' History tab
+    TableProfileVM As TableProfileVM
+
+    ' Tracking Tab
+    TableHighlightingVM As TableHighlightingVM
+    TableTimestampVM As TableTimestampVM
+    TableProtectionVM As TableProtectionVM
 End Type
 Private This As TState
 
@@ -51,11 +59,16 @@ End Sub
 
 Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
+
     Set This.TableDetailsVM = New TableDetailsVM
     Set This.TableLocationVM = New TableLocationVM
     Set This.TableDirectionVM = New TableDirectionVM
     Set This.TablePreferKeyVM = New TablePreferKeyVM
     Set This.TableStarColumnsVM = New TableStarColumnsVM
+    Set This.TableProfileVM = New TableProfileVM
+    Set This.TableHighlightingVM = New TableHighlightingVM
+    Set This.TableTimestampVM = New TableTimestampVM
+    Set This.TableProtectionVM = New TableProtectionVM
 End Sub
 
 '---
@@ -79,15 +92,23 @@ Public Property Get TableStarColumnsVM() As TableStarColumnsVM
     Set TableStarColumnsVM = This.TableStarColumnsVM
 End Property
 
+Public Property Get TableProfileVM() As TableProfileVM
+    Set TableProfileVM = This.TableProfileVM
+End Property
+
+Public Property Get TableHighlightingVM() As TableHighlightingVM
+    Set TableHighlightingVM = This.TableHighlightingVM
+End Property
+
+Public Property Get TableTimestampVM() As TableTimestampVM
+    Set TableTimestampVM = This.TableTimestampVM
+End Property
+
+Public Property Get TableProtectionVM() As TableProtectionVM
+    Set TableProtectionVM = This.TableProtectionVM
+End Property
+
 '---
-Public Property Get Foobar() As String
-    Foobar = This.Foobar
-End Property
-
-Public Property Let Foobar(ByVal vNewValue As String)
-    This.Foobar = vNewValue
-End Property
-
 Public Sub Load(ByVal ListObject As ListObject)
     Dim Worksheet As Worksheet
     Dim Workbook As Workbook
@@ -103,12 +124,20 @@ Public Sub Load(ByVal ListObject As ListObject)
     This.TableDirectionVM.Load ListObject, This.TableSettings
     This.TablePreferKeyVM.Load ListObject, This.TableSettings
     This.TableStarColumnsVM.Load ListObject, This.TableSettings
+
+    TableProfileVM.Load ListObject, This.TableSettings
+    TableHighlightingVM.Load ListObject
+    TableTimestampVM.Load ListObject, This.TableSettings
+    TableProtectionVM.Load ListObject, This.TableSettings
 End Sub
 
 Public Sub Commit()
     CommitChanges This.TableDirectionVM
     CommitChanges This.TablePreferKeyVM
     CommitChanges This.TableStarColumnsVM
+
+    CommitChanges This.TableTimestampVM
+    CommitChanges This.TableProtectionVM
 End Sub
 
 Private Sub CommitChanges(ByVal ChangeTracker As IChangeTracking)

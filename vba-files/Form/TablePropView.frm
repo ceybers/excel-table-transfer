@@ -13,6 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '@Folder "MVVM.TableProps.View"
 Option Explicit
 Implements IView
@@ -126,17 +127,16 @@ Private Sub BindControls()
         .BindPropertyPath ViewModel, "TablePreferKeyVM.SelectedColumn", Me.cboPreferKeyColumn, "Value", TwoWayBinding
         
         .BindPropertyPath ViewModel, "TableStarColumnsVM.Columns", Me.lvStarredColumns, "ListItems", TwoWayBinding, ColumnPropToListViewConverter
-        '.BindPropertyPath ViewModel, "TableStarColumnsVM.SelectedColumn", Me.lvStarredColumns, "SelectedItem", TwoWayBinding, ColumnPropToListViewConverter
-        '.BindPropertyPath ViewModel, "Countries", Me.ListView1, "ListItems", OneWayToSource, CountryToListViewConverter
-        '.BindPropertyPath ViewModel, "Country", Me.ListView1, "SelectedItem"
-        '.BindPropertyPath ViewModel, "Country", Me.TextBox1, "Value"
         
-        '.BindPropertyPath ViewModel, "CityViewModel.Cities", Me.ListView2, "ListItems", OneWayToSource, CitytoListViewConverter
-        '.BindPropertyPath ViewModel, "CityViewModel.SelectedCityKey", Me.ListView2, "SelectedItem", TwoWayBinding, CitytoListViewConverter
-        '.BindPropertyPath ViewModel, "CityViewModel.Cities", Me.ComboBox1, "List", OneWayToSource, CityToComboBoxConverter
-        '.BindPropertyPath ViewModel, "CityViewModel.SelectedCityKey", Me.ComboBox1, "Value", TwoWayBinding, CityToComboBoxConverter
+        '.BindPropertyPath ViewModel, "TableTimestampVM.IsEnabled", Me.chk..., "Value", TwoWayBinding
+        '.BindPropertyPath ViewModel, "TableTimestampVM.Address", Me.txt..., "Value", TwoWayBinding
+
+        '.BindPropertyPath ViewModel, "TableProtectionVM.IsNoChange", Me.opt..., "Value", OneTimeBinding
+        '.BindPropertyPath ViewModel, "TableProtectionVM.IsTemporary", Me.opt..., "Value", OneTimeBinding
+        '.BindPropertyPath ViewModel, "TableProtectionVM.IsPermanent", Me.opt..., "Value", OneTimeBinding
         
-        '.BindPropertyPath ViewModel, "CityViewModel.SelectedCityKey", Me.Label2, "Caption"
+        '.BindPropertyPath ViewModel, "TableProtectionVM.IsTableProtected", Me.chk..., "Value", TwoWayBinding
+        '.BindPropertyPath ViewModel, "TableProtectionVM.IsPasswordProtected", Me.chk..., "Value", OneWayBinding
     End With
 End Sub
 
@@ -147,6 +147,7 @@ Private Sub BindCommands()
     Dim CancelView As ICommand
     Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
     
+    ' TODO Move this init to ViewModel.TableStarColumnsVM
     Dim ResetStarColumns As ICommand
     Set ResetStarColumns = ResetStarColumnsCommand.Create(Context, Me, ViewModel.TableStarColumnsVM)
     
@@ -154,6 +155,9 @@ Private Sub BindCommands()
         .BindCommand Context, ViewModel, OKView, Me.cmdOK
         .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
         .BindCommand Context, ViewModel.TableStarColumnsVM, ResetStarColumns, Me.cmdResetValueColumns
+        '.BindCommand Context, ViewModel.TableProfileVM, ViewModel.TableProfileVM.ActivateProfileCommand, Me.cmd...
+        '.BindCommand Context, ViewModel.TableProfileVM, ViewModel.TableProfileVM.RemoveProfileCommand, Me.cmd...
+        '.BindCommand Context, ViewModel.TableHighlightingVM, ViewModel.TableHighlightingVM.RemoveHighlighting, Me.cmd...
     End With
 End Sub
 

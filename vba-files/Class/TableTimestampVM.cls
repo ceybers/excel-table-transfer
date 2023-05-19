@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "TablePreferKeyVM"
+Attribute VB_Name = "TableTimestampVM"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -13,16 +13,16 @@ Implements IViewModel
 Implements INotifyPropertyChanged
 Implements IChangeTracking
 
-Private Const PREFER_KEY_COLUMN As String = "PREFER_KEY_COLUMN"
+Private Const TIMESTAMP_ENABLED As String = "TIMESTAMP_ENABLED"
+Private Const TIMESTAMP_ADDRESS As String = "TIMESTAMP_ADDRESS"
 
 Private Type TState
     Notifier As INotifyPropertyChanged
     Settings As ISettings
     IsChanged As Boolean
     
-    SelectedColumn As String
-    Columns As Scripting.Dictionary
-    KeyColumns As KeyColumns
+    IsEnabled As Boolean
+    Address As String
 End Type
 Private This As TState
 
@@ -49,57 +49,45 @@ End Sub
 
 Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
-    'Set This.Columns = New Scripting.Dictionary
-    Set This.KeyColumns = New KeyColumns
 End Sub
 
 '---
-Public Property Get SelectedColumn() As String
-    SelectedColumn = This.SelectedColumn
+Public Property Get IsEnabled() As Boolean
+    IsEnabled = This.IsEnabled
 End Property
 
-Public Property Let SelectedColumn(ByVal vNewValue As String)
-    If This.SelectedColumn = vNewValue Then Exit Property
-    This.SelectedColumn = vNewValue
-    OnPropertyChanged "SelectedColumn"
+Public Property Let IsEnabled(ByVal vNewValue As Boolean)
+    If This.IsEnabled = vNewValue Then Exit Property
+    This.IsEnabled = vNewValue
+    OnPropertyChanged "IsEnabled"
 End Property
 
-Public Property Get Columns() As Scripting.Dictionary
-    Set Columns = This.Columns
+Public Property Get Address() As String
+    Address = This.Address
+End Property
+
+Public Property Let Address(ByVal vNewValue As String)
+    If This.Address = vNewValue Then Exit Property
+    This.Address = vNewValue
+    OnPropertyChanged "Address"
 End Property
 
 ' ---
 Public Sub Load(ByVal ListObject As ListObject, ByVal Settings As ISettings)
     Set This.Settings = Settings
     
-    This.KeyColumns.Load ListObject
-    
-    LoadColumns
-    LoadSelectedColumn
+    LoadSaved
 End Sub
 
-Private Sub LoadColumns()
-    Set This.Columns = This.KeyColumns.GetDictionary
-    
-    SelectedColumn = This.Columns.Keys(0)
-End Sub
-
-Private Sub LoadSelectedColumn()
-    Dim SavedColumn As String
-    SavedColumn = This.Settings.GetSetting(PREFER_KEY_COLUMN)
-    
-    Dim Key As Variant
-    For Each Key In This.Columns.Keys
-        If This.Columns.Item(Key) = SavedColumn Then
-                SelectedColumn = This.Columns.Item(Key)
-            Exit Sub
-        End If
-    Next Key
+Private Sub LoadSaved()
+    IsEnabled = This.Settings.GetFlag(TIMESTAMP_ENABLED)
+    Address = This.Settings.GetSetting(TIMESTAMP_ADDRESS)
 End Sub
 
 Public Sub Commit()
     If This.IsChanged = False Then Exit Sub
-    This.Settings.SetSetting PREFER_KEY_COLUMN, SelectedColumn
+    This.Settings.SetFlag TIMESTAMP_ENABLED, IsEnabled
+    This.Settings.SetSetting TIMESTAMP_ADDRESS, Address
 End Sub
 
 Private Property Get IChangeTracking_IsChanged() As Boolean
@@ -110,3 +98,4 @@ Private Sub IChangeTracking_AcceptChanges()
     Commit
     This.IsChanged = False
 End Sub
+
