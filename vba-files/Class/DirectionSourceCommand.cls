@@ -14,7 +14,7 @@ Implements ICommand
 
 Private mView As IView
 Private mAppContext As IAppContext
-Private mViewModel As IViewModel
+Private mViewModel As DirectionPickerViewModel
 
 Public Property Get Context() As IAppContext
     Set Context = mAppContext
@@ -61,6 +61,7 @@ Private Function ICommand_CanExecute() As Boolean
 End Function
 
 Private Sub ICommand_Execute()
-    MsgBox "DirectionSourceCommand"
+    'MsgBox "DirectionSourceCommand"
+    mViewModel.Result = Source
     mView.Hide
 End Sub

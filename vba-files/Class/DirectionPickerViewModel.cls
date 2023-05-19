@@ -17,6 +17,8 @@ Private Type TState
 
     TableDetailsVM As TableDetailsVM
     TableLocationVM As TableLocationVM
+    
+    Result As TransferDirection
 End Type
 Private This As TState
 
@@ -56,6 +58,14 @@ Public Property Get TableLocationVM() As TableLocationVM
     Set TableLocationVM = This.TableLocationVM
 End Property
 
+Public Property Get Result() As TransferDirection
+    Result = This.Result
+End Property
+
+Public Property Let Result(ByVal vNewValue As TransferDirection)
+    This.Result = vNewValue
+End Property
+
 '---
 Public Sub Load(ByVal ListObject As ListObject)
     Dim Worksheet As Worksheet
@@ -65,4 +75,6 @@ Public Sub Load(ByVal ListObject As ListObject)
     
     This.TableDetailsVM.Load ListObject
     This.TableLocationVM.Load Workbook
+    
+    This.Result = TransferDirection.Undefined
 End Sub

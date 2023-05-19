@@ -2,7 +2,8 @@ Attribute VB_Name = "DebugPrintXML"
 '@Folder("PersistentStorage")
 Option Explicit
 
-Public Sub DebugPrintXML()
+'Public Sub DebugPrintXML()
+Private Sub DebugPrintXML()
     Dim SettingsModel As ISettingsModel
     Set SettingsModel = XMLSettingsModel.Create(ThisWorkbook, "TableTransferTool")
     'Set This.TableSettings = SettingsModel.Table(ThisWorkbook.Worksheets(1).ListObjects(1).Name)

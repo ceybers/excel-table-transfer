@@ -21,6 +21,7 @@ Attribute DoRunDirectionPicker.VB_Description = "DoRunDirectionPicker"
         If .ShowDialog() Then
             If DO_DEBUG Then Debug.Print "TablePropView.ShowDialog(vm) returned True"
             'VM.Commit
+            Debug.Print "Result was = "; VM.Result
         Else
             If DO_DEBUG Then Debug.Print "TablePropView.ShowDialog(vm) returned False"
         End If

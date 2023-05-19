@@ -4,9 +4,9 @@ Option Explicit
 
 Private Const DO_DEBUG As Boolean = False
 
-'@Description "DoRun"
-Public Sub DoRun()
-Attribute DoRun.VB_Description = "DoRun"
+'@Description "DoRunTableProp"
+Public Sub DoRunTableProp()
+Attribute DoRunTableProp.VB_Description = "DoRun"
     Dim ctx As IAppContext
     Set ctx = New AppContext
     
@@ -21,13 +21,15 @@ Attribute DoRun.VB_Description = "DoRun"
         If .ShowDialog() Then
             If DO_DEBUG Then Debug.Print "TablePropView.ShowDialog(vm) returned True"
             VM.Commit
+            Stop
         Else
             If DO_DEBUG Then Debug.Print "TablePropView.ShowDialog(vm) returned False"
         End If
     End With
 End Sub
 
-Public Sub ResetPersistentStorage()
+'Public Sub ResetPersistentStorage()
+Private Sub ResetPersistentStorage()
     Dim SettingsModel As XMLSettingsModel
     Set SettingsModel = XMLSettingsModel.Create(ThisWorkbook, "TableTransferTool")
     'XMLSettingsModel.Reset
