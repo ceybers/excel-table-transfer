@@ -82,10 +82,10 @@ End Property
 
 '---
 Public Sub Load(ByVal ListObject As ListObject)
-    Dim Worksheet As Worksheet
-    Dim Workbook As Workbook
-    Set Worksheet = ListObject.Parent
-    Set Workbook = Worksheet.Parent
+    'Dim Worksheet As Worksheet
+    'Dim Workbook As Workbook
+    'Set Worksheet = ListObject.Parent
+    'Set Workbook = Worksheet.Parent
     
     Set This.SrcTableVM = TablePickerViewModel.Create(ListObject, "Source Table", Source, This.Notifier)
     Set This.DstTableVM = TablePickerViewModel.Create(ListObject, "Destination Table", Destination, This.Notifier)

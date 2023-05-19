@@ -98,8 +98,8 @@ Public Function Create(ByVal ListObject As Object, _
     Dim Result As TablePickerViewModel
     Set Result = New TablePickerViewModel
     Result.Load ListObject
-    Result.Caption = "Source Table"
-    Result.Direction = Source
+    Result.Caption = Caption
+    Result.Direction = Direction
     Notifier.RegisterHandler Result
     
     Set Create = Result
