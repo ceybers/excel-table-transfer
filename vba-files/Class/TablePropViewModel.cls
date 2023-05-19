@@ -125,7 +125,7 @@ Public Sub Load(ByVal ListObject As ListObject)
     This.TablePreferKeyVM.Load ListObject, This.TableSettings
     This.TableStarColumnsVM.Load ListObject, This.TableSettings
 
-    TableProfileVM.Load ListObject, This.TableSettings
+    TableProfileVM.Load ListObject, SettingsModel
     TableHighlightingVM.Load ListObject
     TableTimestampVM.Load ListObject, This.TableSettings
     TableProtectionVM.Load ListObject, This.TableSettings

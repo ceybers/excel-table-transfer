@@ -105,7 +105,7 @@ Private Sub IChangeTracking_AcceptChanges()
     This.IsChanged = False
 End Sub
 
-Public Sub TrySetColumnChecked(ByVal ColumnKey As String, vNewValue As Boolean)
+Public Sub TrySetColumnChecked(ByVal ColumnKey As String, ByVal vNewValue As Boolean)
     Dim ColumnProperty As ColumnProperty
     Set ColumnProperty = This.Columns.Item(ColumnKey)
     If ColumnProperty.Checked = vNewValue Then Exit Sub
@@ -113,7 +113,7 @@ Public Sub TrySetColumnChecked(ByVal ColumnKey As String, vNewValue As Boolean)
     OnPropertyChanged "ColumnCheckedChanged"
 End Sub
 
-Public Sub TrySetColumnSelected(ByVal ColumnKey As String, vNewValue As Boolean)
+Public Sub TrySetColumnSelected(ByVal ColumnKey As String, ByVal vNewValue As Boolean)
     Dim ColumnProperty As ColumnProperty
     Set ColumnProperty = This.Columns.Item(ColumnKey)
     If ColumnProperty.Selected = vNewValue Then Exit Sub
@@ -133,9 +133,9 @@ Public Function CanReset() As Boolean
     Next Key
 End Function
 
-Public Function DoReset()
+Public Sub DoReset()
     Dim Key As Variant
     For Each Key In This.Columns.Keys
         TrySetColumnChecked Key, False
     Next Key
-End Function
+End Sub

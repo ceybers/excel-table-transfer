@@ -2,19 +2,19 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "CancelViewCommand"
+Attribute VB_Name = "RemoveHighlightingCommand"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "MVVM.Example2.Commands"
+'@Folder "MVVM.TableProps.Commands"
 Option Explicit
 Implements ICommand
 
-Private mView As ICancellable
+Private mView As IView
 Private mAppContext As IAppContext
-Private mViewModel As IViewModel
+Private mViewModel As TableHighlightingVM
 
 Public Property Get Context() As IAppContext
     Set Context = mAppContext
@@ -41,13 +41,13 @@ Public Property Set ViewModel(ByVal vNewValue As IViewModel)
 End Property
 
 Private Property Get ICommand_Caption() As String
-    ICommand_Caption = "Cancel"
+    ICommand_Caption = "Remove Highlighting"
 End Property
 
 Public Function Create(ByVal Context As IAppContext, ByVal View As IView, ByVal ViewModel As IViewModel) _
-    As CancelViewCommand
-    Dim Result As CancelViewCommand
-    Set Result = New CancelViewCommand
+    As RemoveHighlightingCommand
+    Dim Result As RemoveHighlightingCommand
+    Set Result = New RemoveHighlightingCommand
     With Result
         Set .Context = Context
         Set .View = View
@@ -57,10 +57,9 @@ Public Function Create(ByVal Context As IAppContext, ByVal View As IView, ByVal 
 End Function
 
 Private Function ICommand_CanExecute() As Boolean
-    ICommand_CanExecute = True
+    ICommand_CanExecute = False 'True
 End Function
 
 Private Sub ICommand_Execute()
-    'Debug.Print "CancelViewCommand executing"
-    mView.OnCancel
+    mViewModel.DoRemoveHighlighting
 End Sub

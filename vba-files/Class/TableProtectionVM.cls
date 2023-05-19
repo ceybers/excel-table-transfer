@@ -114,6 +114,10 @@ Public Property Let IsTableProtected(ByVal vNewValue As Boolean)
     OnPropertyChanged "IsTableProtected"
 End Property
 
+Public Property Get IsPasswordProtected() As Boolean
+    IsPasswordProtected = This.IsPasswordProtected
+End Property
+
 ' ---
 Public Sub Load(ByVal ListObject As ListObject, ByVal Settings As ISettings)
     Set This.Settings = Settings

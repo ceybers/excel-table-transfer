@@ -12,10 +12,14 @@ Option Explicit
 Implements IViewModel
 Implements INotifyPropertyChanged
 
+Private Const RESET_PROFILE_MESSAGE As String = "Are you sure you want to reset the profile?"
+Private Const RESET_PROFILE_TITLE As String = "Reset Profile"
+
 Private Type TState
     Notifier As INotifyPropertyChanged
-    Settings As ISettings
+    SettingsModel As XMLSettingsModel
     
+    HasProfile As Boolean
     ActivateProfileCommand As ICommand
     RemoveProfileCommand As ICommand
 End Type
@@ -45,9 +49,43 @@ Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
 End Sub
 
+Public Property Get HasProfile() As Boolean
+    HasProfile = This.HasProfile ' True 'check settings
+End Property
+
+Public Property Get ActivateProfileCommand() As ICommand
+    Set ActivateProfileCommand = This.ActivateProfileCommand
+End Property
+
+Public Property Set ActivateProfileCommand(ByVal vNewValue As ICommand)
+    Set This.ActivateProfileCommand = vNewValue
+End Property
+
+Public Property Get RemoveProfileCommand() As ICommand
+    Set RemoveProfileCommand = This.RemoveProfileCommand
+End Property
+
+Public Property Set RemoveProfileCommand(ByVal vNewValue As ICommand)
+    Set This.RemoveProfileCommand = vNewValue
+End Property
+
 ' ---
-Public Sub Load(ByVal ListObject As ListObject, ByVal Settings As ISettings)
-    Set This.Settings = Settings
-    'Set This.ActivateProfileCommand = New ActivateProfileCommand(...)
-    'Set This.RemoveProfileCommand = New RemoveProfileCommand(...)
+Public Sub Load(ByVal ListObject As ListObject, ByVal SettingsModel As ISettingsModel)
+    Set This.SettingsModel = SettingsModel
+    This.HasProfile = True 'TODO Impl function to actually check first
+End Sub
+
+Public Sub ActivateProfile()
+    'MsgBox "ActivateProfile NYI"
+    This.HasProfile = Not This.HasProfile
+    OnPropertyChanged "HasProfile" ' Name doesn't matter, it just needs to trigger CommandManager's update CanExecute
+    ' And we need to at least do a OneTimeBinding so that BindingManager will have seen this sub-VM at least once
+End Sub
+
+Public Sub RemoveProfile()
+    If vbYes <> MsgBox(RESET_PROFILE_MESSAGE, vbExclamation + vbYesNo + vbDefaultButton2, RESET_PROFILE_TITLE) Then Exit Sub
+    
+    This.SettingsModel.Delete
+    This.HasProfile = Not This.HasProfile
+    OnPropertyChanged "HasProfile" ' Name doesn't matter, it just needs to trigger CommandManager's update CanExecute
 End Sub

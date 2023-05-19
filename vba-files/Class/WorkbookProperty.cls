@@ -24,7 +24,7 @@ Private Type TState
 End Type
 Private This As TState
 
-Property Get Workbook() As Workbook
+Public Property Get Workbook() As Workbook
     Set Workbook = This.Workbook
 End Property
 

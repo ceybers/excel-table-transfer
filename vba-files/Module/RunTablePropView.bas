@@ -6,6 +6,7 @@ Private Const DO_DEBUG As Boolean = False
 
 '@Description "DoRun"
 Public Sub DoRun()
+Attribute DoRun.VB_Description = "DoRun"
     Dim ctx As IAppContext
     Set ctx = New AppContext
     

@@ -128,15 +128,18 @@ Private Sub BindControls()
         
         .BindPropertyPath ViewModel, "TableStarColumnsVM.Columns", Me.lvStarredColumns, "ListItems", TwoWayBinding, ColumnPropToListViewConverter
         
-        '.BindPropertyPath ViewModel, "TableTimestampVM.IsEnabled", Me.chk..., "Value", TwoWayBinding
-        '.BindPropertyPath ViewModel, "TableTimestampVM.Address", Me.txt..., "Value", TwoWayBinding
-
-        '.BindPropertyPath ViewModel, "TableProtectionVM.IsNoChange", Me.opt..., "Value", OneTimeBinding
-        '.BindPropertyPath ViewModel, "TableProtectionVM.IsTemporary", Me.opt..., "Value", OneTimeBinding
-        '.BindPropertyPath ViewModel, "TableProtectionVM.IsPermanent", Me.opt..., "Value", OneTimeBinding
+        .BindPropertyPath ViewModel, "TableTimestampVM.IsEnabled", Me.chkEnableTimestamp, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "TableTimestampVM.Address", Me.txtTimestampCell, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "TableTimestampVM.IsEnabled", Me.txtTimestampCell, "Enabled", OneWayBinding
         
-        '.BindPropertyPath ViewModel, "TableProtectionVM.IsTableProtected", Me.chk..., "Value", TwoWayBinding
-        '.BindPropertyPath ViewModel, "TableProtectionVM.IsPasswordProtected", Me.chk..., "Value", OneWayBinding
+        .BindPropertyPath ViewModel, "TableProtectionVM.IsNoChange", Me.optProtectionNoChange, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "TableProtectionVM.IsTemporary", Me.optProtectionTemporarily, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "TableProtectionVM.IsPermanent", Me.optProtectionPermanently, "Value", TwoWayBinding
+        
+        .BindPropertyPath ViewModel, "TableProtectionVM.IsTableProtected", Me.chkProtectionProtect, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "TableProtectionVM.IsPasswordProtected", Me.chkProtectionPassword, "Value", OneWayBinding
+        
+        .BindPropertyPath ViewModel, "TableProfileVM.HasProfile", Me.cmdProfileRemove, "Enabled", OneTimeBinding
     End With
 End Sub
 
@@ -148,16 +151,27 @@ Private Sub BindCommands()
     Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
     
     ' TODO Move this init to ViewModel.TableStarColumnsVM
+    ' Can't because we need a Ref for CTX and sub-VMs don't have it
+    ' Can't CommandManager set it during BindCommand...
     Dim ResetStarColumns As ICommand
     Set ResetStarColumns = ResetStarColumnsCommand.Create(Context, Me, ViewModel.TableStarColumnsVM)
+    
+    Dim RemoveHighlighting As ICommand
+    Set RemoveHighlighting = RemoveHighlightingCommand.Create(Context, Me, ViewModel.TableHighlightingVM)
+    
+    Dim ActivateProfile As ICommand
+    Set ActivateProfile = ActivateProfileCommand.Create(Context, Me, ViewModel.TableProfileVM)
+    
+    Dim RemoveProfile As ICommand
+    Set RemoveProfile = RemoveProfileCommand.Create(Context, Me, ViewModel.TableProfileVM)
     
     With This.Context.CommandManager
         .BindCommand Context, ViewModel, OKView, Me.cmdOK
         .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
         .BindCommand Context, ViewModel.TableStarColumnsVM, ResetStarColumns, Me.cmdResetValueColumns
-        '.BindCommand Context, ViewModel.TableProfileVM, ViewModel.TableProfileVM.ActivateProfileCommand, Me.cmd...
-        '.BindCommand Context, ViewModel.TableProfileVM, ViewModel.TableProfileVM.RemoveProfileCommand, Me.cmd...
-        '.BindCommand Context, ViewModel.TableHighlightingVM, ViewModel.TableHighlightingVM.RemoveHighlighting, Me.cmd...
+        .BindCommand Context, ViewModel.TableProfileVM, ActivateProfile, Me.cmdProfileActivate
+        .BindCommand Context, ViewModel.TableProfileVM, RemoveProfile, Me.cmdProfileRemove
+        .BindCommand Context, ViewModel.TableHighlightingVM, RemoveHighlighting, Me.cmdHighlightingRemove
     End With
 End Sub
 

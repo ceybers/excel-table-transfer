@@ -15,6 +15,8 @@ Implements INotifyPropertyChanged
 Private Type TState
     Notifier As INotifyPropertyChanged
 
+    ListObject As ListObject
+    
     RemoveHighlightingCommand As ICommand
 End Type
 Private This As TState
@@ -43,7 +45,26 @@ Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
 End Sub
 
+Public Property Get HasHighlighting() As Boolean
+    HasHighlighting = CheckListObjectHasHighlighting
+End Property
+
+Public Property Get RemoveHighlightingCommand() As ICommand
+    Set RemoveHighlightingCommand = This.RemoveHighlightingCommand
+End Property
+
+Public Property Set HasHighlighting(ByVal vNewValue As ICommand)
+    Set This.RemoveHighlightingCommand = vNewValue
+End Property
 ' ---
 Public Sub Load(ByVal ListObject As ListObject)
-    'Set This.RemoveHighlightingCommand = New RemoveHighlightingCommand(...)
+    Set This.ListObject = ListObject
 End Sub
+
+Public Sub DoRemoveHighlighting()
+    MsgBox "DoRemoveHighlighting NYI"
+End Sub
+
+Private Function CheckListObjectHasHighlighting() As Boolean
+    CheckListObjectHasHighlighting = True
+End Function
