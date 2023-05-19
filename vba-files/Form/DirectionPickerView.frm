@@ -22,7 +22,7 @@ Implements ICancellable
 Private Type TView
     Context As IAppContext
     IsCancelled As Boolean
-    ViewModel As TablePropViewModel
+    ViewModel As DirectionPickerViewModel
 End Type
 Private This As TView
 
@@ -30,11 +30,11 @@ Private Property Get IView_ViewModel() As Object
     Set IView_ViewModel = This.ViewModel
 End Property
 
-Public Property Get ViewModel() As TablePropViewModel
+Public Property Get ViewModel() As DirectionPickerViewModel
     Set ViewModel = This.ViewModel
 End Property
 
-Public Property Set ViewModel(ByVal vNewValue As TablePropViewModel)
+Public Property Set ViewModel(ByVal vNewValue As DirectionPickerViewModel)
     Set This.ViewModel = vNewValue
 End Property
 
@@ -74,7 +74,7 @@ Private Sub IView_Hide()
     Me.Hide
 End Sub
 
-Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As TablePropViewModel) As IView
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As DirectionPickerViewModel) As IView
     Dim Result As DirectionPickerView
     Set Result = New DirectionPickerView
     
@@ -86,8 +86,8 @@ End Function
 
 Private Function IView_ShowDialog() As Boolean
     InitializeLabelPictures
-    'BindControls
-    'BindCommands
+    BindControls
+    BindCommands
     
     Me.Show vbModal
     
@@ -99,14 +99,9 @@ Private Sub BindControls()
         .BindPropertyPath ViewModel, "TableDetailsVM.TableName", Me.txtTableName, "Value", OneTimeBinding
         .BindPropertyPath ViewModel, "TableDetailsVM.WorkSheetName", Me.txtWorkSheetName, "Value", OneTimeBinding
         .BindPropertyPath ViewModel, "TableDetailsVM.WorkBookName", Me.txtWorkBookName, "Value", OneTimeBinding
-        
-        '.BindPropertyPath ViewModel, "TableLocationVM.IsLocalStorage", Me.optLocationLocal, "Value", OneTimeBinding
-        '.BindPropertyPath ViewModel, "TableLocationVM.IsNetworkStorage", Me.optLocationNetwork, "Value", OneTimeBinding
-        '.BindPropertyPath ViewModel, "TableLocationVM.IsOneDriveStorage", Me.optLocationOneDrive, "Value", OneTimeBinding
-        '.BindPropertyPath ViewModel, "TableLocationVM.IsSharePointStorage", Me.optLocationSharePoint, "Value", OneTimeBinding
-        
-        '.BindPropertyPath ViewModel, "TableDirectionVM.ConditionDirections", Me.cboPreferDirectionLocation, "List", OneWayToSource
-        '.BindPropertyPath ViewModel, "TableDirectionVM.SelectedConditionDirection", Me.cboPreferDirectionLocation, "Value", TwoWayBinding
+    
+        .BindPropertyPath ViewModel, "TableLocationVM.Locations", Me.cboStorageLocation, "List", OneTimeBinding
+        .BindPropertyPath ViewModel, "TableLocationVM.SelectedLocation", Me.cboStorageLocation, "Value", OneTimeBinding
     End With
 End Sub
 
@@ -117,9 +112,17 @@ Private Sub BindCommands()
     Dim CancelView As ICommand
     Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
     
+    Dim DirectionSource As ICommand
+    Set DirectionSource = DirectionSourceCommand.Create(Context, Me, ViewModel)
+    
+    Dim DirectionDestination As ICommand
+    Set DirectionDestination = DirectionDestinationCommand.Create(Context, Me, ViewModel)
+    
     With This.Context.CommandManager
         '.BindCommand Context, ViewModel, OKView, Me.cmdOK
         .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
+        .BindCommand Context, ViewModel, DirectionSource, Me.cmbDirectionSource
+        .BindCommand Context, ViewModel, DirectionDestination, Me.cmbDirectionDestination
     End With
 End Sub
 

@@ -2,22 +2,21 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "TableDetailsVM"
+Attribute VB_Name = "DirectionPickerViewModel"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "MVVM.Common.ViewModel"
+'@Folder "MVVM.DirectionPicker.ViewModel"
 Option Explicit
 Implements IViewModel
 Implements INotifyPropertyChanged
 
 Private Type TState
     Notifier As INotifyPropertyChanged
-    
-    TableName As String
-    WorksheetName As String
-    WorkbookName As String
+
+    TableDetailsVM As TableDetailsVM
+    TableLocationVM As TableLocationVM
 End Type
 Private This As TState
 
@@ -43,24 +42,27 @@ End Sub
 
 Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
+
+    Set This.TableDetailsVM = New TableDetailsVM
+    Set This.TableLocationVM = New TableLocationVM
 End Sub
 
 '---
-Public Property Get TableName() As String
-    TableName = This.TableName
+Public Property Get TableDetailsVM() As TableDetailsVM
+    Set TableDetailsVM = This.TableDetailsVM
 End Property
 
-Public Property Get WorksheetName() As String
-    WorksheetName = This.WorksheetName
+Public Property Get TableLocationVM() As TableLocationVM
+    Set TableLocationVM = This.TableLocationVM
 End Property
 
-Public Property Get WorkbookName() As String
-    WorkbookName = This.WorkbookName
-End Property
-
+'---
 Public Sub Load(ByVal ListObject As ListObject)
-    This.TableName = ListObject.Name
-    This.WorkbookName = ListObject.Parent.Parent.Name
-    This.WorksheetName = ListObject.Parent.Name
+    Dim Worksheet As Worksheet
+    Dim Workbook As Workbook
+    Set Worksheet = ListObject.Parent
+    Set Workbook = Worksheet.Parent
+    
+    This.TableDetailsVM.Load ListObject
+    This.TableLocationVM.Load Workbook
 End Sub
-

@@ -59,11 +59,7 @@ Public Sub Create(ByVal Source As Object, ByVal SourcePropertyPath As String, By
     Set mTextBox = Target
     This.TargetProperty = TargetProperty
     
-    If TargetProperty = "Value" Then
-        This.BindingMode = TwoWayBinding
-    Else
-        This.BindingMode = OneWayBinding
-    End If
+    This.BindingMode = BindingMode
     
     UpdateTarget
 End Sub

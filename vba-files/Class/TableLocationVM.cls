@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("MVVM.TableProps.ViewModel")
+'@Folder "MVVM.Common.ViewModel"
 Option Explicit
 Implements IViewModel
 Implements INotifyPropertyChanged
@@ -19,6 +19,9 @@ Private Type TState
     IsNetworkStorage As Boolean
     IsOneDriveStorage As Boolean
     IsSharePointStorage As Boolean
+    
+    SelectedLocation As String
+    Locations As Scripting.Dictionary
 End Type
 Private This As TState
 
@@ -63,6 +66,15 @@ Public Property Get IsSharePointStorage() As Boolean
     IsSharePointStorage = This.IsSharePointStorage
 End Property
 
+Public Property Get SelectedLocation() As String
+    SelectedLocation = This.SelectedLocation
+End Property
+
+Public Property Get Locations() As Scripting.Dictionary
+    Set Locations = This.Locations
+End Property
+    
+'---
 Public Sub Load(ByVal Workbook As Workbook)
     Dim ThisWorkbookProp As WorkbookProperty
     Set ThisWorkbookProp = New WorkbookProperty
@@ -72,7 +84,28 @@ Public Sub Load(ByVal Workbook As Workbook)
     This.IsNetworkStorage = ThisWorkbookProp.StorageLocation = RemoteStorage
     This.IsOneDriveStorage = ThisWorkbookProp.StorageLocation = OneDriveStorage
     This.IsSharePointStorage = ThisWorkbookProp.StorageLocation = SharePointStorage
+    
+    Set This.Locations = New Scripting.Dictionary
+    AddToDictionary This.Locations, "Local,Network,OneDrive,SharePoint"
+    
+    Select Case ThisWorkbookProp.StorageLocation
+        Case ttWorkbookLocation.LocalStorage
+            This.SelectedLocation = "Local"
+        Case ttWorkbookLocation.RemoteStorage
+            This.SelectedLocation = "Remote"
+        Case ttWorkbookLocation.OneDriveStorage
+            This.SelectedLocation = "OneDrive"
+        Case ttWorkbookLocation.SharePointStorage
+            This.SelectedLocation = "SharePoint"
+    End Select
 End Sub
 
-
-
+Private Sub AddToDictionary(ByVal Dictionary As Scripting.Dictionary, ByVal vNewValue As String)
+    Dim Items() As String
+    Items = Split(vNewValue, ",")
+    
+    Dim i As Long
+    For i = LBound(Items) To UBound(Items)
+        Dictionary.Add Key:=Items(i), Item:=Items(i)
+    Next i
+End Sub

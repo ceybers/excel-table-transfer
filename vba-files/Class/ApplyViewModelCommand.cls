@@ -5,9 +5,10 @@ END
 Attribute VB_Name = "ApplyViewModelCommand"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder "MVVM.TableProps.Commands"
+'@PredeclaredId
+'@Folder "MVVM.Common.Commands"
 Option Explicit
 
 Private Type TState
@@ -31,4 +32,3 @@ End Sub
 Public Sub UpdateCommandButton(ByVal CommandButton As CommandButton)
     CommandButton.Enabled = CanExecute
 End Sub
-
