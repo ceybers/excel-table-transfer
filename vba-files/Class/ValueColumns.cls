@@ -26,6 +26,7 @@ End Sub
 
 '@Enumerator
 Public Property Get Item() As Scripting.Dictionary
+Attribute Item.VB_UserMemId = -4
     Set Item = This.Item
 End Property
 ' ---
@@ -33,7 +34,7 @@ Public Property Get EnableNontext() As Boolean
     EnableNontext = This.EnableNontext
 End Property
 
-Public Property Let EnableNontext(vNewValue As Boolean)
+Public Property Let EnableNontext(ByVal vNewValue As Boolean)
     This.EnableNontext = vNewValue
 End Property
 
@@ -63,10 +64,13 @@ Public Sub Reload()
 End Sub
 
 Private Sub TryAdd(ByVal ValueColumn As ValueColumn)
-    ValueColumn.Enabled = True
+    'ValueColumn.Enabled = True
     'If (Not This.EnableNontext) And (Not ValueColumn.IsText) Then ValueColumn.Enabled = False
     'If (Not This.EnableNonunique) And (Not ValueColumn.IsUnique) Then ValueColumn.Enabled = False
     
     This.Item.Add Key:=ValueColumn.Key, Item:=ValueColumn
 End Sub
 
+Public Function GetByKey(ByVal Key As String) As ValueColumn
+    Set GetByKey = This.Item.Item(Key)
+End Function

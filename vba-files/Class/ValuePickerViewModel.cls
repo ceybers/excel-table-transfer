@@ -20,7 +20,9 @@ Private Type TState
     Caption As String
     Direction As TransferDirection
     
-    Selected As ValueColumn
+    KeyColumn As ListColumn
+    SelectedKey As String
+    SelectedValueColumn As ValueColumn
     ValueColumns As ValueColumns
 End Type
 Private This As TState
@@ -49,29 +51,21 @@ Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
 End Sub
 '---
-Public Property Get SelectedAsText() As String
-    If This.Selected Is Nothing Then
-        SelectedAsText = "nothing"
-        Exit Property
-    End If
-    SelectedAsText = This.Selected.Name
-End Property
-
-Public Property Get Selected() As ValueColumn
-    Set Selected = This.Selected
-End Property
-
-Public Property Set Selected(ByVal vNewValue As ValueColumn)
-    If Not This.Selected Is Nothing Then
-        If This.Selected Is vNewValue Then Exit Property
-    End If
-    Set This.Selected = vNewValue
-    OnPropertyChanged "Selected"
-    OnPropertyChanged "SelectedAsText"
-End Property
 
 Public Property Get Item() As Scripting.Dictionary
     Set Item = This.ValueColumns.Item
+End Property
+
+Public Property Get SelectedKey() As String
+    SelectedKey = This.SelectedKey
+End Property
+
+Public Property Let SelectedKey(ByVal vNewValue As String)
+    If This.SelectedKey = vNewValue Then Exit Property
+    This.SelectedKey = vNewValue
+    OnPropertyChanged "SelectedKey"
+    
+    Set This.SelectedValueColumn = This.ValueColumns.GetByKey(vNewValue)
 End Property
 
 Public Property Get Caption() As String
@@ -91,137 +85,143 @@ Public Property Let Direction(ByVal vNewValue As TransferDirection)
 End Property
 
 '---
-Public Function Create(ByVal ListObject As Object, _
+Public Function Create(ByVal ListColumn As ListColumn, _
     ByVal Caption As String, ByVal Direction As TransferDirection, _
     ByVal Notifier As INotifyPropertyChanged) As ValuePickerViewModel
     
     Dim Result As ValuePickerViewModel
     Set Result = New ValuePickerViewModel
-    Result.Load ListObject
-    Result.Caption = Caption
-    Result.Direction = Direction
+    With Result
+        .Load ListColumn
+        .Caption = Caption
+        .Direction = Direction
+    End With
     Notifier.RegisterHandler Result
     
     Set Create = Result
 End Function
 
-Public Sub Load(ByVal ListObject As ListObject)
+Public Sub Load(ByVal ListColumn As ListColumn)
     Debug.Assert Not Me Is KeyPickerViewModel
    
+    Set This.KeyColumn = ListColumn
+    
     Set This.ValueColumns = New ValueColumns
-    This.ValueColumns.Load ListObject
+    This.ValueColumns.Load ListColumn.Parent
+    SelectFirstEligbleValueColumn
 End Sub
 
-'---
-Public Sub TrySetColumnChecked(ByVal PropertyPath As String, ByVal ItemKey As String, ByVal vNewValue As Boolean)
-    Dim ValueColumn  As ValueColumn
-    Set ValueColumn = This.ValueColumns.Item(ItemKey)
-    
-    If ValueColumn.Checked = vNewValue Then Exit Sub
-    ValueColumn.Checked = vNewValue
-    
-    If vNewValue Then
-        If Not ValueColumn.Enabled Then
-            ValueColumn.Checked = False
-            OnPropertyChanged "Item"
-            Exit Sub
-        End If
-        If Not This.Selected Is Nothing Then
-            This.Selected.Checked = False
-        End If
-        Set Selected = ValueColumn
-        OnPropertyChanged "Item"
-    Else
-        This.Selected.Checked = False
-        Set Selected = Nothing
-        OnPropertyChanged "Item"
-    End If
-End Sub
-
-Public Sub TrySetColumnSelected(ByVal PropertyPath As String, ByVal ItemKey As String, ByVal vNewValue As Boolean)
-    Dim ValueColumn  As ValueColumn
-    Set ValueColumn = This.ValueColumns.Item(ItemKey)
-    
-    If ValueColumn.Selected = vNewValue Then Exit Sub
-    ValueColumn.Selected = vNewValue
-    
-    If vNewValue Then
-        If Not ValueColumn.Enabled Then
-            ValueColumn.Selected = False
-            OnPropertyChanged "Item"
-            Exit Sub
-        End If
-        If Not This.Selected Is Nothing Then
-            This.Selected.Selected = False
-        End If
-        Set Selected = ValueColumn
-        OnPropertyChanged "Item"
-    Else
-        This.Selected.Selected = False
-        Set Selected = Nothing
-        OnPropertyChanged "Item"
-    End If
-End Sub
-
-Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
-    Select Case PropertyName
-        Case "EnableNontext"
-            This.ValueColumns.EnableNontext = CallByName(Source, PropertyName, VbGet)
-            ReloadValueColumns
-        Case "EnableNonunique"
-            This.ValueColumns.EnableNonunique = CallByName(Source, PropertyName, VbGet)
-            ReloadValueColumns
-    End Select
-End Sub
-
-Private Sub ReloadValueColumns()
-    Dim PreviousSelected As String
-    If Not Selected Is Nothing Then
-        PreviousSelected = Selected.Key
-    End If
-    
-    Set Selected = Nothing
-    This.ValueColumns.Reload
-    
-    If PreviousSelected <> vbNullString Then
-        Dim ValueColumn As ValueColumn
-        Set ValueColumn = This.ValueColumns.Item(PreviousSelected)
-        If ValueColumn.Enabled Then
-            ValueColumn.Checked = True
-            ValueColumn.Selected = True
-            Set Selected = ValueColumn
-        End If
-    End If
-    
-    OnPropertyChanged "Item"
-End Sub
-
-Public Sub MarkKeyColumn(ByVal ListColumn As ListColumn)
+Private Sub SelectFirstEligbleValueColumn()
     Dim Key As Variant
     For Each Key In This.ValueColumns.Item.Keys
         Dim ValueColumn As ValueColumn
         Set ValueColumn = This.ValueColumns.Item(Key)
-        If ValueColumn.Key = ListColumn.Name Then
-            ValueColumn.IsKey = True
-            ValueColumn.Enabled = False
+        If ValueColumn.Enabled = True Then
+            SelectedKey = Key
+            Exit Sub
         End If
     Next Key
+End Sub
+
+'---
+
+' This runs when the user changes a checkbox via the UserForm, which causes the primary VM to update
+' one of its properties, which we are listening to here.
+Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    Select Case PropertyName
+        Case "EnableNontext"
+            'This.ValueColumns.EnableNontext = CallByName(Source, PropertyName, VbGet)
+            'ReloadValueColumns
+        Case "EnableNonunique"
+            'This.ValueColumns.EnableNonunique = CallByName(Source, PropertyName, VbGet)
+            'ReloadValueColumns
+    End Select
+End Sub
+
+'@Description "Reloads ValueColums. Required after changing options that affect the collection."
+Private Sub ReloadValueColumns()
+Attribute ReloadValueColumns.VB_Description = "Reloads ValueColums. Required after changing options that affect the collection."
+    Dim PreviousSelected As String
+    ' If Not Selected Is Nothing Then
+        ' PreviousSelected = Selected.Key
+    ' End If
+    
+    ' Set Selected = Nothing
+    ' This.ValueColumns.Reload
+    
+    ' If PreviousSelected <> vbNullString Then
+        ' Dim ValueColumn As ValueColumn
+        ' Set ValueColumn = This.ValueColumns.Item(PreviousSelected)
+        ' If ValueColumn.Enabled Then
+            ' ValueColumn.Checked = True
+            ' ValueColumn.Selected = True
+            ' Set Selected = ValueColumn
+        ' End If
+    ' End If
     
     OnPropertyChanged "Item"
 End Sub
 
-Public Sub MapSelectedTo(ByVal ValueColumn As ValueColumn)
+Public Sub Map(ByVal SrcColumnKey As String)
     Debug.Assert This.Direction = Destination
-    Debug.Assert Not This.Selected Is Nothing
-    Set This.Selected.MappedTo = ValueColumn
+    Debug.Assert Not This.SelectedValueColumn Is Nothing
+    
+    This.SelectedValueColumn.MappedTo = SrcColumnKey
     
     OnPropertyChanged "Item"
 End Sub
 
-Public Sub UnmapSelected()
+Public Sub Unmap(ByVal DstColumnKey As String)
     Debug.Assert This.Direction = Destination
-    Debug.Assert Not This.Selected Is Nothing
-    Set This.Selected.MappedTo = Nothing
+    'Debug.Assert Not This.Selected Is Nothing
+    'Set This.Selected.MappedTo = Nothing
+    
+    This.ValueColumns.Item.Item(DstColumnKey).MappedTo = vbNullString
+    
+    OnPropertyChanged "Item"
+End Sub
+
+Public Sub TryUpdateSelected(ByVal ListItem As ListItem)
+    Dim CurrentSelection As ValueColumn
+    Set CurrentSelection = This.ValueColumns.GetByKey(ListItem.Key)
+    
+    Dim PreviousSelection As ValueColumn
+    If SelectedKey <> vbNullString Then
+        Set PreviousSelection = This.ValueColumns.GetByKey(SelectedKey)
+    End If
+    
+    If Not CurrentSelection.Enabled Then
+        If Not PreviousSelection Is Nothing Then
+            PreviousSelection.Selected = True
+        End If
+        CurrentSelection.Selected = False
+        ' SelectedKey doesn't change
+    Else
+        If Not PreviousSelection Is Nothing Then
+            PreviousSelection.Selected = False
+        End If
+        ' CurrentSelection is already set to True
+        SelectedKey = ListItem.Key
+    End If
+    
+    OnPropertyChanged "Item"
+End Sub
+
+Public Function CanUnmapAll() As Boolean
+    Dim Key As Variant
+    For Each Key In This.ValueColumns.Item.Keys
+        If This.ValueColumns.Item.Item(Key).MappedTo <> vbNullString Then
+            CanUnmapAll = True
+            Exit Function
+        End If
+    Next Key
+End Function
+
+Public Sub DoUnmapAll()
+    Dim Key As Variant
+    For Each Key In This.ValueColumns.Item.Keys
+        This.ValueColumns.Item.Item(Key).MappedTo = vbNullString
+    Next Key
     
     OnPropertyChanged "Item"
 End Sub

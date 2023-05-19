@@ -11,13 +11,11 @@ Attribute VB_Exposed = False
 '@Folder "MVVM.ValueMapper.Model"
 Option Explicit
 
-Private Const NOT_MAPPED As String = "(not mapped)"
-
 Private Type TValueColumn
     ListColumn As ListColumn
     Properties As ColumnProperty
     
-    MappedTo As ValueColumn
+    MappedTo As String
     
     IsKey As Boolean
     
@@ -38,26 +36,19 @@ End Property
 
 '@Description "Name of the underlying ListObject."
 Public Property Get Name() As String
+Attribute Name.VB_Description = "Name of the underlying ListObject."
     Name = This.ListColumn.Name
     If This.IsKey Then
         Name = Name & " (key column)"
     End If
 End Property
 
-Public Property Get MappedTo() As ValueColumn
-    Set MappedTo = This.MappedTo
+Public Property Get MappedTo() As String
+    MappedTo = This.MappedTo
 End Property
 
-Public Property Set MappedTo(ByVal vNewValue As ValueColumn)
-    Set This.MappedTo = vNewValue
-End Property
-
-Public Property Get MappedToAsString() As String
-    If This.MappedTo Is Nothing Then
-        MappedToAsString = NOT_MAPPED
-        Exit Property
-    End If
-    MappedToAsString = This.MappedTo.Name
+Public Property Let MappedTo(ByVal vNewValue As String)
+    This.MappedTo = vNewValue
 End Property
 
 Public Property Get DataType() As String
@@ -77,7 +68,7 @@ Public Property Get IsUnique() As Boolean
 End Property
 
 Public Property Get IsProtected() As Boolean
-    IsProtected = (ListColumnPropHelpers.ColumnIsLocked(This.ListColumn) <> None)
+    IsProtected = (ListColumnPropHelpers.ColumnIsLocked(This.ListColumn) <> none)
 End Property
 ' ---
 Public Property Get IsKey() As Boolean
@@ -114,13 +105,6 @@ Public Property Let Enabled(ByVal vNewValue As Boolean)
 End Property
 
 ' ---
-Public Sub Load(ByVal ListColumn As ListColumn)
-    Debug.Assert Not Me Is ValueColumn
-    Set This.ListColumn = ListColumn
-    Set This.Properties = New ColumnProperty
-    This.Properties.Load ListColumn
-End Sub
-
 Public Function Create(ByVal ListColumn As ListColumn) As ValueColumn
     Dim Result As ValueColumn
     Set Result = New ValueColumn
@@ -129,3 +113,23 @@ Public Function Create(ByVal ListColumn As ListColumn) As ValueColumn
     End With
     Set Create = Result
 End Function
+
+Public Sub Load(ByVal ListColumn As ListColumn)
+    Debug.Assert Not Me Is ValueColumn
+    Set This.ListColumn = ListColumn
+    Set This.Properties = New ColumnProperty
+    This.Properties.Load ListColumn
+    
+    AssessEnabled
+End Sub
+
+Private Sub AssessEnabled()
+    This.Enabled = True
+    
+    If This.Properties.ColumnType <> "Text" Then
+        This.Enabled = False
+        'Debug.Assert False
+    Else
+        'Debug.Assert False
+    End If
+End Sub

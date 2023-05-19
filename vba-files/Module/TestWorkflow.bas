@@ -1,4 +1,5 @@
 Attribute VB_Name = "TestWorkflow"
+'@IgnoreModule ImplicitActiveWorkbookReference
 '@Folder "TableTransfer"
 Option Explicit
 

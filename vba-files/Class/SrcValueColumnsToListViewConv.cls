@@ -17,18 +17,22 @@ Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Obje
 End Sub
 
 Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding)
+    'DebugPrintPropertyBinding PropertyBinding
+
     Dim ListView As ListView
     Set ListView = PropertyBinding.Target
     
     Dim VM As ValuePickerViewModel
     Set VM = PropertyBinding.Source
     
-    Dim ListItem As ListItem
-    For Each ListItem In ListView.ListItems
+    VM.TryUpdateSelected ListView.SelectedItem
+    
+    'Dim ListItem As ListItem
+    'For Each ListItem In ListView.ListItems
         ' Order matters, checked must be last
-        VM.TrySetColumnSelected PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Selected
-        VM.TrySetColumnChecked PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Checked
-    Next ListItem
+        'VM.TrySetColumnSelected PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Selected
+        'VM.TrySetColumnChecked PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Checked
+    'Next ListItem
 End Sub
 
 Private Sub ConvertSelectedItem(ByVal SelectedItemKey As String, ByVal ListView As ListView)
@@ -36,6 +40,9 @@ Private Sub ConvertSelectedItem(ByVal SelectedItemKey As String, ByVal ListView 
 End Sub
 
 Private Sub ConvertListItems(ByVal Dictionary As Scripting.Dictionary, ByVal ListView As ListView)
+    'Set ListView.SelectedItem = Nothing
+    Set ListView.DropHighlight = Nothing
+    
     Dim Key As Variant
     For Each Key In Dictionary.Keys
         Dim ThisValueColumn As ValueColumn
@@ -75,9 +82,13 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
         ListSubItem.ForeColor = ForeColor
     Next ListSubItem
     
-    ListItem.Bold = ValueColumn.Checked
-    ListItem.Checked = ValueColumn.Checked
-    ListItem.Selected = ValueColumn.Selected
+    'Debug.Print ValueColumn.Name; " "; ValueColumn.Selected
+    'ListItem.Bold = ValueColumn.Checked
+    If ValueColumn.Selected Then
+        ListItem.Selected = True
+        'Set ListView.SelectedItem = ListItem
+        Set ListView.DropHighlight = ListItem
+    End If
 End Sub
 
 Public Sub InitializeListView(ByVal ListView As ListView)
@@ -95,13 +106,13 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         
         .Appearance = cc3D
         .BorderStyle = ccNone
-        .CheckBoxes = True
+        .CheckBoxes = False
         .View = lvwReport
         .Gridlines = True
         .FullRowSelect = True
         .HideSelection = False
         .LabelEdit = lvwManual
-        .MultiSelect = True
+        .MultiSelect = False
     End With
 End Sub
 

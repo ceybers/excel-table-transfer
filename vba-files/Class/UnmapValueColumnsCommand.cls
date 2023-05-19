@@ -63,7 +63,3 @@ End Function
 Private Sub ICommand_Execute()
     mViewModel.DoUnmap
 End Sub
-
-
-
-

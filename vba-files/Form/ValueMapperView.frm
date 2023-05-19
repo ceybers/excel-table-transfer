@@ -25,6 +25,10 @@ Private Type TView
 End Type
 Private This As TView
 
+Private Sub CommandButton8_Click()
+    Stop
+End Sub
+
 Private Property Get IView_ViewModel() As Object
     Set IView_ViewModel = This.ViewModel
 End Property
@@ -106,8 +110,8 @@ End Sub
 
 Private Sub BindControls()
     With Context.BindingManager
-        .BindPropertyPath ViewModel, "SrcValueColumnVM.SelectedAsText", Me.txtSrcSelected, "Value", OneWayBinding
-        .BindPropertyPath ViewModel, "DstValueColumnVM.SelectedAsText", Me.txtDstSelected, "Value", OneWayBinding
+        .BindPropertyPath ViewModel, "SrcValueColumnVM.SelectedKey", Me.txtSrcSelected, "Value", OneWayBinding
+        .BindPropertyPath ViewModel, "DstValueColumnVM.SelectedKey", Me.txtDstSelected, "Value", OneWayBinding
         
         '.BindPropertyPath ViewModel, "EnableNontext", Me.chkEnableNontext, "Value", TwoWayBinding
         '.BindPropertyPath ViewModel, "EnableNonunique", Me.chkEnableNonunique, "Value", TwoWayBinding
@@ -130,11 +134,15 @@ Private Sub BindCommands()
     Dim UnmapValueColumns As ICommand
     Set UnmapValueColumns = UnmapValueColumnsCommand.Create(Context, Me, ViewModel)
     
+    Dim UnmapAllColumns As ICommand
+    Set UnmapAllColumns = UnmapAllColumnsCommand.Create(Context, Me, ViewModel)
+    
     With This.Context.CommandManager
         .BindCommand Context, ViewModel, OKView, Me.cmdOK
         .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
         .BindCommand Context, ViewModel, MapValueColumns, Me.cmbMapValueColumns
         .BindCommand Context, ViewModel, UnmapValueColumns, Me.cmbUnmapValueColumns
+        .BindCommand Context, ViewModel, UnmapAllColumns, Me.cmbUnmapAll
     End With
 End Sub
 

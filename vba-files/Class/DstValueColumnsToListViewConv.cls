@@ -8,27 +8,33 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder("MVVM.ValueMapper.Converters")
+'@Folder "MVVM.ValueMapper.Converters"
 Option Explicit
 Implements IValueConverter
+
+Private Const NOT_MAPPED As String = " (not mapped)"
 
 Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object)
     ConvertListItems Source, Target
 End Sub
 
 Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding)
+    'DebugPrintPropertyBinding PropertyBinding
+
     Dim ListView As ListView
     Set ListView = PropertyBinding.Target
     
     Dim VM As ValuePickerViewModel
     Set VM = PropertyBinding.Source
     
-    Dim ListItem As ListItem
-    For Each ListItem In ListView.ListItems
+    VM.TryUpdateSelected ListView.SelectedItem
+    
+    'Dim ListItem As ListItem
+    'For Each ListItem In ListView.ListItems
         ' Order matters, checked must be last
-        VM.TrySetColumnSelected PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Selected
-        VM.TrySetColumnChecked PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Checked
-    Next ListItem
+        'VM.TrySetColumnSelected PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Selected
+        'VM.TrySetColumnChecked PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Checked
+    'Next ListItem
 End Sub
 
 Private Sub ConvertSelectedItem(ByVal SelectedItemKey As String, ByVal ListView As ListView)
@@ -36,11 +42,14 @@ Private Sub ConvertSelectedItem(ByVal SelectedItemKey As String, ByVal ListView 
 End Sub
 
 Private Sub ConvertListItems(ByVal Dictionary As Scripting.Dictionary, ByVal ListView As ListView)
+    'Set ListView.SelectedItem = Nothing
+    Set ListView.DropHighlight = Nothing
+    
     Dim Key As Variant
     For Each Key In Dictionary.Keys
-        Dim ValueColumn As ValueColumn
-        Set ValueColumn = Dictionary.Item(Key)
-        LoadListItem ValueColumn, ListView
+        Dim ThisValueColumn As ValueColumn
+        Set ThisValueColumn = Dictionary.Item(Key)
+        LoadListItem ThisValueColumn, ListView
     Next Key
 End Sub
 
@@ -63,11 +72,11 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
     ForeColor = IIf(ValueColumn.Enabled, vbBlack, vbGrayText)
     
     With ListItem.ListSubItems
-        .Add Text:=ValueColumn.MappedToAsString
+        .Add Text:=IIf(ValueColumn.MappedTo = vbNullString, NOT_MAPPED, ValueColumn.MappedTo)
         .Add Text:=ValueColumn.DataType
         .Add Text:="A:A"
-        .Add Text:="Y" ' Protected
-        .Add Text:="N" ' Hidden
+        .Add Text:=IIf(ValueColumn.IsProtected, "Y", "N")
+        .Add Text:=IIf(ValueColumn.IsHidden, "Y", "N")
     End With
     
     ListItem.ForeColor = ForeColor
@@ -76,9 +85,13 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
         ListSubItem.ForeColor = ForeColor
     Next ListSubItem
     
-    ListItem.Bold = ValueColumn.Checked
-    ListItem.Checked = ValueColumn.Checked
-    ListItem.Selected = ValueColumn.Selected
+    'Debug.Print ValueColumn.Name; " "; ValueColumn.Selected
+    'ListItem.Bold = ValueColumn.Checked
+    If ValueColumn.Selected Then
+        ListItem.Selected = True
+        'Set ListView.SelectedItem = ListItem
+        Set ListView.DropHighlight = ListItem
+    End If
 End Sub
 
 Public Sub InitializeListView(ByVal ListView As ListView)
@@ -103,6 +116,6 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         .FullRowSelect = True
         .HideSelection = False
         .LabelEdit = lvwManual
-        .MultiSelect = True
+        .MultiSelect = False
     End With
 End Sub

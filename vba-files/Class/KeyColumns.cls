@@ -25,6 +25,7 @@ End Sub
 
 '@Enumerator
 Public Property Get Item() As Scripting.Dictionary
+Attribute Item.VB_UserMemId = -4
     Set Item = This.Item
 End Property
 ' ---
@@ -32,7 +33,7 @@ Public Property Get EnableNontext() As Boolean
     EnableNontext = This.EnableNontext
 End Property
 
-Public Property Let EnableNontext(vNewValue As Boolean)
+Public Property Let EnableNontext(ByVal vNewValue As Boolean)
     This.EnableNontext = vNewValue
 End Property
 

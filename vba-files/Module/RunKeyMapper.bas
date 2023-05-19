@@ -5,6 +5,7 @@ Private Const DO_DEBUG As Boolean = False
 
 '@Description "DoRunKeyMapper"
 Public Sub DoRunKeyMapper()
+Attribute DoRunKeyMapper.VB_Description = "DoRunKeyMapper"
     Dim ctx As IAppContext
     Set ctx = New AppContext
     
@@ -28,4 +29,3 @@ Public Sub DoRunKeyMapper()
         End If
     End With
 End Sub
-

@@ -32,7 +32,7 @@ Public Property Get DisableProtectedWorksheets() As Boolean
     DisableProtectedWorksheets = This.DisableProtectedWorksheets
 End Property
 
-Public Property Let DisableProtectedWorksheets(vNewValue As Boolean)
+Public Property Let DisableProtectedWorksheets(ByVal vNewValue As Boolean)
     This.DisableProtectedWorksheets = vNewValue
 End Property
 

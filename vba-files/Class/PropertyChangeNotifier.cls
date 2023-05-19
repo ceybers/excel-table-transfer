@@ -22,8 +22,6 @@ Private Sub Class_Initialize()
 End Sub
 
 Private Sub INotifyPropertyChanged_OnPropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
-    Dim vTest As Boolean
-    
     Dim Handler As IHandlePropertyChanged
     For Each Handler In This.Handlers
         Handler.HandlePropertyChanged Source, PropertyName

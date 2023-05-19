@@ -2,19 +2,19 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "CancelViewCommand"
+Attribute VB_Name = "UnmapAllColumnsCommand"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "MVVM.Common.Commands"
+'@Folder("MVVM.ValueMapper.Commands")
 Option Explicit
 Implements ICommand
 
 Private mView As IView
 Private mAppContext As IAppContext
-Private mViewModel As IViewModel
+Private mViewModel As ValueMapperViewModel
 
 Public Property Get Context() As IAppContext
     Set Context = mAppContext
@@ -41,13 +41,13 @@ Public Property Set ViewModel(ByVal vNewValue As IViewModel)
 End Property
 
 Private Property Get ICommand_Caption() As String
-    ICommand_Caption = "Cancel"
+    ICommand_Caption = "Unmap all"
 End Property
 
 Public Function Create(ByVal Context As IAppContext, ByVal View As IView, ByVal ViewModel As IViewModel) _
-    As CancelViewCommand
-    Dim Result As CancelViewCommand
-    Set Result = New CancelViewCommand
+    As UnmapAllColumnsCommand
+    Dim Result As UnmapAllColumnsCommand
+    Set Result = New UnmapAllColumnsCommand
     With Result
         Set .Context = Context
         Set .View = View
@@ -57,14 +57,15 @@ Public Function Create(ByVal Context As IAppContext, ByVal View As IView, ByVal 
 End Function
 
 Private Function ICommand_CanExecute() As Boolean
-    ICommand_CanExecute = True
+    ICommand_CanExecute = mViewModel.CanUnmapAll
 End Function
 
 Private Sub ICommand_Execute()
-    'Debug.Print "CancelViewCommand executing"
-    Dim Cancellable As ICancellable
-    '@Ignore SetAssignmentWithIncompatibleObjectType
-    Set Cancellable = mView
-    Cancellable.OnCancel
+    mViewModel.DoUnmapAll
 End Sub
+
+
+
+
+
 

@@ -32,6 +32,7 @@ End Property
 
 '@Description "Name of the underlying ListObject."
 Public Property Get Name() As String
+Attribute Name.VB_Description = "Name of the underlying ListObject."
     Name = This.ListColumn.Name
 End Property
 
@@ -87,4 +88,3 @@ Public Function Create(ByVal ListColumn As ListColumn) As KeyColumn
     End With
     Set Create = Result
 End Function
-

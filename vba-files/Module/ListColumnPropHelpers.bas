@@ -7,7 +7,7 @@ Private Const SOME_CAPTION As String = "Some"
 Private Const ALL_CAPTION As String = "All"
 
 Public Enum Result
-    None
+    none
     Some
     All
 End Enum
@@ -26,7 +26,7 @@ Public Function ColumnHasBlanks(ByVal ListColumn As ListColumn) As Result
 End Function
 
 Public Function ColumnHasErrors(ByVal ListColumn As ListColumn) As Result
-    ColumnHasErrors = Result.None
+    ColumnHasErrors = Result.none
     Exit Function
     
     Dim ConstantError As String
@@ -57,7 +57,7 @@ Public Function ColumnIsLocked(ByVal ListColumn As ListColumn) As Result
     If ListColumn.DataBodyRange.Locked = True Then
         ColumnIsLocked = Result.All
     ElseIf ListColumn.DataBodyRange.Locked = False Then
-            ColumnIsLocked = Result.None
+            ColumnIsLocked = Result.none
     ElseIf IsNull(ListColumn.DataBodyRange.Locked) Then
         ColumnIsLocked = Result.Some
     Else
@@ -76,7 +76,7 @@ Private Function ColumnHasSpecialCells(ByVal ListColumn As ListColumn, ByVal XlC
     On Error GoTo 0
     
     If BlankRowRange Is Nothing Then
-        ColumnHasSpecialCells = Result.None
+        ColumnHasSpecialCells = Result.none
         Exit Function
     End If
     
@@ -90,7 +90,7 @@ End Function
 
 Public Function EnumToString(ByVal EnumValue As Result) As String
     Select Case EnumValue
-        Case Result.None:
+        Case Result.none:
             EnumToString = NONE_CAPTION
         Case Result.Some:
             EnumToString = SOME_CAPTION
@@ -116,7 +116,7 @@ Public Function ColumnIsUnique(ByVal ListColumn As ListColumn) As Result
     If Dict.Count = UBound(Value2) Then
         ColumnIsUnique = Result.All
     Else
-        ColumnIsUnique = Result.None
+        ColumnIsUnique = Result.none
     End If
 End Function
 
