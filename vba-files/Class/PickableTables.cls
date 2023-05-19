@@ -13,8 +13,8 @@ Option Explicit
 
 Private Type TPickableTables
     Item As Scripting.Dictionary ' of type PickableTable
-    ShowSmallTables As Boolean
-    ShowProtectedWorksheets As Boolean
+    DisableProtectedWorksheets As Boolean
+    DisableReadonlyWorksheets As Boolean
 End Type
 Private This As TPickableTables
 
@@ -27,9 +27,32 @@ Public Property Get Item() As Scripting.Dictionary
 Attribute Item.VB_UserMemId = -4
     Set Item = This.Item
 End Property
+' ---
+Public Property Get DisableProtectedWorksheets() As Boolean
+    DisableProtectedWorksheets = This.DisableProtectedWorksheets
+End Property
 
+Public Property Let DisableProtectedWorksheets(vNewValue As Boolean)
+    This.DisableProtectedWorksheets = vNewValue
+End Property
+
+Public Property Get DisableReadonlyWorksheets() As Boolean
+    DisableReadonlyWorksheets = This.DisableReadonlyWorksheets
+End Property
+
+Public Property Let DisableReadonlyWorksheets(ByVal vNewValue As Boolean)
+    This.DisableReadonlyWorksheets = vNewValue
+End Property
+
+' ---
 Public Sub Load(ByVal Application As Application)
     Debug.Assert Not Me Is PickableTables
+    
+    Reload
+End Sub
+
+Public Sub Reload()
+    This.Item.RemoveAll
     
     Dim Workbook As Workbook
     Dim Worksheet As Worksheet
@@ -38,12 +61,17 @@ Public Sub Load(ByVal Application As Application)
     For Each Workbook In Application.Workbooks
         For Each Worksheet In Workbook.Worksheets
             For Each ListObject In Worksheet.ListObjects
-                Dim ThisPickableTable As PickableTable
-                Set ThisPickableTable = PickableTable.Create(ListObject)
-                This.Item.Add Key:=ThisPickableTable.Key, Item:=ThisPickableTable
+                TryAdd PickableTable.Create(ListObject)
             Next ListObject
         Next Worksheet
     Next Workbook
+End Sub
+
+Private Sub TryAdd(ByVal PickableTable As PickableTable)
+    If This.DisableProtectedWorksheets And PickableTable.WorksheetLocked Then PickableTable.Enabled = False
+    If This.DisableReadonlyWorksheets And PickableTable.WorkbookReadonly Then PickableTable.Enabled = False
+    
+    This.Item.Add Key:=PickableTable.Key, Item:=PickableTable
 End Sub
 
 Private Function IsFiltered(ByVal PickableTable As PickableTable) As Boolean

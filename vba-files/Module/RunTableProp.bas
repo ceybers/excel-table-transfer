@@ -1,12 +1,12 @@
-Attribute VB_Name = "RunTablePropView"
+Attribute VB_Name = "RunTableProp"
 '@Folder "MVVM.TableProps"
 Option Explicit
 
 Private Const DO_DEBUG As Boolean = False
 
-'@Description "DoRun"
+'@Description "DoRunTableProp"
 Public Sub DoRunTableProp()
-Attribute DoRunTableProp.VB_Description = "DoRun"
+Attribute DoRunTableProp.VB_Description = "DoRunTableProp"
     Dim ctx As IAppContext
     Set ctx = New AppContext
     

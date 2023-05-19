@@ -1,4 +1,4 @@
-Attribute VB_Name = "RunDirectionPickerView"
+Attribute VB_Name = "RunDirectionPicker"
 '@Folder("MVVM.DirectionPicker")
 Option Explicit
 

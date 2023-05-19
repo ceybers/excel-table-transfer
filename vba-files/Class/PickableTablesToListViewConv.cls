@@ -25,9 +25,10 @@ Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBindin
     
     Dim ListItem As ListItem
     For Each ListItem In ListView.ListItems
-        VM.TrySetColumnChecked PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Checked
+        ' Order matters, checked must be last
         VM.TrySetColumnSelected PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Selected
-    Next
+        VM.TrySetColumnChecked PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Checked
+    Next ListItem
 End Sub
 
 Private Sub ConvertSelectedItem(ByVal SelectedItemKey As String, ByVal ListView As ListView)
@@ -63,9 +64,9 @@ Private Sub LoadListItem(ByVal PickableTable As PickableTable, ByVal ListView As
     
     ListItem.ListSubItems.Add Text:=PickableTable.WorksheetName
     ListItem.ListSubItems.Add Text:=PickableTable.WorkbookName
-    ListItem.ListSubItems.Add Text:="Local"
-    ListItem.ListSubItems.Add Text:="Yes"
-    ListItem.ListSubItems.Add Text:="No"
+    ListItem.ListSubItems.Add Text:=PickableTable.StorageLocation
+    ListItem.ListSubItems.Add Text:=IIf(PickableTable.WorksheetLocked, "Y", "N")
+    ListItem.ListSubItems.Add Text:=IIf(PickableTable.WorkbookReadonly, "Y", "N")
     
     ListItem.ForeColor = ForeColor
     Dim ListSubItem As ListSubItem

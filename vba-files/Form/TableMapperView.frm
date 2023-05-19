@@ -104,12 +104,10 @@ End Sub
 
 Private Sub BindControls()
     With Context.BindingManager
-        .BindPropertyPath ViewModel, "DummyBoolean", Me.cmdOK, "Enabled", OneTimeBinding
+        .BindPropertyPath ViewModel, "EnableProtected", Me.chkEnableProtected, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "EnableReadonly", Me.chkEnableReadOnly, "Value", TwoWayBinding
         
-        '.BindPropertyPath ViewModel, "SrcTableVM.Caption", Me.fraSrc, "Caption", OneTimeBinding
         .BindPropertyPath ViewModel, "SrcTableVM.Item", Me.lvSrcTables, "ListItems", TwoWayBinding, PickableTablesToListViewConv
-        
-        '.BindPropertyPath ViewModel, "DstTableVM.Caption", Me.fraDst, "Caption", OneTimeBinding
         .BindPropertyPath ViewModel, "DstTableVM.Item", Me.lvDstTables, "ListItems", TwoWayBinding, PickableTablesToListViewConv
     End With
 End Sub
@@ -124,8 +122,6 @@ Private Sub BindCommands()
     With This.Context.CommandManager
         .BindCommand Context, ViewModel, OKView, Me.cmdOK
         .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
-        '.BindCommand Context, ViewModel, DirectionSource, Me.cmbDirectionSource
-        '.BindCommand Context, ViewModel, DirectionDestination, Me.cmbDirectionDestination
     End With
 End Sub
 

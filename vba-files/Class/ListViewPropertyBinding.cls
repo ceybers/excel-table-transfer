@@ -13,7 +13,7 @@ Option Explicit
 Implements IPropertyBinding
 Implements IHandlePropertyChanged
 
-Private Const DO_DEBUG As Boolean = True
+Private Const DO_DEBUG As Boolean = False
 
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents mListView As MSComctlLib.ListView
@@ -144,7 +144,7 @@ End Sub
 Private Sub UpdateListViewListItems()
     If DO_DEBUG Then Debug.Print "ListViewPropertyBinding UpdateListViewListItems()"
     
-    mListView.ListItems.Clear
+    
     
     Dim NewList As Object
     Set NewList = CallByName(This.ViewModel, This.SourcePropertyPath, VbGet)
@@ -153,6 +153,7 @@ Private Sub UpdateListViewListItems()
         This.ValueConverter.Convert Source:=NewList, Target:=mListView
     Else
         ' TODO Move to Default Value Converter
+        mListView.ListItems.Clear
         Dim Key As Variant
         For Each Key In NewList.Keys
             mListView.ListItems.Add Key:=Key, Text:=NewList.Item(Key)

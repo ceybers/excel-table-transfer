@@ -16,6 +16,7 @@ Private Type TPickableTable
     Key As String
     Name As String
     Size As String
+    StorageLocation As String
     
     ' TODO Consider impl IListable?
     Selected As Boolean
@@ -62,6 +63,22 @@ Attribute WorkbookName.VB_Description = "Name of the underlying Workbook."
     WorkbookName = This.ListObject.Parent.Parent.Name
 End Property
 
+Public Property Get WorksheetLocked() As Boolean
+    Dim Worksheet As Worksheet
+    Set Worksheet = This.ListObject.Parent
+    WorksheetLocked = Worksheet.ProtectContents
+End Property
+
+Public Property Get WorkbookReadonly() As Boolean
+    Dim Workbook As Workbook
+    Set Workbook = This.ListObject.Parent.Parent
+    WorkbookReadonly = Workbook.ReadOnly
+End Property
+
+Public Property Get StorageLocation() As String
+    StorageLocation = This.StorageLocation
+End Property
+
 Public Property Get Selected() As Boolean
     Selected = This.Selected
 End Property
@@ -92,6 +109,11 @@ Public Sub Load(ByVal ListObject As ListObject)
     This.Name = ListObject.Name
     This.Size = "R" & ListObject.DataBodyRange.Rows.Count & "C" & ListObject.DataBodyRange.Columns.Count
     This.Enabled = True
+    
+    Dim wbProp As WorkbookProperty
+    Set wbProp = New WorkbookProperty
+    Set wbProp.Workbook = ListObject.Parent.Parent
+    This.StorageLocation = Left$(wbProp.ToString(wbProp.StorageLocation), 1)
 End Sub
 
 Public Function Create(ByVal ListObject As ListObject) As PickableTable

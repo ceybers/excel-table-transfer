@@ -17,6 +17,9 @@ Private Type TState
 
     SrcTableVM As TablePickerViewModel
     DstTableVM As TablePickerViewModel
+    
+    EnableProtected As Boolean
+    EnableReadonly As Boolean
 End Type
 Private This As TState
 
@@ -46,8 +49,6 @@ End Sub
 
 Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
-    Set This.SrcTableVM = New TablePickerViewModel
-    Set This.DstTableVM = New TablePickerViewModel
 End Sub
 
 '---
@@ -59,8 +60,24 @@ Public Property Get DstTableVM() As TablePickerViewModel
     Set DstTableVM = This.DstTableVM
 End Property
 
-Public Property Get DummyBoolean() As Boolean
-    DummyBoolean = True
+Public Property Get EnableProtected() As Boolean
+    EnableProtected = This.EnableProtected
+End Property
+
+Public Property Let EnableProtected(ByVal vNewValue As Boolean)
+    If This.EnableProtected = vNewValue Then Exit Property
+    This.EnableProtected = vNewValue
+    OnPropertyChanged "EnableProtected"
+End Property
+
+Public Property Get EnableReadonly() As Boolean
+    EnableReadonly = This.EnableReadonly
+End Property
+
+Public Property Let EnableReadonly(ByVal vNewValue As Boolean)
+    If This.EnableReadonly = vNewValue Then Exit Property
+    This.EnableReadonly = vNewValue
+    OnPropertyChanged "EnableReadonly"
 End Property
 
 '---
@@ -70,9 +87,6 @@ Public Sub Load(ByVal ListObject As ListObject)
     Set Worksheet = ListObject.Parent
     Set Workbook = Worksheet.Parent
     
-    This.SrcTableVM.Load ListObject
-    SrcTableVM.Caption = "Source Table"
-    
-    This.DstTableVM.Load ListObject
-    DstTableVM.Caption = "Destination Table"
+    Set This.SrcTableVM = TablePickerViewModel.Create(ListObject, "Source Table", Source, This.Notifier)
+    Set This.DstTableVM = TablePickerViewModel.Create(ListObject, "Destination Table", Destination, This.Notifier)
 End Sub

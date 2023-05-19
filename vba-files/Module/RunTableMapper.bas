@@ -6,7 +6,7 @@ Private Const DO_DEBUG As Boolean = False
 
 '@Description "DoRunTableMapper"
 Public Sub DoRunTableMapper()
-Attribute DoRunTableMapper.VB_Description = "DoRun"
+Attribute DoRunTableMapper.VB_Description = "DoRunTableMapper"
     Dim ctx As IAppContext
     Set ctx = New AppContext
     
@@ -21,8 +21,8 @@ Attribute DoRunTableMapper.VB_Description = "DoRun"
         If .ShowDialog() Then
             If DO_DEBUG Then Debug.Print "TableMapper.ShowDialog(vm) returned True"
             Debug.Print "TableMapper result:"
-            'Debug.Print " Src: "; VM.Source.Name
-            'Debug.Print " Dst: "; VM.Destination.Name
+            Debug.Print " Src: "; VM.SrcTableVM.SelectedAsText
+            Debug.Print " Dst: "; VM.DstTableVM.SelectedAsText
             Debug.Print vbNullString
         Else
             If DO_DEBUG Then Debug.Print "TableMapper.ShowDialog(vm) returned False"
