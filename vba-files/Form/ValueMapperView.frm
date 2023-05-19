@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} ValueMapperView
    ClientHeight    =   8205.001
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   10770
+   ClientWidth     =   12150
    OleObjectBlob   =   "ValueMapperView.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -106,7 +106,8 @@ End Sub
 
 Private Sub BindControls()
     With Context.BindingManager
-        '.BindPropertyPath ViewModel, "SrcKeyColumnVM.SelectedAsText", Me.TextBox1, "Value", OneWayBinding
+        .BindPropertyPath ViewModel, "SrcValueColumnVM.SelectedAsText", Me.txtSrcSelected, "Value", OneWayBinding
+        .BindPropertyPath ViewModel, "DstValueColumnVM.SelectedAsText", Me.txtDstSelected, "Value", OneWayBinding
         
         '.BindPropertyPath ViewModel, "EnableNontext", Me.chkEnableNontext, "Value", TwoWayBinding
         '.BindPropertyPath ViewModel, "EnableNonunique", Me.chkEnableNonunique, "Value", TwoWayBinding
@@ -123,9 +124,17 @@ Private Sub BindCommands()
     Dim CancelView As ICommand
     Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
     
+    Dim MapValueColumns As ICommand
+    Set MapValueColumns = MapValueColumnsCommand.Create(Context, Me, ViewModel)
+    
+    Dim UnmapValueColumns As ICommand
+    Set UnmapValueColumns = UnmapValueColumnsCommand.Create(Context, Me, ViewModel)
+    
     With This.Context.CommandManager
         .BindCommand Context, ViewModel, OKView, Me.cmdOK
         .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
+        .BindCommand Context, ViewModel, MapValueColumns, Me.cmbMapValueColumns
+        .BindCommand Context, ViewModel, UnmapValueColumns, Me.cmbUnmapValueColumns
     End With
 End Sub
 

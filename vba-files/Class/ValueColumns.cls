@@ -14,6 +14,7 @@ Option Explicit
 Private Type TValueColumns
     ListObject As ListObject
     Item As Scripting.Dictionary ' of type ValueColumn
+    
     EnableNontext As Boolean
     EnableNonunique As Boolean
 End Type
@@ -63,7 +64,6 @@ End Sub
 
 Private Sub TryAdd(ByVal ValueColumn As ValueColumn)
     ValueColumn.Enabled = True
-    
     'If (Not This.EnableNontext) And (Not ValueColumn.IsText) Then ValueColumn.Enabled = False
     'If (Not This.EnableNonunique) And (Not ValueColumn.IsUnique) Then ValueColumn.Enabled = False
     

@@ -80,9 +80,45 @@ Public Property Let EnableNonunique(ByVal vNewValue As Boolean)
 End Property
 
 '---
-Public Sub Load(ByVal SrcTable As ListObject, ByVal DstTable As ListObject)
+'Public Sub Load(ByVal SrcTable As ListObject, ByVal DstTable As ListObject)
+Public Sub Load(ByVal SrcColumn As ListColumn, ByVal DstColumn As ListColumn)
+    Dim SrcTable As ListObject
+    Dim DstTable As ListObject
+    Set SrcTable = SrcColumn.Parent
+    Set DstTable = DstColumn.Parent
+    
     Set This.SrcValueColumnVM = ValuePickerViewModel.Create(SrcTable, "Value Columns for Source Table", Source, This.Notifier)
     Set This.DstValueColumnVM = ValuePickerViewModel.Create(DstTable, "Value Columns for Destination Table", Destination, This.Notifier)
+
+    SrcValueColumnVM.MarkKeyColumn SrcColumn
+    DstValueColumnVM.MarkKeyColumn DstColumn
 End Sub
 
+Public Function CanMap() As Boolean
+    If This.SrcValueColumnVM.Selected Is Nothing Then Exit Function
+    If This.DstValueColumnVM.Selected Is Nothing Then Exit Function
+    
+    ' Will this work? if we are reloading valuecolumns, it might create new instances
+    If Not This.DstValueColumnVM.Selected.MappedTo Is Nothing Then
+        If This.DstValueColumnVM.Selected.MappedTo.Key = This.SrcValueColumnVM.Selected.Key Then
+            Exit Function
+        End If
+    End If
+    
+    CanMap = True
+End Function
 
+Public Function CanUnmap() As Boolean
+    If This.DstValueColumnVM.Selected Is Nothing Then Exit Function
+    If This.DstValueColumnVM.Selected.MappedTo Is Nothing Then Exit Function
+    
+    CanUnmap = True
+End Function
+
+Public Sub DoMap()
+    This.DstValueColumnVM.MapSelectedTo This.SrcValueColumnVM.Selected
+End Sub
+
+Public Sub DoUnmap()
+    This.DstValueColumnVM.UnmapSelected
+End Sub

@@ -144,6 +144,23 @@ Public Sub TrySetColumnSelected(ByVal PropertyPath As String, ByVal ItemKey As S
     
     If ValueColumn.Selected = vNewValue Then Exit Sub
     ValueColumn.Selected = vNewValue
+    
+    If vNewValue Then
+        If Not ValueColumn.Enabled Then
+            ValueColumn.Selected = False
+            OnPropertyChanged "Item"
+            Exit Sub
+        End If
+        If Not This.Selected Is Nothing Then
+            This.Selected.Selected = False
+        End If
+        Set Selected = ValueColumn
+        OnPropertyChanged "Item"
+    Else
+        This.Selected.Selected = False
+        Set Selected = Nothing
+        OnPropertyChanged "Item"
+    End If
 End Sub
 
 Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
@@ -179,4 +196,32 @@ Private Sub ReloadValueColumns()
     OnPropertyChanged "Item"
 End Sub
 
+Public Sub MarkKeyColumn(ByVal ListColumn As ListColumn)
+    Dim Key As Variant
+    For Each Key In This.ValueColumns.Item.Keys
+        Dim ValueColumn As ValueColumn
+        Set ValueColumn = This.ValueColumns.Item(Key)
+        If ValueColumn.Key = ListColumn.Name Then
+            ValueColumn.IsKey = True
+            ValueColumn.Enabled = False
+        End If
+    Next Key
+    
+    OnPropertyChanged "Item"
+End Sub
 
+Public Sub MapSelectedTo(ByVal ValueColumn As ValueColumn)
+    Debug.Assert This.Direction = Destination
+    Debug.Assert Not This.Selected Is Nothing
+    Set This.Selected.MappedTo = ValueColumn
+    
+    OnPropertyChanged "Item"
+End Sub
+
+Public Sub UnmapSelected()
+    Debug.Assert This.Direction = Destination
+    Debug.Assert Not This.Selected Is Nothing
+    Set This.Selected.MappedTo = Nothing
+    
+    OnPropertyChanged "Item"
+End Sub

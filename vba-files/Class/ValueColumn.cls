@@ -11,9 +11,15 @@ Attribute VB_Exposed = False
 '@Folder "MVVM.ValueMapper.Model"
 Option Explicit
 
+Private Const NOT_MAPPED As String = "(not mapped)"
+
 Private Type TValueColumn
     ListColumn As ListColumn
     Properties As ColumnProperty
+    
+    MappedTo As ValueColumn
+    
+    IsKey As Boolean
     
     ' TODO Consider impl IListable?
     Selected As Boolean
@@ -33,10 +39,33 @@ End Property
 '@Description "Name of the underlying ListObject."
 Public Property Get Name() As String
     Name = This.ListColumn.Name
+    If This.IsKey Then
+        Name = Name & " (key column)"
+    End If
+End Property
+
+Public Property Get MappedTo() As ValueColumn
+    Set MappedTo = This.MappedTo
+End Property
+
+Public Property Set MappedTo(ByVal vNewValue As ValueColumn)
+    Set This.MappedTo = vNewValue
+End Property
+
+Public Property Get MappedToAsString() As String
+    If This.MappedTo Is Nothing Then
+        MappedToAsString = NOT_MAPPED
+        Exit Property
+    End If
+    MappedToAsString = This.MappedTo.Name
 End Property
 
 Public Property Get DataType() As String
     DataType = This.Properties.ColumnType
+End Property
+
+Public Property Get IsHidden() As Boolean
+    IsHidden = (This.ListColumn.DataBodyRange.ColumnWidth = 0)
 End Property
 
 Public Property Get IsText() As Boolean
@@ -46,6 +75,19 @@ End Property
 Public Property Get IsUnique() As Boolean
     IsUnique = ListColumnPropHelpers.ColumnIsUnique(This.ListColumn)
 End Property
+
+Public Property Get IsProtected() As Boolean
+    IsProtected = (ListColumnPropHelpers.ColumnIsLocked(This.ListColumn) <> None)
+End Property
+' ---
+Public Property Get IsKey() As Boolean
+    IsKey = This.IsKey
+End Property
+ 
+Public Property Let IsKey(ByVal vNewValue As Boolean)
+    This.IsKey = vNewValue
+End Property
+
 ' ---
 Public Property Get Selected() As Boolean
     Selected = This.Selected
@@ -87,5 +129,3 @@ Public Function Create(ByVal ListColumn As ListColumn) As ValueColumn
     End With
     Set Create = Result
 End Function
-
-

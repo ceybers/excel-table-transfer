@@ -64,8 +64,9 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
     
     With ListItem.ListSubItems
         .Add Text:=ValueColumn.DataType
-        '.Add Text:=IIf(ValueColumn.IsText, "Y", "N")
-        '.Add Text:=IIf(ValueColumn.IsUnique, "Y", "N")
+        .Add Text:="A:A"
+        .Add Text:=IIf(ValueColumn.IsProtected, "Y", "N")
+        .Add Text:=IIf(ValueColumn.IsHidden, "Y", "N")
     End With
     
     ListItem.ForeColor = ForeColor
@@ -88,10 +89,9 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         
         .ColumnHeaders.Add Text:="Name", Width:=72
         .ColumnHeaders.Add Text:="Type", Width:=48
-        '.ColumnHeaders.Add Text:="IsText", Width:=48
-        '.ColumnHeaders.Add Text:="IsUnique", Width:=32
-        '.ColumnHeaders.Add Text:="D", Width:=24
-        '.ColumnHeaders.Add Text:="E", Width:=24
+        .ColumnHeaders.Add Text:="Address", Width:=48
+        .ColumnHeaders.Add Text:="IsProtected", Width:=32
+        .ColumnHeaders.Add Text:="IsHidden", Width:=24
         
         .Appearance = cc3D
         .BorderStyle = ccNone
@@ -101,6 +101,7 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         .FullRowSelect = True
         .HideSelection = False
         .LabelEdit = lvwManual
+        .MultiSelect = True
     End With
 End Sub
 
