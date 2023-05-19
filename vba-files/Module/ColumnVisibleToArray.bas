@@ -7,7 +7,7 @@ Public Function VisibleRangeToArray(ByVal rng As Range) As Variant
     
     Dim arr As Variant
     Dim vis As Variant
-    arr = rng.value
+    arr = rng.Value
     vis = GetVisibilityMask(rng)
     ApplyBitmask arr, vis
     'arr = modArrayEx.ArrayDistinct(arr)
@@ -21,7 +21,7 @@ Private Function GetVisibilityMask(ByVal rng As Range) As Variant
     Dim maskRng As Range
     Dim origin As Range
     
-    bitmask = rng.value
+    bitmask = rng.Value
     'ReDim bitmask(LBound(bitmask, 1) To UBound(bitmask, 1), LBound(bitmask, 2) To UBound(bitmask, 2))
     ReDim bitmask(LBound(bitmask, 1) To UBound(bitmask, 1), 1 To 1)
     

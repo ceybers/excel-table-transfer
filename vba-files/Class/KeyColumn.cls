@@ -12,230 +12,224 @@ Attribute VB_Exposed = False
 '@Folder "MVVM.Models.KeyColumn"
 Option Explicit
 
+Private Const EMPTY_TABLE_MESSAGE As String = "Cannot create clsKeyColumn with a column in an empty table"
+Private Const DISJOINT_RANGE_MESSAGE As String = "Cannot create clsKeyColumn with a range that spans multiple columns"
+Private Const NO_CELLS_AFTER_FILTER_MESSAGE As String = "No cells were visible after filtering"
+Private Const LOAD_RANGE_FAILED As String = "KeyColumn.LoadRange failed"
+Private Const MAX_LIMIT As Long = 2147483647
+
 Private Type TClsKeyColumn
     Dict As Object
+    Range As Range
+    Array As Variant
+    
     Distinct As Collection
     Unique As Collection
-    rng As Range
+    
     IncludeNumbersAsText As Boolean
+    RespectFilter As Boolean
+    
     ErrorCount As Long
     BlankCount As Long
     NonTextCount As Long
-    Array As Variant
-    RespectFilter As Boolean
+    
     Limit As Long
 End Type
-
-Private this As TClsKeyColumn
+Private This As TClsKeyColumn
 
 Public Property Get Limit() As Double
-    Limit = this.Limit
+    Limit = This.Limit
 End Property
 
-Public Property Let Limit(ByVal rhs As Double)
-    this.Limit = rhs
+Public Property Let Limit(ByVal vNewValue As Double)
+    This.Limit = vNewValue
 End Property
 
 Public Property Get DistinctPercentage() As Double
-    If this.rng.Cells.Count = 0 Then Exit Property
-    DistinctPercentage = this.Distinct.Count / this.rng.Cells.Count
+    If This.Range.Cells.Count = 0 Then Exit Property
+    DistinctPercentage = This.Distinct.Count / This.Range.Cells.Count
 End Property
 
 Public Property Get GetArray() As Variant
-    GetArray = this.Array
+    GetArray = This.Array
 End Property
 
 Public Property Get Range() As Range
-    Set Range = this.rng
+    Set Range = This.Range
 End Property
 
-Public Property Set Range(ByVal rhs As Range)
-    If rhs Is Nothing Then
-        Err.Raise Number:=vbObjectError + 1, Description:="Cannot create clsKeyColumn with a column in an empty table"
+Public Property Set Range(ByVal vNewValue As Range)
+    If vNewValue Is Nothing Then
+        Err.Raise Number:=vbObjectError + 1, Description:=EMPTY_TABLE_MESSAGE
         Exit Property
     End If
-    If Not IsRangeASingleColumn(rhs) Then
-        Err.Raise Number:=vbObjectError + 1, Description:="Cannot create clsKeyColumn with a range that spans multiple columns"
+    If Not IsRangeASingleColumn(vNewValue) Then
+        Err.Raise Number:=vbObjectError + 1, Description:=DISJOINT_RANGE_MESSAGE
         Exit Property
     End If
-    Set this.rng = rhs
-    LoadRange rhs
+    Set This.Range = vNewValue
+    LoadRange vNewValue
 End Property
 
 Public Property Get RespectFilter() As Boolean
-    RespectFilter = this.RespectFilter
+    RespectFilter = This.RespectFilter
 End Property
 
-Public Property Let RespectFilter(ByVal rhs As Boolean)
-    this.RespectFilter = rhs
+Public Property Let RespectFilter(ByVal vNewValue As Boolean)
+    This.RespectFilter = vNewValue
 End Property
 
 Public Property Get IncludeNumbersAsText() As Boolean
-    IncludeNumbersAsText = this.IncludeNumbersAsText
+    IncludeNumbersAsText = This.IncludeNumbersAsText
 End Property
 
-Public Property Let IncludeNumbersAsText(ByVal rhs As Boolean)
-    this.IncludeNumbersAsText = rhs
+Public Property Let IncludeNumbersAsText(ByVal vNewValue As Boolean)
+    This.IncludeNumbersAsText = vNewValue
 End Property
 
 Public Property Get NonTextCount() As Long
-    NonTextCount = this.NonTextCount
+    NonTextCount = This.NonTextCount
 End Property
 
 Public Property Get ErrorCount() As Long
-    ErrorCount = this.ErrorCount
+    ErrorCount = This.ErrorCount
 End Property
 
 Public Property Get BlankCount() As Long
-    BlankCount = this.BlankCount
+    BlankCount = This.BlankCount
 End Property
 
 Public Property Get Keys() As Collection
-    Set Keys = this.Distinct
+    Set Keys = This.Distinct
 End Property
 
 Public Property Get Count() As Long
-    Count = this.Distinct.Count
+    Count = This.Distinct.Count
 End Property
 
 Public Property Get UniqueKeys() As Collection
-    Set UniqueKeys = this.Unique
+    Set UniqueKeys = This.Unique
 End Property
 
+Public Property Get IsDistinct() As Boolean
+    IsDistinct = (This.Unique.Count = This.Distinct.Count)
+End Property
+
+' ---
 Private Sub LoadRange(ByVal rng As Range)
     Debug.Assert rng.Columns.Count = 1
-    Set this.Dict = CreateObject("Scripting.Dictionary")
+    Set This.Dict = CreateObject("Scripting.Dictionary")
     Dim a As Range
-    Dim v As Variant
+    Dim V As Variant
     Dim vv As Variant
     
-    If this.RespectFilter Then
+    If This.RespectFilter Then
         On Error Resume Next
         Set rng = rng.SpecialCells(xlCellTypeVisible)
         On Error GoTo 0
         If rng Is Nothing Then
-            MsgBox "No cells were visible after filtering"
-            Err.Raise 5, , "KeyColumn.LoadRange failed"
+            MsgBox NO_CELLS_AFTER_FILTER_MESSAGE
+            Err.Raise 5, , LOAD_RANGE_FAILED
         End If
     End If
     
     Dim n As Long
     For Each a In rng.Areas
-        v = a.Value2
-        If VarType(v) = vbArray + vbVariant Then
-            For Each vv In v
+        V = a.Value2
+        If VarType(V) = vbArray + vbVariant Then
+            For Each vv In V
                 ProcessVariants vv
                 n = n + 1
-                If n > this.Limit Then GoTo LimitReached
+                If n > This.Limit Then GoTo LimitReached
             Next vv
         Else
-            ProcessVariants v
+            ProcessVariants V
             n = n + 1
-            If n > this.Limit Then GoTo LimitReached
+            If n > This.Limit Then GoTo LimitReached
         End If
     Next a
     
 LimitReached:
-    
     SetUnique
     SetDistinct
     
-    this.Array = DisjointRangeToArray(rng)
+    This.Array = DisjointRangeToArray(rng)
 End Sub
 
-Private Sub ProcessVariants(ByVal v As Variant)
-    Select Case VarType(v)
+Private Sub ProcessVariants(ByVal Value As Variant)
+    Select Case VarType(Value)
         Case vbString
-            If v = vbNullString Then
-                this.BlankCount = this.BlankCount + 1
+            If Value = vbNullString Then
+                This.BlankCount = This.BlankCount + 1
             Else
-                AppendOrIncrement v
+                AppendOrIncrement Value
             End If
         Case vbDouble
             If IncludeNumbersAsText = True Then
-                AppendOrIncrement CStr(v)
+                AppendOrIncrement CStr(Value)
             Else
-                this.NonTextCount = this.NonTextCount + 1
+                This.NonTextCount = This.NonTextCount + 1
             End If
         Case vbError
-            this.ErrorCount = this.ErrorCount + 1
+            This.ErrorCount = This.ErrorCount + 1
         Case vbEmpty
-            this.BlankCount = this.BlankCount + 1
+            This.BlankCount = This.BlankCount + 1
         Case Else
-            this.NonTextCount = this.NonTextCount + 1
+            This.NonTextCount = This.NonTextCount + 1
     End Select
 End Sub
 
-Private Sub AppendOrIncrement(ByVal value As String)
-    ' Debug.Print "AppendOrIncrement"; this.Dict.Count
-    If this.Dict.Exists(value) Then
-        this.Dict.Item(value) = this.Dict.Item(value) + 1
+Private Sub AppendOrIncrement(ByVal Value As String)
+    If This.Dict.Exists(Value) Then
+        This.Dict.Item(Value) = This.Dict.Item(Value) + 1
     Else
-        this.Dict.Item(value) = 1
+        This.Dict.Item(Value) = 1
     End If
 End Sub
 
-Public Sub PrintKeys()
-    Dim k As Variant
-    For Each k In this.Dict.Keys
-        Debug.Print k
-    Next k
-End Sub
-
 Private Sub SetUnique()
-    Set this.Unique = New Collection
-    Dim key As Variant
-    For Each key In this.Dict.Keys
-        If this.Dict.Item(key) = 1 Then
-            this.Unique.Add key
+    Set This.Unique = New Collection
+    Dim Key As Variant
+    For Each Key In This.Dict.Keys
+        If This.Dict.Item(Key) = 1 Then
+            This.Unique.Add Key
         End If
-    Next key
+    Next Key
 End Sub
 
 Private Sub SetDistinct()
-    Set this.Distinct = New Collection
-    Dim key As Variant
-    For Each key In this.Dict.Keys
-        this.Distinct.Add key
-    Next key
+    Set This.Distinct = New Collection
+    Dim Key As Variant
+    For Each Key In This.Dict.Keys
+        This.Distinct.Add Key
+    Next Key
 End Sub
-
-Public Property Get IsDistinct() As Boolean
-    IsDistinct = (this.Unique.Count = this.Distinct.Count)
-End Property
 
 Public Function Trim(ByVal length As Long) As Collection
     Dim i As Integer
     
-    If length > this.Distinct.Count Then
-        Set Trim = this.Distinct
+    If length > This.Distinct.Count Then
+        Set Trim = This.Distinct
         Exit Function
     End If
     
     Set Trim = New Collection
     For i = 1 To length
-        Trim.Add this.Distinct.Item(i)
+        Trim.Add This.Distinct.Item(i)
     Next i
 End Function
 
-Public Function Find(ByVal value As Variant) As Long
+Public Function Find(ByVal Value As Variant) As Long
     Find = -1
-    'Dim result As Range
-    'Set result = this.rng.Find(value)
-    'If Not result Is Nothing Then
-    '    Find = result.Row
-    'End If
-    'Debug.Print VarType(value)
-    If VarType(value) = vbError Then Exit Function
-    If VarType(value) = vbEmpty Then Exit Function
-    If value = vbNullString Then Exit Function
     
-    'Debug.Print "Find('" & value & "')"
+    If VarType(Value) = vbError Then Exit Function
+    If VarType(Value) = vbEmpty Then Exit Function
+    If Value = vbNullString Then Exit Function
         
     Dim i As Long
-    For i = LBound(this.Array) To UBound(this.Array)
-        If VarType(this.Array(i)) <> vbError Then
-            If this.Array(i) = value Then
+    For i = LBound(This.Array) To UBound(This.Array)
+        If VarType(This.Array(i)) <> vbError Then
+            If This.Array(i) = Value Then
                 Find = i
                 Exit Function
             End If
@@ -243,11 +237,12 @@ Public Function Find(ByVal value As Variant) As Long
     Next i
 End Function
 
-Public Function Exists(ByVal value As Variant) As Boolean
-    Exists = this.Dict.Exists(value)
+Public Function Exists(ByVal Value As Variant) As Boolean
+    Exists = This.Dict.Exists(Value)
 End Function
 
-Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As Boolean = False, Optional ByVal Filtered As Boolean = False, Optional ByVal Limit As Long) As KeyColumn
+Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As Boolean = False, _
+    Optional ByVal Filtered As Boolean = False, Optional ByVal Limit As Long) As KeyColumn
     If rng Is Nothing Then
         'Err.Raise vbObjectError + 3, Err.Source, "Cannot create KeyColumn from empty range (rng is nothing)"
         Exit Function
@@ -261,55 +256,64 @@ Public Function FromRange(ByVal rng As Range, Optional ByVal IncludeNumbers As B
     Set FromRange.Range = rng
 End Function
 
-Public Function FromColumn(ByVal lc As ListColumn, Optional ByVal IncludeNumbers As Boolean = False, Optional ByVal Limit As Long) As KeyColumn
+Public Function FromColumn(ByVal lc As ListColumn, Optional ByVal IncludeNumbers As Boolean = False, _
+    Optional ByVal Limit As Long) As KeyColumn
     Set FromColumn = FromRange(lc.DataBodyRange, IncludeNumbers, False, Limit)
 End Function
 
-Private Function IsRangeASingleColumn(ByVal rng As Range) As Boolean
-    If rng Is Nothing Then Exit Function
-    Dim area As Range
-    For Each area In rng.Areas
-        If area.column <> rng.column Then
+Private Function IsRangeASingleColumn(ByVal Range As Range) As Boolean
+    If Range Is Nothing Then Exit Function
+    Dim Area As Range
+    For Each Area In Range.Areas
+        If Area.column <> Range.column Then
             Exit Function
         End If
-    Next area
+    Next Area
     IsRangeASingleColumn = True
 End Function
 
 Private Function DisjointRangeToArray(ByVal rng As Range) As Variant
     Dim arr As Variant
-    Dim area As Range
+    Dim Area As Range
     Dim vv As Variant
     Dim firstRow As Long
     Dim lastRow As Long
     Dim thisLastRow As Long
     
     firstRow = rng.row
-    For Each area In rng.Areas
+    For Each Area In rng.Areas
         If firstRow > rng.row Then
             firstRow = rng.row
         End If
-        thisLastRow = area.row + area.rows.Count - 1
+        thisLastRow = Area.row + Area.rows.Count - 1
         If thisLastRow > lastRow Then
             lastRow = thisLastRow
         End If
-    Next area
+    Next Area
     
     ReDim arr(firstRow To thisLastRow)
     
-    For Each area In rng.Areas
-        If VarType(area) = vbArray + vbVariant Then
-            For Each vv In area
+    For Each Area In rng.Areas
+        If VarType(Area) = vbArray + vbVariant Then
+            For Each vv In Area
                 arr(vv.row) = (vv) ' Removed CStr - this was converting errors to text
             Next vv
         Else
-            arr(area.row) = (area)
+            arr(Area.row) = (Area)
         End If
-    Next area
+    Next Area
     
     DisjointRangeToArray = arr
 End Function
 
-Private Sub class_initialize()
-    this.Limit = 2147483647
+Private Sub Class_Initialize()
+    This.Limit = MAX_LIMIT
 End Sub
+
+Public Sub DebugPrint()
+    Dim Key As Variant
+    For Each Key In This.Dict.Keys
+        Debug.Print Key; " = "; This.Dict.Item(Key)
+    Next Key
+End Sub
+

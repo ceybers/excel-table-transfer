@@ -49,7 +49,7 @@ Public errorTitle As String
 '*/
 Public vbaDebugPrintActive As Boolean
 
-Private Sub class_initialize()
+Private Sub Class_Initialize()
 
      Dim fso  As Object
      Set fso = CreateObject("Scripting.FileSystemObject")
@@ -86,11 +86,11 @@ End Function
 Public Function printError()
      If (env = "DEV") Then
 
-          Dim message As String
+          Dim Message As String
 
-          message = ErrorHanddler()
+          Message = ErrorHanddler()
 
-          Call writeDebugFileContent(message, 0)
+          Call writeDebugFileContent(Message, 0)
 
      End If
 End Function
@@ -202,11 +202,11 @@ End Function
 Private Function makeArrayTypeMessage(inputValue) As String
      Dim nextItem As Variant
      Dim response As String
-     Dim message As String
+     Dim Message As String
 
      For Each nextItem In inputValue
-          message = createOutputMessage(nextItem)
-          response = response & "                              [ " & message & " ]" & vbCrLf
+          Message = createOutputMessage(nextItem)
+          response = response & "                              [ " & Message & " ]" & vbCrLf
      Next nextItem
      makeArrayTypeMessage = "Array: " & vbCrLf & response
 End Function

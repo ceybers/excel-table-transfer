@@ -31,7 +31,7 @@ Private Type TView
     IsCancelled As Boolean
 End Type
 
-Private this As TView
+Private This As TView
 
 Private Sub cmbCancel_Click()
     OnCancel
@@ -66,7 +66,7 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub OnCancel()
-    this.IsCancelled = True
+    This.IsCancelled = True
     Me.Hide
 End Sub
 
@@ -74,5 +74,5 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     Set vm = ViewModel
 
     Me.Show
-    IView_ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not This.IsCancelled
 End Function

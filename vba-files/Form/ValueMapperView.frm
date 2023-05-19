@@ -31,7 +31,7 @@ Private Type TFrmKeyMapper2View
     IsCancelled As Boolean
 End Type
 
-Private this As TFrmKeyMapper2View
+Private This As TFrmKeyMapper2View
 
 Private Sub cmbBack_Click()
     vm.GoBack = True
@@ -95,11 +95,11 @@ Private Sub cmbUnmapLeft_Click()
 End Sub
 
 Private Sub chkShowMappedOnlyLHS_Click()
-    vm.ShowMappedOnlyLHS = Me.chkShowMappedOnlyLHS.value
+    vm.ShowMappedOnlyLHS = Me.chkShowMappedOnlyLHS.Value
 End Sub
 
 Private Sub chkShowMappedOnlyRHS_Click()
-    vm.ShowMappedOnlyRHS = Me.chkShowMappedOnlyRHS.value
+    vm.ShowMappedOnlyRHS = Me.chkShowMappedOnlyRHS.Value
 End Sub
 
 Private Sub lvLHS_ItemClick(ByVal Item As MSComctlLib.ListItem)
@@ -118,7 +118,7 @@ Private Sub vm_CollectionChangedLHS()
     Dim current As String
     
     If Not Me.lvLHS.SelectedItem Is Nothing Then
-        current = Me.lvLHS.SelectedItem.key
+        current = Me.lvLHS.SelectedItem.Key
     End If
     
     vm.LoadLHStoListView Me.lvLHS
@@ -137,7 +137,7 @@ Private Sub vm_CollectionChangedRHS()
     Dim current As String
     
     If Not Me.lvRHS.SelectedItem Is Nothing Then
-        current = Me.lvRHS.SelectedItem.key
+        current = Me.lvRHS.SelectedItem.Key
     End If
     
     vm.LoadRHStoListView Me.lvRHS
@@ -153,10 +153,10 @@ Private Sub vm_CollectionChangedRHS()
     End If
 End Sub
 
-Private Function TryReselectListItem(ByVal lv As ListView, ByVal key As String) As Boolean
+Private Function TryReselectListItem(ByVal lv As ListView, ByVal Key As String) As Boolean
     Dim i As Long
     For i = 1 To lv.ListItems.Count
-        If lv.ListItems(i).key = key Then
+        If lv.ListItems(i).Key = Key Then
             lv.ListItems(i).Selected = True
             TryReselectListItem = True
             Exit Function
@@ -202,14 +202,14 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub OnCancel()
-    this.IsCancelled = True
+    This.IsCancelled = True
     Me.Hide
 End Sub
 
 ' ---
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     Set vm = ViewModel
-    this.IsCancelled = False
+    This.IsCancelled = False
     
     Set msoImageList = New ImageList
     Set msoImageList = modStandardImageList.GetMSOImageList(ICON_SIZE)
@@ -233,7 +233,7 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     
     Me.Show
     
-    IView_ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not This.IsCancelled
 End Function
 
 Public Sub LoadFromVM()

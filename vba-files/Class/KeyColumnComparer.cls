@@ -14,66 +14,66 @@ Option Explicit
 
 Private Type TClsCompareKeyColumns
     lhs As KeyColumn
-    rhs As KeyColumn
+    RHS As KeyColumn
     LeftOnly As Collection
     Intersection As Collection
     RightOnly As Collection
     Dict As Object
 End Type
 
-Private this As TClsCompareKeyColumns
+Private This As TClsCompareKeyColumns
 
 Public Property Get Score() As Double
     Dim total As Long
-    total = this.LeftOnly.Count + this.Intersection.Count + this.RightOnly.Count
+    total = This.LeftOnly.Count + This.Intersection.Count + This.RightOnly.Count
     
     Score = 0
     
     If total < 5 Then Exit Property
     
     If total > 0 Then
-        Score = this.Intersection.Count / total
+        Score = This.Intersection.Count / total
     End If
     
     'Debug.Print "Score: "; score
 End Property
 
 Public Property Get lhs() As KeyColumn
-    Set lhs = this.lhs
+    Set lhs = This.lhs
 End Property
 
-Public Property Set lhs(ByVal rhs As KeyColumn)
-    Set this.lhs = rhs
+Public Property Set lhs(ByVal RHS As KeyColumn)
+    Set This.lhs = RHS
     TryDoWork
 End Property
 
-Public Property Get rhs() As KeyColumn
-    Set rhs = this.rhs
+Public Property Get RHS() As KeyColumn
+    Set RHS = This.RHS
 End Property
 
-Public Property Set rhs(ByVal rhs As KeyColumn)
-    Set this.rhs = rhs
+Public Property Set RHS(ByVal RHS As KeyColumn)
+    Set This.RHS = RHS
     TryDoWork
 End Property
 
 Public Property Get LeftOnly() As Collection
-    Set LeftOnly = this.LeftOnly
+    Set LeftOnly = This.LeftOnly
 End Property
 
 Public Property Get Intersection() As Collection
-    Set Intersection = this.Intersection
+    Set Intersection = This.Intersection
 End Property
 
 Public Property Get RightOnly() As Collection
-    Set RightOnly = this.RightOnly
+    Set RightOnly = This.RightOnly
 End Property
 
 Public Property Get IsSubsetLHS() As Boolean
-    IsSubsetLHS = this.LeftOnly.Count = 0
+    IsSubsetLHS = This.LeftOnly.Count = 0
 End Property
 
 Public Property Get IsSubsetRHS() As Boolean
-    IsSubsetRHS = this.RightOnly.Count = 0
+    IsSubsetRHS = This.RightOnly.Count = 0
 End Property
 
 Public Property Get IsMatch() As Boolean
@@ -82,83 +82,83 @@ End Property
 
 ' Methods
 Private Sub TryDoWork()
-    If this.lhs Is Nothing Then Exit Sub
-    If this.rhs Is Nothing Then Exit Sub
+    If This.lhs Is Nothing Then Exit Sub
+    If This.RHS Is Nothing Then Exit Sub
     DoWork
 End Sub
 
 Private Sub DoWork()
-    Set this.Dict = CreateObject("Scripting.Dictionary")
-    Dim key As Variant
-    For Each key In lhs.Keys
-        Upsert key, 1
+    Set This.Dict = CreateObject("Scripting.Dictionary")
+    Dim Key As Variant
+    For Each Key In lhs.Keys
+        Upsert Key, 1
     Next
-    For Each key In rhs.Keys
-        Upsert key, 2
+    For Each Key In RHS.Keys
+        Upsert Key, 2
     Next
     
-    Set this.Intersection = New Collection
-    Set this.LeftOnly = New Collection
-    Set this.RightOnly = New Collection
+    Set This.Intersection = New Collection
+    Set This.LeftOnly = New Collection
+    Set This.RightOnly = New Collection
     
     Dim val As Integer
     
-    For Each key In this.Dict.Keys
-        Select Case this.Dict.Item(key)
+    For Each Key In This.Dict.Keys
+        Select Case This.Dict.Item(Key)
             Case 1
-                this.LeftOnly.Add key
+                This.LeftOnly.Add Key
             Case 2
-                this.RightOnly.Add key
+                This.RightOnly.Add Key
             Case 3
-                this.Intersection.Add key
+                This.Intersection.Add Key
         End Select
-    Next key
+    Next Key
 End Sub
 
-Private Sub Upsert(ByVal key As String, ByVal value As Integer)
-    If this.Dict.Exists(key) Then
-        this.Dict.Item(key) = this.Dict.Item(key) + value
+Private Sub Upsert(ByVal Key As String, ByVal Value As Integer)
+    If This.Dict.Exists(Key) Then
+        This.Dict.Item(Key) = This.Dict.Item(Key) + Value
     Else
-        this.Dict.Item(key) = value
+        This.Dict.Item(Key) = Value
     End If
 End Sub
 
-Public Function Create(ByVal lhs As KeyColumn, ByVal rhs As KeyColumn) As KeyColumnComparer
+Public Function Create(ByVal Src As KeyColumn, ByVal Dst As KeyColumn) As KeyColumnComparer
     Set Create = New KeyColumnComparer
-    Set Create.lhs = lhs
-    Set Create.rhs = rhs
+    Set Create.lhs = Src
+    Set Create.RHS = Dst
 End Function
 
 Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByVal FilterDestination As Boolean = False) As Variant
     'Debug.Assert Not this.LHS Is Nothing
     'Debug.Assert Not this.rhs Is Nothing
-    If this.lhs Is Nothing Or this.rhs Is Nothing Then
+    If This.lhs Is Nothing Or This.RHS Is Nothing Then
         'Err.Raise vbObjectError + 4, Err.Source, "Cannot Map KeyColumns with an empty table"
         Exit Function
     End If
     
-    Dim result As Variant
+    Dim Result As Variant
     Dim arr As Variant
     Dim i As Long
     
     Dim lhsFlt As KeyColumn
-    Set lhsFlt = this.lhs
+    Set lhsFlt = This.lhs
     If FilterSource Then
-        Set lhsFlt = KeyColumn.FromRange(this.lhs.Range, this.lhs.IncludeNumbersAsText, True)
+        Set lhsFlt = KeyColumn.FromRange(This.lhs.Range, This.lhs.IncludeNumbersAsText, True)
     End If
     
     Dim rhsFlt As KeyColumn
-    Set rhsFlt = this.rhs
+    Set rhsFlt = This.RHS
     If FilterDestination Then
-        Set rhsFlt = KeyColumn.FromRange(this.rhs.Range, this.rhs.IncludeNumbersAsText, True)
+        Set rhsFlt = KeyColumn.FromRange(This.RHS.Range, This.RHS.IncludeNumbersAsText, True)
     End If
     
     arr = rhsFlt.GetArray
-    ReDim result(LBound(arr) To UBound(arr))
+    ReDim Result(LBound(arr) To UBound(arr))
     
     For i = LBound(arr) To UBound(arr)
-        result(i) = lhsFlt.Find(arr(i))
+        Result(i) = lhsFlt.Find(arr(i))
     Next i
     
-    Map = result
+    Map = Result
 End Function

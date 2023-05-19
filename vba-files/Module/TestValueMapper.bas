@@ -20,7 +20,7 @@ Attribute Test.VB_ProcData.VB_Invoke_Func = "p\n14"
     'vview.DEBUG_EVENTS = True
     
     Set vm.lhs = ThisWorkbook.Worksheets(1).ListObjects(1)
-    Set vm.rhs = ThisWorkbook.Worksheets(1).ListObjects(2)
+    Set vm.RHS = ThisWorkbook.Worksheets(1).ListObjects(2)
     
     Set vm.KeyColumnLHS = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
     Set vm.KeyColumnRHS = ThisWorkbook.Worksheets(2).ListObjects(1).ListColumns(1)

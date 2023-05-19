@@ -57,9 +57,9 @@ End Function
 
 Private Function GetDBR(ByVal lo As ListObject) As Variant
     Debug.Assert Not lo Is Nothing
-    Dim result As Variant
-    result = lo.DataBodyRange.value
-    GetDBR = result
+    Dim Result As Variant
+    Result = lo.DataBodyRange.Value
+    GetDBR = Result
 End Function
 
 Private Function SetDBR(ByVal lo As ListObject, ByVal arr As Variant) As Boolean
@@ -77,6 +77,6 @@ End Function
 Private Sub FillTableWithAddresses(ByVal lo As ListObject)
     Dim c As Range
     For Each c In lo.DataBodyRange.Cells
-        c.value = CStr(c.Address)
+        c.Value = CStr(c.Address)
     Next c
 End Sub

@@ -23,7 +23,7 @@ Private Type TView
     Model As ColumnQualityViewModel
 End Type
 
-Private this As TView
+Private This As TView
  
 Private Sub OkButton_Click()
     Me.Hide
@@ -41,17 +41,17 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
  
 Private Sub OnCancel()
-    this.IsCancelled = True
+    This.IsCancelled = True
     Me.Hide
 End Sub
  
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     Debug.Assert Not ViewModel Is Nothing
-    Set this.Model = ViewModel
+    Set This.Model = ViewModel
     
-    this.Model.InitializeListView Me.ListView1
-    this.Model.UpdateListView Me.ListView1
+    This.Model.InitializeListView Me.ListView1
+    This.Model.UpdateListView Me.ListView1
     
     Me.Show
-    IView_ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not This.IsCancelled
 End Function

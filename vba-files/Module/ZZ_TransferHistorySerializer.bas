@@ -5,11 +5,11 @@ Option Explicit
 Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Integer = 8
 
 Public Sub Test()
-    Dim result As Variant
-    Set result = LoadTransferInstructionsFromWorksheet(ThisWorkbook.Worksheets("CAETransferTableHistory"))
+    Dim Result As Variant
+    Set Result = LoadTransferInstructionsFromWorksheet(ThisWorkbook.Worksheets("CAETransferTableHistory"))
     
     Dim ti As TransferInstructionUnref
-    Set ti = result(1)
+    Set ti = Result(1)
     
     Debug.Print ti.Flags
 End Sub
@@ -37,7 +37,7 @@ Public Function LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As 
     Dim val As String
     
     Dim lhs As String
-    Dim rhs As String
+    Dim RHS As String
     
     Dim curArr As Variant
     Dim ti As TransferInstructionUnref
@@ -74,7 +74,7 @@ Public Function LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As 
                 
             Case 2
                 lhs = Split(curArr(2), ",")(0)
-                rhs = Split(curArr(2), ",")(1)
+                RHS = Split(curArr(2), ",")(1)
                 ' This will fail if columns have commas in them
         End Select
     Next i
@@ -102,7 +102,7 @@ Public Function ZZ_LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) 
     Dim val As String
     
     Dim lhs As String
-    Dim rhs As String
+    Dim RHS As String
     
     Dim ti As TransferInstruction
     Dim tis As Collection
@@ -138,10 +138,10 @@ Public Function ZZ_LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) 
                 End Select
             Case 2
                 lhs = Split(curArr(2), ",")(0)
-                rhs = Split(curArr(2), ",")(1)
+                RHS = Split(curArr(2), ",")(1)
                 
                 If Not ti.Source Is Nothing And Not ti.Destination Is Nothing Then
-                    ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns(lhs), ti.Destination.ListColumns(rhs))
+                    ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns(lhs), ti.Destination.ListColumns(RHS))
                 End If
         End Select
     Next i
@@ -178,25 +178,25 @@ End Sub
 Private Function SerializeTransferInstruction(ByVal Transfer As TransferInstruction) As Variant
     Dim c As Long
     Dim i As Long
-    Dim result As Variant
+    Dim Result As Variant
     
     c = 8 + Transfer.ValuePairs.Count
     
-    ReDim result(1 To c, 1 To 1)
+    ReDim Result(1 To c, 1 To 1)
     
-    result(1, 1) = "TRANSFER"
-    result(2, 1) = " SRC," & Transfer.Source.Range.Address(external:=True)
-    result(3, 1) = " SRCKEY," & Transfer.SourceKey.Name
-    result(4, 1) = " DST," & Transfer.Destination.Range.Address(external:=True)
-    result(5, 1) = " DSTKEY," & Transfer.DestinationKey.Name
-    result(6, 1) = " FLAGS," & Transfer.Flags
-    result(7, 1) = " VALUES," & Transfer.ValuePairs.Count
+    Result(1, 1) = "TRANSFER"
+    Result(2, 1) = " SRC," & Transfer.Source.Range.Address(external:=True)
+    Result(3, 1) = " SRCKEY," & Transfer.SourceKey.Name
+    Result(4, 1) = " DST," & Transfer.Destination.Range.Address(external:=True)
+    Result(5, 1) = " DSTKEY," & Transfer.DestinationKey.Name
+    Result(6, 1) = " FLAGS," & Transfer.Flags
+    Result(7, 1) = " VALUES," & Transfer.ValuePairs.Count
     
     For i = 1 To Transfer.ValuePairs.Count
-        result(7 + i, 1) = "  " & Transfer.ValuePairs(i).ToString
+        Result(7 + i, 1) = "  " & Transfer.ValuePairs(i).ToString
     Next i
     
-    result(c, 1) = "END"
+    Result(c, 1) = "END"
     
-    SerializeTransferInstruction = result
+    SerializeTransferInstruction = Result
 End Function

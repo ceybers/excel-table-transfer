@@ -7,7 +7,7 @@ Public Sub TestCompareKeyColumns()
     Dim compare As KeyColumnComparer
     Set compare = KeyColumnComparer.Create(GetLHS, GetRHS)
     
-    compare.lhs.PrintKeys
+    compare.lhs.DebugPrint
     
     Debug.Print "TEST"
     Debug.Print "===="
@@ -34,10 +34,10 @@ Private Function GetRHS() As KeyColumn
 End Function
 
 Private Sub PrintCollection(ByVal coll As Collection)
-    Dim v As Variant
-    For Each v In coll
-        Debug.Print CStr(v)
-    Next v
+    Dim V As Variant
+    For Each V In coll
+        Debug.Print CStr(V)
+    Next V
 End Sub
 
 Private Sub SubPasteMap(ByVal Map As Variant)

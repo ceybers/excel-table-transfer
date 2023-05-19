@@ -22,7 +22,7 @@ Public Function GetMSOImageList(Optional ByVal iconSize As Integer = 16) As Imag
     AddImageListImage GetMSOImageList, "Excel", "MicrosoftExcel", iconSize
 End Function
 
-Private Sub AddImageListImage(ByVal il As ImageList, ByVal key As String, ByVal imageMso As String, ByVal iconSize As Integer)
-    il.ListImages.Add 1, key, Application.CommandBars.GetImageMso(imageMso, iconSize, iconSize)
+Private Sub AddImageListImage(ByVal il As ImageList, ByVal Key As String, ByVal imageMso As String, ByVal iconSize As Integer)
+    il.ListImages.Add 1, Key, Application.CommandBars.GetImageMso(imageMso, iconSize, iconSize)
 End Sub
 

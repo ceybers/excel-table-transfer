@@ -12,51 +12,53 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Type TClsColumnPair
-    lhs As ListColumn
-    rhs As ListColumn
+    SrcListColumn As ListColumn
+    DstListColumn As ListColumn
 End Type
 
-Private this As TClsColumnPair
+Private This As TClsColumnPair
 
-Public Property Get lhs() As ListColumn
-    Set lhs = this.lhs
+Public Property Get SourceListColumn() As ListColumn
+    Set SourceListColumn = This.SrcListColumn
 End Property
 
-Public Property Set lhs(ByVal rhs As ListColumn)
-    Set this.lhs = rhs
+Public Property Set SourceListColumn(ByVal vNewValue As ListColumn)
+    Set This.SrcListColumn = vNewValue
 End Property
 
-Public Property Get rhs() As ListColumn
-    Set rhs = this.rhs
+Public Property Get DestinationListColumn() As ListColumn
+    Set DestinationListColumn = This.DstListColumn
 End Property
 
-Public Property Set rhs(ByVal rhs As ListColumn)
-    Set this.rhs = rhs
+Public Property Set DestinationListColumn(ByVal vNewValue As ListColumn)
+    Set This.DstListColumn = vNewValue
 End Property
 
 Public Function IsValid() As Boolean
-    If this.lhs Is Nothing Then Exit Function
-    If this.rhs Is Nothing Then Exit Function
+    If This.SrcListColumn Is Nothing Then Exit Function
+    If This.DstListColumn Is Nothing Then Exit Function
     IsValid = True
 End Function
 
-Public Function Create(ByVal lhs As ListColumn, ByVal rhs As ListColumn) As ColumnPair
-    Set Create = New ColumnPair
-    With Create
-        Set .lhs = lhs
-        Set .rhs = rhs
+Public Function Create(ByVal SrcListColumn As ListColumn, ByVal DstListColumn As ListColumn) As ColumnPair
+    Dim Result As ColumnPair
+    Set Result = New ColumnPair
+    With Result
+        Set .SourceListColumn = SrcListColumn
+        Set .DestinationListColumn = DstListColumn
     End With
+    Set Create = Result
 End Function
 
-Public Function Equals(ByVal rhs As ColumnPair) As Boolean
-    If rhs Is Nothing Then Exit Function
-    If Not this.lhs Is rhs.lhs Then Exit Function
-    If Not this.rhs Is rhs.rhs Then Exit Function
+Public Function Equals(ByVal RHS As ColumnPair) As Boolean
+    If RHS Is Nothing Then Exit Function
+    If Not This.SrcListColumn Is RHS.SourceListColumn Then Exit Function
+    If Not This.DstListColumn Is RHS.DestinationListColumn Then Exit Function
     Equals = True
 End Function
 
 Public Function ToString() As String
-    Debug.Assert Not lhs Is Nothing
-    Debug.Assert Not rhs Is Nothing
-    ToString = lhs.Name & "," & rhs.Name
+    Debug.Assert Not SourceListColumn Is Nothing
+    Debug.Assert Not DestinationListColumn Is Nothing
+    ToString = SourceListColumn.Name & "," & DestinationListColumn.Name
 End Function

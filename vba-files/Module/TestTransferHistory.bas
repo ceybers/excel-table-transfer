@@ -11,7 +11,7 @@ Public Sub ATest()
     
     'Set ti.Source = ThisWorkbook.Worksheets(1).ListObjects(1)
     'Set ti.Destination = ThisWorkbook.Worksheets(1).ListObjects(2)
-    Set ti.UnRef = tiUr
+    Set ti.DeferencedInstruction = tiUr
     
     ti.LoadFlags
     Debug.Print "ti.TryLoadTables "; ti.TryLoadTables

@@ -4,7 +4,7 @@ Option Explicit
 
 Private Sub Test()
     Dim lo As ListObject
-    Dim result As String
+    Dim Result As String
     
     Set lo = ThisWorkbook.Worksheets(1).ListObjects(1)
     'Debug.Print ListObjectToStringName(lo)
@@ -17,17 +17,17 @@ Private Sub Test()
         Debug.Print "Path Filename Worksheet Range [OK]"
     End If
     
-    result = "[Production.xlsm]Sheet1!$A$1:$C$5" ' Closed file
-    result = "[Development.xlsm]Sheet1!$A$1:$C$5"
-    Set lo = StringNameToListObject(result)
+    Result = "[Production.xlsm]Sheet1!$A$1:$C$5" ' Closed file
+    Result = "[Development.xlsm]Sheet1!$A$1:$C$5"
+    Set lo = StringNameToListObject(Result)
     If lo Is Nothing Then
         Debug.Print "     Filename Worksheet Range [FAIL]"
     Else
         Debug.Print "     Filename Worksheet Range [OK]"
     End If
         
-    result = "Sheet1!A1:C10"
-    Set lo = StringNameToListObject(result)
+    Result = "Sheet1!A1:C10"
+    Set lo = StringNameToListObject(Result)
     If lo Is Nothing Then
         Debug.Print "              Worksheet Range [FAIL]"
     Else

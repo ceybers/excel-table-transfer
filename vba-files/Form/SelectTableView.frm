@@ -28,7 +28,7 @@ Private Type TView
     IsCancelled As Boolean
 End Type
 
-Private this As TView
+Private This As TView
 
 Private Sub cmbCancel_Click()
     OnCancel
@@ -51,7 +51,7 @@ Private Sub tvTables_DblClick()
 End Sub
 
 Private Sub tvTables_NodeClick(ByVal Node As MSComctlLib.Node)
-    vm.TrySelect Node.key
+    vm.TrySelect Node.Key
 End Sub
 
 Private Sub vm_CollectionChanged()
@@ -91,11 +91,11 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
         Me.Show
     End If
     
-    IView_ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not This.IsCancelled
 End Function
 
 Private Sub InitializeView()
-    this.IsCancelled = False
+    This.IsCancelled = False
     Me.txtSearch = vbNullString
     Me.cmbOK.Enabled = False
     
@@ -114,7 +114,7 @@ Private Sub UpdateListViewWithSelectedTable()
     
     Dim nd As Node
     For Each nd In Me.tvTables.Nodes
-        If nd.key = vm.SelectedTable.Range.Address(external:=True) Then
+        If nd.Key = vm.SelectedTable.Range.Address(external:=True) Then
             nd.Selected = True
             nd.EnsureVisible
 
@@ -126,6 +126,6 @@ Private Sub UpdateListViewWithSelectedTable()
 End Sub
 
 Private Sub OnCancel()
-    this.IsCancelled = True
+    This.IsCancelled = True
     Me.Hide
 End Sub

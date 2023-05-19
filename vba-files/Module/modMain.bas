@@ -5,23 +5,11 @@ Option Explicit
 
 Private Transfer As TransferInstruction
 Private SelectTableVM As SelectTableViewModel
-
 Private OneTableSelected As ListObject
-
 Private GoBack As Boolean
-
-Public Function PrintTime(ByVal message As String, Optional ByVal Reset As Boolean)
-    Static startTime As Double
-    If Reset Or (startTime = 0) Then
-        startTime = Timer()
-    End If
-    Debug.Print message & " " & (Timer() - startTime)
-End Function
 
 Public Sub TransferTable()
     PrintTime "Start", True
-       
-    'MsgBox "Welcome to table transfer wizard"
     
     InitializeViewModels
     
@@ -56,7 +44,7 @@ Rewind2:
     PrintTime "TryGetKeyColumns"
     
 Rewind3:
-    If Not Transfer.UnRef Is Nothing And Transfer.ValuePairs.Count = 0 Then
+    If Not Transfer.DeferencedInstruction Is Nothing And Transfer.ValuePairs.Count = 0 Then
         Transfer.TryLoadValuePairs
     End If
     If TryMapValueColumns = False Then Exit Sub
@@ -87,7 +75,7 @@ Private Function TryLoadHistory() As Boolean
     TryLoadHistory = True
     Dim tiUr As TransferInstructionUnref
     If TransferHistorySerializer.TryLoad(tiUr) Then
-        Set Transfer.UnRef = tiUr
+        Set Transfer.DeferencedInstruction = tiUr
         Transfer.LoadFlags
         If Transfer.TryLoadTables = False Then
             TryLoadHistory = False
@@ -225,7 +213,7 @@ Private Function TryMapValueColumns() As Boolean
     Set vm = New ValueMapperViewModel
     
     Set vm.lhs = Transfer.Source
-    Set vm.rhs = Transfer.Destination
+    Set vm.RHS = Transfer.Destination
     Set vm.KeyColumnLHS = Transfer.SourceKey
     Set vm.KeyColumnRHS = Transfer.DestinationKey
     vm.Flags = Transfer.Flags
@@ -249,32 +237,20 @@ Private Function TryMapValueColumns() As Boolean
 End Function
 
 Private Sub DoTransfer()
-    Dim timeStart As Long
-    Dim timeTaken As Long
-    timeStart = Timer()
+    Dim TimeStart As Long
+    TimeStart = Timer()
+    
     Transfer.Transfer
-    timeTaken = Timer() - timeStart
     
-    Dim timeStr As String
-    timeStr = Format$(timeTaken, "0.00")
+    Dim Duration As String
+    Duration = Format$(Timer() - TimeStart, "0.00")
     
-    Dim completionMessage As String
-    completionMessage = "Table transfer complete." & vbCrLf & "Time taken: " & timeStr & " second(s)"
+    Dim CompletionMessage As String
+    CompletionMessage = "Table transfer complete." & vbCrLf & "Time taken: " & Duration & " second(s)"
     
-    MsgBox completionMessage, vbInformation + vbOKOnly, "Table Transfer Tool"
+    MsgBox CompletionMessage, vbInformation + vbOKOnly, "Table Transfer Tool"
 End Sub
 
 Private Sub TrySaveHistory()
     TransferHistorySerializer.TrySave Transfer
-    
-    'If HasFlag(transfer.Flags, SaveToHistory) Then
-        'Dim history As TransferHistoryViewModel
-        'Set history = New TransferHistoryViewModel
-        'If history.HasHistory = False Then
-        '    history.Create
-        'End If
-        'history.Refresh
-        'history.Add transfer
-        'history.Save
-    'End If
 End Sub

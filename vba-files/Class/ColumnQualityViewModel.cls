@@ -16,24 +16,24 @@ Private Type TClsColumnQualityViewModel
     Results As KeyColumn
 End Type
 
-Private this As TClsColumnQualityViewModel
+Private This As TClsColumnQualityViewModel
 
 ' Property
 Public Property Get ListColumn() As ListColumn
-    Set ListColumn = this.ListColumn
+    Set ListColumn = This.ListColumn
 End Property
 
-Public Property Set ListColumn(ByVal rhs As ListColumn)
-    Set this.ListColumn = rhs
-    Results = KeyColumn.FromColumn(rhs)
+Public Property Set ListColumn(ByVal RHS As ListColumn)
+    Set This.ListColumn = RHS
+    Results = KeyColumn.FromColumn(RHS)
 End Property
 
 Public Property Get Results() As KeyColumn
-    Set Results = this.Results
+    Set Results = This.Results
 End Property
 
-Public Property Let Results(ByVal rhs As KeyColumn)
-    Set this.Results = rhs
+Public Property Let Results(ByVal RHS As KeyColumn)
+    Set This.Results = RHS
 End Property
 
 ' Functions
@@ -44,20 +44,20 @@ End Function
 Public Sub UpdateListView(ByVal lv As ListView)
     Debug.Assert IViewModel_IsValid
     
-    If this.Results Is Nothing Then
+    If This.Results Is Nothing Then
         AddListViewItem lv, "Empty Table", 0, -2
         Exit Sub
     End If
     
     Dim target As Long
-    target = this.Results.Range.Cells.Count
+    target = This.Results.Range.Cells.Count
     
-    AddListViewItem lv, "Distinct", this.Results.Count, target
-    AddListViewItem lv, "Unique", this.Results.UniqueKeys.Count, target
-    AddListViewItem lv, "Non-Text", this.Results.NonTextCount, 0
-    AddListViewItem lv, "Errors", this.Results.ErrorCount, 0
-    AddListViewItem lv, "Blanks", this.Results.BlankCount, 0
-    AddListViewItem lv, "Count", this.Results.Range.Cells.Count, -1
+    AddListViewItem lv, "Distinct", This.Results.Count, target
+    AddListViewItem lv, "Unique", This.Results.UniqueKeys.Count, target
+    AddListViewItem lv, "Non-Text", This.Results.NonTextCount, 0
+    AddListViewItem lv, "Errors", This.Results.ErrorCount, 0
+    AddListViewItem lv, "Blanks", This.Results.BlankCount, 0
+    AddListViewItem lv, "Count", This.Results.Range.Cells.Count, -1
     
     With lv.ListItems(lv.ListItems.Count)
         .Bold = True
@@ -65,12 +65,12 @@ Public Sub UpdateListView(ByVal lv As ListView)
     End With
 End Sub
 
-Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal value As Integer, ByVal target As Long)
+Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal Value As Integer, ByVal target As Long)
     Dim icon As String
     
-    If value = target Then
+    If Value = target Then
         icon = "Tick"
-    ElseIf value < target And target > 0 Then
+    ElseIf Value < target And target > 0 Then
         icon = "TraceError"
     Else
         icon = "Cross"
@@ -81,7 +81,7 @@ Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal
     End If
     
     With lv.ListItems.Add(text:=caption, icon:=icon, SmallIcon:=icon)
-        .ListSubItems.Add text:=value
+        .ListSubItems.Add text:=Value
     End With
 End Sub
 

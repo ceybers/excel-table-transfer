@@ -2,7 +2,6 @@ Attribute VB_Name = "KeyColumnToListView"
 '@Folder "MVVM.Models.KeyColumn"
 Option Explicit
 
-
 Public Sub UpdateListView(ByVal lv As ListView)
     'Debug.Assert IViewModel_IsValid
     
@@ -19,9 +18,9 @@ Public Sub UpdateListView(ByVal lv As ListView)
     End With
 End Sub
 
-Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal value As Integer, ByVal icon As String)
+Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal Value As Integer, ByVal icon As String)
     With lv.ListItems.Add(text:=caption, icon:=icon, SmallIcon:=icon)
-        .ListSubItems.Add text:=value
+        .ListSubItems.Add text:=Value
     End With
 End Sub
 

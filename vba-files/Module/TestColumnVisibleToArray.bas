@@ -9,17 +9,17 @@ Public Sub Test()
     Dim lo As ListObject
     Dim lc As ListColumn
     Dim rng As Range
-    Dim v As Variant
+    Dim V As Variant
     
     Set wb = ThisWorkbook
     Set ws = wb.Worksheets(1)
     Set lo = ws.ListObjects(1)
     Set lc = lo.ListColumns(1)
     Set rng = lc.DataBodyRange '.SpecialCells(xlCellTypeVisible)
-    v = VisibleRangeToArray(rng)
+    V = VisibleRangeToArray(rng)
     
-    Debug.Print UBound(v, 1)
-    Debug.Print UBound(v, 2)
+    Debug.Print UBound(V, 1)
+    Debug.Print UBound(V, 2)
     
     Debug.Assert False
 End Sub

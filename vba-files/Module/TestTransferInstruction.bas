@@ -56,27 +56,27 @@ End Sub
 
 Public Function GetTestTransferInstruction() As TransferInstruction
     Dim lhs As ListObject
-    Dim rhs As ListObject
+    Dim RHS As ListObject
     
     Set GetTestTransferInstruction = New TransferInstruction
     
     Set lhs = ThisWorkbook.Worksheets(1).ListObjects(1)
-    Set rhs = ThisWorkbook.Worksheets(1).ListObjects(2)
+    Set RHS = ThisWorkbook.Worksheets(1).ListObjects(2)
     
     With GetTestTransferInstruction
         Set .Source = lhs
-        Set .Destination = rhs
+        Set .Destination = RHS
         
         Set .SourceKey = lhs.ListColumns(1)
-        Set .DestinationKey = rhs.ListColumns(1)
+        Set .DestinationKey = RHS.ListColumns(1)
             
         .Flags = AddFlag(.Flags, ClearDestinationFirst)
         .Flags = AddFlag(.Flags, DestinationFilteredOnly)
         .Flags = AddFlag(.Flags, HighlightMapped)
     
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(2), rhs.ListColumns(4))
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(3), rhs.ListColumns(2))
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(4), rhs.ListColumns(3))
+        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(2), RHS.ListColumns(4))
+        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(3), RHS.ListColumns(2))
+        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(4), RHS.ListColumns(3))
     End With
 End Function
 
