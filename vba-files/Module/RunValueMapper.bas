@@ -22,7 +22,8 @@ Attribute DoRunValueMapper.VB_Description = "DoRunValueMapper"
     With View
         If .ShowDialog() Then
             If DO_DEBUG Then Debug.Print "ValueMapper.ShowDialog(vm) returned True"
-            Debug.Print "ValueMapper results:"
+            Debug.Print "   ValueMapper results:"
+            Debug.Print "      "; VM.MappedValueColumns.Count; " tuples"
             Debug.Print vbNullString
         Else
             If DO_DEBUG Then Debug.Print "ValueMapper.ShowDialog(vm) returned False"

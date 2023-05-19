@@ -6,6 +6,9 @@ Option Explicit
 Private ctx As IAppContext
 Private SrcTable As ListObject
 Private DstTable As ListObject
+Private SrcKeyColumn As ListColumn
+Private DstKeyColumn As ListColumn
+Private MappedValueColumns As Collection
 
 Public Sub DoTestWorkflow()
     Debug.Print "START"
@@ -36,6 +39,13 @@ Public Sub DoTestWorkflow()
         Debug.Print "PickKeys OK"
     Else
         Debug.Print "PickKeys EXIT"
+        Exit Sub
+    End If
+    
+    If PickValues() Then
+        Debug.Print "PickValues OK"
+    Else
+        Debug.Print "PickValues EXIT"
         Exit Sub
     End If
     
@@ -107,8 +117,10 @@ Private Function PickKeys() As Boolean
     
     If Result Then
         Debug.Print "   KeyMapper result:"
-            Debug.Print "      Src: "; KeyMapperVM.SrcKeyColumnVM.SelectedAsText
-            Debug.Print "       Dst: "; KeyMapperVM.DstKeyColumnVM.SelectedAsText
+        Debug.Print "      Src: "; KeyMapperVM.SrcKeyColumnVM.SelectedAsText
+        Debug.Print "       Dst: "; KeyMapperVM.DstKeyColumnVM.SelectedAsText
+        Set SrcKeyColumn = KeyMapperVM.SrcKeyColumnVM.Selected.ListColumn
+        Set DstKeyColumn = KeyMapperVM.SrcKeyColumnVM.Selected.ListColumn
     End If
     
     Set KeyMapperVM = Nothing
@@ -116,4 +128,36 @@ Private Function PickKeys() As Boolean
     PickKeys = Result
 End Function
 
+Private Function PickValues() As Boolean
+    Dim ctx As IAppContext
+    Set ctx = New AppContext
+    
+    Dim ValueMapperVM As ValueMapperViewModel
+    Set ValueMapperVM = New ValueMapperViewModel
+    
+    ValueMapperVM.Load _
+        SrcColumn:=SrcKeyColumn, _
+        DstColumn:=DstKeyColumn
 
+    Dim ValueMapperV As IView
+    Set ValueMapperV = ValueMapperView.Create(ctx, ValueMapperVM)
+    
+    Dim Result As Boolean
+    Result = ValueMapperV.ShowDialog
+    
+    If Result Then
+        Debug.Print "   ValueMapper result:"
+        Debug.Print "      "; ValueMapperVM.MappedValueColumns.Count; " tuples"
+        
+        Dim ColumnTuple As ColumnTuple
+        For Each ColumnTuple In ValueMapperVM.MappedValueColumns
+            Debug.Print "         "; ColumnTuple.SourceListColumn.Name; " -> "; ColumnTuple.DestinationListColumn.Name
+        Next ColumnTuple
+        
+        Set MappedValueColumns = ValueMapperVM.MappedValueColumns
+    End If
+    
+    Set ValueMapperVM = Nothing
+    Set ValueMapperV = Nothing
+    PickValues = Result
+End Function

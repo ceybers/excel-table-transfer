@@ -17,6 +17,7 @@ Private Type TState
 
     SrcValueColumnVM As ValuePickerViewModel
     DstValueColumnVM As ValuePickerViewModel
+    MappedValueColumns As Collection ' of type ColumnTuple
 End Type
 Private This As TState
 
@@ -56,6 +57,10 @@ Public Property Get DstValueColumnVM() As ValuePickerViewModel
     Set DstValueColumnVM = This.DstValueColumnVM
 End Property
 
+Public Property Get MappedValueColumns() As Collection
+    Set MappedValueColumns = This.MappedValueColumns
+End Property
+
 '---
 'Public Sub Load(ByVal SrcTable As ListObject, ByVal DstTable As ListObject)
 Public Sub Load(ByVal SrcColumn As ListColumn, ByVal DstColumn As ListColumn)
@@ -84,6 +89,10 @@ Public Function CanUnmapAll() As Boolean
     CanUnmapAll = This.DstValueColumnVM.CanUnmapAll()
 End Function
 
+Public Function CanAutoMap() As Boolean
+    CanAutoMap = Not This.DstValueColumnVM.IsAutoMapped(This.SrcValueColumnVM.Item)
+End Function
+
 Public Sub DoMap()
     'Dim SrcValueColumn As ValueColumn
     This.DstValueColumnVM.Map This.SrcValueColumnVM.SelectedKey
@@ -95,4 +104,12 @@ End Sub
 
 Public Sub DoUnmapAll()
     This.DstValueColumnVM.DoUnmapAll
+End Sub
+
+Public Sub DoAutoMap()
+    This.DstValueColumnVM.AutoMap This.SrcValueColumnVM.Item
+End Sub
+
+Public Sub ExtractMappedData()
+    Set This.MappedValueColumns = This.DstValueColumnVM.GetMappedColumnTuples(This.SrcValueColumnVM.Item)
 End Sub

@@ -95,6 +95,8 @@ Private Function IView_ShowDialog() As Boolean
     
     Me.Show vbModal
     
+    ViewModel.ExtractMappedData
+    
     IView_ShowDialog = Not This.IsCancelled
 End Function
 
@@ -137,12 +139,16 @@ Private Sub BindCommands()
     Dim UnmapAllColumns As ICommand
     Set UnmapAllColumns = UnmapAllColumnsCommand.Create(Context, Me, ViewModel)
     
+    Dim AutoMapColumns As ICommand
+    Set AutoMapColumns = AutoMapColumnsCommand.Create(Context, Me, ViewModel)
+    
     With This.Context.CommandManager
         .BindCommand Context, ViewModel, OKView, Me.cmdOK
         .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
         .BindCommand Context, ViewModel, MapValueColumns, Me.cmbMapValueColumns
         .BindCommand Context, ViewModel, UnmapValueColumns, Me.cmbUnmapValueColumns
         .BindCommand Context, ViewModel, UnmapAllColumns, Me.cmbUnmapAll
+        .BindCommand Context, ViewModel, AutoMapColumns, Me.cmbAutoMap
     End With
 End Sub
 

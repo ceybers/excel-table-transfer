@@ -225,3 +225,65 @@ Public Sub DoUnmapAll()
     
     OnPropertyChanged "Item"
 End Sub
+
+Public Function GetMappedColumnTuples(ByVal SrcValueColumns As Scripting.Dictionary) As Collection
+    Dim Result As Collection
+    Set Result = New Collection
+    
+    Dim Key As Variant
+    For Each Key In This.ValueColumns.Item.Keys
+        Dim DstValueColumn As ValueColumn
+        Set DstValueColumn = This.ValueColumns.Item.Item(Key)
+        If DstValueColumn.MappedTo <> vbNullString Then
+            Dim SrcValueColumn As ValueColumn
+            Set SrcValueColumn = SrcValueColumns.Item(DstValueColumn.MappedTo)
+            Dim AColumnTuple As ColumnTuple
+            Set AColumnTuple = ColumnTuple.Create(SrcValueColumn.ListColumn, DstValueColumn.ListColumn)
+            Result.Add Item:=AColumnTuple
+        End If
+    Next Key
+    
+    Set GetMappedColumnTuples = Result
+End Function
+
+Public Sub AutoMap(ByVal SrcValueColumns As Scripting.Dictionary)
+    Dim Key As Variant
+    For Each Key In This.ValueColumns.Item.Keys
+        Dim DstValueColumn As ValueColumn
+        Set DstValueColumn = This.ValueColumns.Item.Item(Key)
+        
+        If DstValueColumn.Enabled Then
+            If SrcValueColumns.Exists(Key) Then
+                DstValueColumn.MappedTo = Key
+            Else
+                DstValueColumn.MappedTo = vbNullString
+            End If
+        End If
+    Next Key
+        
+    OnPropertyChanged "Item"
+End Sub
+
+Public Function IsAutoMapped(ByVal SrcValueColumns As Scripting.Dictionary) As Boolean
+    IsAutoMapped = True
+    
+    Dim Key As Variant
+    For Each Key In This.ValueColumns.Item.Keys
+        Dim DstValueColumn As ValueColumn
+        Set DstValueColumn = This.ValueColumns.Item.Item(Key)
+        
+        If DstValueColumn.Enabled Then
+            If SrcValueColumns.Exists(Key) Then
+                If DstValueColumn.MappedTo <> Key Then
+                    IsAutoMapped = False
+                    Exit Function
+                End If
+            Else
+                If DstValueColumn.MappedTo <> vbNullString Then
+                    IsAutoMapped = False
+                    Exit Function
+                End If
+            End If
+        End If
+    Next Key
+End Function
