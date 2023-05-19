@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "MVVM.Example2.Commands"
+'@Folder "MVVM.TableProps.Commands"
 Option Explicit
 Implements ICommand
 
