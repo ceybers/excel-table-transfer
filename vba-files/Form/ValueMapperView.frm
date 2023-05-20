@@ -112,7 +112,11 @@ Private Sub BindControls()
         .BindPropertyPath ViewModel, "EnableOption1", Me.chkEnableOption1, "Value", TwoWayBinding
         .BindPropertyPath ViewModel, "EnableOption2", Me.chkEnableOption2, "Value", TwoWayBinding
         
+        
+        .BindPropertyPath ViewModel, "SrcValueColumnVM.TableName", Me.txtSrcTableProps, "Value", OneTimeBinding
         .BindPropertyPath ViewModel, "SrcValueColumnVM.Item", Me.lvSrcValueColumns, "ListItems", TwoWayBinding, SrcValueColumnsToListViewConv
+        
+        .BindPropertyPath ViewModel, "DstValueColumnVM.TableName", Me.txtDstTableProps, "Value", OneTimeBinding
         .BindPropertyPath ViewModel, "DstValueColumnVM.Item", Me.lvDstValueColumns, "ListItems", TwoWayBinding, DstValueColumnsToListViewConv
     End With
 End Sub
@@ -120,10 +124,14 @@ End Sub
 Private Sub BindCommands()
     BindCommand OKViewCommand.Create(Context, Me, ViewModel), Me.cmdOK
     BindCommand CancelViewCommand.Create(Context, Me, ViewModel), Me.cmdCancel
+    
     BindCommand MapValueColumnsCommand.Create(Context, Me, ViewModel), Me.cmbMapValueColumns
     BindCommand UnmapValueColumnsCommand.Create(Context, Me, ViewModel), Me.cmbUnmapValueColumns
     BindCommand UnmapAllColumnsCommand.Create(Context, Me, ViewModel), Me.cmbUnmapAll
     BindCommand AutoMapColumnsCommand.Create(Context, Me, ViewModel), Me.cmbAutoMap
+    
+    BindCommand ShowTablePropsCommand.Create(Context, Me, ViewModel.SrcValueColumnVM), Me.cmbSrcTableProps
+    BindCommand ShowTablePropsCommand.Create(Context, Me, ViewModel.SrcValueColumnVM), Me.cmbDstTableProps
 End Sub
 
 Private Sub BindCommand(ByVal Command As ICommand, ByVal Control As Object)
@@ -133,4 +141,6 @@ End Sub
 Private Sub InitializeLabelPictures()
     ApplyImageMSOtoLabel Me.lblPicHeader, "TablePropertiesDialog"
     ApplyImageMSOtoLabel Me.lblPicOptions, "TablePropertiesDialog"
+    ApplyImageMSOtoLabel Me.lblPicSrcTable, "TablePropertiesDialog"
+    ApplyImageMSOtoLabel Me.lblPicDstTable, "TablePropertiesDialog"
 End Sub

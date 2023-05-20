@@ -14,7 +14,7 @@ Implements ICommand
 
 Private mView As IView
 Private mAppContext As IAppContext
-Private mViewModel As KeyPickerViewModel
+Private mViewModel As IViewModel
 
 Public Property Get Context() As IAppContext
     Set Context = mAppContext
@@ -61,5 +61,13 @@ Private Function ICommand_CanExecute() As Boolean
 End Function
 
 Private Sub ICommand_Execute()
-    mViewModel.ShowTableProperties
+    If TypeOf ViewModel Is KeyPickerViewModel Then
+        Dim mKeyPickerViewModel As KeyPickerViewModel
+        Set mKeyPickerViewModel = mViewModel
+        mKeyPickerViewModel.ShowTableProperties
+    ElseIf TypeOf ViewModel Is ValuePickerViewModel Then
+        Dim mValuePickerViewModel  As ValuePickerViewModel
+        Set mValuePickerViewModel = mViewModel
+        mValuePickerViewModel.ShowTableProperties
+    End If
 End Sub

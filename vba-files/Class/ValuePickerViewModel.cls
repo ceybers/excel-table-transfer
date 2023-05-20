@@ -16,7 +16,11 @@ Implements IHandlePropertyChanged
 
 Private Type TState
     Notifier As INotifyPropertyChanged
-
+    Context As IAppContext
+    Properties As TablePropViewModel
+    
+    ListObject As ListObject
+    
     Caption As String
     Direction As TransferDirection
     
@@ -56,6 +60,10 @@ Public Property Get Item() As Scripting.Dictionary
     Set Item = This.ValueColumns.Item
 End Property
 
+Public Property Get TableName() As String
+    TableName = This.ListObject.Name & " (" & This.ListObject.Parent.Name & ") (" & This.ListObject.Parent.Parent.Name & ")"
+End Property
+
 Public Property Get SelectedKey() As String
     SelectedKey = This.SelectedKey
 End Property
@@ -85,14 +93,14 @@ Public Property Let Direction(ByVal vNewValue As TransferDirection)
 End Property
 
 '---
-Public Function Create(ByVal ListColumn As ListColumn, _
+Public Function Create(ByVal Context As IAppContext, ByVal ListColumn As ListColumn, _
     ByVal Caption As String, ByVal Direction As TransferDirection, _
     ByVal Notifier As INotifyPropertyChanged) As ValuePickerViewModel
     
     Dim Result As ValuePickerViewModel
     Set Result = New ValuePickerViewModel
     With Result
-        .Load ListColumn
+        .Load Context, ListColumn
         .Caption = Caption
         .Direction = Direction
     End With
@@ -101,13 +109,18 @@ Public Function Create(ByVal ListColumn As ListColumn, _
     Set Create = Result
 End Function
 
-Public Sub Load(ByVal ListColumn As ListColumn)
+Public Sub Load(ByVal Context As IAppContext, ByVal ListColumn As ListColumn)
     Debug.Assert Not Me Is KeyPickerViewModel
    
+    Set This.Context = Context
+    Set This.ListObject = ListColumn.Parent
     Set This.KeyColumn = ListColumn
     
     Set This.ValueColumns = New ValueColumns
     This.ValueColumns.Load ListColumn
+    
+    Set This.Properties = New TablePropViewModel
+    This.Properties.Load This.Context, This.ListObject
     
     SelectFirstEligbleValueColumn
 End Sub
@@ -305,3 +318,16 @@ Public Function IsAutoMapped(ByVal SrcValueColumns As Collection) As Boolean
         End If
     Next SrcColumnName
 End Function
+
+Public Sub ShowTableProperties()
+    Dim TablePropV As IView
+    Set TablePropV = TablePropView.Create(This.Context, This.Properties)
+    
+    If TablePropV.ShowDialog Then
+        This.Properties.Commit
+        'This.KeyColumns.UpdatePreferredColumn This.Properties.TablePreferKeyVM.Selected
+        'ReloadKeyColumns
+    End If
+    
+    Set TablePropV = Nothing
+End Sub

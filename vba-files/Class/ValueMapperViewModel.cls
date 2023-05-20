@@ -96,9 +96,9 @@ End Property
 Public Sub Load(ByVal Context As IAppContext, ByVal SrcColumn As ListColumn, ByVal DstColumn As ListColumn)
     Set This.Context = Context
     
-    Set This.SrcValueColumnVM = ValuePickerViewModel.Create(SrcColumn, _
+    Set This.SrcValueColumnVM = ValuePickerViewModel.Create(Context, SrcColumn, _
         "Value Columns for Source Table", Source, This.Notifier)
-    Set This.DstValueColumnVM = ValuePickerViewModel.Create(DstColumn, _
+    Set This.DstValueColumnVM = ValuePickerViewModel.Create(Context, DstColumn, _
         "Value Columns for Destination Table", Destination, This.Notifier)
         
     Me.EnableOption1 = This.Context.UserLevelSettings.GetFlag(ENABLE_OPTION1_FLAG)
