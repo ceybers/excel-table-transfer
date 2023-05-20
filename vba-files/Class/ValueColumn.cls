@@ -52,6 +52,11 @@ Public Property Let MappedTo(ByVal vNewValue As String)
     This.MappedTo = vNewValue
 End Property
 
+Public Property Get ColumnLetter() As String
+    ColumnLetter = This.ListColumn.Range.EntireColumn.Address
+    ColumnLetter = Mid$(ColumnLetter, 2, InStr(ColumnLetter, ":$") - 2)
+End Property
+
 Public Property Get DataType() As String
     DataType = This.Properties.ColumnType
 End Property

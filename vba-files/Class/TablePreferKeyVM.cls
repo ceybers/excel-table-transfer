@@ -134,13 +134,13 @@ End Sub
 '@Description "UI event returns the Caption not the Key of the selected item. This sub routine does a reverse lookup to get the actual Key/Name."
 Private Sub TrySetSelectedFromSuffixedName()
 Attribute TrySetSelectedFromSuffixedName.VB_Description = "UI event returns the Caption not the Key of the selected item. This sub routine does a reverse lookup to get the actual Key/Name."
-    Dim Dict As Scripting.Dictionary
-    Set Dict = This.KeyColumns.GetDictionary
+    Dim dict As Scripting.Dictionary
+    Set dict = This.KeyColumns.GetDictionary
     
     Dim ActualColumnName As String
     Dim Key As Variant
-    For Each Key In Dict.Keys
-        If Dict.Item(Key) = This.SelectedColumn Then
+    For Each Key In dict.Keys
+        If dict.Item(Key) = This.SelectedColumn Then
             ActualColumnName = Key
             Exit For
         End If

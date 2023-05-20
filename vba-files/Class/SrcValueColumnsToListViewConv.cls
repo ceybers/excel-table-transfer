@@ -70,8 +70,8 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
     ForeColor = IIf(ValueColumn.Enabled, vbBlack, vbGrayText)
     
     With ListItem.ListSubItems
+        .Add Text:="(" & ValueColumn.ColumnLetter & ")"
         .Add Text:=ValueColumn.DataType
-        .Add Text:="A:A"
         .Add Text:=IIf(ValueColumn.IsProtected, "Y", "N")
         .Add Text:=IIf(ValueColumn.IsHidden, "Y", "N")
         .Add Text:=IIf(ValueColumn.IsKey, "Y", "N")
@@ -101,8 +101,8 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         .ColumnHeaders.Clear
         
         .ColumnHeaders.Add Text:="Name", Width:=72
-        .ColumnHeaders.Add Text:="Type", Width:=24
         .ColumnHeaders.Add Text:="Address", Width:=24
+        .ColumnHeaders.Add Text:="Type", Width:=24
         .ColumnHeaders.Add Text:="IsProtected", Width:=32
         .ColumnHeaders.Add Text:="IsHidden", Width:=24
         .ColumnHeaders.Add Text:="IsKey", Width:=24

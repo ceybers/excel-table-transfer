@@ -146,3 +146,19 @@ End Sub
 Public Sub Repaint()
     OnPropertyChanged "Columns"
 End Sub
+
+Public Function GetStarredColumns() As Collection
+    Dim Result As Collection
+    Set Result = New Collection
+    
+    Dim Key As Variant
+    For Each Key In This.Columns.Keys
+        Dim ColumnProperty As ColumnProperty
+        Set ColumnProperty = This.Columns.Item(Key)
+        If ColumnProperty.Checked Then
+            Result.Add Item:=ColumnProperty.Name, Key:=ColumnProperty.Name
+        End If
+    Next Key
+    
+    Set GetStarredColumns = Result
+End Function

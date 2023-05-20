@@ -100,8 +100,8 @@ Public Function EnumToString(ByVal EnumValue As Result) As String
 End Function
 
 Public Function ColumnIsUnique(ByVal ListColumn As ListColumn) As Result
-    Dim Dict As Scripting.Dictionary
-    Set Dict = New Scripting.Dictionary
+    Dim dict As Scripting.Dictionary
+    Set dict = New Scripting.Dictionary
     
     Dim Value2 As Variant
     Value2 = ListColumn.DataBodyRange.Value2
@@ -109,11 +109,11 @@ Public Function ColumnIsUnique(ByVal ListColumn As ListColumn) As Result
     Dim CellValue2 As Variant
     On Error Resume Next
     For Each CellValue2 In Value2
-        Dict.Item(CellValue2) = CellValue2
+        dict.Item(CellValue2) = CellValue2
     Next CellValue2
     On Error GoTo 0
     
-    If Dict.Count = UBound(Value2) Then
+    If dict.Count = UBound(Value2) Then
         ColumnIsUnique = Result.All
     Else
         ColumnIsUnique = Result.none

@@ -72,11 +72,13 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
     ForeColor = IIf(ValueColumn.Enabled, vbBlack, vbGrayText)
     
     With ListItem.ListSubItems
+        .Add Text:="(" & ValueColumn.ColumnLetter & ")"
         .Add Text:=IIf(ValueColumn.MappedTo = vbNullString, NOT_MAPPED, ValueColumn.MappedTo)
         .Add Text:=ValueColumn.DataType
-        .Add Text:="A:A"
         .Add Text:=IIf(ValueColumn.IsProtected, "Y", "N")
         .Add Text:=IIf(ValueColumn.IsHidden, "Y", "N")
+        .Add Text:=IIf(ValueColumn.IsKey, "Y", "N")
+        .Add Text:=IIf(ValueColumn.IsStarred, "Y", "N")
     End With
     
     ListItem.ForeColor = ForeColor
@@ -84,6 +86,12 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
     For Each ListSubItem In ListItem.ListSubItems
         ListSubItem.ForeColor = ForeColor
     Next ListSubItem
+    
+    With ListItem.ListSubItems.Item(1)
+    If .Text = NOT_MAPPED Then
+        .ForeColor = vbGrayText
+    End If
+    End With
     
     'Debug.Print ValueColumn.Name; " "; ValueColumn.Selected
     'ListItem.Bold = ValueColumn.Checked
@@ -102,11 +110,13 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         .ColumnHeaders.Clear
         
         .ColumnHeaders.Add Text:="Name", Width:=72
+        .ColumnHeaders.Add Text:="Address", Width:=24
         .ColumnHeaders.Add Text:="Mapped to", Width:=48
-        .ColumnHeaders.Add Text:="Type", Width:=48
-        .ColumnHeaders.Add Text:="Address", Width:=48
+        .ColumnHeaders.Add Text:="Type", Width:=24
         .ColumnHeaders.Add Text:="IsProtected", Width:=32
         .ColumnHeaders.Add Text:="IsHidden", Width:=24
+        .ColumnHeaders.Add Text:="IsKey", Width:=24
+        .ColumnHeaders.Add Text:="IsStarred", Width:=24
         
         .Appearance = cc3D
         .BorderStyle = ccNone

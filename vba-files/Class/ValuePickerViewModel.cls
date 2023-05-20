@@ -28,6 +28,8 @@ Private Type TState
     SelectedKey As String
     SelectedValueColumn As ValueColumn
     ValueColumns As ValueColumns
+    
+    StarredColumns As Collection
 End Type
 Private This As TState
 
@@ -123,6 +125,9 @@ Public Sub Load(ByVal Context As IAppContext, ByVal ListColumn As ListColumn)
     This.Properties.Load This.Context, This.ListObject
     
     SelectFirstEligbleValueColumn
+    
+    UpdateStarredColumns
+    OnPropertyChanged "Item"
 End Sub
 
 Private Sub SelectFirstEligbleValueColumn()
@@ -142,36 +147,37 @@ End Sub
 ' This runs when the user changes a checkbox via the UserForm, which causes the primary VM to update
 ' one of its properties, which we are listening to here.
 Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    Debug.Print PropertyName
     Select Case PropertyName
-        Case "EnableNontext"
-            'This.ValueColumns.EnableNontext = CallByName(Source, PropertyName, VbGet)
-            'ReloadValueColumns
+        Case "EnableStarredOnly"
+            This.ValueColumns.ShowStarredOnly = CallByName(Source, PropertyName, VbGet)
+            ReloadValueColumns
         Case "EnableNonunique"
             'This.ValueColumns.EnableNonunique = CallByName(Source, PropertyName, VbGet)
             'ReloadValueColumns
     End Select
 End Sub
 
-'@Description "Reloads ValueColums. Required after changing options that affect the collection."
+'@Description "Reloads ValueColums. Required after changing option buttons on the main ViewModel that affect the collection."
 Private Sub ReloadValueColumns()
 Attribute ReloadValueColumns.VB_Description = "Reloads ValueColums. Required after changing options that affect the collection."
     Dim PreviousSelected As String
-    ' If Not Selected Is Nothing Then
-        ' PreviousSelected = Selected.Key
-    ' End If
+    'If Not Selected Is Nothing Then
+    '    PreviousSelected = Selected.Key
+    'End If
     
-    ' Set Selected = Nothing
-    ' This.ValueColumns.Reload
+    'Set Selected = Nothing
+    This.ValueColumns.Reload
     
-    ' If PreviousSelected <> vbNullString Then
-        ' Dim ValueColumn As ValueColumn
-        ' Set ValueColumn = This.ValueColumns.Item(PreviousSelected)
-        ' If ValueColumn.Enabled Then
-            ' ValueColumn.Checked = True
-            ' ValueColumn.Selected = True
-            ' Set Selected = ValueColumn
-        ' End If
-    ' End If
+    'If PreviousSelected <> vbNullString Then
+    '    Dim ValueColumn As ValueColumn
+    '    Set ValueColumn = This.ValueColumns.Item(PreviousSelected)
+    '    If ValueColumn.Enabled Then
+    '        ValueColumn.Checked = True
+    '        ValueColumn.Selected = True
+    '        Set Selected = ValueColumn
+    '    End If
+    'End If
     
     OnPropertyChanged "Item"
 End Sub
@@ -325,9 +331,18 @@ Public Sub ShowTableProperties()
     
     If TablePropV.ShowDialog Then
         This.Properties.Commit
+        UpdateStarredColumns
         'This.KeyColumns.UpdatePreferredColumn This.Properties.TablePreferKeyVM.Selected
         'ReloadKeyColumns
     End If
     
     Set TablePropV = Nothing
+End Sub
+
+Private Sub UpdateStarredColumns()
+    ' TODO Do we need to store a copy here?
+    Set This.StarredColumns = This.Properties.TableStarColumnsVM.GetStarredColumns
+    This.ValueColumns.UpdateStarredColumns This.StarredColumns
+    
+    OnPropertyChanged "Item"
 End Sub

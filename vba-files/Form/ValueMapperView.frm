@@ -109,7 +109,7 @@ Private Sub BindControls()
         .BindPropertyPath ViewModel, "SrcValueColumnVM.SelectedKey", Me.txtSrcSelected, "Value", OneWayBinding
         .BindPropertyPath ViewModel, "DstValueColumnVM.SelectedKey", Me.txtDstSelected, "Value", OneWayBinding
         
-        .BindPropertyPath ViewModel, "EnableOption1", Me.chkEnableOption1, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "EnableStarredOnly", Me.chkEnableStarredOnly, "Value", TwoWayBinding
         .BindPropertyPath ViewModel, "EnableOption2", Me.chkEnableOption2, "Value", TwoWayBinding
         
         
@@ -131,7 +131,7 @@ Private Sub BindCommands()
     BindCommand AutoMapColumnsCommand.Create(Context, Me, ViewModel), Me.cmbAutoMap
     
     BindCommand ShowTablePropsCommand.Create(Context, Me, ViewModel.SrcValueColumnVM), Me.cmbSrcTableProps
-    BindCommand ShowTablePropsCommand.Create(Context, Me, ViewModel.SrcValueColumnVM), Me.cmbDstTableProps
+    BindCommand ShowTablePropsCommand.Create(Context, Me, ViewModel.DstValueColumnVM), Me.cmbDstTableProps
 End Sub
 
 Private Sub BindCommand(ByVal Command As ICommand, ByVal Control As Object)
