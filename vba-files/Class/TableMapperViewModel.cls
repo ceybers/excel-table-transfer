@@ -85,14 +85,6 @@ Public Sub Load(ByVal SrcTable As ListObject, ByVal DstTable As ListObject)
     Set This.SrcTableVM = TablePickerViewModel.Create(SrcTable, "Source Table", Source, This.Notifier)
     Set This.DstTableVM = TablePickerViewModel.Create(DstTable, "Destination Table", Destination, This.Notifier)
     
-    If Not SrcTable Is Nothing Then
-        This.SrcTableVM.SelectByListObject SrcTable
-    End If
-    
-    If Not DstTable Is Nothing Then
-        This.DstTableVM.SelectByListObject DstTable
-    End If
-    
     TrySelectOtherIfOnlyOne
 End Sub
 

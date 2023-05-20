@@ -20,10 +20,19 @@ Private Sub Class_Initialize()
     Set This.Commands = New Collection
 End Sub
 
-Public Function BindCommand(ByVal Context As IAppContext, ByVal ViewModel As IViewModel, ByVal Command As ICommand, _
-    ByVal Control As Object) As ICommandBinding
-    Dim NewBinding As CommandBinding
-    Set NewBinding = CommandBinding.Create(Context, ViewModel, Command, Control)
+Public Function BindCommand(ByVal Context As IAppContext, ByVal ViewModel As IViewModel, _
+    ByVal Command As ICommand, ByVal Control As Object) As ICommandBinding
+    
+    Dim NewBinding As ICommandBinding
+        
+    If TypeOf Control Is MSForms.CommandButton Then
+        Set NewBinding = CommandButtonCommandBinding.Create(Context, ViewModel, Command, Control)
+    ElseIf TypeOf Control Is MSComctlLib.ListView Then
+        Set NewBinding = ListViewCommandBinding.Create(Context, ViewModel, Command, Control)
+    Else
+        Debug.Assert False
+    End If
+    
     This.Commands.Add Item:=NewBinding
     Set BindCommand = NewBinding
 End Function
@@ -38,5 +47,4 @@ End Sub
 Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
     EvaluateCanExecute Source
 End Sub
-
 

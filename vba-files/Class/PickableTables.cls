@@ -13,8 +13,8 @@ Option Explicit
 
 Private Type TPickableTables
     Item As Scripting.Dictionary ' of type PickableTable
-    DisableProtectedWorksheets As Boolean
-    DisableReadonlyWorksheets As Boolean
+    EnableProtectedWorksheets As Boolean
+    EnableReadonlyWorksheets As Boolean
 End Type
 Private This As TPickableTables
 
@@ -29,19 +29,19 @@ Attribute Item.VB_UserMemId = -4
 End Property
 ' ---
 Public Property Get DisableProtectedWorksheets() As Boolean
-    DisableProtectedWorksheets = This.DisableProtectedWorksheets
+    DisableProtectedWorksheets = This.EnableProtectedWorksheets
 End Property
 
 Public Property Let DisableProtectedWorksheets(ByVal vNewValue As Boolean)
-    This.DisableProtectedWorksheets = vNewValue
+    This.EnableProtectedWorksheets = vNewValue
 End Property
 
 Public Property Get DisableReadonlyWorksheets() As Boolean
-    DisableReadonlyWorksheets = This.DisableReadonlyWorksheets
+    DisableReadonlyWorksheets = This.EnableReadonlyWorksheets
 End Property
 
 Public Property Let DisableReadonlyWorksheets(ByVal vNewValue As Boolean)
-    This.DisableReadonlyWorksheets = vNewValue
+    This.EnableReadonlyWorksheets = vNewValue
 End Property
 
 ' ---
@@ -68,17 +68,11 @@ Public Sub Reload()
 End Sub
 
 Private Sub TryAdd(ByVal PickableTable As PickableTable)
-    If This.DisableProtectedWorksheets And PickableTable.WorksheetLocked Then PickableTable.Enabled = False
-    If This.DisableReadonlyWorksheets And PickableTable.WorkbookReadonly Then PickableTable.Enabled = False
-    
+    If (Not This.EnableProtectedWorksheets) And PickableTable.WorksheetLocked Then PickableTable.Enabled = False
+    If (Not This.EnableReadonlyWorksheets) And PickableTable.WorkbookReadonly Then PickableTable.Enabled = False
+
     This.Item.Add Key:=PickableTable.Key, Item:=PickableTable
 End Sub
-
-Private Function IsFiltered(ByVal PickableTable As PickableTable) As Boolean
-    ' check if we are hiding protected files and this file is protected
-    ' etc etc
-    IsFiltered = False
-End Function
 
 Public Function GetByKey(ByVal Key As String) As PickableTable
     Set GetByKey = This.Item.Item(Key)

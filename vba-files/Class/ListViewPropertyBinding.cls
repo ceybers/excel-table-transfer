@@ -68,6 +68,12 @@ Public Sub Create(ByVal Source As Object, ByVal SourcePropertyPath As String, By
     TryUpdateTarget
 End Sub
 
+'Private Sub mListView_DblClick()
+'    If DO_DEBUG Then Debug.Print "ListViewPropertyBinding mListView_DblClick()"
+'
+'    TryUpdateSource
+'End Sub
+
 Private Sub mListView_ItemCheck(ByVal Item As MSComctlLib.ListItem)
     If DO_DEBUG Then Debug.Print "ListViewPropertyBinding mListView_ItemCheck()"
     

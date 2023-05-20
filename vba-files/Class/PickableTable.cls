@@ -122,7 +122,6 @@ Public Function Create(ByVal ListObject As ListObject) As PickableTable
     With Result
         .Load ListObject
         .Key = .WorkbookName & "::" & .WorksheetName & "::" & .Name
-        If .Name = "Table2" Then .Enabled = False
     End With
     Set Create = Result
 End Function

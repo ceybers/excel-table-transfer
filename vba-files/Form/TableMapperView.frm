@@ -25,6 +25,12 @@ Private Type TView
 End Type
 Private This As TView
 
+Private Sub cmdDEBUG_Click()
+    Debug.Print "..."
+    Debug.Print ".."
+    Debug.Print "."
+End Sub
+
 Private Property Get IView_ViewModel() As Object
     Set IView_ViewModel = This.ViewModel
 End Property
@@ -119,9 +125,13 @@ Private Sub BindCommands()
     Dim CancelView As ICommand
     Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
     
+    'Dim SrcDblClickListView As ICommand
+    'Set SrcDblClickListView = DblClickListViewCommand.Create(Context, Me, ViewModel.SrcTableVM)
+    
     With This.Context.CommandManager
         .BindCommand Context, ViewModel, OKView, Me.cmdOK
         .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
+        '.BindCommand Context, ViewModel.SrcTableVM, SrcDblClickListView, Me.lvSrcTables
     End With
 End Sub
 

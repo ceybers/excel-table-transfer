@@ -25,10 +25,14 @@ Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBindin
     
     Dim ListItem As ListItem
     For Each ListItem In ListView.ListItems
-        ' Order matters, checked must be last
-        VM.TrySetColumnSelected PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Selected
         VM.TrySetColumnChecked PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Checked
     Next ListItem
+        
+    Dim SelListItem As ListItem
+    Set SelListItem = ListView.SelectedItem
+    If Not SelListItem Is Nothing Then
+        VM.TrySetColumnChecked PropertyBinding.SourcePropertyPath, SelListItem.Key, True
+    End If
 End Sub
 
 Private Sub ConvertSelectedItem(ByVal SelectedItemKey As String, ByVal ListView As ListView)
@@ -76,7 +80,8 @@ Private Sub LoadListItem(ByVal PickableTable As PickableTable, ByVal ListView As
     
     ListItem.Bold = PickableTable.Checked
     ListItem.Checked = PickableTable.Checked
-    ListItem.Selected = PickableTable.Selected
+    'ListItem.Selected = PickableTable.Selected
+    'Debug.Print ListItem.Key; " = "; ListItem.Checked
 End Sub
 
 Public Sub InitializeListView(ByVal ListView As ListView)

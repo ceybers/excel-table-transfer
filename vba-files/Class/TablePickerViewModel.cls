@@ -110,58 +110,79 @@ Public Sub Load(ByVal ListObject As ListObject)
     
     Set This.PickableTables = New PickableTables
     This.PickableTables.Load Application
+    SelectByListObject ListObject
 End Sub
 
 '---
 Public Sub TrySetColumnChecked(ByVal PropertyPath As String, ByVal ItemKey As String, ByVal vNewValue As Boolean)
     Dim PickableTable As PickableTable
     Set PickableTable = This.PickableTables.Item(ItemKey)
-    
-    If PickableTable.Checked = vNewValue Then Exit Sub
-    PickableTable.Checked = vNewValue
+    '???
+    'If PickableTable.Checked = vNewValue Then Exit Sub
     
     If vNewValue Then
+        ' This item cannot be checked. Redraw the ListView using the Source collection.
         If Not PickableTable.Enabled Then
             PickableTable.Checked = False
             OnPropertyChanged "Item"
             Exit Sub
         End If
+        ' This item can be checked.
+        ' If something else was previous checked, set its PickableTable to unchecked.
         If Not This.Selected Is Nothing Then
             This.Selected.Checked = False
         End If
+        ' Set this new item as the Selected PickableTable
         Set Selected = PickableTable
+        PickableTable.Checked = vNewValue
         OnPropertyChanged "Item"
     Else
-        This.Selected.Checked = False
-        Set Selected = Nothing
-        OnPropertyChanged "Item"
+        ' Always allow unchecking.
+        ' Set both the PickableTable's property and the Selected PickableTable property in Collection wrapper.
+        'If Not This.Selected Is Nothing Then
+        '    This.Selected.Checked = False
+        '    Set Selected = Nothing
+        'End If
+        'PickableTable.Checked = vNewValue
+        'OnPropertyChanged "Item"
     End If
 End Sub
 
-Public Sub TrySetColumnSelected(ByVal PropertyPath As String, ByVal ItemKey As String, ByVal vNewValue As Boolean)
-    Dim PickableTable As PickableTable
-    Set PickableTable = This.PickableTables.Item(ItemKey)
-    
-    If PickableTable.Selected = vNewValue Then Exit Sub
-    PickableTable.Selected = vNewValue
-End Sub
-
 Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    
     Select Case PropertyName
         Case "EnableProtected"
             This.PickableTables.DisableProtectedWorksheets = CallByName(Source, PropertyName, VbGet)
-            Set Selected = Nothing
-            This.PickableTables.Reload
-            OnPropertyChanged "Item"
         Case "EnableReadonly"
             This.PickableTables.DisableReadonlyWorksheets = CallByName(Source, PropertyName, VbGet)
-            Set Selected = Nothing
-            This.PickableTables.Reload
-            OnPropertyChanged "Item"
+        Case Else
+            Exit Sub
     End Select
+    
+    Dim PreviousSelectedKey As String
+    If Not Selected Is Nothing Then
+        PreviousSelectedKey = Selected.Key
+    End If
+    Set Selected = Nothing
+    
+    This.PickableTables.Reload
+    
+    If PreviousSelectedKey <> vbNullString Then
+        Dim PreviousSelected As PickableTable
+        Set PreviousSelected = This.PickableTables.GetByKey(PreviousSelectedKey)
+        If PreviousSelected.Enabled Then
+            PreviousSelected.Checked = True
+            Set Selected = PreviousSelected
+        End If
+    End If
+    
+    OnPropertyChanged "Item"
 End Sub
 
-Public Sub SelectByListObject(ByVal ListObject As ListObject)
+'@Description "Sets the Selected PickableTable to the correct instance matching the given ListObject."
+Private Sub SelectByListObject(ByVal ListObject As ListObject)
+Attribute SelectByListObject.VB_Description = "Sets the Selected PickableTable to the correct instance matching the given ListObject."
+    If ListObject Is Nothing Then Exit Sub
     Dim PickableTable As PickableTable
     Set PickableTable = This.PickableTables.GetByListObject(ListObject)
     If PickableTable Is Nothing Then Exit Sub
