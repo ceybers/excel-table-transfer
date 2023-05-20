@@ -10,6 +10,7 @@ Private SrcKeyColumn As ListColumn
 Private DstKeyColumn As ListColumn
 Private MappedValueColumns As Collection
 
+'@EntryPoint "DoTestWorkflow"
 Public Sub DoTestWorkflow()
     Debug.Print "START"
     Debug.Print "---"
@@ -161,3 +162,4 @@ Private Function PickValues() As Boolean
     Set ValueMapperV = Nothing
     PickValues = Result
 End Function
+
