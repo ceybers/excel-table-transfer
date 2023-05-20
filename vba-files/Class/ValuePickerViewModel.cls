@@ -107,7 +107,8 @@ Public Sub Load(ByVal ListColumn As ListColumn)
     Set This.KeyColumn = ListColumn
     
     Set This.ValueColumns = New ValueColumns
-    This.ValueColumns.Load ListColumn.Parent
+    This.ValueColumns.Load ListColumn
+    
     SelectFirstEligbleValueColumn
 End Sub
 
@@ -246,35 +247,52 @@ Public Function GetMappedColumnTuples(ByVal SrcValueColumns As Scripting.Diction
     Set GetMappedColumnTuples = Result
 End Function
 
-Public Sub AutoMap(ByVal SrcValueColumns As Scripting.Dictionary)
+Public Function GetEnabledColumnNames() As Collection
+    Dim Result As Collection
+    Set Result = New Collection
+    
     Dim Key As Variant
-    For Each Key In This.ValueColumns.Item.Keys
-        Dim DstValueColumn As ValueColumn
-        Set DstValueColumn = This.ValueColumns.Item.Item(Key)
-        
-        If DstValueColumn.Enabled Then
-            If SrcValueColumns.Exists(Key) Then
-                DstValueColumn.MappedTo = Key
+    For Each Key In This.ValueColumns.Item
+        Dim ThisValueColumn  As ValueColumn
+        Set ThisValueColumn = This.ValueColumns.Item(Key)
+        If ThisValueColumn.Enabled Then
+            Result.Add Item:=ThisValueColumn.Name, Key:=ThisValueColumn.Name
+        End If
+    Next Key
+    Set GetEnabledColumnNames = Result
+End Function
+
+Public Sub AutoMap(ByVal SrcValueColumns As Collection)
+    Debug.Assert This.Direction = Destination
+    
+    Dim SrcColumnName As Variant
+    For Each SrcColumnName In SrcValueColumns
+        If This.ValueColumns.Item.Exists(SrcColumnName) Then
+            Dim DstValueColumn As ValueColumn
+            Set DstValueColumn = This.ValueColumns.Item.Item(SrcColumnName)
+            
+            If DstValueColumn.Enabled Then
+                DstValueColumn.MappedTo = SrcColumnName
             Else
                 DstValueColumn.MappedTo = vbNullString
             End If
         End If
-    Next Key
+    Next SrcColumnName
         
     OnPropertyChanged "Item"
 End Sub
 
-Public Function IsAutoMapped(ByVal SrcValueColumns As Scripting.Dictionary) As Boolean
+Public Function IsAutoMapped(ByVal SrcValueColumns As Collection) As Boolean
     IsAutoMapped = True
     
-    Dim Key As Variant
-    For Each Key In This.ValueColumns.Item.Keys
-        Dim DstValueColumn As ValueColumn
-        Set DstValueColumn = This.ValueColumns.Item.Item(Key)
-        
-        If DstValueColumn.Enabled Then
-            If SrcValueColumns.Exists(Key) Then
-                If DstValueColumn.MappedTo <> Key Then
+    Dim SrcColumnName As Variant
+    For Each SrcColumnName In SrcValueColumns
+        If This.ValueColumns.Item.Exists(SrcColumnName) Then
+            Dim DstValueColumn As ValueColumn
+            Set DstValueColumn = This.ValueColumns.Item.Item(SrcColumnName)
+            
+            If DstValueColumn.Enabled Then
+                If DstValueColumn.MappedTo <> SrcColumnName Then
                     IsAutoMapped = False
                     Exit Function
                 End If
@@ -285,5 +303,5 @@ Public Function IsAutoMapped(ByVal SrcValueColumns As Scripting.Dictionary) As B
                 End If
             End If
         End If
-    Next Key
+    Next SrcColumnName
 End Function

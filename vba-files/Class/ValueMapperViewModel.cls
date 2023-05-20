@@ -90,7 +90,7 @@ Public Function CanUnmapAll() As Boolean
 End Function
 
 Public Function CanAutoMap() As Boolean
-    CanAutoMap = Not This.DstValueColumnVM.IsAutoMapped(This.SrcValueColumnVM.Item)
+    CanAutoMap = Not This.DstValueColumnVM.IsAutoMapped(This.SrcValueColumnVM.GetEnabledColumnNames)
 End Function
 
 Public Sub DoMap()
@@ -107,7 +107,8 @@ Public Sub DoUnmapAll()
 End Sub
 
 Public Sub DoAutoMap()
-    This.DstValueColumnVM.AutoMap This.SrcValueColumnVM.Item
+    'This.DstValueColumnVM.AutoMap This.SrcValueColumnVM.Item
+    This.DstValueColumnVM.AutoMap This.SrcValueColumnVM.GetEnabledColumnNames
 End Sub
 
 Public Sub ExtractMappedData()

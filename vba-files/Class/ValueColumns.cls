@@ -13,6 +13,7 @@ Option Explicit
 
 Private Type TValueColumns
     ListObject As ListObject
+    KeyColumn As ListColumn
     Item As Scripting.Dictionary ' of type ValueColumn
     
     EnableNontext As Boolean
@@ -47,9 +48,10 @@ Public Property Let EnableNonunique(ByVal vNewValue As Boolean)
 End Property
 
 ' ---
-Public Sub Load(ByVal ListObject As ListObject)
+Public Sub Load(ByVal ListColumn As ListColumn)
     Debug.Assert Not Me Is ValueColumns
-    Set This.ListObject = ListObject
+    Set This.ListObject = ListColumn.Parent
+    Set This.KeyColumn = ListColumn
     
     Reload
 End Sub
@@ -67,6 +69,10 @@ Private Sub TryAdd(ByVal ValueColumn As ValueColumn)
     'ValueColumn.Enabled = True
     'If (Not This.EnableNontext) And (Not ValueColumn.IsText) Then ValueColumn.Enabled = False
     'If (Not This.EnableNonunique) And (Not ValueColumn.IsUnique) Then ValueColumn.Enabled = False
+    If ValueColumn.Key = This.KeyColumn.Name Then
+        ValueColumn.IsKey = True
+        ValueColumn.Enabled = False
+    End If
     
     This.Item.Add Key:=ValueColumn.Key, Item:=ValueColumn
 End Sub

@@ -18,6 +18,7 @@ Private Type TValueColumn
     MappedTo As String
     
     IsKey As Boolean
+    IsStarred As Boolean
     
     ' TODO Consider impl IListable?
     Selected As Boolean
@@ -77,6 +78,14 @@ End Property
  
 Public Property Let IsKey(ByVal vNewValue As Boolean)
     This.IsKey = vNewValue
+End Property
+
+Public Property Get IsStarred() As Boolean
+    IsStarred = This.IsStarred
+End Property
+ 
+Public Property Let IsStarred(ByVal vNewValue As Boolean)
+    This.IsStarred = vNewValue
 End Property
 
 ' ---
