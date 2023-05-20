@@ -107,7 +107,10 @@ Private Sub BindControls()
         .BindPropertyPath ViewModel, "EnableNontext", Me.chkEnableNontext, "Value", TwoWayBinding
         .BindPropertyPath ViewModel, "EnableNonunique", Me.chkEnableNonunique, "Value", TwoWayBinding
         
+        .BindPropertyPath ViewModel, "SrcKeyColumnVM.TableName", Me.txtSrcTableProps, "Value", OneTimeBinding
         .BindPropertyPath ViewModel, "SrcKeyColumnVM.Item", Me.lvSrcKeyColumns, "ListItems", TwoWayBinding, KeyColumnsToListViewConv
+        
+        .BindPropertyPath ViewModel, "DstKeyColumnVM.TableName", Me.txtDstTableProps, "Value", OneTimeBinding
         .BindPropertyPath ViewModel, "DstKeyColumnVM.Item", Me.lvDstKeyColumns, "ListItems", TwoWayBinding, KeyColumnsToListViewConv
     End With
 End Sub
@@ -115,11 +118,15 @@ End Sub
 Private Sub BindCommands()
     BindCommand OKViewCommand.Create(Context, Me, ViewModel), Me.cmdOK
     BindCommand CancelViewCommand.Create(Context, Me, ViewModel), Me.cmdCancel
+    
     BindCommand AutoMapKeysCommand.Create(Context, Me, ViewModel), Me.cmdAutoMap
     BindCommand MapLTRKeysCommand.Create(Context, Me, ViewModel), Me.cmbMatchLTR
     BindCommand MapRTLKeysCommand.Create(Context, Me, ViewModel), Me.cmbMatchRTL
     BindCommand PreferredKeysCommand.Create(Context, Me, ViewModel), Me.cmbMapPreferred
     BindCommand UnmapKeysCommand.Create(Context, Me, ViewModel), Me.cmbMapReset
+    
+    BindCommand ShowTablePropsCommand.Create(Context, Me, ViewModel.SrcKeyColumnVM), Me.cmbSrcTableProps
+    BindCommand ShowTablePropsCommand.Create(Context, Me, ViewModel.DstKeyColumnVM), Me.cmbDstTableProps
 End Sub
 
 Private Sub BindCommand(ByVal Command As ICommand, ByVal Control As Object)
@@ -129,5 +136,7 @@ End Sub
 Private Sub InitializeLabelPictures()
     ApplyImageMSOtoLabel Me.lblPicHeader, "TablePropertiesDialog"
     ApplyImageMSOtoLabel Me.lblPicOptions, "TablePropertiesDialog"
+    ApplyImageMSOtoLabel Me.lblPicSrcTable, "TablePropertiesDialog"
+    ApplyImageMSOtoLabel Me.lblPicDstTable, "TablePropertiesDialog"
 End Sub
 

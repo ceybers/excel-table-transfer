@@ -16,6 +16,7 @@ Private Const SETTINGS_NODE As String = "TableTransferTool"
 
 Private Type TState
     Notifier As INotifyPropertyChanged
+    Context As AppContext
     TableSettings As ISettings
     
     ' General tab
@@ -109,14 +110,21 @@ Public Property Get TableProtectionVM() As TableProtectionVM
 End Property
 
 '---
-Public Sub Load(ByVal ListObject As ListObject)
+Public Sub Load(ByVal Context As IAppContext, ByVal ListObject As ListObject)
+    Set This.Context = Context
+    
     Dim Worksheet As Worksheet
     Dim Workbook As Workbook
     Set Worksheet = ListObject.Parent
     Set Workbook = Worksheet.Parent
 
+    'Dim SettingsModel As ISettingsModel
+    'Set SettingsModel = XMLSettingsModel.Create(Workbook, SETTINGS_NODE)
+    'Set This.TableSettings = SettingsModel.Table(ListObject.Name)
+    
     Dim SettingsModel As ISettingsModel
-    Set SettingsModel = XMLSettingsModel.Create(Workbook, SETTINGS_NODE)
+    This.Context.LoadWorkbookSettings Workbook
+    Set SettingsModel = This.Context.WorkbookSettings.Item(Workbook.Name)
     Set This.TableSettings = SettingsModel.Table(ListObject.Name)
     
     This.TableDetailsVM.Load ListObject

@@ -12,7 +12,7 @@ Attribute DoRunTableProp.VB_Description = "DoRunTableProp"
     
     Dim VM As TablePropViewModel
     Set VM = New TablePropViewModel
-    VM.Load ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
+    VM.Load ctx, ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
 
     Dim View As IView
     Set View = TablePropView.Create(ctx, VM)

@@ -11,6 +11,10 @@ Attribute VB_Exposed = False
 '@Folder "PersistentStorage.Abstract"
 Option Explicit
 
+'@Description "Name of the Workbook that this SettingsModel is linked to."
+Public Function Name() As String
+End Function
+
 '@Description "Gets the Settings object for the workbook-level settings."
 Public Function Workbook() As ISettings
 Attribute Workbook.VB_Description = "Gets the Settings object for the workbook-level settings."

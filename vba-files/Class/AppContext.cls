@@ -11,15 +11,22 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IAppContext
 
+Private Const SETTINGS_NODE As String = "TableTransferTool"
+
 Private Type TAppContext
     BindingManager As BindingManager
     CommandManager As CommandManager
     UserLevelSettings As ISettings
+    WorkbookSettings As Collection
 End Type
 Private This As TAppContext
 
 Public Property Get UserLevelSettings() As ISettings
     Set UserLevelSettings = This.UserLevelSettings
+End Property
+
+Public Property Get WorkbookSettings() As Collection
+    Set WorkbookSettings = This.WorkbookSettings
 End Property
 
 Private Property Get IAppContext_BindingManager() As BindingManager
@@ -38,9 +45,19 @@ Private Sub Class_Initialize()
     Set This.UserLevelSettings = New MyDocsSettings
     Dim mUserLevelSettings As MyDocsSettings
     Set mUserLevelSettings = This.UserLevelSettings
-    mUserLevelSettings.Load
+    
+    Set This.WorkbookSettings = New Collection
 End Sub
 
 Public Sub RegisterViewModel(ByVal ViewModel As INotifyPropertyChanged)
     ViewModel.RegisterHandler This.BindingManager
+End Sub
+
+Public Sub LoadWorkbookSettings(ByVal Workbook As Workbook)
+    Dim SettingsModel As ISettingsModel
+    For Each SettingsModel In This.WorkbookSettings
+        If SettingsModel.Name = Workbook.Name Then Exit Sub
+    Next SettingsModel
+    Set SettingsModel = XMLSettingsModel.Create(Workbook, SETTINGS_NODE)
+    This.WorkbookSettings.Add Item:=SettingsModel, Key:=Workbook.Name
 End Sub

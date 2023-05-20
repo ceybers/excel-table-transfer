@@ -155,6 +155,10 @@ Attribute DebugPrint.VB_Description = "Debug.Print's the CustomXMLPart's XML as 
     Debug.Print CustomXMLPart.XML
 End Sub
 
+Private Function ISettingsModel_Name() As String
+    ISettingsModel_Name = This.Workbook.Name
+End Function
+
 Private Function ISettingsModel_Workbook() As ISettings
     Set ISettingsModel_Workbook = This.WorkbookSettings
 End Function

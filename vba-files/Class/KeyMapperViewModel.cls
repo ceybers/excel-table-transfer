@@ -88,10 +88,11 @@ End Property
 '---
 Public Sub Load(ByVal Context As IAppContext, ByVal SrcTable As ListObject, ByVal DstTable As ListObject)
     Set This.Context = Context
-    Set This.SrcKeyColumnVM = KeyPickerViewModel.Create(SrcTable, "Key Column for Source Table", _
-        Source, This.Notifier)
-    Set This.DstKeyColumnVM = KeyPickerViewModel.Create(DstTable, "Key Column for Destination Table", _
-        Destination, This.Notifier)
+    
+    Set This.SrcKeyColumnVM = KeyPickerViewModel.Create(Context, SrcTable, _
+        "Key Column for Source Table", Source, This.Notifier)
+    Set This.DstKeyColumnVM = KeyPickerViewModel.Create(Context, DstTable, _
+        "Key Column for Destination Table", Destination, This.Notifier)
         
     Me.EnableNontext = This.Context.UserLevelSettings.GetFlag(ENABLE_NONTEXT_FLAG)
     Me.EnableNonunique = This.Context.UserLevelSettings.GetFlag(ENABLE_NONUNIQUE_FLAG)

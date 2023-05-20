@@ -16,12 +16,14 @@ Implements IHandlePropertyChanged
 
 Private Type TState
     Notifier As INotifyPropertyChanged
-
+    Context As IAppContext
+    
     Caption As String
     Direction As TransferDirection
     
     Selected As KeyColumn
     KeyColumns As KeyColumns
+    ListObject As ListObject
 End Type
 Private This As TState
 
@@ -49,6 +51,10 @@ Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
 End Sub
 '---
+Public Property Get TableName() As String
+    TableName = This.ListObject.Name & " (" & This.ListObject.Parent.Name & ") (" & This.ListObject.Parent.Parent.Name & ")"
+End Property
+
 Public Property Get SelectedAsText() As String
     If This.Selected Is Nothing Then
         SelectedAsText = "nothing"
@@ -91,13 +97,13 @@ Public Property Let Direction(ByVal vNewValue As TransferDirection)
 End Property
 
 '---
-Public Function Create(ByVal ListObject As Object, _
+Public Function Create(ByVal Context As IAppContext, ByVal ListObject As Object, _
     ByVal Caption As String, ByVal Direction As TransferDirection, _
     ByVal Notifier As INotifyPropertyChanged) As KeyPickerViewModel
     
     Dim Result As KeyPickerViewModel
     Set Result = New KeyPickerViewModel
-    Result.Load ListObject
+    Result.Load Context, ListObject
     Result.Caption = Caption
     Result.Direction = Direction
     Notifier.RegisterHandler Result
@@ -105,9 +111,11 @@ Public Function Create(ByVal ListObject As Object, _
     Set Create = Result
 End Function
 
-Public Sub Load(ByVal ListObject As ListObject)
+Public Sub Load(ByVal Context As IAppContext, ByVal ListObject As ListObject)
     Debug.Assert Not Me Is KeyPickerViewModel
    
+    Set This.Context = Context
+    Set This.ListObject = ListObject
     Set This.KeyColumns = New KeyColumns
     This.KeyColumns.Load ListObject
 End Sub
@@ -205,3 +213,20 @@ Public Sub Deselect()
     
     OnPropertyChanged "Item"
 End Sub
+
+Public Sub ShowTableProperties()
+    Dim TablePropVM As TablePropViewModel
+    Set TablePropVM = New TablePropViewModel
+    TablePropVM.Load This.Context, This.ListObject
+
+    Dim TablePropV As IView
+    Set TablePropV = TablePropView.Create(This.Context, TablePropVM)
+    
+    If TablePropV.ShowDialog Then
+        TablePropVM.Commit
+    End If
+    
+    Set TablePropV = Nothing
+    Set TablePropVM = Nothing
+End Sub
+
