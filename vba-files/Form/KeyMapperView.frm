@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} KeyMapperView
    ClientHeight    =   8115
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   10650
+   ClientWidth     =   11700
    OleObjectBlob   =   "KeyMapperView.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -104,8 +104,6 @@ End Sub
 
 Private Sub BindControls()
     With Context.BindingManager
-        .BindPropertyPath ViewModel, "SrcKeyColumnVM.SelectedAsText", Me.TextBox1, "Value", OneWayBinding
-        
         .BindPropertyPath ViewModel, "EnableNontext", Me.chkEnableNontext, "Value", TwoWayBinding
         .BindPropertyPath ViewModel, "EnableNonunique", Me.chkEnableNonunique, "Value", TwoWayBinding
         
@@ -115,16 +113,17 @@ Private Sub BindControls()
 End Sub
 
 Private Sub BindCommands()
-    Dim OKView As ICommand
-    Set OKView = OKViewCommand.Create(Context, Me, ViewModel)
-    
-    Dim CancelView As ICommand
-    Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
-    
-    With This.Context.CommandManager
-        .BindCommand Context, ViewModel, OKView, Me.cmdOK
-        .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
-    End With
+    BindCommand OKViewCommand.Create(Context, Me, ViewModel), Me.cmdOK
+    BindCommand CancelViewCommand.Create(Context, Me, ViewModel), Me.cmdCancel
+    BindCommand AutoMapKeysCommand.Create(Context, Me, ViewModel), Me.cmdAutoMap
+    BindCommand MapLTRKeysCommand.Create(Context, Me, ViewModel), Me.cmbMatchLTR
+    BindCommand MapRTLKeysCommand.Create(Context, Me, ViewModel), Me.cmbMatchRTL
+    BindCommand PreferredKeysCommand.Create(Context, Me, ViewModel), Me.cmbMapPreferred
+    BindCommand UnmapKeysCommand.Create(Context, Me, ViewModel), Me.cmbMapReset
+End Sub
+
+Private Sub BindCommand(ByVal Command As ICommand, ByVal Control As Object)
+    This.Context.CommandManager.BindCommand Context, ViewModel, Command, Control
 End Sub
 
 Private Sub InitializeLabelPictures()

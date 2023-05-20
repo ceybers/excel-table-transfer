@@ -114,7 +114,9 @@ Private Function PickKeys() As Boolean
     
     Dim KeyMapperVM As KeyMapperViewModel
     Set KeyMapperVM = New KeyMapperViewModel
-    KeyMapperVM.Load SrcTable:=SrcTable, _
+    KeyMapperVM.Load _
+        Context:=ctx, _
+        SrcTable:=SrcTable, _
         DstTable:=DstTable
 
     Dim KeyMapperV As IView

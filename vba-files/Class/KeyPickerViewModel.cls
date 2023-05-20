@@ -178,3 +178,30 @@ Private Sub ReloadKeyColumns()
     
     OnPropertyChanged "Item"
 End Sub
+
+Public Function TryGetByKey(ByVal Key As String, ByRef OutKeyColumn As KeyColumn) As Boolean
+    If Not This.KeyColumns.Item.Exists(Key) Then Exit Function
+    Set OutKeyColumn = This.KeyColumns.Item.Item(Key)
+    TryGetByKey = True
+End Function
+
+Public Sub TryMap(ByVal Key As String)
+    If Not Selected Is Nothing Then
+        Selected.Checked = False
+    End If
+    
+    Dim SelKeyColumn As KeyColumn
+    Set SelKeyColumn = This.KeyColumns.Item.Item(Key)
+    SelKeyColumn.Checked = True
+    Set Selected = SelKeyColumn
+    
+    OnPropertyChanged "Item"
+End Sub
+
+Public Sub Deselect()
+    If This.Selected Is Nothing Then Exit Sub
+    This.Selected.Checked = False
+    Set Selected = Nothing
+    
+    OnPropertyChanged "Item"
+End Sub

@@ -11,8 +11,10 @@ Attribute DoRunKeyMapper.VB_Description = "DoRunKeyMapper"
     
     Dim VM As KeyMapperViewModel
     Set VM = New KeyMapperViewModel
-    VM.Load SrcTable:=ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1), _
-        DstTable:=ThisWorkbook.Worksheets.Item(3).ListObjects.Item(1)
+    VM.Load _
+        Context:=ctx, _
+        SrcTable:=ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1), _
+        DstTable:=ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2)
 
     Dim View As IView
     Set View = KeyMapperView.Create(ctx, VM)
