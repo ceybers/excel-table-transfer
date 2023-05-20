@@ -149,9 +149,7 @@ End Sub
 
 Private Sub UpdateListViewListItems()
     If DO_DEBUG Then Debug.Print "ListViewPropertyBinding UpdateListViewListItems()"
-    
-    
-    
+      
     Dim NewList As Object
     Set NewList = CallByName(This.ViewModel, This.SourcePropertyPath, VbGet)
         

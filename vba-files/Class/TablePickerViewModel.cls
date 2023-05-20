@@ -93,11 +93,12 @@ End Property
 '---
 Public Function Create(ByVal ListObject As Object, _
     ByVal Caption As String, ByVal Direction As TransferDirection, _
-    ByVal Notifier As INotifyPropertyChanged) As TablePickerViewModel
+    ByVal Notifier As INotifyPropertyChanged, ByVal Handler As IHandlePropertyChanged) _
+    As TablePickerViewModel
     
     Dim Result As TablePickerViewModel
     Set Result = New TablePickerViewModel
-    Result.Load ListObject
+    Result.Load ListObject, Handler
     Result.Caption = Caption
     Result.Direction = Direction
     Notifier.RegisterHandler Result
@@ -105,12 +106,13 @@ Public Function Create(ByVal ListObject As Object, _
     Set Create = Result
 End Function
 
-Public Sub Load(ByVal ListObject As ListObject)
+Public Sub Load(ByVal ListObject As ListObject, ByVal Handler As IHandlePropertyChanged)
     Debug.Assert Not Me Is TablePickerViewModel
     
     Set This.PickableTables = New PickableTables
     This.PickableTables.Load Application
     SelectByListObject ListObject
+    This.Notifier.RegisterHandler Handler
 End Sub
 
 '---
@@ -156,25 +158,11 @@ Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object,
         Case "EnableReadonly"
             This.PickableTables.DisableReadonlyWorksheets = CallByName(Source, PropertyName, VbGet)
         Case Else
+            Debug.Assert False
             Exit Sub
     End Select
     
-    Dim PreviousSelectedKey As String
-    If Not Selected Is Nothing Then
-        PreviousSelectedKey = Selected.Key
-    End If
-    Set Selected = Nothing
-    
-    This.PickableTables.Reload
-    
-    If PreviousSelectedKey <> vbNullString Then
-        Dim PreviousSelected As PickableTable
-        Set PreviousSelected = This.PickableTables.GetByKey(PreviousSelectedKey)
-        If PreviousSelected.Enabled Then
-            PreviousSelected.Checked = True
-            Set Selected = PreviousSelected
-        End If
-    End If
+    ReloadPreservingSelected
     
     OnPropertyChanged "Item"
 End Sub
@@ -188,4 +176,32 @@ Attribute SelectByListObject.VB_Description = "Sets the Selected PickableTable t
     If PickableTable Is Nothing Then Exit Sub
     PickableTable.Checked = True
     Set Selected = PickableTable
+End Sub
+
+Public Sub ExcludeTable(ByVal Key As String)
+    This.PickableTables.ExcludedName = Key
+    ReloadPreservingSelected
+    OnPropertyChanged "Item"
+End Sub
+
+Private Sub ReloadPreservingSelected()
+    Dim PreviousSelectedKey As String
+    If Not This.Selected Is Nothing Then
+        PreviousSelectedKey = Selected.Key
+        Set This.Selected = Nothing
+    End If
+    
+    This.PickableTables.Reload
+    
+    ' Nothing to restore, exit early
+    If PreviousSelectedKey = vbNullString Then Exit Sub
+    
+    Dim PreviousSelected As PickableTable
+    Set PreviousSelected = This.PickableTables.GetByKey(PreviousSelectedKey)
+    
+    ' Only restore if it is still enabled
+    If PreviousSelected.Enabled Then
+        PreviousSelected.Checked = True
+        Set This.Selected = PreviousSelected
+    End If
 End Sub

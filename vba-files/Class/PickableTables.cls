@@ -15,6 +15,7 @@ Private Type TPickableTables
     Item As Scripting.Dictionary ' of type PickableTable
     EnableProtectedWorksheets As Boolean
     EnableReadonlyWorksheets As Boolean
+    ExcludedName As String
 End Type
 Private This As TPickableTables
 
@@ -28,6 +29,14 @@ Attribute Item.VB_UserMemId = -4
     Set Item = This.Item
 End Property
 ' ---
+Public Property Get ExcludedName() As String
+    ExcludedName = This.ExcludedName
+End Property
+
+Public Property Let ExcludedName(ByVal vNewValue As String)
+    This.ExcludedName = vNewValue
+End Property
+
 Public Property Get DisableProtectedWorksheets() As Boolean
     DisableProtectedWorksheets = This.EnableProtectedWorksheets
 End Property
@@ -70,7 +79,8 @@ End Sub
 Private Sub TryAdd(ByVal PickableTable As PickableTable)
     If (Not This.EnableProtectedWorksheets) And PickableTable.WorksheetLocked Then PickableTable.Enabled = False
     If (Not This.EnableReadonlyWorksheets) And PickableTable.WorkbookReadonly Then PickableTable.Enabled = False
-
+    If PickableTable.Name = This.ExcludedName Then PickableTable.Enabled = False
+    
     This.Item.Add Key:=PickableTable.Key, Item:=PickableTable
 End Sub
 

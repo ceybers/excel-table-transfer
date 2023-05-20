@@ -11,6 +11,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IViewModel
 Implements INotifyPropertyChanged
+Implements IHandlePropertyChanged
 
 Private Type TState
     Notifier As INotifyPropertyChanged
@@ -82,8 +83,8 @@ End Property
 
 '---
 Public Sub Load(ByVal SrcTable As ListObject, ByVal DstTable As ListObject)
-    Set This.SrcTableVM = TablePickerViewModel.Create(SrcTable, "Source Table", Source, This.Notifier)
-    Set This.DstTableVM = TablePickerViewModel.Create(DstTable, "Destination Table", Destination, This.Notifier)
+    Set This.SrcTableVM = TablePickerViewModel.Create(SrcTable, "Source Table", Source, This.Notifier, Me)
+    Set This.DstTableVM = TablePickerViewModel.Create(DstTable, "Destination Table", Destination, This.Notifier, Me)
     
     TrySelectOtherIfOnlyOne
 End Sub
@@ -92,4 +93,22 @@ End Sub
 Private Sub TrySelectOtherIfOnlyOne()
 Attribute TrySelectOtherIfOnlyOne.VB_Description = "If there are only two tables to choose from, and one is already selected on load, automatically select the other table."
     ' TODO NYI
+End Sub
+
+Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    Select Case PropertyName
+        Case "Selected"
+            Dim SourceVM As TablePickerViewModel
+            Set SourceVM = Source
+            InformOtherVM SourceVM.Direction
+    End Select
+End Sub
+
+Private Sub InformOtherVM(ByVal Direction As TransferDirection)
+    Select Case Direction
+        Case Source
+            This.DstTableVM.ExcludeTable This.SrcTableVM.SelectedAsText
+        Case Destination
+            This.SrcTableVM.ExcludeTable This.DstTableVM.SelectedAsText
+    End Select
 End Sub
