@@ -13,8 +13,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
 '@Folder "MVVM.TableProps.View"
 Option Explicit
 Implements IView
@@ -106,9 +104,9 @@ End Function
 Private Sub InitializeControls()
     '@Ignore ArgumentWithIncompatibleObjectType
     ColumnPropToListViewConverter.InitializeListView Me.lvStarredColumns
-    'CountryToListViewConverter.InitializeListView Me.ListView1
-    '@Ignore ArgumentWithIncompatibleObjectType
-    'CitytoListViewConverter.InitializeListView Me.ListView2
+    
+    ' Activate first tab of multipage
+    Me.mpgTabs.Value = 0
 End Sub
 
 Private Sub BindControls()
@@ -152,35 +150,16 @@ Private Sub BindControls()
 End Sub
 
 Private Sub BindCommands()
-    Dim OKView As ICommand
-    Set OKView = OKViewCommand.Create(Context, Me, ViewModel)
-    
-    Dim CancelView As ICommand
-    Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
-    
-    ' TODO Move this init to ViewModel.TableStarColumnsVM
-    ' Can't because we need a Ref for CTX and sub-VMs don't have it
-    ' Can't CommandManager set it during BindCommand...
-    Dim ResetStarColumns As ICommand
-    Set ResetStarColumns = ResetStarColumnsCommand.Create(Context, Me, ViewModel.TableStarColumnsVM)
-    
-    Dim RemoveHighlighting As ICommand
-    Set RemoveHighlighting = RemoveHighlightingCommand.Create(Context, Me, ViewModel.TableHighlightingVM)
-    
-    Dim ActivateProfile As ICommand
-    Set ActivateProfile = ActivateProfileCommand.Create(Context, Me, ViewModel.TableProfileVM)
-    
-    Dim RemoveProfile As ICommand
-    Set RemoveProfile = RemoveProfileCommand.Create(Context, Me, ViewModel.TableProfileVM)
-    
-    With This.Context.CommandManager
-        .BindCommand Context, ViewModel, OKView, Me.cmdOK
-        .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
-        .BindCommand Context, ViewModel.TableStarColumnsVM, ResetStarColumns, Me.cmdResetValueColumns
-        .BindCommand Context, ViewModel.TableProfileVM, ActivateProfile, Me.cmdProfileActivate
-        .BindCommand Context, ViewModel.TableProfileVM, RemoveProfile, Me.cmdProfileRemove
-        .BindCommand Context, ViewModel.TableHighlightingVM, RemoveHighlighting, Me.cmdHighlightingRemove
-    End With
+    BindCommand OKViewCommand.Create(Context, Me, ViewModel), Me.cmdOK
+    BindCommand CancelViewCommand.Create(Context, Me, ViewModel), Me.cmdCancel
+    BindCommand ResetStarColumnsCommand.Create(Context, Me, ViewModel.TableStarColumnsVM), Me.cmdResetValueColumns
+    BindCommand ActivateProfileCommand.Create(Context, Me, ViewModel.TableProfileVM), Me.cmdProfileActivate
+    BindCommand RemoveProfileCommand.Create(Context, Me, ViewModel.TableProfileVM), Me.cmdProfileRemove
+    BindCommand RemoveHighlightingCommand.Create(Context, Me, ViewModel.TableHighlightingVM), Me.cmdHighlightingRemove
+End Sub
+
+Private Sub BindCommand(ByVal Command As ICommand, ByVal Control As Object)
+    This.Context.CommandManager.BindCommand Context, ViewModel, Command, Control
 End Sub
 
 Private Sub InitializeLabelPictures()

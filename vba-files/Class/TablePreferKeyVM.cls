@@ -20,6 +20,9 @@ Private Type TState
     Settings As ISettings
     IsChanged As Boolean
     
+    ListObject As ListObject
+    
+    Selected As ListColumn
     SelectedColumn As String
     Columns As Scripting.Dictionary
     KeyColumns As KeyColumnProps
@@ -54,6 +57,10 @@ Private Sub Class_Initialize()
 End Sub
 
 '---
+Public Property Get Selected() As ListColumn
+    Set Selected = This.Selected
+End Property
+
 Public Property Get SelectedColumn() As String
     SelectedColumn = This.SelectedColumn
 End Property
@@ -61,6 +68,7 @@ End Property
 Public Property Let SelectedColumn(ByVal vNewValue As String)
     If This.SelectedColumn = vNewValue Then Exit Property
     This.SelectedColumn = vNewValue
+    TrySetSelectedFromSuffixedName
     OnPropertyChanged "SelectedColumn"
 End Property
 
@@ -71,6 +79,7 @@ End Property
 ' ---
 Public Sub Load(ByVal ListObject As ListObject, ByVal Settings As ISettings)
     Set This.Settings = Settings
+    Set This.ListObject = ListObject
     
     This.KeyColumns.Load ListObject
     
@@ -90,16 +99,20 @@ Private Sub LoadSelectedColumn()
     
     Dim Key As Variant
     For Each Key In This.Columns.Keys
-        If This.Columns.Item(Key) = SavedColumn Then
-                SelectedColumn = This.Columns.Item(Key)
-            Exit Sub
+        If Key = SavedColumn Then
+            SelectedColumn = This.Columns.Item(Key)
+            Set This.Selected = This.ListObject.ListColumns(Key)
         End If
     Next Key
 End Sub
 
 Public Sub Commit()
     If This.IsChanged = False Then Exit Sub
-    This.Settings.SetSetting PREFER_KEY_COLUMN, SelectedColumn
+    If Not This.Selected Is Nothing Then
+        This.Settings.SetSetting PREFER_KEY_COLUMN, This.Selected.Name
+    Else
+        This.Settings.SetSetting PREFER_KEY_COLUMN, vbNullString
+    End If
 End Sub
 
 Private Property Get IChangeTracking_IsChanged() As Boolean
@@ -110,4 +123,31 @@ Private Sub IChangeTracking_AcceptChanges()
     If This.IsChanged = False Then Exit Sub
     Commit
     This.IsChanged = False
+End Sub
+
+Private Sub TrySetSelectedFromSuffixedName()
+    Debug.Print "TrySetSelectedFromSuffixedName: "; This.SelectedColumn
+    
+    Dim Dict As Scripting.Dictionary
+    Set Dict = This.KeyColumns.GetDictionary
+    
+    Dim ActualColumnName As String
+    Dim Key As Variant
+    For Each Key In Dict.Keys
+        If Dict.Item(Key) = This.SelectedColumn Then
+            ActualColumnName = Key
+            Exit For
+        End If
+    Next Key
+    
+    Dim ListColumn As ListColumn
+    For Each ListColumn In This.ListObject.ListColumns
+        If ListColumn.Name = ActualColumnName Then
+            Set This.Selected = ListColumn
+            Exit Sub
+        End If
+    Next ListColumn
+    
+    ' ListColumn doesn't exist in ListObject
+    Set This.Selected = Nothing
 End Sub

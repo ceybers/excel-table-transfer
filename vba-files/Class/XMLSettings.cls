@@ -11,6 +11,8 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements ISettings
 
+Private Const DO_DEBUG As Boolean = False
+
 Private Const FLAGS_NODE As String = "Flags"
 Private Const SETTINGS_NODE As String = "Settings"
 Private Const COLLECTIONS_NODE As String = "Collections"
@@ -60,9 +62,11 @@ Private Function ISettings_GetFlag(ByVal FlagName As String) As Boolean
                 Debug.Assert False
         End Select
     End If
+    If DO_DEBUG Then Debug.Print "ISettings_GetFlag("; FlagName; ") = "; ISettings_GetFlag
 End Function
 
 Private Sub ISettings_SetFlag(ByVal FlagName As String, ByVal Value As Boolean)
+    If DO_DEBUG Then Debug.Print "ISettings_SetFlag("; FlagName; ") = "; Value
     Dim XPath As String
     XPath = XPathPrefix & "/" & FLAGS_NODE & "/" & FlagName
     
