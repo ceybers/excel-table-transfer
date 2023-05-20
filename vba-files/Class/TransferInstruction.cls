@@ -62,11 +62,11 @@ Public Property Set ValuePairs(ByVal vNewValue As Collection)
 End Property
 
 Public Property Get RHStoLHSRowMap() As Variant
-    Set RHStoLHSRowMap = This.RHStoLHSRowMap
+    RHStoLHSRowMap = This.RHStoLHSRowMap
 End Property
 
-Public Property Set RHStoLHSRowMap(ByVal vNewValue As Variant)
-    Set This.RHStoLHSRowMap = vNewValue
+Public Property Let RHStoLHSRowMap(ByVal vNewValue As Variant)
+    This.RHStoLHSRowMap = vNewValue
 End Property
 
 ' Ctor
@@ -74,6 +74,7 @@ Private Sub Class_Initialize()
     Set ValuePairs = New Collection
 End Sub
 
+' ---
 Public Function IsValid() As Boolean
     If SourceKey Is Nothing Then Exit Function
     If DestinationKey Is Nothing Then Exit Function
@@ -107,7 +108,9 @@ Private Sub TransferColumnTuple(ByVal ColumnTuple As ColumnTuple)
    DoTransfer RHStoLHSRowMap, ColumnTuple.SourceListColumn, ColumnTuple.DestinationListColumn
 End Sub
 
+'@Description "Transfers data from a Source value column to a Destination value column using the provided KeyColumn mapping."
 Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal Destination As ListColumn)
+Attribute DoTransfer.VB_Description = "Transfers data from a Source value column to a Destination value column using the provided KeyColumn mapping."
     Dim i As Integer
     Dim arrLHS As Variant
     Dim arrRHS As Variant
@@ -131,7 +134,7 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
     arrLHS = Source.DataBodyRange.Value2
     arrRHS = Destination.DataBodyRange.Value2
     arrLHSOffset = Source.DataBodyRange.Row
-    arrRHSOffset = Destination.DataBodyRange.Row
+    arrRHSOffset = Destination.DataBodyRange.Row - 1
     
     Dim cellRange As Range
     Dim copiedRange As Range
@@ -141,7 +144,6 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
             newValue = arrLHS(Map(i) - arrLHSOffset + 1, 1)
             doCopy = True
             
-            
             If doCopy Then
                 If arrRHS(i - arrRHSOffset + 1, 1) <> newValue Then
                     arrRHS(i - arrRHSOffset + 1, 1) = newValue
@@ -149,8 +151,6 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
                 Else
                     'Debug.Print "Cell was mapped but didn't change"
                 End If
-                
-                
             End If
         End If
     Next i

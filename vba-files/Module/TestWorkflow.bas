@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestWorkflow"
-'@IgnoreModule ImplicitActiveWorkbookReference
+'@IgnoreModule ImplicitActiveSheetReference, ImplicitActiveWorkbookReference
 '@Folder "TableTransfer"
 Option Explicit
 
@@ -162,4 +162,5 @@ Private Function PickValues() As Boolean
     Set ValueMapperV = Nothing
     PickValues = Result
 End Function
+
 

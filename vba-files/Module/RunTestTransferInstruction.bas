@@ -1,7 +1,7 @@
 Attribute VB_Name = "RunTestTransferInstruction"
+'@IgnoreModule ImplicitActiveSheetReference, ImplicitActiveWorkbookReference
 '@Folder("TransferEngine")
 Option Explicit
-
 
 '@EntryPoint "DoTestTransferInstruction"
 Public Sub DoTestTransferInstruction()
@@ -19,16 +19,20 @@ Public Sub DoTestTransferInstruction()
         .ValuePairs.Add ColumnTuple.Create( _
             Worksheets(1).ListObjects(1).ListColumns(2), _
             Worksheets(2).ListObjects(1).ListColumns(2))
+        .ValuePairs.Add ColumnTuple.Create( _
+            Worksheets(1).ListObjects(1).ListColumns(3), _
+            Worksheets(2).ListObjects(1).ListColumns(3))
+        .RHStoLHSRowMap = KeyColumnMapper.Create(.SourceKey, .DestinationKey).GenerateMap
     End With
     
     Debug.Print ThisTransfer.IsValid
     
     Debug.Print ThisTransfer.ToString
     
-    
     Worksheets(2).Activate
     Range("A2").Activate
     
-    
     ThisTransfer.Transfer
 End Sub
+
+
