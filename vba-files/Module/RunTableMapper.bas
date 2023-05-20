@@ -12,7 +12,10 @@ Attribute DoRunTableMapper.VB_Description = "DoRunTableMapper"
     
     Dim VM As TableMapperViewModel
     Set VM = New TableMapperViewModel
-    VM.Load ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1), Nothing
+    VM.Load _
+        Context:=ctx, _
+        SrcTable:=ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1), _
+        DstTable:=Nothing
 
     Dim View As IView
     Set View = TableMapperView.Create(ctx, VM)

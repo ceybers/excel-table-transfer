@@ -90,7 +90,7 @@ End Function
 Private Function PickOtherTable() As Boolean
     Dim TableMapperVM As TableMapperViewModel
     Set TableMapperVM = New TableMapperViewModel
-    TableMapperVM.Load SrcTable, DstTable
+    TableMapperVM.Load ctx, SrcTable, DstTable
     
     Dim TableMapperV As IView
     Set TableMapperV = TableMapperView.Create(ctx, TableMapperVM)
