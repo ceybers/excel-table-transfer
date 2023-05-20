@@ -12,18 +12,26 @@ Option Explicit
 Implements IViewModel
 Implements INotifyPropertyChanged
 
+Private Const ENABLE_OPTION1_FLAG As String = "VALMAPPER_ENABLEOPTION1"
+Private Const ENABLE_OPTION2_FLAG As String = "VALMAPPER_ENABLEOPTION2"
+
 Private Type TState
     Notifier As INotifyPropertyChanged
+    Context As AppContext
 
     SrcValueColumnVM As ValuePickerViewModel
     DstValueColumnVM As ValuePickerViewModel
     MappedValueColumns As Collection ' of type ColumnTuple
+    
+    EnableOption1 As Boolean
+    EnableOption2 As Boolean
 End Type
 Private This As TState
 
 Private Function IViewModel_IsValid() As Boolean
     'If This.SrcValueColumnVM.Selected Is Nothing Then Exit Function
     'If This.DstValueColumnVM.Selected Is Nothing Then Exit Function
+    If This.DstValueColumnVM.GetMappedColumnTuples(This.SrcValueColumnVM.Item).Count = 0 Then Exit Function
     
     IViewModel_IsValid = True
 End Function
@@ -61,13 +69,40 @@ Public Property Get MappedValueColumns() As Collection
     Set MappedValueColumns = This.MappedValueColumns
 End Property
 
+Public Property Get EnableOption1() As Boolean
+    EnableOption1 = This.EnableOption1
+End Property
+
+Public Property Let EnableOption1(ByVal vNewValue As Boolean)
+    If This.EnableOption1 = vNewValue Then Exit Property
+    This.EnableOption1 = vNewValue
+    OnPropertyChanged "EnableOption1"
+    This.Context.UserLevelSettings.SetFlag ENABLE_OPTION1_FLAG, vNewValue
+End Property
+
+Public Property Get EnableOption2() As Boolean
+    EnableOption2 = This.EnableOption2
+End Property
+
+Public Property Let EnableOption2(ByVal vNewValue As Boolean)
+    If This.EnableOption2 = vNewValue Then Exit Property
+    This.EnableOption2 = vNewValue
+    OnPropertyChanged "EnableOption2"
+    This.Context.UserLevelSettings.SetFlag ENABLE_OPTION2_FLAG, vNewValue
+End Property
+
 '---
 'Public Sub Load(ByVal SrcTable As ListObject, ByVal DstTable As ListObject)
-Public Sub Load(ByVal SrcColumn As ListColumn, ByVal DstColumn As ListColumn)
-    Set This.SrcValueColumnVM = ValuePickerViewModel.Create(SrcColumn, "Value Columns for Source Table", _
-        Source, This.Notifier)
-    Set This.DstValueColumnVM = ValuePickerViewModel.Create(DstColumn, "Value Columns for Destination Table", _
-        Destination, This.Notifier)
+Public Sub Load(ByVal Context As IAppContext, ByVal SrcColumn As ListColumn, ByVal DstColumn As ListColumn)
+    Set This.Context = Context
+    
+    Set This.SrcValueColumnVM = ValuePickerViewModel.Create(SrcColumn, _
+        "Value Columns for Source Table", Source, This.Notifier)
+    Set This.DstValueColumnVM = ValuePickerViewModel.Create(DstColumn, _
+        "Value Columns for Destination Table", Destination, This.Notifier)
+        
+    Me.EnableOption1 = This.Context.UserLevelSettings.GetFlag(ENABLE_OPTION1_FLAG)
+    Me.EnableOption2 = This.Context.UserLevelSettings.GetFlag(ENABLE_OPTION2_FLAG)
 End Sub
 
 Public Function CanMap() As Boolean
@@ -114,3 +149,5 @@ End Sub
 Public Sub ExtractMappedData()
     Set This.MappedValueColumns = This.DstValueColumnVM.GetMappedColumnTuples(This.SrcValueColumnVM.Item)
 End Sub
+
+

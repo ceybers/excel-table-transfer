@@ -25,10 +25,6 @@ Private Type TView
 End Type
 Private This As TView
 
-Private Sub CommandButton8_Click()
-    Stop
-End Sub
-
 Private Property Get IView_ViewModel() As Object
     Set IView_ViewModel = This.ViewModel
 End Property
@@ -103,10 +99,8 @@ End Function
 
 Private Sub InitializeControls()
     '@Ignore ArgumentWithIncompatibleObjectType
-    'SrvValColumns?
      SrcValueColumnsToListViewConv.InitializeListView Me.lvSrcValueColumns
     '@Ignore ArgumentWithIncompatibleObjectType
-    'DstValColumns?
      DstValueColumnsToListViewConv.InitializeListView Me.lvDstValueColumns
 End Sub
 
@@ -115,8 +109,8 @@ Private Sub BindControls()
         .BindPropertyPath ViewModel, "SrcValueColumnVM.SelectedKey", Me.txtSrcSelected, "Value", OneWayBinding
         .BindPropertyPath ViewModel, "DstValueColumnVM.SelectedKey", Me.txtDstSelected, "Value", OneWayBinding
         
-        '.BindPropertyPath ViewModel, "EnableNontext", Me.chkEnableNontext, "Value", TwoWayBinding
-        '.BindPropertyPath ViewModel, "EnableNonunique", Me.chkEnableNonunique, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "EnableOption1", Me.chkEnableOption1, "Value", TwoWayBinding
+        .BindPropertyPath ViewModel, "EnableOption2", Me.chkEnableOption2, "Value", TwoWayBinding
         
         .BindPropertyPath ViewModel, "SrcValueColumnVM.Item", Me.lvSrcValueColumns, "ListItems", TwoWayBinding, SrcValueColumnsToListViewConv
         .BindPropertyPath ViewModel, "DstValueColumnVM.Item", Me.lvDstValueColumns, "ListItems", TwoWayBinding, DstValueColumnsToListViewConv
@@ -124,32 +118,16 @@ Private Sub BindControls()
 End Sub
 
 Private Sub BindCommands()
-    Dim OKView As ICommand
-    Set OKView = OKViewCommand.Create(Context, Me, ViewModel)
-    
-    Dim CancelView As ICommand
-    Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
-    
-    Dim MapValueColumns As ICommand
-    Set MapValueColumns = MapValueColumnsCommand.Create(Context, Me, ViewModel)
-    
-    Dim UnmapValueColumns As ICommand
-    Set UnmapValueColumns = UnmapValueColumnsCommand.Create(Context, Me, ViewModel)
-    
-    Dim UnmapAllColumns As ICommand
-    Set UnmapAllColumns = UnmapAllColumnsCommand.Create(Context, Me, ViewModel)
-    
-    Dim AutoMapColumns As ICommand
-    Set AutoMapColumns = AutoMapColumnsCommand.Create(Context, Me, ViewModel)
-    
-    With This.Context.CommandManager
-        .BindCommand Context, ViewModel, OKView, Me.cmdOK
-        .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
-        .BindCommand Context, ViewModel, MapValueColumns, Me.cmbMapValueColumns
-        .BindCommand Context, ViewModel, UnmapValueColumns, Me.cmbUnmapValueColumns
-        .BindCommand Context, ViewModel, UnmapAllColumns, Me.cmbUnmapAll
-        .BindCommand Context, ViewModel, AutoMapColumns, Me.cmbAutoMap
-    End With
+    BindCommand OKViewCommand.Create(Context, Me, ViewModel), Me.cmdOK
+    BindCommand CancelViewCommand.Create(Context, Me, ViewModel), Me.cmdCancel
+    BindCommand MapValueColumnsCommand.Create(Context, Me, ViewModel), Me.cmbMapValueColumns
+    BindCommand UnmapValueColumnsCommand.Create(Context, Me, ViewModel), Me.cmbUnmapValueColumns
+    BindCommand UnmapAllColumnsCommand.Create(Context, Me, ViewModel), Me.cmbUnmapAll
+    BindCommand AutoMapColumnsCommand.Create(Context, Me, ViewModel), Me.cmbAutoMap
+End Sub
+
+Private Sub BindCommand(ByVal Command As ICommand, ByVal Control As Object)
+    This.Context.CommandManager.BindCommand Context, ViewModel, Command, Control
 End Sub
 
 Private Sub InitializeLabelPictures()

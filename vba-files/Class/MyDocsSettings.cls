@@ -11,7 +11,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements ISettings
 
-Private Const DO_DEBUG As Boolean = True
+Private Const DO_DEBUG As Boolean = False
 
 Private Const SUBFOLDER As String = "Documents\Excel Macros"
 Private Const Filename As String = "tabletransfertool.ini"

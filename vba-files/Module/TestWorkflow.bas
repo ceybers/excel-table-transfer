@@ -146,6 +146,7 @@ Private Function PickValues() As Boolean
     Set ValueMapperVM = New ValueMapperViewModel
     
     ValueMapperVM.Load _
+        Context:=ctx, _
         SrcColumn:=SrcKeyColumn, _
         DstColumn:=DstKeyColumn
 

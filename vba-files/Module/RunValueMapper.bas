@@ -13,6 +13,7 @@ Attribute DoRunValueMapper.VB_Description = "DoRunValueMapper"
     Set VM = New ValueMapperViewModel
     
     VM.Load _
+        Context:=ctx, _
         SrcColumn:=ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1).ListColumns.Item(1), _
         DstColumn:=ThisWorkbook.Worksheets.Item(3).ListObjects.Item(1).ListColumns.Item(2)
 
