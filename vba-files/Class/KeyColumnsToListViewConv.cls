@@ -70,6 +70,7 @@ Private Sub LoadListItem(ByVal KeyColumn As KeyColumn, ByVal ListView As ListVie
         .Add Text:=KeyColumn.DataType
         .Add Text:=IIf(KeyColumn.IsText, "Y", "N")
         .Add Text:=IIf(KeyColumn.IsUnique, "Y", "N")
+        .Add Text:=IIf(KeyColumn.IsPreferred, "Y", "N")
     End With
     
     ListItem.ForeColor = ForeColor
@@ -80,12 +81,6 @@ Private Sub LoadListItem(ByVal KeyColumn As KeyColumn, ByVal ListView As ListVie
     
     ListItem.Bold = KeyColumn.Checked
     ListItem.Checked = KeyColumn.Checked
-    'If KeyColumn.Checked Then
-        'If Not ListView.DropHighlight Is Nothing Then
-            'ListView.DropHighlight = -1
-        'End If
-        'Set ListView.DropHighlight = ListItem
-    'End If
 End Sub
 
 Public Sub InitializeListView(ByVal ListView As ListView)
@@ -95,12 +90,11 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         .ListItems.Clear
         .ColumnHeaders.Clear
         
-        .ColumnHeaders.Add Text:="Name", Width:=72
+        .ColumnHeaders.Add Text:="Name", Width:=92
         .ColumnHeaders.Add Text:="Type", Width:=48
-        .ColumnHeaders.Add Text:="IsText", Width:=48
-        .ColumnHeaders.Add Text:="IsUnique", Width:=32
-        .ColumnHeaders.Add Text:="D", Width:=24
-        .ColumnHeaders.Add Text:="E", Width:=24
+        .ColumnHeaders.Add Text:="IsText", Width:=24
+        .ColumnHeaders.Add Text:="IsUnique", Width:=24
+        .ColumnHeaders.Add Text:="Preferred", Width:=24
         
         .Appearance = cc3D
         .BorderStyle = ccNone

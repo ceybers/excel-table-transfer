@@ -17,6 +17,7 @@ Implements IHandlePropertyChanged
 Private Type TState
     Notifier As INotifyPropertyChanged
     Context As IAppContext
+    Properties As TablePropViewModel
     
     Caption As String
     Direction As TransferDirection
@@ -96,6 +97,10 @@ Public Property Let Direction(ByVal vNewValue As TransferDirection)
     This.Direction = vNewValue
 End Property
 
+Public Property Get HasPreferred() As Boolean
+    HasPreferred = This.KeyColumns.HasPreferred
+End Property
+
 '---
 Public Function Create(ByVal Context As IAppContext, ByVal ListObject As Object, _
     ByVal Caption As String, ByVal Direction As TransferDirection, _
@@ -116,8 +121,15 @@ Public Sub Load(ByVal Context As IAppContext, ByVal ListObject As ListObject)
    
     Set This.Context = Context
     Set This.ListObject = ListObject
+    
+    Set This.Properties = New TablePropViewModel
+    This.Properties.Load This.Context, This.ListObject
+    
     Set This.KeyColumns = New KeyColumns
     This.KeyColumns.Load ListObject
+    
+    This.KeyColumns.UpdatePreferredColumn This.Properties.TablePreferKeyVM.Selected
+    ReloadKeyColumns
 End Sub
 
 '---
@@ -215,18 +227,25 @@ Public Sub Deselect()
 End Sub
 
 Public Sub ShowTableProperties()
-    Dim TablePropVM As TablePropViewModel
-    Set TablePropVM = New TablePropViewModel
-    TablePropVM.Load This.Context, This.ListObject
-
     Dim TablePropV As IView
-    Set TablePropV = TablePropView.Create(This.Context, TablePropVM)
+    Set TablePropV = TablePropView.Create(This.Context, This.Properties)
     
     If TablePropV.ShowDialog Then
-        TablePropVM.Commit
+        This.Properties.Commit
+        This.KeyColumns.UpdatePreferredColumn This.Properties.TablePreferKeyVM.Selected
+        ReloadKeyColumns
     End If
     
     Set TablePropV = Nothing
-    Set TablePropVM = Nothing
 End Sub
 
+Public Sub SetToPreferred()
+    If Not This.KeyColumns.HasPreferred Then Exit Sub
+    Dim AKeyColumn As KeyColumn
+    If TryGetByKey(This.KeyColumns.PreferredColumnName, AKeyColumn) Then
+        AKeyColumn.Enabled = True
+        AKeyColumn.IsPreferred = True
+        AKeyColumn.Checked = False
+    End If
+    TrySetColumnChecked vbEmpty, This.KeyColumns.PreferredColumnName, True
+End Sub

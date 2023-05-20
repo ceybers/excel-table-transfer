@@ -101,7 +101,13 @@ Private Sub LoadSelectedColumn()
     For Each Key In This.Columns.Keys
         If Key = SavedColumn Then
             SelectedColumn = This.Columns.Item(Key)
-            Set This.Selected = This.ListObject.ListColumns(Key)
+            Dim ListColumn As ListColumn
+            For Each ListColumn In This.ListObject.ListColumns
+                If ListColumn.Name = Key Then
+                    Set This.Selected = ListColumn
+                    Exit Sub
+                End If
+            Next ListColumn
         End If
     Next Key
 End Sub
@@ -125,9 +131,9 @@ Private Sub IChangeTracking_AcceptChanges()
     This.IsChanged = False
 End Sub
 
+'@Description "UI event returns the Caption not the Key of the selected item. This sub routine does a reverse lookup to get the actual Key/Name."
 Private Sub TrySetSelectedFromSuffixedName()
-    Debug.Print "TrySetSelectedFromSuffixedName: "; This.SelectedColumn
-    
+Attribute TrySetSelectedFromSuffixedName.VB_Description = "UI event returns the Caption not the Key of the selected item. This sub routine does a reverse lookup to get the actual Key/Name."
     Dim Dict As Scripting.Dictionary
     Set Dict = This.KeyColumns.GetDictionary
     

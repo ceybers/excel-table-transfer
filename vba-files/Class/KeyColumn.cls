@@ -14,6 +14,7 @@ Option Explicit
 Private Type TKeyColumn
     ListColumn As ListColumn
     Properties As ColumnProperty
+    IsPreferred As Boolean
     
     ' TODO Consider impl IListable?
     Selected As Boolean
@@ -47,6 +48,15 @@ End Property
 Public Property Get IsUnique() As Boolean
     IsUnique = ListColumnPropHelpers.ColumnIsUnique(This.ListColumn)
 End Property
+
+Public Property Get IsPreferred() As Boolean
+    IsPreferred = This.IsPreferred
+End Property
+
+Public Property Let IsPreferred(ByVal vNewValue As Boolean)
+    This.IsPreferred = vNewValue
+End Property
+
 ' ---
 Public Property Get Selected() As Boolean
     Selected = This.Selected

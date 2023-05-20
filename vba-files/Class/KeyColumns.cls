@@ -13,15 +13,25 @@ Option Explicit
 
 Private Type TKeyColumns
     ListObject As ListObject
-    Item As Scripting.Dictionary ' of type PickableTable
+    Item As Scripting.Dictionary ' of type KeyColumn
     EnableNontext As Boolean
     EnableNonunique As Boolean
+
+    PreferredColumnName As String
 End Type
 Private This As TKeyColumns
 
 Private Sub Class_Initialize()
     Set This.Item = New Scripting.Dictionary
 End Sub
+
+Public Property Get PreferredColumnName() As String
+    PreferredColumnName = This.PreferredColumnName
+End Property
+
+Public Property Get HasPreferred() As Boolean
+    HasPreferred = (This.PreferredColumnName <> vbNullString)
+End Property
 
 '@Enumerator
 Public Property Get Item() As Scripting.Dictionary
@@ -68,5 +78,13 @@ Private Sub TryAdd(ByVal KeyColumn As KeyColumn)
     If (Not This.EnableNontext) And (Not KeyColumn.IsText) Then KeyColumn.Enabled = False
     If (Not This.EnableNonunique) And (Not KeyColumn.IsUnique) Then KeyColumn.Enabled = False
     
+    KeyColumn.IsPreferred = (KeyColumn.Key = This.PreferredColumnName)
+    
     This.Item.Add Key:=KeyColumn.Key, Item:=KeyColumn
+End Sub
+
+Public Sub UpdatePreferredColumn(ByVal ListColumn As ListColumn)
+    If Not ListColumn Is Nothing Then
+        This.PreferredColumnName = ListColumn.Name
+    End If
 End Sub

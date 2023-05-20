@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} KeyMapperView
    ClientHeight    =   8115
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   11700
+   ClientWidth     =   11760
    OleObjectBlob   =   "KeyMapperView.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -138,5 +138,6 @@ Private Sub InitializeLabelPictures()
     ApplyImageMSOtoLabel Me.lblPicOptions, "TablePropertiesDialog"
     ApplyImageMSOtoLabel Me.lblPicSrcTable, "TablePropertiesDialog"
     ApplyImageMSOtoLabel Me.lblPicDstTable, "TablePropertiesDialog"
+    ApplyImageMSOtoLabel Me.lblPicQuality, "TablePropertiesDialog"
 End Sub
 

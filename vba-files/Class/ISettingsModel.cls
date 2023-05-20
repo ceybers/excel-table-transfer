@@ -13,6 +13,7 @@ Option Explicit
 
 '@Description "Name of the Workbook that this SettingsModel is linked to."
 Public Function Name() As String
+Attribute Name.VB_Description = "Name of the Workbook that this SettingsModel is linked to."
 End Function
 
 '@Description "Gets the Settings object for the workbook-level settings."

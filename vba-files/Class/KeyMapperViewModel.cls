@@ -96,6 +96,8 @@ Public Sub Load(ByVal Context As IAppContext, ByVal SrcTable As ListObject, ByVa
         
     Me.EnableNontext = This.Context.UserLevelSettings.GetFlag(ENABLE_NONTEXT_FLAG)
     Me.EnableNonunique = This.Context.UserLevelSettings.GetFlag(ENABLE_NONUNIQUE_FLAG)
+    
+    If CanMapPreferred Then DoMapPreferred
 End Sub
 
 Public Function CanAutoMap() As Boolean
@@ -107,11 +109,17 @@ Public Sub DoAutoMap()
 End Sub
 
 Public Function CanMapPreferred() As Boolean
-    CanMapPreferred = True
+    If This.SrcKeyColumnVM.HasPreferred Then
+        CanMapPreferred = True
+    End If
+    If This.DstKeyColumnVM.HasPreferred Then
+        CanMapPreferred = True
+    End If
 End Function
 
 Public Sub DoMapPreferred()
-    MsgBox "DoMapPreferred Not Yet Implemented"
+    This.SrcKeyColumnVM.SetToPreferred
+    This.DstKeyColumnVM.SetToPreferred
 End Sub
 
 Public Function CanUnmapAll() As Boolean

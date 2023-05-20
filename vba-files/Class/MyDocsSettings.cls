@@ -11,7 +11,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements ISettings
 
-Private Const DO_DEBUG As Boolean = False
+Private Const DO_DEBUG As Boolean = True
 
 Private Const SUBFOLDER As String = "Documents\Excel Macros"
 Private Const Filename As String = "tabletransfertool.ini"
@@ -83,6 +83,7 @@ End Sub
 Private Sub Class_Initialize()
     Set This.Flags = New Scripting.Dictionary
     This.AutoSave = True
+    Load
 End Sub
 
 Private Function IsMySettings() As Boolean
@@ -132,14 +133,14 @@ Private Sub ISettings_SetFlag(ByVal FlagName As String, ByVal FlagValue As Boole
     If This.AutoSave Then SaveData
 End Sub
 
-Public Sub Load()
+Private Sub Load()
     CheckIfEmpty
     LoadFromFile
     If Not IsMySettings Then Exit Sub
     LoadFlags
 End Sub
 
-Public Sub Save()
+Private Sub Save()
     SaveData
 End Sub
 

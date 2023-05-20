@@ -11,9 +11,9 @@ Attribute VB_Exposed = False
 '@Folder "PersistentStorage.Abstract"
 Option Explicit
 
-'@Description "a"
+'@Description "Gets/sets a boolean value for the given Flag name."
 Public Function GetFlag(ByVal FlagName As String) As Boolean
-Attribute GetFlag.VB_Description = "a"
+Attribute GetFlag.VB_Description = "Gets/sets a boolean value for the given Flag name."
 End Function
 
 Public Sub SetFlag(ByVal FlagName As String, ByVal Value As Boolean)
