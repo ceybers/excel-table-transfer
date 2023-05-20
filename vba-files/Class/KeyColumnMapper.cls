@@ -50,8 +50,8 @@ Public Function GenerateMap() As Variant
     
     Dim i As Long
     For i = 1 To UBound(Result, 1)
-        'Result(i) = This.SrcKeyColumn.DataBodyRange.Find(This.DstKeyColumn.DataBodyRange.Cells(i, 1)).Row - This.SrcKeyColumn.Range.Cells(1, 1).Row
-        Result(i) = This.SrcKeyColumn.DataBodyRange.Find(This.DstKeyColumn.DataBodyRange.Cells(i, 1)).Row
+        Result(i) = This.SrcKeyColumn.DataBodyRange.Find(This.DstKeyColumn.DataBodyRange.Cells(i, 1)).Row - This.SrcKeyColumn.Range.Cells(1, 1).Row
+        'Result(i) = This.SrcKeyColumn.DataBodyRange.Find(This.DstKeyColumn.DataBodyRange.Cells(i, 1)).Row
     Next i
     
     GenerateMap = Result

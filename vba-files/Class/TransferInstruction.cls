@@ -133,8 +133,8 @@ Attribute DoTransfer.VB_Description = "Transfers data from a Source value column
     
     arrLHS = Source.DataBodyRange.Value2
     arrRHS = Destination.DataBodyRange.Value2
-    arrLHSOffset = Source.DataBodyRange.Row
-    arrRHSOffset = Destination.DataBodyRange.Row - 1
+    arrLHSOffset = 1 'Source.DataBodyRange.Row
+    arrRHSOffset = 1 'Destination.DataBodyRange.Row
     
     Dim cellRange As Range
     Dim copiedRange As Range
@@ -143,6 +143,9 @@ Attribute DoTransfer.VB_Description = "Transfers data from a Source value column
             oldValue = arrRHS(i - arrRHSOffset + 1, 1)
             newValue = arrLHS(Map(i) - arrLHSOffset + 1, 1)
             doCopy = True
+            
+            If IsError(oldValue) Then doCopy = False
+            If IsError(newValue) Then doCopy = False
             
             If doCopy Then
                 If arrRHS(i - arrRHSOffset + 1, 1) <> newValue Then

@@ -126,7 +126,7 @@ End Sub
 Private Sub AssessEnabled()
     This.Enabled = True
     
-    If This.Properties.ColumnType <> "Text" Then
+    If This.Properties.ColumnType <> "Text" And This.Properties.ColumnType <> "Empty" Then
         This.Enabled = False
         'Debug.Assert False
     Else

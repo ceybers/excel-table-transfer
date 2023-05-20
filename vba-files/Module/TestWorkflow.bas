@@ -50,6 +50,13 @@ Public Sub DoTestWorkflow()
         Exit Sub
     End If
     
+    If TransferValues() Then
+        Debug.Print "TransferValues OK"
+    Else
+        Debug.Print "TransferValues EXIT"
+        Exit Sub
+    End If
+    
     Debug.Print "END"
     Debug.Print "---"
 End Sub
@@ -121,7 +128,7 @@ Private Function PickKeys() As Boolean
         Debug.Print "      Src: "; KeyMapperVM.SrcKeyColumnVM.SelectedAsText
         Debug.Print "       Dst: "; KeyMapperVM.DstKeyColumnVM.SelectedAsText
         Set SrcKeyColumn = KeyMapperVM.SrcKeyColumnVM.Selected.ListColumn
-        Set DstKeyColumn = KeyMapperVM.SrcKeyColumnVM.Selected.ListColumn
+        Set DstKeyColumn = KeyMapperVM.DstKeyColumnVM.Selected.ListColumn
     End If
     
     Set KeyMapperVM = Nothing
@@ -163,4 +170,19 @@ Private Function PickValues() As Boolean
     PickValues = Result
 End Function
 
-
+Private Function TransferValues() As Boolean
+    Dim ThisTransfer As TransferInstruction
+    Set ThisTransfer = New TransferInstruction
+    With ThisTransfer
+        Set .SourceKey = SrcKeyColumn
+        Set .Source = SrcTable
+        Set .DestinationKey = DstKeyColumn
+        Set .Destination = DstTable
+        Set .ValuePairs = MappedValueColumns
+        .RHStoLHSRowMap = KeyColumnMapper.Create(.SourceKey, .DestinationKey).GenerateMap
+    End With
+    
+    ThisTransfer.Transfer
+    
+    TransferValues = True
+End Function
