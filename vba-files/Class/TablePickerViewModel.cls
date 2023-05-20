@@ -111,7 +111,6 @@ Public Sub Load(ByVal ListObject As ListObject, ByVal Handler As IHandleProperty
     
     Set This.PickableTables = New PickableTables
     This.PickableTables.Load Application
-    SelectByListObject ListObject
     This.Notifier.RegisterHandler Handler
 End Sub
 
@@ -168,8 +167,9 @@ Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object,
 End Sub
 
 '@Description "Sets the Selected PickableTable to the correct instance matching the given ListObject."
-Private Sub SelectByListObject(ByVal ListObject As ListObject)
+Public Sub SelectByListObject(ByVal ListObject As ListObject)
 Attribute SelectByListObject.VB_Description = "Sets the Selected PickableTable to the correct instance matching the given ListObject."
+    ' Must be run after both tables have registered their notification handlers.
     If ListObject Is Nothing Then Exit Sub
     Dim PickableTable As PickableTable
     Set PickableTable = This.PickableTables.GetByListObject(ListObject)
@@ -205,3 +205,19 @@ Private Sub ReloadPreservingSelected()
         Set This.Selected = PreviousSelected
     End If
 End Sub
+
+Public Function GetAvailableToSelect() As Collection
+    Dim Result As Collection
+    Set Result = New Collection
+    
+    Dim Key As Variant
+    For Each Key In This.PickableTables.Item.Keys
+        Dim PickableTable As PickableTable
+        Set PickableTable = This.PickableTables.Item.Item(Key)
+        If PickableTable.Enabled And (Not PickableTable.Selected) Then
+            Result.Add PickableTable
+        End If
+    Next Key
+    
+    Set GetAvailableToSelect = Result
+End Function
