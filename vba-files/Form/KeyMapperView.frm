@@ -376,11 +376,11 @@ Private Sub PopulateMatchSets()
     Set comp = New KeyColumnComparer
     
     If Me.chkLimitKeyCheck.Value = True Then
-        Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn, False, Me.txtLimitKeyValue.Value)
-        Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn, False, Me.txtLimitKeyValue.Value)
+        Set comp.SrcKeyColumn = KeyColumn.FromColumn(vm.LHSKeyColumn, False, Me.txtLimitKeyValue.Value)
+        Set comp.DstKeyColumn = KeyColumn.FromColumn(vm.RHSKeyColumn, False, Me.txtLimitKeyValue.Value)
     Else
-        Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn)
-        Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn)
+        Set comp.SrcKeyColumn = KeyColumn.FromColumn(vm.LHSKeyColumn)
+        Set comp.DstKeyColumn = KeyColumn.FromColumn(vm.RHSKeyColumn)
     End If
     
     ' This maps the keys to their location in the other array
@@ -388,9 +388,9 @@ Private Sub PopulateMatchSets()
     ' this is done on Set .LHS/.RHS
     'comp.Map
     
-    CollectionToListView comp.LeftOnly, Me.lvSetLHS, "Additions"
-    CollectionToListView comp.Intersection, Me.lvSetInner, "Matches"
-    CollectionToListView comp.RightOnly, Me.lvSetRHS, "Orphans"
+    CollectionToListView comp.SrcSetOnly, Me.lvSetLHS, "Additions"
+    CollectionToListView comp.IntersectionSet, Me.lvSetInner, "Matches"
+    CollectionToListView comp.DstSetOnly, Me.lvSetRHS, "Orphans"
 
     Me.chkAddNewKeys.Enabled = (Me.lvSetLHS.ListItems.Count > 0)
     Me.chkRemoveOrphans.Enabled = (Me.lvSetRHS.ListItems.Count > 0)

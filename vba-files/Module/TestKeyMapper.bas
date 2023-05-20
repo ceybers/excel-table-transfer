@@ -56,8 +56,8 @@ Public Sub TestRemoveUnmappedKeys()
     Dim comp As KeyColumnComparer
     
     Set comp = New KeyColumnComparer
-    Set comp.lhs = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1))
-    Set comp.RHS = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(2))
+    Set comp.SrcKeyColumn = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1))
+    Set comp.DstKeyColumn = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(2))
 
     Dim mapResult As Variant
     mapResult = comp.Map
@@ -69,8 +69,8 @@ Public Sub TestAppendUnmappedKeys()
     Dim comp As KeyColumnComparer
     
     Set comp = New KeyColumnComparer
-    Set comp.lhs = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1))
-    Set comp.RHS = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(2))
+    Set comp.SrcKeyColumn = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1))
+    Set comp.DstKeyColumn = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(2))
 
     Dim mapResult As Variant
     mapResult = comp.Map
@@ -85,7 +85,7 @@ Public Sub RemoveUnmappedKeys(ByVal comp As KeyColumnComparer, Optional ByRef ca
    
     Dim i As Long
     Dim rng As Range
-    Set rng = comp.RHS.Range
+    Set rng = comp.DstKeyColumn.Range
     
     For i = rng.rows.Count To 1 Step -1
         If cachedMappedResults(rng.rows(i).row) = -1 Then
@@ -100,12 +100,12 @@ Public Sub AppendUnmappedKeys(ByVal comp As KeyColumnComparer)
     Dim lr As ListRow
     Dim i As Long
      
-    Set lc = GetListColumnFromRange(comp.RHS.Range)
+    Set lc = GetListColumnFromRange(comp.DstKeyColumn.Range)
     Set lo = lc.parent
 
-    For i = 1 To comp.LeftOnly.Count
+    For i = 1 To comp.SrcSetOnly.Count
         Set lr = lo.ListRows.Add(alwaysinsert:=True)
-        lr.Range.Cells(1, lc.Index).Value2 = comp.LeftOnly.Item(i)
+        lr.Range.Cells(1, lc.Index).Value2 = comp.SrcSetOnly.Item(i)
     Next i
 End Sub
 

@@ -7,16 +7,16 @@ Public Sub TestCompareKeyColumns()
     Dim compare As KeyColumnComparer
     Set compare = KeyColumnComparer.Create(GetLHS, GetRHS)
     
-    compare.lhs.DebugPrint
+    compare.SrcKeyColumn.DebugPrint
     
     Debug.Print "TEST"
     Debug.Print "===="
     Debug.Print "IsSubsetLHS = " & compare.IsSubsetLHS
     Debug.Print "IsSubsetRHS = " & compare.IsSubsetRHS
     Debug.Print "IsMatch = " & compare.IsMatch
-    Debug.Print "LHSOnly = " & compare.LeftOnly.Count
-    Debug.Print "RHSOnly = " & compare.RightOnly.Count
-    Debug.Print "Intersection = " & compare.Intersection.Count
+    Debug.Print "LHSOnly = " & compare.SrcSetOnly.Count
+    Debug.Print "RHSOnly = " & compare.DstSetOnly.Count
+    Debug.Print "Intersection = " & compare.IntersectionSet.Count
     Debug.Print vbNullString
     
     Dim mapResult As Variant

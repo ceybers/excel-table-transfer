@@ -115,6 +115,11 @@ Public Property Get IsDistinct() As Boolean
     IsDistinct = (This.Unique.Count = This.Distinct.Count)
 End Property
 
+' Ctor
+Private Sub Class_Initialize()
+    This.Limit = MAX_LIMIT
+End Sub
+
 ' ---
 Private Sub LoadRange(ByVal rng As Range)
     Debug.Assert rng.Columns.Count = 1
@@ -306,14 +311,9 @@ Private Function DisjointRangeToArray(ByVal rng As Range) As Variant
     DisjointRangeToArray = arr
 End Function
 
-Private Sub Class_Initialize()
-    This.Limit = MAX_LIMIT
-End Sub
-
 Public Sub DebugPrint()
     Dim Key As Variant
     For Each Key In This.Dict.Keys
         Debug.Print Key; " = "; This.Dict.Item(Key)
     Next Key
 End Sub
-

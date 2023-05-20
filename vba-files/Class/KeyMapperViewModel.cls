@@ -358,15 +358,15 @@ Public Function TryGuess(Optional Force As Boolean = False) As Boolean
     Dim comp As KeyColumnComparer
     Set comp = New KeyColumnComparer
     For i = 1 To lhsCount
-        Set comp.lhs = KeyColumn.FromColumn(This.LHSColumns(i), False, 1000)
+        Set comp.SrcKeyColumn = KeyColumn.FromColumn(This.LHSColumns(i), False, 1000)
         'PrintTime "KeyColumn.FromColumn(this.LHSColumns(i))"
-        If comp.lhs.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
+        If comp.SrcKeyColumn.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
             For j = 1 To rhsCount
                 If (Timer() - StartTime) > timeLimit Then GoTo TimeLimitExceeded
-                Set comp.RHS = KeyColumn.FromColumn(This.RHSColumns(j), False, 1000)
+                Set comp.DstKeyColumn = KeyColumn.FromColumn(This.RHSColumns(j), False, 1000)
                 'PrintTime "KeyColumn.FromColumn(this.RHSColumns(i))"
-                If Not comp.RHS Is Nothing Then
-                    If comp.RHS.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
+                If Not comp.DstKeyColumn Is Nothing Then
+                    If comp.DstKeyColumn.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
                         comp.Map
     
                         If comp.Score > bestScore Then

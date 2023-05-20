@@ -245,7 +245,7 @@ Private Sub RemoveUnmappedKeys()
    
     Dim i As Long
     Dim rng As Range
-    Set rng = comp.RHS.Range
+    Set rng = comp.DstKeyColumn.Range
     
     For i = rng.rows.Count To 1 Step -1
         If cachedMappedResults(rng.rows(i).row) = -1 Then
@@ -268,17 +268,17 @@ Private Sub AppendUnmappedKeys()
     Set lo = lc.parent
 
     Dim c As Long
-    If comp.RHS Is Nothing Then
-        c = comp.lhs.Keys.Count
+    If comp.DstKeyColumn Is Nothing Then
+        c = comp.SrcKeyColumn.Keys.Count
     Else
-        c = comp.LeftOnly.Count
+        c = comp.SrcSetOnly.Count
     End If
     For i = 1 To c
         Set lr = lo.ListRows.Add(alwaysinsert:=True)
-        If comp.RHS Is Nothing Then
-            lr.Range.Cells(1, lc.Index).Value2 = comp.lhs.Keys(i)
+        If comp.DstKeyColumn Is Nothing Then
+            lr.Range.Cells(1, lc.Index).Value2 = comp.SrcKeyColumn.Keys(i)
         Else
-            lr.Range.Cells(1, lc.Index).Value2 = comp.LeftOnly.Item(i)
+            lr.Range.Cells(1, lc.Index).Value2 = comp.SrcSetOnly.Item(i)
         End If
     Next i
 End Sub
