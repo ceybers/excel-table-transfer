@@ -53,7 +53,9 @@ Private Sub Class_Initialize()
 End Sub
 '---
 Public Property Get TableName() As String
-    TableName = This.ListObject.Name & " (" & This.ListObject.Parent.Name & ") (" & This.ListObject.Parent.Parent.Name & ")"
+    TableName = This.ListObject.Name & " (" _
+        & This.ListObject.Parent.Name & ") (" _
+        & This.ListObject.Parent.Parent.Name & ")"
 End Property
 
 Public Property Get SelectedAsText() As String
@@ -108,9 +110,11 @@ Public Function Create(ByVal Context As IAppContext, ByVal ListObject As Object,
     
     Dim Result As KeyPickerViewModel
     Set Result = New KeyPickerViewModel
-    Result.Load Context, ListObject
-    Result.Caption = Caption
-    Result.Direction = Direction
+    With Result
+        .Load Context, ListObject
+        .Caption = Caption
+        .Direction = Direction
+    End With
     Notifier.RegisterHandler Result
     
     Set Create = Result
@@ -146,9 +150,11 @@ Public Sub TrySetColumnChecked(ByVal PropertyPath As String, ByVal ItemKey As St
             OnPropertyChanged "Item"
             Exit Sub
         End If
+        
         If Not This.Selected Is Nothing Then
             This.Selected.Checked = False
         End If
+        
         Set Selected = KeyColumn
         OnPropertyChanged "Item"
     Else
@@ -200,9 +206,7 @@ Private Sub ReloadKeyColumns()
 End Sub
 
 Public Function TryGetByKey(ByVal Key As String, ByRef OutKeyColumn As KeyColumn) As Boolean
-    If Not This.KeyColumns.Item.Exists(Key) Then Exit Function
-    Set OutKeyColumn = This.KeyColumns.Item.Item(Key)
-    TryGetByKey = True
+    TryGetByKey = DictionaryEx.From(This.KeyColumns.Item).TryGetByKey(Key, OutKeyColumn)
 End Function
 
 Public Sub TryMap(ByVal Key As String)
@@ -241,11 +245,15 @@ End Sub
 
 Public Sub SetToPreferred()
     If Not This.KeyColumns.HasPreferred Then Exit Sub
+    
     Dim AKeyColumn As KeyColumn
     If TryGetByKey(This.KeyColumns.PreferredColumnName, AKeyColumn) Then
-        AKeyColumn.Enabled = True
-        AKeyColumn.IsPreferred = True
-        AKeyColumn.Checked = False
+        With AKeyColumn
+            .Enabled = True
+            .IsPreferred = True
+            .Checked = False
+        End With
     End If
+    
     TrySetColumnChecked vbEmpty, This.KeyColumns.PreferredColumnName, True
 End Sub

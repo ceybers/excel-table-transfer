@@ -109,12 +109,7 @@ Public Sub DoAutoMap()
 End Sub
 
 Public Function CanMapPreferred() As Boolean
-    If This.SrcKeyColumnVM.HasPreferred Then
-        CanMapPreferred = True
-    End If
-    If This.DstKeyColumnVM.HasPreferred Then
-        CanMapPreferred = True
-    End If
+    CanMapPreferred = (This.SrcKeyColumnVM.HasPreferred Or This.DstKeyColumnVM.HasPreferred)
 End Function
 
 Public Sub DoMapPreferred()
