@@ -74,7 +74,6 @@ Public Property Let SelectedKey(ByVal vNewValue As String)
     If This.SelectedKey = vNewValue Then Exit Property
     This.SelectedKey = vNewValue
     OnPropertyChanged "SelectedKey"
-    
     Set This.SelectedValueColumn = This.ValueColumns.GetByKey(vNewValue)
 End Property
 
@@ -133,21 +132,22 @@ End Sub
 Private Sub SelectFirstEligbleValueColumn()
     Dim Key As Variant
     For Each Key In This.ValueColumns.Item.Keys
-        Dim ValueColumn As ValueColumn
-        Set ValueColumn = This.ValueColumns.Item(Key)
-        If ValueColumn.Enabled = True Then
+        If IsEligibleValueColumn(This.ValueColumns.Item(Key)) Then
             SelectedKey = Key
             Exit Sub
         End If
     Next Key
 End Sub
+ 
+Private Function IsEligibleValueColumn(ByVal ThisValueColumn As ValueColumn) As Boolean
+    IsEligibleValueColumn = ThisValueColumn.Enabled
+End Function
 
 '---
 
 ' This runs when the user changes a checkbox via the UserForm, which causes the primary VM to update
 ' one of its properties, which we are listening to here.
 Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
-    Debug.Print PropertyName
     Select Case PropertyName
         Case "EnableStarredOnly"
             This.ValueColumns.ShowStarredOnly = CallByName(Source, PropertyName, VbGet)
@@ -161,24 +161,7 @@ End Sub
 '@Description "Reloads ValueColums. Required after changing option buttons on the main ViewModel that affect the collection."
 Private Sub ReloadValueColumns()
 Attribute ReloadValueColumns.VB_Description = "Reloads ValueColums. Required after changing options that affect the collection."
-    Dim PreviousSelected As String
-    'If Not Selected Is Nothing Then
-    '    PreviousSelected = Selected.Key
-    'End If
-    
-    'Set Selected = Nothing
     This.ValueColumns.Reload
-    
-    'If PreviousSelected <> vbNullString Then
-    '    Dim ValueColumn As ValueColumn
-    '    Set ValueColumn = This.ValueColumns.Item(PreviousSelected)
-    '    If ValueColumn.Enabled Then
-    '        ValueColumn.Checked = True
-    '        ValueColumn.Selected = True
-    '        Set Selected = ValueColumn
-    '    End If
-    'End If
-    
     OnPropertyChanged "Item"
 End Sub
 
@@ -193,8 +176,6 @@ End Sub
 
 Public Sub Unmap(ByVal DstColumnKey As String)
     Debug.Assert This.Direction = Destination
-    'Debug.Assert Not This.Selected Is Nothing
-    'Set This.Selected.MappedTo = Nothing
     
     This.ValueColumns.Item.Item(DstColumnKey).MappedTo = vbNullString
     
@@ -272,12 +253,13 @@ Public Function GetEnabledColumnNames() As Collection
     
     Dim Key As Variant
     For Each Key In This.ValueColumns.Item
-        Dim ThisValueColumn  As ValueColumn
+        Dim ThisValueColumn As ValueColumn
         Set ThisValueColumn = This.ValueColumns.Item(Key)
         If ThisValueColumn.Enabled Then
             Result.Add Item:=ThisValueColumn.Name, Key:=ThisValueColumn.Name
         End If
     Next Key
+    
     Set GetEnabledColumnNames = Result
 End Function
 
@@ -286,19 +268,23 @@ Public Sub AutoMap(ByVal SrcValueColumns As Collection)
     
     Dim SrcColumnName As Variant
     For Each SrcColumnName In SrcValueColumns
-        If This.ValueColumns.Item.Exists(SrcColumnName) Then
-            Dim DstValueColumn As ValueColumn
-            Set DstValueColumn = This.ValueColumns.Item.Item(SrcColumnName)
-            
-            If DstValueColumn.Enabled Then
-                DstValueColumn.MappedTo = SrcColumnName
-            Else
-                DstValueColumn.MappedTo = vbNullString
-            End If
-        End If
+        TryAutoMapOne SrcColumnName
     Next SrcColumnName
         
     OnPropertyChanged "Item"
+End Sub
+
+Private Sub TryAutoMapOne(ByVal SrcColumnName As String)
+    If Not This.ValueColumns.Item.Exists(SrcColumnName) Then Exit Sub
+    
+    Dim DstValueColumn As ValueColumn
+    Set DstValueColumn = This.ValueColumns.Item.Item(SrcColumnName)
+    
+    If DstValueColumn.Enabled Then
+        DstValueColumn.MappedTo = SrcColumnName
+    Else
+        DstValueColumn.MappedTo = vbNullString
+    End If
 End Sub
 
 Public Function IsAutoMapped(ByVal SrcValueColumns As Collection) As Boolean
@@ -332,8 +318,6 @@ Public Sub ShowTableProperties()
     If TablePropV.ShowDialog Then
         This.Properties.Commit
         UpdateStarredColumns
-        'This.KeyColumns.UpdatePreferredColumn This.Properties.TablePreferKeyVM.Selected
-        'ReloadKeyColumns
     End If
     
     Set TablePropV = Nothing

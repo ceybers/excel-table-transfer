@@ -78,9 +78,6 @@ Public Sub Reload()
 End Sub
 
 Private Sub TryAdd(ByVal ValueColumn As ValueColumn)
-    'ValueColumn.Enabled = True
-    'If (Not This.EnableNontext) And (Not ValueColumn.IsText) Then ValueColumn.Enabled = False
-    'If (Not This.EnableNonunique) And (Not ValueColumn.IsUnique) Then ValueColumn.Enabled = False
     If ValueColumn.Key = This.KeyColumn.Name Then
         ValueColumn.IsKey = True
         ValueColumn.Enabled = False

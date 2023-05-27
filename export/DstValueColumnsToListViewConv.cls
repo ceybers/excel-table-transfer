@@ -19,8 +19,6 @@ Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Obje
 End Sub
 
 Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding)
-    'DebugPrintPropertyBinding PropertyBinding
-
     Dim ListView As ListView
     Set ListView = PropertyBinding.Target
     
@@ -28,13 +26,6 @@ Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBindin
     Set VM = PropertyBinding.Source
     
     VM.TryUpdateSelected ListView.SelectedItem
-    
-    'Dim ListItem As ListItem
-    'For Each ListItem In ListView.ListItems
-        ' Order matters, checked must be last
-        'VM.TrySetColumnSelected PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Selected
-        'VM.TrySetColumnChecked PropertyBinding.SourcePropertyPath, ListItem.Key, ListItem.Checked
-    'Next ListItem
 End Sub
 
 Private Sub ConvertSelectedItem(ByVal SelectedItemKey As String, ByVal ListView As ListView)
@@ -42,7 +33,6 @@ Private Sub ConvertSelectedItem(ByVal SelectedItemKey As String, ByVal ListView 
 End Sub
 
 Private Sub ConvertListItems(ByVal Dictionary As Scripting.Dictionary, ByVal ListView As ListView)
-    'Set ListView.SelectedItem = Nothing
     Set ListView.DropHighlight = Nothing
     
     Dim Key As Variant
@@ -58,7 +48,6 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
 
     For Each ListItem In ListView.ListItems
         If ListItem.Key = ValueColumn.Key Then
-            'ListItem.Text = ColumnProperty.Name
             ListItem.ListSubItems.Clear
             Exit For
         End If
@@ -93,11 +82,8 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
     End If
     End With
     
-    'Debug.Print ValueColumn.Name; " "; ValueColumn.Selected
-    'ListItem.Bold = ValueColumn.Checked
     If ValueColumn.Selected Then
         ListItem.Selected = True
-        'Set ListView.SelectedItem = ListItem
         Set ListView.DropHighlight = ListItem
     End If
 End Sub
