@@ -66,11 +66,13 @@ Private Sub LoadListItem(ByVal PickableTable As PickableTable, ByVal ListView As
     Dim ForeColor As Long
     ForeColor = IIf(PickableTable.Enabled, vbBlack, vbGrayText)
     
-    ListItem.ListSubItems.Add Text:=PickableTable.WorksheetName
-    ListItem.ListSubItems.Add Text:=PickableTable.WorkbookName
-    ListItem.ListSubItems.Add Text:=PickableTable.StorageLocation
-    ListItem.ListSubItems.Add Text:=IIf(PickableTable.WorksheetLocked, "Y", "N")
-    ListItem.ListSubItems.Add Text:=IIf(PickableTable.WorkbookReadonly, "Y", "N")
+    With ListItem.ListSubItems
+        .Add Text:=PickableTable.WorksheetName
+        .Add Text:=PickableTable.WorkbookName
+        .Add Text:=PickableTable.StorageLocation
+        .Add Text:=IIf(PickableTable.WorksheetLocked, "Y", "N")
+        .Add Text:=IIf(PickableTable.WorkbookReadonly, "Y", "N")
+    End With
     
     ListItem.ForeColor = ForeColor
     Dim ListSubItem As ListSubItem
@@ -80,8 +82,6 @@ Private Sub LoadListItem(ByVal PickableTable As PickableTable, ByVal ListView As
     
     ListItem.Bold = PickableTable.Checked
     ListItem.Checked = PickableTable.Checked
-    'ListItem.Selected = PickableTable.Selected
-    'Debug.Print ListItem.Key; " = "; ListItem.Checked
 End Sub
 
 Public Sub InitializeListView(ByVal ListView As ListView)

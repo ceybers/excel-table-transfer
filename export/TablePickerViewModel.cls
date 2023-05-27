@@ -48,6 +48,7 @@ End Sub
 Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
 End Sub
+
 '---
 Public Property Get SelectedAsText() As String
     If This.Selected Is Nothing Then
@@ -98,9 +99,13 @@ Public Function Create(ByVal ListObject As Object, _
     
     Dim Result As TablePickerViewModel
     Set Result = New TablePickerViewModel
-    Result.Load ListObject, Handler
-    Result.Caption = Caption
-    Result.Direction = Direction
+    With Result
+        .Load ListObject, Handler
+        .Caption = Caption
+        .Direction = Direction
+    End With
+    ' This registers the created sub-VM's handler with the parent VM's Notifier object.
+    ' This enables the sub-VM to receive notifications from the parent.
     Notifier.RegisterHandler Result
     
     Set Create = Result
@@ -111,6 +116,9 @@ Public Sub Load(ByVal ListObject As ListObject, ByVal Handler As IHandleProperty
     
     Set This.PickableTables = New PickableTables
     This.PickableTables.Load Application
+    
+    ' This registers the parent VM's handler with this sub-VM's Notifier object.
+    ' This enables the parent VM to receive notifications from this sub-VM.
     This.Notifier.RegisterHandler Handler
 End Sub
 
@@ -118,8 +126,6 @@ End Sub
 Public Sub TrySetColumnChecked(ByVal PropertyPath As String, ByVal ItemKey As String, ByVal vNewValue As Boolean)
     Dim PickableTable As PickableTable
     Set PickableTable = This.PickableTables.Item(ItemKey)
-    '???
-    'If PickableTable.Checked = vNewValue Then Exit Sub
     
     If vNewValue Then
         ' This item cannot be checked. Redraw the ListView using the Source collection.
@@ -128,11 +134,13 @@ Public Sub TrySetColumnChecked(ByVal PropertyPath As String, ByVal ItemKey As St
             OnPropertyChanged "Item"
             Exit Sub
         End If
+        
         ' This item can be checked.
         ' If something else was previous checked, set its PickableTable to unchecked.
         If Not This.Selected Is Nothing Then
             This.Selected.Checked = False
         End If
+        
         ' Set this new item as the Selected PickableTable
         Set Selected = PickableTable
         PickableTable.Checked = vNewValue
@@ -150,7 +158,6 @@ Public Sub TrySetColumnChecked(ByVal PropertyPath As String, ByVal ItemKey As St
 End Sub
 
 Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
-    
     Select Case PropertyName
         Case "EnableProtected"
             This.PickableTables.DisableProtectedWorksheets = CallByName(Source, PropertyName, VbGet)
@@ -171,14 +178,19 @@ Public Sub SelectByListObject(ByVal ListObject As ListObject)
 Attribute SelectByListObject.VB_Description = "Sets the Selected PickableTable to the correct instance matching the given ListObject."
     ' Must be run after both tables have registered their notification handlers.
     If ListObject Is Nothing Then Exit Sub
+    
     Dim PickableTable As PickableTable
     Set PickableTable = This.PickableTables.GetByListObject(ListObject)
+    
     If PickableTable Is Nothing Then Exit Sub
+    
     PickableTable.Checked = True
     Set Selected = PickableTable
 End Sub
 
+'@Description "Sets a specific table as excluded. Used when multiple ViewModels need to be mutually exclusive."
 Public Sub ExcludeTable(ByVal Key As String)
+Attribute ExcludeTable.VB_Description = "Sets a specific table as excluded. Used when multiple ViewModels need to be mutually exclusive."
     This.PickableTables.ExcludedName = Key
     ReloadPreservingSelected
     OnPropertyChanged "Item"
@@ -210,14 +222,18 @@ Public Function GetAvailableToSelect() As Collection
     Dim Result As Collection
     Set Result = New Collection
     
-    Dim Key As Variant
-    For Each Key In This.PickableTables.Item.Keys
-        Dim PickableTable As PickableTable
-        Set PickableTable = This.PickableTables.Item.Item(Key)
-        If PickableTable.Enabled And (Not PickableTable.Selected) Then
-            Result.Add PickableTable
+    Dim ThisPickableTable As Variant
+    For Each ThisPickableTable In This.PickableTables.Item.Items
+        If IsAvailableToSelect(ThisPickableTable) Then
+            Result.Add Item:=ThisPickableTable
         End If
-    Next Key
+    Next ThisPickableTable
     
     Set GetAvailableToSelect = Result
+End Function
+
+Private Function IsAvailableToSelect(ByVal ThisPickableTable As PickableTable) As Boolean
+    If ThisPickableTable.Enabled = False Then Exit Function
+    If ThisPickableTable.Selected Then Exit Function
+    IsAvailableToSelect = True
 End Function
