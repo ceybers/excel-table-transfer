@@ -12,6 +12,8 @@ Private MappedValueColumns As Collection
 
 '@EntryPoint "DoTestWorkflow"
 Public Sub DoTestWorkflow()
+    Log.Message "DoTestWorkflow START", "TestWorkflow", Verbose_Level
+    
     Debug.Print "START"
     Debug.Print "---"
     
@@ -59,9 +61,11 @@ Public Sub DoTestWorkflow()
     
     Debug.Print "END"
     Debug.Print "---"
+    Log.Message "DoTestWorkflow END", "TestWorkflow", Verbose_Level
 End Sub
 
 Private Function PickDirection(ByVal ListObject As ListObject) As Boolean
+    Log.Message "PickDirection", "TestWorkflow", Verbose_Level
     Dim DirectionViewModel As DirectionPickerViewModel
     Set DirectionViewModel = New DirectionPickerViewModel
     DirectionViewModel.Load ListObject
@@ -88,6 +92,7 @@ Private Function PickDirection(ByVal ListObject As ListObject) As Boolean
 End Function
 
 Private Function PickOtherTable() As Boolean
+    Log.Message "PickOtherTable", "TestWorkflow", Verbose_Level
     Dim TableMapperVM As TableMapperViewModel
     Set TableMapperVM = New TableMapperViewModel
     TableMapperVM.Load ctx, SrcTable, DstTable
@@ -109,6 +114,7 @@ Private Function PickOtherTable() As Boolean
 End Function
 
 Private Function PickKeys() As Boolean
+    Log.Message "PickKeys", "TestWorkflow", Verbose_Level
     Dim ctx As IAppContext
     Set ctx = New AppContext
     
@@ -139,6 +145,7 @@ Private Function PickKeys() As Boolean
 End Function
 
 Private Function PickValues() As Boolean
+    Log.Message "PickValues", "TestWorkflow", Verbose_Level
     Dim ctx As IAppContext
     Set ctx = New AppContext
     
@@ -174,6 +181,7 @@ Private Function PickValues() As Boolean
 End Function
 
 Private Function TransferValues() As Boolean
+    Log.Message "TransferValues", "TestWorkflow", Verbose_Level
     Dim ThisTransfer As TransferInstruction
     Set ThisTransfer = New TransferInstruction
     With ThisTransfer
