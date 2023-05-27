@@ -86,7 +86,7 @@ Private Sub TryAdd(ByVal ValueColumn As ValueColumn)
         ValueColumn.Enabled = False
     End If
     
-    ValueColumn.IsStarred = CollectionEx.From(This.StarredColumns).Exists(ValueColumn.Key)
+    ValueColumn.IsStarred = CollectionEx.From(This.StarredColumns).Contains(ValueColumn.Key)
     
     ' Starred columns overrides non-enabled/ineligiblity
     If This.ShowStarredOnly Then ValueColumn.Enabled = ValueColumn.IsStarred
