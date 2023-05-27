@@ -63,4 +63,3 @@ Public Sub Load(ByVal ListObject As ListObject)
     This.WorkbookName = ListObject.Parent.Parent.Name
     This.WorksheetName = ListObject.Parent.Name
 End Sub
-
