@@ -103,7 +103,7 @@ End Function
 
 Private Sub InitializeControls()
     '@Ignore ArgumentWithIncompatibleObjectType
-    ColumnPropToListViewConverter.InitializeListView Me.lvStarredColumns
+    ColumnPropToListViewConverter.InitializeListView This.Context, Me.lvStarredColumns
     
     ' Activate first tab of multipage
     Me.mpgTabs.Value = 0

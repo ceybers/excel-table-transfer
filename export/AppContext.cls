@@ -19,11 +19,16 @@ Private Type TAppContext
     BindingManager As BindingManager
     CommandManager As CommandManager
     Settings As ISettingsModel
+    ImageLists As Scripting.Dictionary
 End Type
 Private This As TAppContext
 
 Public Property Get Settings() As ISettingsModel
     Set Settings = This.Settings
+End Property
+
+Private Property Get IAppContext_ImageLists() As Scripting.Dictionary
+    Set IAppContext_ImageLists = This.ImageLists
 End Property
 
 Private Property Get IAppContext_BindingManager() As BindingManager
@@ -38,6 +43,8 @@ Private Sub Class_Initialize()
     Set This.BindingManager = New BindingManager
     Set This.BindingManager.Context = Me
     Set This.CommandManager = New CommandManager
+    Set This.ImageLists = New Scripting.Dictionary
+    modLoadImageLists.LoadImageLists This.ImageLists
 End Sub
 
 Public Sub RegisterViewModel(ByVal ViewModel As INotifyPropertyChanged)

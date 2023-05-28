@@ -78,22 +78,31 @@ Private Sub LoadListItem(ByVal ColumnProperty As ColumnProperty, ByVal ListView 
     
     If ListItem Is Nothing Then
         Set ListItem = ListView.ListItems.Add(Key:=ColumnProperty.Name, Text:=ColumnProperty.Name)
+        ListItem.Icon = "Column"
+        ListItem.SmallIcon = "Column"
     End If
     
-    ListItem.ListSubItems.Add Text:=ColumnProperty.ColumnType
-    ListItem.ListSubItems.Add Text:=ColumnProperty.R1C1
-    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Blanks)
-    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Errors)
-    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Locked)
-    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Formula)
-    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Validation)
-    ListItem.ListSubItems.Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Unique)
+    With ListItem.ListSubItems
+        .Add Text:=ColumnProperty.ColumnType
+        .Item(1).ReportIcon = "No"
+        If (.Item(1) = "Text") Then .Item(1).ReportIcon = "TypeText"
+        If (.Item(1) = "Number") Then .Item(1).ReportIcon = "TypeNumber"
+        .Add Text:=ColumnProperty.R1C1
+        
+        .Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Blanks)
+        .Item(3).ReportIcon = IIf(.Item(2).Text = "All", "Yes", "No")
+        .Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Errors)
+        .Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Locked)
+        .Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Formula)
+        .Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Validation)
+        .Add Text:=ListColumnPropHelpers.EnumToString(ColumnProperty.Unique)
+    End With
     
     ListItem.Checked = ColumnProperty.Checked
     ListItem.Selected = ColumnProperty.Selected
 End Sub
 
-Public Sub InitializeListView(ByVal ListView As ListView)
+Public Sub InitializeListView(ByVal Context As IAppContext, ByVal ListView As ListView)
     Debug.Assert Not ListView Is Nothing
      
     With ListView
@@ -117,5 +126,8 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         .Gridlines = True
         .FullRowSelect = True
         .LabelEdit = lvwManual
+        
+        Set .Icons = Context.ImageLists("32")
+        Set .SmallIcons = Context.ImageLists("16")
     End With
 End Sub

@@ -15,3 +15,6 @@ End Property
 
 Public Property Get CommandManager() As CommandManager
 End Property
+
+Public Property Get ImageLists() As Scripting.Dictionary
+End Property
