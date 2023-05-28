@@ -7,8 +7,9 @@ Private Const DO_DEBUG As Boolean = False
 '@Description "DoRunTableProp"
 Public Sub DoRunTableProp()
 Attribute DoRunTableProp.VB_Description = "DoRunTableProp"
-    Dim Context As IAppContext
+    Dim Context As AppContext
     Set Context = New AppContext
+    Context.LoadSettings ThisWorkbook
     
     Dim TablePropVM As TablePropViewModel
     Set TablePropVM = New TablePropViewModel

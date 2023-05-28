@@ -7,18 +7,19 @@ Private Const DO_DEBUG As Boolean = False
 '@Description "DoRunTableMapper"
 Public Sub DoRunTableMapper()
 Attribute DoRunTableMapper.VB_Description = "DoRunTableMapper"
-    Dim ctx As IAppContext
-    Set ctx = New AppContext
+    Dim Context As AppContext
+    Set Context = New AppContext
+    Context.LoadSettings ThisWorkbook
     
     Dim VM As TableMapperViewModel
     Set VM = New TableMapperViewModel
     VM.Load _
-        Context:=ctx, _
+        Context:=Context, _
         SrcTable:=ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1), _
         DstTable:=Nothing
 
     Dim View As IView
-    Set View = TableMapperView.Create(ctx, VM)
+    Set View = TableMapperView.Create(Context, VM)
     
     With View
         If .ShowDialog() Then

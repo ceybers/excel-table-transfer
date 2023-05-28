@@ -6,18 +6,19 @@ Private Const DO_DEBUG As Boolean = False
 '@Description "DoRunKeyMapper"
 Public Sub DoRunKeyMapper()
 Attribute DoRunKeyMapper.VB_Description = "DoRunKeyMapper"
-    Dim ctx As IAppContext
-    Set ctx = New AppContext
+    Dim Context As AppContext
+    Set Context = New AppContext
+    Context.LoadSettings ThisWorkbook
     
     Dim VM As KeyMapperViewModel
     Set VM = New KeyMapperViewModel
     VM.Load _
-        Context:=ctx, _
+        Context:=Context, _
         SrcTable:=ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1), _
         DstTable:=ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2)
 
     Dim View As IView
-    Set View = KeyMapperView.Create(ctx, VM)
+    Set View = KeyMapperView.Create(Context, VM)
     
     With View
         If .ShowDialog() Then

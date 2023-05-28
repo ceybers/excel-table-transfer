@@ -32,5 +32,11 @@ Public Function GetCollection(ByVal CollectionName As String) As Collection
 Attribute GetCollection.VB_Description = "Gets/sets a Collection of text values for the given Collection name."
 End Function
 
+Public Function HasCollection(ByVal CollectionName As String) As Boolean
+End Function
+
 Public Sub SetCollection(ByVal CollectionName As String, ByVal Collection As Collection)
+End Sub
+
+Public Sub Reset()
 End Sub

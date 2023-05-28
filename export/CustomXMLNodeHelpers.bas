@@ -9,12 +9,17 @@ Private Function GetOrCreateXPath(ByVal CustomXMLPart As CustomXMLPart, ByVal XP
     Tokens = Split(XPath, "/")
     
     Dim Parent As CustomXMLNode
-    Set Parent = CustomXMLPart.SelectSingleNode("/" & Tokens(1))
-    Debug.Assert Not Parent Is Nothing
+    Set Parent = CustomXMLPart.SelectSingleNode("/" & Tokens(0)).SelectSingleNode("/" & Tokens(1))
+    
+    If Parent Is Nothing Then
+        CustomXMLPart.SelectSingleNode("/" & Tokens(0)).AppendChildNode Name:=Tokens(1)
+        Set Parent = CustomXMLPart.SelectSingleNode("/" & Tokens(0)).LastChild
+    End If
     
     Dim Result As CustomXMLNode
     Dim i As Long
     For i = 2 To UBound(Tokens)
+        Debug.Assert Not Parent Is Nothing
         Set Result = Parent.SelectSingleNode(Tokens(i))
         If Result Is Nothing Then
             Set Result = AppendXPathToken(Parent, Tokens(i))

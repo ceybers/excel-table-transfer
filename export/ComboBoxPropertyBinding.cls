@@ -76,6 +76,11 @@ Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object,
 End Sub
 
 Private Sub UpdateTarget()
+    Log.Message "UpdateTarget", Me, Warning_Level
+    Log.Message "UpdateTarget Control Name=" & mComboBox.Name, Me, Warning_Level
+    Log.Message "UpdateTarget TargetProperty=" & This.TargetProperty, Me, Warning_Level
+    Log.Message "UpdateTarget CanUpdateTarget=" & CanUpdateTarget, Me, Warning_Level
+    
     If CanUpdateTarget Then
         If This.TargetProperty = "Value" Then
             UpdateDefault
@@ -110,7 +115,7 @@ Private Sub UpdateDefault()
 End Sub
 
 Private Sub UpdateComboBoxList()
-    If DO_DEBUG Then Debug.Print "ComboBoxPropertyBinding UpdateComboBoxList()"
+    Log.Message "UpdateComboBoxList", "ComboBoxPropertyBinding", Warning_Level
     
     mComboBox.Clear
     

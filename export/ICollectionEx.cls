@@ -34,13 +34,13 @@ End Function
 Public Function GetByIndex(ByVal Index As Long) As Variant
 End Function
 
-Public Function TryGetByIndex(ByVal Index As Long, ByRef outValue As Variant) As Boolean
+Public Function TryGetByIndex(ByVal Index As Long, ByRef OutValue As Variant) As Boolean
 End Function
 
 Public Function GetByKey(ByVal Key As Variant) As Variant
 End Function
 
-Public Function TryGetByKey(ByVal Key As Variant, ByRef outValue As Variant) As Boolean
+Public Function TryGetByKey(ByVal Key As Variant, ByRef OutValue As Variant) As Boolean
 End Function
 
 Public Sub Remove(ByVal Value As Variant)

@@ -17,7 +17,7 @@ Private Const RESET_PROFILE_TITLE As String = "Reset Profile"
 
 Private Type TState
     Notifier As INotifyPropertyChanged
-    SettingsModel As XMLSettingsModel
+    SettingsModel As ISettingsModel
     
     HasProfile As Boolean
     ActivateProfileCommand As ICommand
@@ -85,7 +85,8 @@ End Sub
 Public Sub RemoveProfile()
     If vbYes <> MsgBox(RESET_PROFILE_MESSAGE, vbExclamation + vbYesNo + vbDefaultButton2, RESET_PROFILE_TITLE) Then Exit Sub
     
-    This.SettingsModel.Delete
+    This.SettingsModel.Workbook.Reset
+    
     This.HasProfile = Not This.HasProfile
     OnPropertyChanged "HasProfile" ' Name doesn't matter, it just needs to trigger CommandManager's update CanExecute
 End Sub

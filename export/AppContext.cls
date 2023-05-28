@@ -11,22 +11,19 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IAppContext
 
+Private Const UUID As String = "{eb37a119-14e2-47c5-ab73-e46804ff84b5}"
+Private Const SETTINGS_FILE As String = "tabletransfertool.ini"
 Private Const SETTINGS_NODE As String = "TableTransferTool"
 
 Private Type TAppContext
     BindingManager As BindingManager
     CommandManager As CommandManager
-    UserLevelSettings As ISettings
-    WorkbookSettings As Collection
+    Settings As ISettingsModel
 End Type
 Private This As TAppContext
 
-Public Property Get UserLevelSettings() As ISettings
-    Set UserLevelSettings = This.UserLevelSettings
-End Property
-
-Public Property Get WorkbookSettings() As Collection
-    Set WorkbookSettings = This.WorkbookSettings
+Public Property Get Settings() As ISettingsModel
+    Set Settings = This.Settings
 End Property
 
 Private Property Get IAppContext_BindingManager() As BindingManager
@@ -41,23 +38,14 @@ Private Sub Class_Initialize()
     Set This.BindingManager = New BindingManager
     Set This.BindingManager.Context = Me
     Set This.CommandManager = New CommandManager
-    
-    Set This.UserLevelSettings = New MyDocsSettings
-    Dim mUserLevelSettings As MyDocsSettings
-    Set mUserLevelSettings = This.UserLevelSettings
-    
-    Set This.WorkbookSettings = New Collection
 End Sub
 
 Public Sub RegisterViewModel(ByVal ViewModel As INotifyPropertyChanged)
     ViewModel.RegisterHandler This.BindingManager
 End Sub
 
-Public Sub LoadWorkbookSettings(ByVal Workbook As Workbook)
-    Dim SettingsModel As ISettingsModel
-    For Each SettingsModel In This.WorkbookSettings
-        If SettingsModel.Name = Workbook.Name Then Exit Sub
-    Next SettingsModel
-    Set SettingsModel = XMLSettingsModel.Create(Workbook, SETTINGS_NODE)
-    This.WorkbookSettings.Add Item:=SettingsModel, Key:=Workbook.Name
+Public Sub LoadSettings(ByVal Workbook As Workbook)
+    Set This.Settings = SettingsModel.Create() _
+        .AddUserSettings(MyDocSettings.Create(UUID:=UUID, Filename:=SETTINGS_FILE)) _
+        .AddWorkbookSettings(XMLSettings.Create(Workbook, SETTINGS_NODE))
 End Sub

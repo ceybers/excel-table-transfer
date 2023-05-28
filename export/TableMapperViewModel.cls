@@ -73,7 +73,7 @@ Public Property Let EnableProtected(ByVal vNewValue As Boolean)
     If This.EnableProtected = vNewValue Then Exit Property
     This.EnableProtected = vNewValue
     OnPropertyChanged "EnableProtected"
-    This.Context.UserLevelSettings.SetFlag ENABLE_PROTECTED_FLAG, vNewValue
+    This.Context.Settings.User.SetFlag ENABLE_PROTECTED_FLAG, vNewValue
 End Property
 
 Public Property Get EnableReadonly() As Boolean
@@ -84,7 +84,7 @@ Public Property Let EnableReadonly(ByVal vNewValue As Boolean)
     If This.EnableReadonly = vNewValue Then Exit Property
     This.EnableReadonly = vNewValue
     OnPropertyChanged "EnableReadonly"
-    This.Context.UserLevelSettings.SetFlag ENABLE_READONLY_FLAG, vNewValue
+    This.Context.Settings.User.SetFlag ENABLE_READONLY_FLAG, vNewValue
 End Property
 
 '---
@@ -93,8 +93,8 @@ Public Sub Load(ByVal Context As IAppContext, ByVal SrcTable As ListObject, ByVa
     Set This.SrcTableVM = TablePickerViewModel.Create(SrcTable, "Source Table", Source, This.Notifier, Me)
     Set This.DstTableVM = TablePickerViewModel.Create(DstTable, "Destination Table", Destination, This.Notifier, Me)
     
-    EnableProtected = This.Context.UserLevelSettings.GetFlag(ENABLE_PROTECTED_FLAG)
-    EnableReadonly = This.Context.UserLevelSettings.GetFlag(ENABLE_READONLY_FLAG)
+    EnableProtected = This.Context.Settings.User.GetFlag(ENABLE_PROTECTED_FLAG)
+    EnableReadonly = This.Context.Settings.User.GetFlag(ENABLE_READONLY_FLAG)
     
     This.SrcTableVM.SelectByListObject SrcTable
     This.SrcTableVM.SelectByListObject DstTable

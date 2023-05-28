@@ -77,7 +77,7 @@ Public Property Let EnableStarredOnly(ByVal vNewValue As Boolean)
     If This.EnableStarredOnly = vNewValue Then Exit Property
     This.EnableStarredOnly = vNewValue
     OnPropertyChanged "EnableStarredOnly"
-    This.Context.UserLevelSettings.SetFlag ENABLE_STARREDONLY_FLAG, vNewValue
+    This.Context.Settings.User.SetFlag ENABLE_STARREDONLY_FLAG, vNewValue
 End Property
 
 Public Property Get EnableOption2() As Boolean
@@ -88,7 +88,7 @@ Public Property Let EnableOption2(ByVal vNewValue As Boolean)
     If This.EnableOption2 = vNewValue Then Exit Property
     This.EnableOption2 = vNewValue
     OnPropertyChanged "EnableOption2"
-    This.Context.UserLevelSettings.SetFlag ENABLE_OPTION2_FLAG, vNewValue
+    This.Context.Settings.User.SetFlag ENABLE_OPTION2_FLAG, vNewValue
 End Property
 
 '---
@@ -101,8 +101,8 @@ Public Sub Load(ByVal Context As IAppContext, ByVal SrcColumn As ListColumn, ByV
     Set This.DstValueColumnVM = ValuePickerViewModel.Create(Context, DstColumn, _
         "Value Columns for Destination Table", Destination, This.Notifier)
         
-    Me.EnableStarredOnly = This.Context.UserLevelSettings.GetFlag(ENABLE_STARREDONLY_FLAG)
-    Me.EnableOption2 = This.Context.UserLevelSettings.GetFlag(ENABLE_OPTION2_FLAG)
+    Me.EnableStarredOnly = This.Context.Settings.User.GetFlag(ENABLE_STARREDONLY_FLAG)
+    Me.EnableOption2 = This.Context.Settings.User.GetFlag(ENABLE_OPTION2_FLAG)
 End Sub
 
 Public Function CanMap() As Boolean

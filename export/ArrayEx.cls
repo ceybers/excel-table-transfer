@@ -24,7 +24,7 @@ Public Function From(ByVal ArrayToLoad As Variant) As ICollectionEx
     If Not IsArray(ArrayToLoad) Then Exit Function
     ' Need to test that this is a single rank array
     
-    Dim Result As New ArrayEx
+    Dim Result As ArrayEx
     Set Result = New ArrayEx
     Result.SetArray ArrayToLoad
     Set From = Result
@@ -76,7 +76,9 @@ Private Function ICollectionEx_IndexOf(ByVal Value As Variant) As Long
 End Function
 
 Private Sub ICollectionEx_Remove(ByVal Value As Variant)
-    ICollectionEx_TryRemove Value
+    If Not ICollectionEx_TryRemove(Value) Then
+        Err.Raise vbObjectError + 5, "ICollectionEx", "Could not remove Value"
+    End If
 End Sub
 
 Private Function ICollectionEx_TryRemove(ByVal Value As Variant) As Boolean
@@ -94,7 +96,9 @@ Private Function ICollectionEx_TryRemove(ByVal Value As Variant) As Boolean
 End Function
 
 Private Sub ICollectionEx_RemoveAt(ByVal Index As Long)
-    ICollectionEx_TryRemoveAt Index
+    If Not ICollectionEx_TryRemoveAt(Index) Then
+        Err.Raise vbObjectError + 5, "ICollectionEx", "Could not remove Index"
+    End If
 End Sub
 
 Private Function ICollectionEx_TryRemoveAt(ByVal Index As Long) As Boolean
@@ -102,7 +106,7 @@ Private Function ICollectionEx_TryRemoveAt(ByVal Index As Long) As Boolean
     'This.Collection.Remove Index
     ' dict remove uses key not index
     'ICollectionEx_TryRemoveAt = True
-    Debug.Assert False
+    Err.Raise vbObjectError + 42, "ICollectionEx", "TryRemoveAt Not Yet Implemented"
 End Function
 
 Private Function ICollectionEx_Count() As Long
@@ -124,13 +128,11 @@ Private Function ICollectionEx_TryAdd(ByVal Key As Variant, ByVal Value As Varia
 End Function
 
 Private Sub ICollectionEx_Insert(ByVal Index As Long, ByVal Value As Variant)
-    Debug.Assert False
-    Err.Raise 42, Description:="NYI TODO"
+    Err.Raise vbObjectError + 42, "ICollectionEx", "Insert Not Yet Implemented"
 End Sub
 
 Private Function ICollectionEx_TryInsert(ByVal Index As Long, ByVal Value As Variant) As Boolean
-    Debug.Assert False
-    Err.Raise 42, Description:="NYI TODO"
+    Err.Raise vbObjectError + 42, "ICollectionEx", "TryInsert Not Yet Implemented"
     ' redim, start from back, shift everything down once
 End Function
 
@@ -141,20 +143,18 @@ Private Function ICollectionEx_GetByIndex(ByVal Index As Long) As Variant
     End If
 End Function
 
-Private Function ICollectionEx_TryGetByIndex(ByVal Index As Long, ByRef outValue As Variant) As Boolean
+Private Function ICollectionEx_TryGetByIndex(ByVal Index As Long, ByRef OutValue As Variant) As Boolean
     If Not IsIndexInBounds(Index) Then Exit Function
-    outValue = This.Array(Index)
+    OutValue = This.Array(Index)
     ICollectionEx_TryGetByIndex = True
 End Function
 
 Private Function ICollectionEx_GetByKey(ByVal Key As Variant) As Variant
-    Debug.Assert False
-    Err.Raise 42, Description:="NYI No keys in arrays"
+    Err.Raise vbObjectError + 22, "ICollectionEx", "GetByKey Cannot Be Implemented"
 End Function
 
-Private Function ICollectionEx_TryGetByKey(ByVal Key As Variant, ByRef outValue As Variant) As Boolean
-    Debug.Assert False
-    Err.Raise 42, Description:="NYI No keys in arrays"
+Private Function ICollectionEx_TryGetByKey(ByVal Key As Variant, ByRef OutValue As Variant) As Boolean
+    Err.Raise vbObjectError + 22, "ICollectionEx", "TryGetByKey Cannot Be Implemented"
 End Function
 
 Public Sub DebugPrint()
@@ -172,7 +172,7 @@ Private Sub ICollectionEx_ForEach(ByVal Object As Object, ByVal MethodName As Va
     For Each ThisVariant In This.Array
         If TypeOf ThisVariant Is Object  Then
             On Error GoTo ErrHandler
-            Call CallByName(Object, MethodName, VbMethod, ThisVariant)
+            CallByName Object, MethodName, VbMethod, ThisVariant
             On Error GoTo 0
         End If
     Next ThisVariant

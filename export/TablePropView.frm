@@ -124,9 +124,9 @@ Private Sub BindControls()
         .BindPropertyPath ViewModel, "TableDirectionVM.IsSource", Me.optDirectionSource, "Value", TwoWayBinding
         .BindPropertyPath ViewModel, "TableDirectionVM.IsDestination", Me.optDirectionDestination, "Value", TwoWayBinding
         
+        .BindPropertyPath ViewModel, "TableDirectionVM.ConditionDirections", Me.cboPreferDirectionLocation, "List", OneTimeBinding ' Must be first for this control
         .BindPropertyPath ViewModel, "TableDirectionVM.IsOnCondition", Me.chkPreferDirectionCondition, "Value", TwoWayBinding
         .BindPropertyPath ViewModel, "TableDirectionVM.IsOnCondition", Me.cboPreferDirectionLocation, "Enabled", TwoWayBinding
-        .BindPropertyPath ViewModel, "TableDirectionVM.ConditionDirections", Me.cboPreferDirectionLocation, "List", OneWayToSource
         .BindPropertyPath ViewModel, "TableDirectionVM.SelectedConditionDirection", Me.cboPreferDirectionLocation, "Value", TwoWayBinding
         
         .BindPropertyPath ViewModel, "TablePreferKeyVM.Columns", Me.cboPreferKeyColumn, "List", OneTimeBinding

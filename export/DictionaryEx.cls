@@ -141,9 +141,9 @@ Private Function ICollectionEx_GetByIndex(ByVal Index As Long) As Variant
     End If
 End Function
 
-Private Function ICollectionEx_TryGetByIndex(ByVal Index As Long, ByRef outValue As Variant) As Boolean
+Private Function ICollectionEx_TryGetByIndex(ByVal Index As Long, ByRef OutValue As Variant) As Boolean
     If Not IsIndexInBounds(Index) Then Exit Function
-    outValue = This.Dictionary.Items(Index)
+    OutValue = This.Dictionary.Items(Index)
     ICollectionEx_TryGetByIndex = True
 End Function
 
@@ -154,9 +154,9 @@ Private Function ICollectionEx_GetByKey(ByVal Key As Variant) As Variant
     End If
 End Function
 
-Private Function ICollectionEx_TryGetByKey(ByVal Key As Variant, ByRef outValue As Variant) As Boolean
+Private Function ICollectionEx_TryGetByKey(ByVal Key As Variant, ByRef OutValue As Variant) As Boolean
     If This.Dictionary.Exists(Key) Then
-        outValue = This.Dictionary.Item(Key)
+        Set OutValue = This.Dictionary.Item(Key)
         ICollectionEx_TryGetByKey = True
     End If
 End Function
@@ -176,7 +176,7 @@ Private Sub ICollectionEx_ForEach(ByVal Object As Object, ByVal MethodName As Va
     For Each ThisVariant In This.Dictionary.Items
         If TypeOf ThisVariant Is Object  Then
             On Error GoTo ErrHandler
-            Call CallByName(Object, MethodName, VbMethod, ThisVariant)
+            CallByName Object, MethodName, VbMethod, ThisVariant
             On Error GoTo 0
         End If
     Next ThisVariant

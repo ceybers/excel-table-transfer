@@ -151,14 +151,15 @@ Private Sub LoadSavedFlags()
 End Sub
 
 Private Sub LoadConditionDirections()
-    Dim Tokens() As String
-    Tokens = Split("Local,Network,OneDrive,SharePoint", ",")
-    Dim i As Long
-    For i = LBound(Tokens) To UBound(Tokens)
-        This.ConditionDirections.Add Key:=Tokens(i), Item:=Tokens(i)
-    Next i
-    
-    SelectedConditionDirection = Tokens(LBound(Tokens))
+    'Dim Tokens() As String
+    'Tokens = Split("Local,Network,OneDrive,SharePoint", ",")
+    'Dim i As Long
+    'For i = LBound(Tokens) To UBound(Tokens)
+    '    This.ConditionDirections.Add Key:=Tokens(i), Item:=Tokens(i)
+    'Next i
+    Log.Message "LoadConditionDirections", "TableDirectionVM", Warning_Level
+    Set This.ConditionDirections = CollectionExConverters.TextToDictionary("Local,Network,OneDrive,SharePoint")
+    SelectedConditionDirection = This.ConditionDirections.Items(0)
 End Sub
 
 Private Sub LoadSelectedConditionDirection()

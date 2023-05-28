@@ -6,19 +6,19 @@ Private Const DO_DEBUG As Boolean = False
 '@Description "DoRunValueMapper"
 Public Sub DoRunValueMapper()
 Attribute DoRunValueMapper.VB_Description = "DoRunValueMapper"
-    Dim ctx As IAppContext
-    Set ctx = New AppContext
+    Dim Context As IAppContext
+    Set Context = New AppContext
     
     Dim VM As ValueMapperViewModel
     Set VM = New ValueMapperViewModel
     
     VM.Load _
-        Context:=ctx, _
+        Context:=Context, _
         SrcColumn:=ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1).ListColumns.Item(1), _
         DstColumn:=ThisWorkbook.Worksheets.Item(3).ListObjects.Item(1).ListColumns.Item(2)
 
     Dim View As IView
-    Set View = ValueMapperView.Create(ctx, VM)
+    Set View = ValueMapperView.Create(Context, VM)
     
     With View
         If .ShowDialog() Then

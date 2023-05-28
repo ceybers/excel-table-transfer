@@ -146,9 +146,9 @@ Private Function ICollectionEx_GetByIndex(ByVal Index As Long) As Variant
     End If
 End Function
 
-Private Function ICollectionEx_TryGetByIndex(ByVal Index As Long, ByRef outValue As Variant) As Boolean
+Private Function ICollectionEx_TryGetByIndex(ByVal Index As Long, ByRef OutValue As Variant) As Boolean
     If Not IsIndexInBounds(Index) Then Exit Function
-    outValue = This.Collection.Item(Index)
+    OutValue = This.Collection.Item(Index)
     ICollectionEx_TryGetByIndex = True
 End Function
 
@@ -159,14 +159,14 @@ Private Function ICollectionEx_GetByKey(ByVal Key As Variant) As Variant
     End If
 End Function
 
-Private Function ICollectionEx_TryGetByKey(ByVal Key As Variant, ByRef outValue As Variant) As Boolean
+Private Function ICollectionEx_TryGetByKey(ByVal Key As Variant, ByRef OutValue As Variant) As Boolean
     Dim vv As Variant
     On Error Resume Next
     vv = This.Collection.Item(Key)
     On Error GoTo 0
     
     If IsEmpty(vv) = False Then
-        outValue = vv
+        OutValue = vv
         ICollectionEx_TryGetByKey = True
     Else
         ICollectionEx_TryGetByKey = False
@@ -188,7 +188,7 @@ Private Sub ICollectionEx_ForEach(ByVal Object As Object, ByVal MethodName As Va
     For Each ThisVariant In This.Collection
         If TypeOf ThisVariant Is Object  Then
             On Error GoTo ErrHandler
-            Call CallByName(Object, MethodName, VbMethod, ThisVariant)
+            CallByName Object, MethodName, VbMethod, ThisVariant
             On Error GoTo 0
         End If
     Next ThisVariant

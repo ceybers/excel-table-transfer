@@ -123,8 +123,8 @@ Public Sub Load(ByVal Context As IAppContext, ByVal ListObject As ListObject)
     'Set This.TableSettings = SettingsModel.Table(ListObject.Name)
     
     Dim SettingsModel As ISettingsModel
-    This.Context.LoadWorkbookSettings Workbook
-    Set SettingsModel = This.Context.WorkbookSettings.Item(Workbook.Name)
+    This.Context.LoadSettings Workbook
+    Set SettingsModel = This.Context.Settings
     Set This.TableSettings = SettingsModel.Table(ListObject.Name)
     
     This.TableDetailsVM.Load ListObject

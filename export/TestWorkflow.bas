@@ -3,7 +3,7 @@ Attribute VB_Name = "TestWorkflow"
 '@Folder "TableTransfer"
 Option Explicit
 
-Private ctx As IAppContext
+Private Context As IAppContext
 Private SrcTable As ListObject
 Private DstTable As ListObject
 Private SrcKeyColumn As ListColumn
@@ -20,7 +20,7 @@ Public Sub DoTestWorkflow()
     Worksheets(1).Activate
     Range("A2").Activate
     
-    Set ctx = New AppContext
+    Set Context = New AppContext
     Set SrcTable = Nothing
     Set DstTable = Nothing
     
@@ -71,7 +71,7 @@ Private Function PickDirection(ByVal ListObject As ListObject) As Boolean
     DirectionViewModel.Load ListObject
 
     Dim DirectionView As IView
-    Set DirectionView = DirectionPickerView.Create(ctx, DirectionViewModel)
+    Set DirectionView = DirectionPickerView.Create(Context, DirectionViewModel)
     
     Dim Result As Boolean
     Result = DirectionView.ShowDialog
@@ -95,10 +95,10 @@ Private Function PickOtherTable() As Boolean
     Log.Message "PickOtherTable", "TestWorkflow", Verbose_Level
     Dim TableMapperVM As TableMapperViewModel
     Set TableMapperVM = New TableMapperViewModel
-    TableMapperVM.Load ctx, SrcTable, DstTable
+    TableMapperVM.Load Context, SrcTable, DstTable
     
     Dim TableMapperV As IView
-    Set TableMapperV = TableMapperView.Create(ctx, TableMapperVM)
+    Set TableMapperV = TableMapperView.Create(Context, TableMapperVM)
     
     Dim Result As Boolean
     Result = TableMapperV.ShowDialog
@@ -115,18 +115,18 @@ End Function
 
 Private Function PickKeys() As Boolean
     Log.Message "PickKeys", "TestWorkflow", Verbose_Level
-    Dim ctx As IAppContext
-    Set ctx = New AppContext
+    Dim Context As IAppContext
+    Set Context = New AppContext
     
     Dim KeyMapperVM As KeyMapperViewModel
     Set KeyMapperVM = New KeyMapperViewModel
     KeyMapperVM.Load _
-        Context:=ctx, _
+        Context:=Context, _
         SrcTable:=SrcTable, _
         DstTable:=DstTable
 
     Dim KeyMapperV As IView
-    Set KeyMapperV = KeyMapperView.Create(ctx, KeyMapperVM)
+    Set KeyMapperV = KeyMapperView.Create(Context, KeyMapperVM)
     
     Dim Result As Boolean
     Result = KeyMapperV.ShowDialog
@@ -146,19 +146,19 @@ End Function
 
 Private Function PickValues() As Boolean
     Log.Message "PickValues", "TestWorkflow", Verbose_Level
-    Dim ctx As IAppContext
-    Set ctx = New AppContext
+    Dim Context As IAppContext
+    Set Context = New AppContext
     
     Dim ValueMapperVM As ValueMapperViewModel
     Set ValueMapperVM = New ValueMapperViewModel
     
     ValueMapperVM.Load _
-        Context:=ctx, _
+        Context:=Context, _
         SrcColumn:=SrcKeyColumn, _
         DstColumn:=DstKeyColumn
 
     Dim ValueMapperV As IView
-    Set ValueMapperV = ValueMapperView.Create(ctx, ValueMapperVM)
+    Set ValueMapperV = ValueMapperView.Create(Context, ValueMapperVM)
     
     Dim Result As Boolean
     Result = ValueMapperV.ShowDialog

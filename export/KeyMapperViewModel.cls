@@ -71,7 +71,7 @@ Public Property Let EnableNontext(ByVal vNewValue As Boolean)
     If This.EnableNontext = vNewValue Then Exit Property
     This.EnableNontext = vNewValue
     OnPropertyChanged "EnableNontext"
-    This.Context.UserLevelSettings.SetFlag ENABLE_NONTEXT_FLAG, vNewValue
+    This.Context.Settings.User.SetFlag ENABLE_NONTEXT_FLAG, vNewValue
 End Property
 
 Public Property Get EnableNonunique() As Boolean
@@ -82,7 +82,7 @@ Public Property Let EnableNonunique(ByVal vNewValue As Boolean)
     If This.EnableNonunique = vNewValue Then Exit Property
     This.EnableNonunique = vNewValue
     OnPropertyChanged "EnableNonunique"
-    This.Context.UserLevelSettings.SetFlag ENABLE_NONUNIQUE_FLAG, vNewValue
+    This.Context.Settings.User.SetFlag ENABLE_NONUNIQUE_FLAG, vNewValue
 End Property
 
 '---
@@ -94,8 +94,8 @@ Public Sub Load(ByVal Context As IAppContext, ByVal SrcTable As ListObject, ByVa
     Set This.DstKeyColumnVM = KeyPickerViewModel.Create(Context, DstTable, _
         "Key Column for Destination Table", Destination, This.Notifier)
         
-    Me.EnableNontext = This.Context.UserLevelSettings.GetFlag(ENABLE_NONTEXT_FLAG)
-    Me.EnableNonunique = This.Context.UserLevelSettings.GetFlag(ENABLE_NONUNIQUE_FLAG)
+    Me.EnableNontext = This.Context.Settings.User.GetFlag(ENABLE_NONTEXT_FLAG)
+    Me.EnableNonunique = This.Context.Settings.User.GetFlag(ENABLE_NONUNIQUE_FLAG)
     
     If CanMapPreferred Then DoMapPreferred
 End Sub
