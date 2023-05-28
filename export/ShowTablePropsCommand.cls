@@ -69,5 +69,11 @@ Private Sub ICommand_Execute()
         Dim mValuePickerViewModel  As ValuePickerViewModel
         Set mValuePickerViewModel = mViewModel
         mValuePickerViewModel.ShowTableProperties
+    ElseIf TypeOf ViewModel Is TablePickerViewModel Then
+        Dim mTablePickerViewModel As TablePickerViewModel
+        Set mTablePickerViewModel = mViewModel
+        mTablePickerViewModel.ShowTableProperties
+    Else
+        Debug.Assert False
     End If
 End Sub

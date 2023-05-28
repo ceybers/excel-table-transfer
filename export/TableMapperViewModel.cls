@@ -90,8 +90,10 @@ End Property
 '---
 Public Sub Load(ByVal Context As IAppContext, ByVal SrcTable As ListObject, ByVal DstTable As ListObject)
     Set This.Context = Context
-    Set This.SrcTableVM = TablePickerViewModel.Create(SrcTable, "Source Table", Source, This.Notifier, Me)
-    Set This.DstTableVM = TablePickerViewModel.Create(DstTable, "Destination Table", Destination, This.Notifier, Me)
+    Set This.SrcTableVM = TablePickerViewModel.Create(Context, SrcTable, _
+        "Source Table", Source, This.Notifier, Me)
+    Set This.DstTableVM = TablePickerViewModel.Create(Context, DstTable, _
+        "Destination Table", Destination, This.Notifier, Me)
     
     EnableProtected = This.Context.Settings.User.GetFlag(ENABLE_PROTECTED_FLAG)
     EnableReadonly = This.Context.Settings.User.GetFlag(ENABLE_READONLY_FLAG)

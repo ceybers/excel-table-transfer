@@ -16,6 +16,8 @@ Implements IHandlePropertyChanged
 
 Private Type TState
     Notifier As INotifyPropertyChanged
+    Context As IAppContext
+    Properties As TablePropViewModel
 
     Caption As String
     Direction As TransferDirection
@@ -92,7 +94,7 @@ Public Property Let Direction(ByVal vNewValue As TransferDirection)
 End Property
 
 '---
-Public Function Create(ByVal ListObject As Object, _
+Public Function Create(ByVal Context As IAppContext, ByVal ListObject As Object, _
     ByVal Caption As String, ByVal Direction As TransferDirection, _
     ByVal Notifier As INotifyPropertyChanged, ByVal Handler As IHandlePropertyChanged) _
     As TablePickerViewModel
@@ -100,7 +102,7 @@ Public Function Create(ByVal ListObject As Object, _
     Dim Result As TablePickerViewModel
     Set Result = New TablePickerViewModel
     With Result
-        .Load ListObject, Handler
+        .Load Context, ListObject, Handler
         .Caption = Caption
         .Direction = Direction
     End With
@@ -111,8 +113,16 @@ Public Function Create(ByVal ListObject As Object, _
     Set Create = Result
 End Function
 
-Public Sub Load(ByVal ListObject As ListObject, ByVal Handler As IHandlePropertyChanged)
+Public Sub Load(ByVal Context As IAppContext, ByVal ListObject As ListObject, _
+    ByVal Handler As IHandlePropertyChanged)
     Debug.Assert Not Me Is TablePickerViewModel
+    
+    Set This.Context = Context
+    
+    If Not ListObject Is Nothing Then
+        Set This.Properties = New TablePropViewModel
+        This.Properties.Load This.Context, ListObject
+    End If
     
     Set This.PickableTables = New PickableTables
     This.PickableTables.Load Application
@@ -237,3 +247,19 @@ Private Function IsAvailableToSelect(ByVal ThisPickableTable As PickableTable) A
     If ThisPickableTable.Selected Then Exit Function
     IsAvailableToSelect = True
 End Function
+
+Public Sub ShowTableProperties()
+    If This.Selected Is Nothing Then Exit Sub
+    
+    ' TODO Refactor this to DRY
+    Dim TablePropV As IView
+    Set TablePropV = TablePropView.Create(This.Context, This.Properties)
+    
+    If TablePropV.ShowDialog Then
+        This.Properties.Commit
+        'This.KeyColumns.UpdatePreferredColumn This.Properties.TablePreferKeyVM.Selected
+        'ReloadKeyColumns
+    End If
+    
+    Set TablePropV = Nothing
+End Sub

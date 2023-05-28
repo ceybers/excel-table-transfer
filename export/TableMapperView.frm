@@ -112,30 +112,30 @@ Private Sub BindControls()
     With Context.BindingManager
         .BindPropertyPath ViewModel, "EnableProtected", Me.chkEnableProtected, "Value", TwoWayBinding
         .BindPropertyPath ViewModel, "EnableReadonly", Me.chkEnableReadOnly, "Value", TwoWayBinding
-        
+
+        .BindPropertyPath ViewModel, "SrcTableVM.SelectedAsText", Me.txtSrcTableProps, "Value", OneTimeBinding
         .BindPropertyPath ViewModel, "SrcTableVM.Item", Me.lvSrcTables, "ListItems", TwoWayBinding, PickableTablesToListViewConv
+
+        .BindPropertyPath ViewModel, "DstTableVM.SelectedAsText", Me.txtDstTableProps, "Value", OneTimeBinding
         .BindPropertyPath ViewModel, "DstTableVM.Item", Me.lvDstTables, "ListItems", TwoWayBinding, PickableTablesToListViewConv
     End With
 End Sub
 
 Private Sub BindCommands()
-    Dim OKView As ICommand
-    Set OKView = OKViewCommand.Create(Context, Me, ViewModel)
+    BindCommand OKViewCommand.Create(Context, Me, ViewModel), Me.cmdOK
+    BindCommand CancelViewCommand.Create(Context, Me, ViewModel), Me.cmdCancel
     
-    Dim CancelView As ICommand
-    Set CancelView = CancelViewCommand.Create(Context, Me, ViewModel)
-    
-    'Dim SrcDblClickListView As ICommand
-    'Set SrcDblClickListView = DblClickListViewCommand.Create(Context, Me, ViewModel.SrcTableVM)
-    
-    With This.Context.CommandManager
-        .BindCommand Context, ViewModel, OKView, Me.cmdOK
-        .BindCommand Context, ViewModel, CancelView, Me.cmdCancel
-        '.BindCommand Context, ViewModel.SrcTableVM, SrcDblClickListView, Me.lvSrcTables
-    End With
+    BindCommand ShowTablePropsCommand.Create(Context, Me, ViewModel.SrcTableVM), Me.cmbSrcTableProps
+    BindCommand ShowTablePropsCommand.Create(Context, Me, ViewModel.DstTableVM), Me.cmbDstTableProps
+End Sub
+
+Private Sub BindCommand(ByVal Command As ICommand, ByVal Control As Object)
+    This.Context.CommandManager.BindCommand Context, ViewModel, Command, Control
 End Sub
 
 Private Sub InitializeLabelPictures()
     ApplyImageMSOtoLabel Me.lblPicHeader, "TablePropertiesDialog"
     ApplyImageMSOtoLabel Me.lblPicOptions, "TablePropertiesDialog"
+    ApplyImageMSOtoLabel Me.lblPicSrcTable, "TablePropertiesDialog"
+    ApplyImageMSOtoLabel Me.lblPicDstTable, "TablePropertiesDialog"
 End Sub
