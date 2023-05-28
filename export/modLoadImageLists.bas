@@ -3,7 +3,10 @@ Attribute VB_Name = "modLoadImageLists"
 Option Explicit
 
 Private Const MSO_LIST As String = "Column,SelectTaskColumn;Yes,WorkflowComplete;No,CancelRequest;" & _
-    "TypeText,DataTypeText;TypeNumber,DataTypeNumber"
+    "TypeText,DataTypeText;TypeNumber,DataTypeNumber;" & _
+    "StarTrue,StarRatedFull;StarFalse,StarRatedEmpty;" & _
+    "MappedTrue,TasksLink;MappedFalse,VisibilityHidden;" & _
+    "Key,AdpPrimaryKey;Hidden,ShowVisualAids;Protected,Lock"
 
 Public Sub LoadImageLists(ByVal ImageLists As Scripting.Dictionary)
     LoadImageList ImageLists, 16

@@ -99,9 +99,9 @@ End Function
 
 Private Sub InitializeControls()
     '@Ignore ArgumentWithIncompatibleObjectType
-     SrcValueColumnsToListViewConv.InitializeListView Me.lvSrcValueColumns
+     SrcValueColumnsToListViewConv.InitializeListView This.Context, Me.lvSrcValueColumns
     '@Ignore ArgumentWithIncompatibleObjectType
-     DstValueColumnsToListViewConv.InitializeListView Me.lvDstValueColumns
+     DstValueColumnsToListViewConv.InitializeListView This.Context, Me.lvDstValueColumns
 End Sub
 
 Private Sub BindControls()

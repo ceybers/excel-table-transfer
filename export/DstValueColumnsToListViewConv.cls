@@ -57,17 +57,24 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
         Set ListItem = ListView.ListItems.Add(Key:=ValueColumn.Key, Text:=ValueColumn.Name)
     End If
     
+    ListItem.Bold = ValueColumn.MappedTo <> vbNullString
+    ListItem.SmallIcon = IIf(ValueColumn.IsKey, "Key", Empty)
+    
     Dim ForeColor As Long
     ForeColor = IIf(ValueColumn.Enabled, vbBlack, vbGrayText)
     
     With ListItem.ListSubItems
         .Add Text:="(" & ValueColumn.ColumnLetter & ")"
         .Add Text:=IIf(ValueColumn.MappedTo = vbNullString, NOT_MAPPED, ValueColumn.MappedTo)
+        .Item(2).ReportIcon = IIf(ValueColumn.MappedTo <> vbNullString, "MappedTrue", "MappedFalse")
         .Add Text:=ValueColumn.DataType
-        .Add Text:=IIf(ValueColumn.IsProtected, "Y", "N")
-        .Add Text:=IIf(ValueColumn.IsHidden, "Y", "N")
+        .Add Text:=vbNullString 'IIf(ValueColumn.IsProtected, "Y", "N")
+        .Item(4).ReportIcon = IIf(ValueColumn.IsProtected, "Protected", Empty)
+        .Add Text:=vbNullString 'IIf(ValueColumn.IsHidden, "Y", "N")
+        .Item(5).ReportIcon = IIf(ValueColumn.IsHidden, "Hidden", Empty)
         .Add Text:=IIf(ValueColumn.IsKey, "Y", "N")
-        .Add Text:=IIf(ValueColumn.IsStarred, "Y", "N")
+        .Add Text:=vbNullString 'IIf(ValueColumn.IsStarred, "Y", "N")
+        .Item(7).ReportIcon = IIf(ValueColumn.IsStarred, "StarTrue", "StarFalse")
     End With
     
     ListItem.ForeColor = ForeColor
@@ -88,7 +95,7 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
     End If
 End Sub
 
-Public Sub InitializeListView(ByVal ListView As ListView)
+Public Sub InitializeListView(ByVal Context As IAppContext, ByVal ListView As ListView)
     Debug.Assert Not ListView Is Nothing
      
     With ListView
@@ -97,21 +104,24 @@ Public Sub InitializeListView(ByVal ListView As ListView)
         
         .ColumnHeaders.Add Text:="Name", Width:=72
         .ColumnHeaders.Add Text:="Address", Width:=24
-        .ColumnHeaders.Add Text:="Mapped to", Width:=48
+        .ColumnHeaders.Add Text:="Mapped to", Width:=64
         .ColumnHeaders.Add Text:="Type", Width:=24
-        .ColumnHeaders.Add Text:="IsProtected", Width:=32
-        .ColumnHeaders.Add Text:="IsHidden", Width:=24
-        .ColumnHeaders.Add Text:="IsKey", Width:=24
-        .ColumnHeaders.Add Text:="IsStarred", Width:=24
+        .ColumnHeaders.Add Key:="IsProtected", Text:="", Width:=18
+        .ColumnHeaders.Add Key:="IsHidden", Text:="", Width:=18
+        .ColumnHeaders.Add Key:="IsKey", Text:="", Width:=0
+        .ColumnHeaders.Add Key:="IsStarred", Text:="", Width:=18
         
         .Appearance = cc3D
         .BorderStyle = ccNone
-        .CheckBoxes = True
+        .CheckBoxes = False
         .View = lvwReport
         .Gridlines = True
         .FullRowSelect = True
         .HideSelection = False
         .LabelEdit = lvwManual
         .MultiSelect = False
+        
+        Set .Icons = Context.ImageLists("32")
+        Set .SmallIcons = Context.ImageLists("16")
     End With
 End Sub

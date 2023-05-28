@@ -55,16 +55,21 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
         Set ListItem = ListView.ListItems.Add(Key:=ValueColumn.Key, Text:=ValueColumn.Name)
     End If
     
+    ListItem.SmallIcon = IIf(ValueColumn.IsKey, "Key", Empty)
+    
     Dim ForeColor As Long
     ForeColor = IIf(ValueColumn.Enabled, vbBlack, vbGrayText)
     
     With ListItem.ListSubItems
         .Add Text:="(" & ValueColumn.ColumnLetter & ")"
         .Add Text:=ValueColumn.DataType
-        .Add Text:=IIf(ValueColumn.IsProtected, "Y", "N")
-        .Add Text:=IIf(ValueColumn.IsHidden, "Y", "N")
+        .Add Text:=vbNullString 'IIf(ValueColumn.IsProtected, "Y", "N")
+        .Item(3).ReportIcon = IIf(ValueColumn.IsProtected, "Protected", Empty)
+        .Add Text:=vbNullString 'IIf(ValueColumn.IsHidden, "Y", "N")
+        .Item(4).ReportIcon = IIf(ValueColumn.IsHidden, "Hidden", Empty)
         .Add Text:=IIf(ValueColumn.IsKey, "Y", "N")
-        .Add Text:=IIf(ValueColumn.IsStarred, "Y", "N")
+        .Add Text:=vbNullString 'IIf(ValueColumn.IsStarred, "Y", "N")
+        .Item(6).ReportIcon = IIf(ValueColumn.IsStarred, "StarTrue", "StarFalse")
     End With
     
     ListItem.ForeColor = ForeColor
@@ -79,20 +84,24 @@ Private Sub LoadListItem(ByVal ValueColumn As ValueColumn, ByVal ListView As Lis
     End If
 End Sub
 
-Public Sub InitializeListView(ByVal ListView As ListView)
+Public Sub InitializeListView(ByVal Context As IAppContext, ByVal ListView As ListView)
     Debug.Assert Not ListView Is Nothing
      
     With ListView
+        Set .Icons = Context.ImageLists("32")
+        Set .SmallIcons = Context.ImageLists("16")
+        Set .ColumnHeaderIcons = Context.ImageLists("16")
+        
         .ListItems.Clear
         .ColumnHeaders.Clear
         
         .ColumnHeaders.Add Text:="Name", Width:=72
         .ColumnHeaders.Add Text:="Address", Width:=24
-        .ColumnHeaders.Add Text:="Type", Width:=24
-        .ColumnHeaders.Add Text:="IsProtected", Width:=32
-        .ColumnHeaders.Add Text:="IsHidden", Width:=24
-        .ColumnHeaders.Add Text:="IsKey", Width:=24
-        .ColumnHeaders.Add Text:="IsStarred", Width:=24
+        .ColumnHeaders.Add Text:="Type", Width:=48
+        .ColumnHeaders.Add Text:="", Width:=18, Alignment:=0, Icon:="Protected"
+        .ColumnHeaders.Add Text:="", Width:=18, Alignment:=0, Icon:="Hidden"
+        .ColumnHeaders.Add Text:="IsKey", Width:=0
+        .ColumnHeaders.Add Text:="", Width:=18, Alignment:=0, Icon:="StarTrue"
         
         .Appearance = cc3D
         .BorderStyle = ccNone
