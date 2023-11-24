@@ -4,7 +4,7 @@ Option Explicit
 
 Private Sub Test()
     Dim lo As ListObject
-    Dim result As String
+    Dim Result As String
     
     Set lo = ThisWorkbook.Worksheets(1).ListObjects(1)
     'Debug.Print ListObjectToStringName(lo)
@@ -17,17 +17,17 @@ Private Sub Test()
         Debug.Print "Path Filename Worksheet Range [OK]"
     End If
     
-    result = "[Production.xlsm]Sheet1!$A$1:$C$5" ' Closed file
-    result = "[Development.xlsm]Sheet1!$A$1:$C$5"
-    Set lo = StringNameToListObject(result)
+    Result = "[Production.xlsm]Sheet1!$A$1:$C$5" ' Closed file
+    Result = "[Development.xlsm]Sheet1!$A$1:$C$5"
+    Set lo = StringNameToListObject(Result)
     If lo Is Nothing Then
         Debug.Print "     Filename Worksheet Range [FAIL]"
     Else
         Debug.Print "     Filename Worksheet Range [OK]"
     End If
         
-    result = "Sheet1!A1:C10"
-    Set lo = StringNameToListObject(result)
+    Result = "Sheet1!A1:C10"
+    Set lo = StringNameToListObject(Result)
     If lo Is Nothing Then
         Debug.Print "              Worksheet Range [FAIL]"
     Else
@@ -174,7 +174,6 @@ End Function
 
 '@Description "test"
 Public Function TryGetTableFromText(ByVal rangetext As String, ByRef outListObject As ListObject, Optional ByVal openIfClosed As Boolean = False) As Boolean
-Attribute TryGetTableFromText.VB_Description = "test"
     ' Debug.Print "RR"; rangeText
     
     ' Example:
@@ -196,7 +195,7 @@ Attribute TryGetTableFromText.VB_Description = "test"
     If IsWorkbookOpen(filename) Then
         Set wb = Application.Workbooks(filename)
         sheetname = Mid$(rangetext, InStr(rangetext, "]") + 1, InStr(rangetext, "!") - InStr(rangetext, "]") - 1)
-        Set ws = wb.Worksheets(sheetname) ' TODO Error trap this
+        Set ws = wb.Worksheets(sheetname)        ' TODO Error trap this
         rangeaddress = Mid$(rangetext, InStr(rangetext, "!") + 1, Len(rangetext) - InStr(rangetext, "!") - 1)
         'Debug.Print rangeaddress
         Set rng = ws.Range(rangeaddress)
@@ -257,3 +256,14 @@ Public Function TryGetListObjectFromWorkbook(ByVal wb As Workbook, ByVal loName 
         Next lo
     Next ws
 End Function
+
+Public Function ListColumnExists(ByVal ListObject As ListObject, ByVal ListColumnName As String) As Boolean
+    Dim ListColumn As ListColumn
+    For Each ListColumn In ListObject.ListColumns
+        If ListColumn.Name = ListColumnName Then
+            ListColumnExists = True
+            Exit Function
+        End If
+    Next ListColumn
+End Function
+
