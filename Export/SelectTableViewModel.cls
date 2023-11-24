@@ -143,7 +143,7 @@ Private Sub TrySelectOther()
     Next lo
 End Sub
 
-Private Sub Class_Initialize()
+Private Sub class_initialize()
     this.AutoSelected = False
     Load
 End Sub

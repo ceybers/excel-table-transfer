@@ -137,7 +137,7 @@ Public Property Let RHSCriteria(ByVal rhs As String)
     RaiseEvent CollectionChangedRHS
 End Property
 
-Private Sub Class_Initialize()
+Private Sub class_initialize()
     Set this.ValuePairs = New ColumnPairs
     Set this.CheckedValuePairs = New ColumnPairs
 End Sub

@@ -17,7 +17,7 @@ Public Items As Collection
 Public Worksheet As Worksheet
 Public SelectedInstruction As TransferInstruction
 
-Private Sub Class_Initialize()
+Private Sub class_initialize()
     Set Items = New Collection
     If HasHistory Then
         Set Worksheet = WorksheetHelpers.GetWorksheetByName(WORKSHEET_NAME)

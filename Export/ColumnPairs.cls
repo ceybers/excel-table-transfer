@@ -35,7 +35,7 @@ Public Property Let ConstrainRHS(ByVal rhs As Boolean)
     this.ConstrainRHS = rhs
 End Property
 
-Private Sub Class_Initialize()
+Private Sub class_initialize()
     Set this.Item = New Collection
     this.ConstrainRHS = True
 End Sub

@@ -204,7 +204,7 @@ Private Sub UpdateColumns(ByVal lo As ListObject, ByVal coll As Collection)
     Next lc
 End Sub
 
-Private Sub Class_Initialize()
+Private Sub class_initialize()
     Set this.LHSColumns = New Collection
     Set this.RHSColumns = New Collection
 End Sub
