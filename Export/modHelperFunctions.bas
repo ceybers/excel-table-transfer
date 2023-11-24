@@ -33,3 +33,4 @@ Public Sub PasteArrayIntoWorksheet(ByRef arr As Variant, ByVal ws As Worksheet, 
     'Debug.Print "PasteArrayIntoWorksheet @ row "; row; ", col "; column
     ws.Range("A1").Cells(row, column).Resize(UBound(arr, 1), 1).Value2 = arr
 End Sub
+

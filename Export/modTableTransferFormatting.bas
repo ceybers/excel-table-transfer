@@ -2,7 +2,7 @@ Attribute VB_Name = "modTableTransferFormatting"
 '@Folder "TableTransfer"
 '@IgnoreModule ImplicitPublicMember
 Option Explicit
-    
+
 Sub FormatMatch(ByVal rng As Range)
     With rng.Interior
         .Pattern = xlSolid

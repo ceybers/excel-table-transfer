@@ -15,7 +15,7 @@ Public Sub Test()
     Set ws = wb.Worksheets(1)
     Set lo = ws.ListObjects(1)
     Set lc = lo.ListColumns(1)
-    Set rng = lc.DataBodyRange '.SpecialCells(xlCellTypeVisible)
+    Set rng = lc.DataBodyRange                   '.SpecialCells(xlCellTypeVisible)
     v = VisibleRangeToArray(rng)
     
     Debug.Print UBound(v, 1)
@@ -23,3 +23,4 @@ Public Sub Test()
     
     Debug.Assert False
 End Sub
+

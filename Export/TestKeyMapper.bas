@@ -89,7 +89,7 @@ Public Sub RemoveUnmappedKeys(ByVal comp As KeyColumnComparer, Optional ByRef ca
     
     For i = rng.rows.Count To 1 Step -1
         If cachedMappedResults(rng.rows(i).row) = -1 Then
-             rng.rows(i).EntireRow.Delete
+            rng.rows(i).EntireRow.Delete
         End If
     Next i
 End Sub

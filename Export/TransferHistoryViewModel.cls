@@ -43,13 +43,13 @@ Public Sub Save()
 End Sub
 
 Public Sub Refresh()
-    Dim result As Variant
+    Dim Result As Variant
     'Debug.Assert Not Worksheet Is Nothing
     ClearCollection Items
     If Not Worksheet Is Nothing Then
-        Set result = LoadTransferInstructionsFromWorksheet(Worksheet)
-        If Not result Is Nothing Then
-            Set Items = result
+        Set Result = LoadTransferInstructionsFromWorksheet(Worksheet)
+        If Not Result Is Nothing Then
+            Set Items = Result
         End If
     End If
 End Sub
@@ -124,3 +124,4 @@ Public Sub TrySelect(ByVal key As String)
     Debug.Assert i <= Items.Count
     Set SelectedInstruction = Items(i)
 End Sub
+

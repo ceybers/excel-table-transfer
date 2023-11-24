@@ -14,6 +14,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
+
 '@Folder "SelectTable"
 Option Explicit
 Implements IView
@@ -28,7 +29,7 @@ Private Type TView
     IsCancelled As Boolean
 End Type
 
-Private this As TView
+Private This As TView
 
 Private Sub cmbCancel_Click()
     OnCancel
@@ -91,11 +92,11 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
         Me.Show
     End If
     
-    IView_ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not This.IsCancelled
 End Function
 
 Private Sub InitializeView()
-    this.IsCancelled = False
+    This.IsCancelled = False
     Me.txtSearch = vbNullString
     Me.cmbOK.Enabled = False
     
@@ -126,6 +127,7 @@ Private Sub UpdateListViewWithSelectedTable()
 End Sub
 
 Private Sub OnCancel()
-    this.IsCancelled = True
+    This.IsCancelled = True
     Me.Hide
 End Sub
+

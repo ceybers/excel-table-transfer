@@ -17,33 +17,34 @@ Private Type TSourceOrDestinationViewModel
     ListObject As ListObject
 End Type
 
-Private this As TSourceOrDestinationViewModel
+Private This As TSourceOrDestinationViewModel
 
 Public Property Get IsSource() As Boolean
-    IsSource = this.IsSource
+    IsSource = This.IsSource
 End Property
 
 Public Property Let IsSource(ByVal rhs As Boolean)
-    this.IsSource = rhs
+    This.IsSource = rhs
 End Property
 
 Public Property Get IsDestination() As Boolean
-    IsDestination = this.IsDestination
+    IsDestination = This.IsDestination
 End Property
 
 Public Property Let IsDestination(ByVal rhs As Boolean)
-    this.IsDestination = rhs
+    This.IsDestination = rhs
 End Property
 
 Public Property Get ListObject() As ListObject
-    Set ListObject = this.ListObject
+    Set ListObject = This.ListObject
 End Property
 
 Public Property Set ListObject(ByVal rhs As ListObject)
-    Set this.ListObject = rhs
+    Set This.ListObject = rhs
 End Property
 
 Private Function IViewModel_IsValid() As Boolean
     If IsSource = False And IsDestination = False Then Exit Function
     IViewModel_IsValid = True
 End Function
+

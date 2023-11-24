@@ -5,11 +5,11 @@ Option Explicit
 Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Integer = 8
 
 Public Sub Test()
-    Dim result As Variant
-    Set result = LoadTransferInstructionsFromWorksheet(ThisWorkbook.Worksheets("CAETransferTableHistory"))
+    Dim Result As Variant
+    Set Result = LoadTransferInstructionsFromWorksheet(ThisWorkbook.Worksheets("CAETransferTableHistory"))
     
     Dim ti As TransferInstructionUnref
-    Set ti = result(1)
+    Set ti = Result(1)
     
     Debug.Print ti.Flags
 End Sub
@@ -47,35 +47,35 @@ Public Function LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) As 
         
         Debug.Print UBound(curArr, 1)
         Select Case UBound(curArr, 1)
-            Case 0
-                If curArr(0) = "TRANSFER" Then
-                    Set ti = New TransferInstructionUnref
-                ElseIf curArr(0) = "END" Then
-                    TransferInstructions.Add ti
-                    Set ti = Nothing
-                End If
+        Case 0
+            If curArr(0) = "TRANSFER" Then
+                Set ti = New TransferInstructionUnref
+            ElseIf curArr(0) = "END" Then
+                TransferInstructions.Add ti
+                Set ti = Nothing
+            End If
                 
-            Case 1
-                att = Split(curArr(1), ",")(0)
-                val = Split(curArr(1), ",")(1)
+        Case 1
+            att = Split(curArr(1), ",")(0)
+            val = Split(curArr(1), ",")(1)
                 
-                Select Case att
-                    Case "SRC"
-                        ti.Source = val
-                    Case "DST"
-                        ti.Destination = val
-                    Case "SRCKEY"
-                        ti.SourceKey = val
-                    Case "DSTKEY"
-                        ti.DestinationKey = val
-                    Case "FLAGS"
-                        ti.Flags = val
-                End Select
+            Select Case att
+            Case "SRC"
+                ti.Source = val
+            Case "DST"
+                ti.Destination = val
+            Case "SRCKEY"
+                ti.SourceKey = val
+            Case "DSTKEY"
+                ti.DestinationKey = val
+            Case "FLAGS"
+                ti.Flags = val
+            End Select
                 
-            Case 2
-                lhs = Split(curArr(2), ",")(0)
-                rhs = Split(curArr(2), ",")(1)
-                ' This will fail if columns have commas in them
+        Case 2
+            lhs = Split(curArr(2), ",")(0)
+            rhs = Split(curArr(2), ",")(1)
+            ' This will fail if columns have commas in them
         End Select
     Next i
     
@@ -89,7 +89,7 @@ Public Function ZZ_LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) 
     Dim arr As Variant
     arr = ws.UsedRange.Value2
     
-    If IsEmpty(arr) Then ' TODO check if vbarray+vbvariant and not single cell
+    If IsEmpty(arr) Then                         ' TODO check if vbarray+vbvariant and not single cell
         Set ZZ_LoadTransferInstructionsFromWorksheet = Nothing
         Exit Function
     End If
@@ -114,35 +114,35 @@ Public Function ZZ_LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) 
         curArr = Split(curStr, " ")
         'Debug.Print UBound(curArr, 1)
         Select Case UBound(curArr, 1)
-            Case 0
-                If curArr(0) = "TRANSFER" Then
-                    Set ti = New TransferInstruction
-                ElseIf curArr(0) = "END" Then
-                    tis.Add ti
-                    Set ti = Nothing
-                End If
-            Case 1
-                att = Split(curArr(1), ",")(0)
-                val = Split(curArr(1), ",")(1)
-                Select Case att
-                    Case "SRC"
-                        TryGetTableFromText val, ti.Source
-                    Case "DST"
-                        TryGetTableFromText val, ti.Destination
-                    Case "SRCKEY"
-                        TryGetListColumnFromText val, ti.Source, ti.SourceKey
-                    Case "DSTKEY"
-                        TryGetListColumnFromText val, ti.Destination, ti.DestinationKey
-                    Case "FLAGS"
-                        ti.Flags = val
-                End Select
-            Case 2
-                lhs = Split(curArr(2), ",")(0)
-                rhs = Split(curArr(2), ",")(1)
+        Case 0
+            If curArr(0) = "TRANSFER" Then
+                Set ti = New TransferInstruction
+            ElseIf curArr(0) = "END" Then
+                tis.Add ti
+                Set ti = Nothing
+            End If
+        Case 1
+            att = Split(curArr(1), ",")(0)
+            val = Split(curArr(1), ",")(1)
+            Select Case att
+            Case "SRC"
+                TryGetTableFromText val, ti.Source
+            Case "DST"
+                TryGetTableFromText val, ti.Destination
+            Case "SRCKEY"
+                TryGetListColumnFromText val, ti.Source, ti.SourceKey
+            Case "DSTKEY"
+                TryGetListColumnFromText val, ti.Destination, ti.DestinationKey
+            Case "FLAGS"
+                ti.Flags = val
+            End Select
+        Case 2
+            lhs = Split(curArr(2), ",")(0)
+            rhs = Split(curArr(2), ",")(1)
                 
-                If Not ti.Source Is Nothing And Not ti.Destination Is Nothing Then
-                    ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns(lhs), ti.Destination.ListColumns(rhs))
-                End If
+            If Not ti.Source Is Nothing And Not ti.Destination Is Nothing Then
+                ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns(lhs), ti.Destination.ListColumns(rhs))
+            End If
         End Select
     Next i
     
@@ -151,7 +151,6 @@ End Function
 
 '@Description "Save a Collection of TransferInstruction to a worksheet"
 Public Sub SaveTransferInstructionsFromWorksheet(ByVal coll As Collection, ByVal ws As Worksheet)
-Attribute SaveTransferInstructionsFromWorksheet.VB_Description = "Save a Collection of TransferInstruction to a worksheet"
     Dim rows As Long
     Dim rng As Range
     Dim tgtArr As Variant
@@ -178,25 +177,26 @@ End Sub
 Private Function SerializeTransferInstruction(ByVal Transfer As TransferInstruction) As Variant
     Dim c As Long
     Dim i As Long
-    Dim result As Variant
+    Dim Result As Variant
     
     c = 8 + Transfer.ValuePairs.Count
     
-    ReDim result(1 To c, 1 To 1)
+    ReDim Result(1 To c, 1 To 1)
     
-    result(1, 1) = "TRANSFER"
-    result(2, 1) = " SRC," & Transfer.Source.Range.Address(external:=True)
-    result(3, 1) = " SRCKEY," & Transfer.SourceKey.Name
-    result(4, 1) = " DST," & Transfer.Destination.Range.Address(external:=True)
-    result(5, 1) = " DSTKEY," & Transfer.DestinationKey.Name
-    result(6, 1) = " FLAGS," & Transfer.Flags
-    result(7, 1) = " VALUES," & Transfer.ValuePairs.Count
+    Result(1, 1) = "TRANSFER"
+    Result(2, 1) = " SRC," & Transfer.Source.Range.Address(external:=True)
+    Result(3, 1) = " SRCKEY," & Transfer.SourceKey.Name
+    Result(4, 1) = " DST," & Transfer.Destination.Range.Address(external:=True)
+    Result(5, 1) = " DSTKEY," & Transfer.DestinationKey.Name
+    Result(6, 1) = " FLAGS," & Transfer.Flags
+    Result(7, 1) = " VALUES," & Transfer.ValuePairs.Count
     
     For i = 1 To Transfer.ValuePairs.Count
-        result(7 + i, 1) = "  " & Transfer.ValuePairs(i).ToString
+        Result(7 + i, 1) = "  " & Transfer.ValuePairs(i).ToString
     Next i
     
-    result(c, 1) = "END"
+    Result(c, 1) = "END"
     
-    SerializeTransferInstruction = result
+    SerializeTransferInstruction = Result
 End Function
+

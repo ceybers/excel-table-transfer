@@ -18,16 +18,17 @@ Private Type TViewModel
     Flags As Integer
 End Type
 
-Private this As TViewModel
+Private This As TViewModel
 
 Public Property Get Flags() As Integer
-    Flags = this.Flags
+    Flags = This.Flags
 End Property
 
 Public Property Let Flags(ByVal rhs As Integer)
-    this.Flags = rhs
+    This.Flags = rhs
 End Property
 
 Private Function IViewModel_IsValid() As Boolean
     IViewModel_IsValid = True
 End Function
+

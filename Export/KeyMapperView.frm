@@ -15,6 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
+
 '@Folder "KeyMapper"
 Option Explicit
 Implements IView
@@ -37,13 +38,13 @@ Private Type TFrmKeyMapper2View
     IsUserChangingTable As Boolean
 End Type
 
-Private this As TFrmKeyMapper2View
+Private This As TFrmKeyMapper2View
 
 ' --- Controls
 Private Sub chkAddNewKeys_Click()
-    If Me.chkAddNewKeys.value = True Then
+    If Me.chkAddNewKeys.Value = True Then
         vm.AppendNewKeys = True
-    ElseIf Me.chkAddNewKeys.value = False Then
+    ElseIf Me.chkAddNewKeys.Value = False Then
         vm.AppendNewKeys = False
     Else
         ' Tri state checkbox, do nothing?
@@ -51,11 +52,11 @@ Private Sub chkAddNewKeys_Click()
 End Sub
 
 Private Sub chkLimitKeyCheck_Click()
-    Me.txtLimitKeyValue.Enabled = Me.chkLimitKeyCheck.value
+    Me.txtLimitKeyValue.Enabled = Me.chkLimitKeyCheck.Value
 End Sub
 
 Private Sub chkRemoveOrphans_Click()
-    vm.RemoveOrphanKeys = Me.chkRemoveOrphans.value
+    vm.RemoveOrphanKeys = Me.chkRemoveOrphans.Value
 End Sub
 
 Private Sub cmbBack_Click()
@@ -65,6 +66,7 @@ End Sub
 
 Private Sub cmbBestMatch_Click()
     vm.TryGuess
+    vm.TryGuessUserdefined
 End Sub
 
 Private Sub cmbCancel_Click()
@@ -86,7 +88,7 @@ Private Sub cmbColumnLHS_DropButtonClick()
     
     vm.TrySelectLHS Me.cmbColumnLHS
     
-    If this.IsInitialLoad = False Then
+    If This.IsInitialLoad = False Then
         vm.TryAutoMatch leftToRight:=True, Quiet:=False
     End If
 End Sub
@@ -98,7 +100,7 @@ Private Sub cmbColumnRHS_DropButtonClick()
     
     vm.TrySelectRHS Me.cmbColumnRHS
     
-    If this.IsInitialLoad = False Then
+    If This.IsInitialLoad = False Then
         vm.TryAutoMatch leftToRight:=False, Quiet:=False
     End If
 End Sub
@@ -121,16 +123,16 @@ Private Sub cmbSwap_Click()
 End Sub
 
 Private Sub cmbTableLHS_DropButtonClick()
-    If TrySelectTable(Nothing, this.SelectTableVM) Then
-        Set vm.LHSTable = this.SelectTableVM.SelectedTable
+    If TrySelectTable(Nothing, This.SelectTableVM) Then
+        Set vm.LHSTable = This.SelectTableVM.SelectedTable
     End If
     
     Me.cmbColumnLHS.SetFocus
 End Sub
 
 Private Sub cmbTableRHS_DropButtonClick()
-    If TrySelectTable(Nothing, this.SelectTableVM) Then
-        Set vm.RHSTable = this.SelectTableVM.SelectedTable
+    If TrySelectTable(Nothing, This.SelectTableVM) Then
+        Set vm.RHSTable = This.SelectTableVM.SelectedTable
     End If
     
     Me.cmbColumnRHS.SetFocus
@@ -175,11 +177,11 @@ Private Sub PopulateColumns(ByVal cmb As ComboBox, ByVal lo As ListObject)
 End Sub
 
 Private Sub txtLimitKeyValue_Exit(ByVal Cancel As MSForms.ReturnBoolean)
-    If Not IsNumeric(Me.txtLimitKeyValue.value) Then
+    If Not IsNumeric(Me.txtLimitKeyValue.Value) Then
         Cancel = True
-    ElseIf CLng(Me.txtLimitKeyValue.value) < 1 Then
+    ElseIf CLng(Me.txtLimitKeyValue.Value) < 1 Then
         Cancel = True
-    ElseIf CLng(Me.txtLimitKeyValue.value) > 10000 Then
+    ElseIf CLng(Me.txtLimitKeyValue.Value) > 10000 Then
         Cancel = True
     End If
 End Sub
@@ -192,7 +194,7 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub OnCancel()
-    this.IsCancelled = True
+    This.IsCancelled = True
     Me.Hide
 End Sub
 
@@ -200,12 +202,12 @@ End Sub
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     PrintTime "KeyMapperView"
     DEBUG_EVENTS = False
-    this.IsInitialLoad = True
+    This.IsInitialLoad = True
     
-    Set this.SelectTableVM = New SelectTableViewModel
+    Set This.SelectTableVM = New SelectTableViewModel
     
     Set vm = ViewModel
-    this.IsCancelled = False
+    This.IsCancelled = False
     
     Set msoImageList = modStandardImageList.GetMSOImageList(ICON_SIZE)
     
@@ -218,20 +220,22 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     PrintTime "LoadFlagsFromVM"
     vm.TryGuess
     PrintTime "TryGuess"
+    vm.TryGuessUserdefined
+    PrintTime "TryGuessUserdefined"
     
-    this.IsLoaded = True
+    This.IsLoaded = True
     
-    this.IsInitialLoad = False
+    This.IsInitialLoad = False
     Me.Show
     
-    IView_ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not This.IsCancelled
 End Function
 
 Private Sub InitializeTableCombobox(ByVal cmb As ComboBox)
     With cmb
         .Clear
         .AddItem NO_TABLE_SELECTED
-        .value = NO_TABLE_SELECTED
+        .Value = NO_TABLE_SELECTED
     End With
 End Sub
 
@@ -256,8 +260,8 @@ Public Sub LoadTablesFromVM()
 End Sub
 
 Public Sub LoadFlagsFromVM()
-    Me.chkAddNewKeys.value = vm.AppendNewKeys
-    Me.chkRemoveOrphans.value = vm.RemoveOrphanKeys
+    Me.chkAddNewKeys.Value = vm.AppendNewKeys
+    Me.chkRemoveOrphans.Value = vm.RemoveOrphanKeys
     
     Me.chkAddNewKeys.Enabled = False
     Me.chkRemoveOrphans.Enabled = False
@@ -279,28 +283,28 @@ End Sub
 Private Sub vm_PropertyChanged(ByVal propertyName As String)
     If DEBUG_EVENTS = True Then Debug.Print "Property changed: " & propertyName
     Select Case propertyName
-        Case KeyMapperEvents.LHS_TABLE
-            'this.IsInitialLoad = True
-            ChangeTable Me.cmbTableLHS, vm.LHSTable
-            PopulateColumns Me.cmbColumnLHS, vm.LHSTable
-            TryAutoMatchAgain leftToRight:=False
-            this.IsInitialLoad = False
-            'this.IsUserChangingTable = False
+    Case KeyMapperEvents.LHS_TABLE
+        'this.IsInitialLoad = True
+        ChangeTable Me.cmbTableLHS, vm.LHSTable
+        PopulateColumns Me.cmbColumnLHS, vm.LHSTable
+        TryAutoMatchAgain leftToRight:=False
+        This.IsInitialLoad = False
+        'this.IsUserChangingTable = False
         'Case KeyMapperEvents.LHS_COLUMNS
             
-        Case KeyMapperEvents.LHS_KEY_COLUMN
-            ResetQualityControls lhs:=True
-        Case KeyMapperEvents.RHS_TABLE
-            'this.IsInitialLoad = True
-            ChangeTable Me.cmbTableRHS, vm.RHSTable
-            PopulateColumns Me.cmbColumnRHS, vm.RHSTable
-            TryAutoMatchAgain leftToRight:=True
-            this.IsInitialLoad = False
-            'this.IsUserChangingTable = False
+    Case KeyMapperEvents.LHS_KEY_COLUMN
+        ResetQualityControls lhs:=True
+    Case KeyMapperEvents.RHS_TABLE
+        'this.IsInitialLoad = True
+        ChangeTable Me.cmbTableRHS, vm.RHSTable
+        PopulateColumns Me.cmbColumnRHS, vm.RHSTable
+        TryAutoMatchAgain leftToRight:=True
+        This.IsInitialLoad = False
+        'this.IsUserChangingTable = False
         'Case KeyMapperEvents.RHS_COLUMNS
             
-        Case KeyMapperEvents.RHS_KEY_COLUMN
-            ResetQualityControls rhs:=True
+    Case KeyMapperEvents.RHS_KEY_COLUMN
+        ResetQualityControls rhs:=True
     End Select
     
     Me.cmbSwap.Enabled = vm.CanSwap
@@ -375,9 +379,9 @@ Private Sub PopulateMatchSets()
     Dim comp As KeyColumnComparer
     Set comp = New KeyColumnComparer
     
-    If Me.chkLimitKeyCheck.value = True Then
-        Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn, False, Me.txtLimitKeyValue.value)
-        Set comp.rhs = KeyColumn.FromColumn(vm.RHSKeyColumn, False, Me.txtLimitKeyValue.value)
+    If Me.chkLimitKeyCheck.Value = True Then
+        Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn, False, Me.txtLimitKeyValue.Value)
+        Set comp.rhs = KeyColumn.FromColumn(vm.RHSKeyColumn, False, Me.txtLimitKeyValue.Value)
     Else
         Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn)
         Set comp.rhs = KeyColumn.FromColumn(vm.RHSKeyColumn)
@@ -416,3 +420,4 @@ Private Sub CollectionToListView(ByVal coll As Collection, ByVal lv As ListView,
         lv.ColumnHeaders.Add text:=header & " (" & coll.Count & ")"
     End If
 End Sub
+

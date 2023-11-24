@@ -9,7 +9,7 @@ Public Sub Test()
     Dim key As KeyColumn
     
     Set ws = ThisWorkbook.Worksheets(2)
-    Set rng = ws.Range("A2:A5,A14") ',C2:C13")
+    Set rng = ws.Range("A2:A5,A14")              ',C2:C13")
     Set key = KeyColumn.FromRange(rng, True, True)
     
     Debug.Print "TEST"
@@ -54,13 +54,14 @@ Public Sub TestPerformance()
     '   100 0.05859375   0.00390625   0.0078125
 End Sub
 
-Private Function FindInArray(ByVal arr As Variant, ByVal value As String) As Long
+Private Function FindInArray(ByVal arr As Variant, ByVal Value As String) As Long
     Dim v As Variant
     Dim i As Long
     For i = 1 To UBound(arr, 1)
-        If arr(i, 1) = value Then
+        If arr(i, 1) = Value Then
             FindInArray = i
             Exit Function
         End If
     Next i
 End Function
+

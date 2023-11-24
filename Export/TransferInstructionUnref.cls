@@ -24,94 +24,94 @@ Private Type TState
     LastRun As Date
 End Type
 
-Private this As TState
+Private This As TState
 
 Public Property Get LastRun() As Date
-    LastRun = this.LastRun
+    LastRun = This.LastRun
 End Property
 
 Public Property Let LastRun(ByVal rhs As Date)
-    this.LastRun = rhs
+    This.LastRun = rhs
 End Property
 
 Public Property Get SourceSheet() As String
-    SourceSheet = this.SourceSheet
+    SourceSheet = This.SourceSheet
 End Property
 
 Public Property Let SourceSheet(ByVal rhs As String)
-    this.SourceSheet = rhs
+    This.SourceSheet = rhs
 End Property
 
 Public Property Get DestinationSheet() As String
-    DestinationSheet = this.DestinationSheet
+    DestinationSheet = This.DestinationSheet
 End Property
 
 Public Property Let DestinationSheet(ByVal rhs As String)
-    this.DestinationSheet = rhs
+    This.DestinationSheet = rhs
 End Property
 
 Public Property Get SourceFilename() As String
-    SourceFilename = this.SourceFilename
+    SourceFilename = This.SourceFilename
 End Property
 
 Public Property Let SourceFilename(ByVal rhs As String)
-    this.SourceFilename = rhs
+    This.SourceFilename = rhs
 End Property
 
 Public Property Get DestinationFilename() As String
-    DestinationFilename = this.DestinationFilename
+    DestinationFilename = This.DestinationFilename
 End Property
 
 Public Property Let DestinationFilename(ByVal rhs As String)
-    this.DestinationFilename = rhs
+    This.DestinationFilename = rhs
 End Property
 
 Public Property Get Source() As String
-    Source = this.Source
+    Source = This.Source
 End Property
 
 Public Property Let Source(ByVal rhs As String)
-    this.Source = rhs
+    This.Source = rhs
 End Property
 
 Public Property Get Destination() As String
-    Destination = this.Destination
+    Destination = This.Destination
 End Property
 
 Public Property Let Destination(ByVal rhs As String)
-    this.Destination = rhs
+    This.Destination = rhs
 End Property
 
 Public Property Get SourceKey() As String
-    SourceKey = this.SourceKey
+    SourceKey = This.SourceKey
 End Property
 
 Public Property Let SourceKey(ByVal rhs As String)
-    this.SourceKey = rhs
+    This.SourceKey = rhs
 End Property
 
 Public Property Get DestinationKey() As String
-    DestinationKey = this.DestinationKey
+    DestinationKey = This.DestinationKey
 End Property
 
 Public Property Let DestinationKey(ByVal rhs As String)
-    this.DestinationKey = rhs
+    This.DestinationKey = rhs
 End Property
 
 Public Property Get ValuePairs() As Variant
-    Let ValuePairs = this.ValuePairs
+    Let ValuePairs = This.ValuePairs
 End Property
 
 Public Property Let ValuePairs(ByVal rhs As Variant)
-    Let this.ValuePairs = rhs
+    Let This.ValuePairs = rhs
 End Property
 
 Public Property Get Flags() As Integer
-    Flags = this.Flags
+    Flags = This.Flags
 End Property
 
 Public Property Let Flags(ByVal rhs As Integer)
-    this.Flags = rhs
+    This.Flags = rhs
 End Property
 
 ' TODO Invert this so that TI can try and load from a TIUnref
@@ -120,36 +120,36 @@ Public Function AsReferenced() As TransferInstruction
     Dim ti As TransferInstruction
     Set ti = New TransferInstruction
     
-    ti.Flags = this.Flags
+    ti.Flags = This.Flags
     'ti.LastRun = this.LastRun
     
     Dim wb As Workbook
     Dim wbLHS As Workbook
     Dim wbRHS As Workbook
     For Each wb In Workbooks
-        If wb.Name = this.SourceFilename Then
+        If wb.Name = This.SourceFilename Then
             Set wbLHS = wb
         End If
-        If wb.Name = this.DestinationFilename Then
+        If wb.Name = This.DestinationFilename Then
             Set wbRHS = wb
         End If
     Next wb
     
     Dim lo As ListObject
     If Not wbLHS Is Nothing Then
-        If TryGetListObjectFromWorkbook(wbLHS, this.Source, lo) Then
+        If TryGetListObjectFromWorkbook(wbLHS, This.Source, lo) Then
             Set ti.Source = lo
             On Error Resume Next
-            Set ti.SourceKey = ti.Source.ListColumns(this.SourceKey)
+            Set ti.SourceKey = ti.Source.ListColumns(This.SourceKey)
             On Error GoTo 0
         End If
     End If
     
     If Not wbRHS Is Nothing Then
-        If TryGetListObjectFromWorkbook(wbRHS, this.Destination, lo) Then
+        If TryGetListObjectFromWorkbook(wbRHS, This.Destination, lo) Then
             Set ti.Destination = lo
             On Error Resume Next
-            Set ti.DestinationKey = ti.Destination.ListColumns(this.DestinationKey)
+            Set ti.DestinationKey = ti.Destination.ListColumns(This.DestinationKey)
             On Error GoTo 0
         End If
     End If
@@ -168,19 +168,20 @@ Public Function LoadFromRange(ByVal rng As Range) As Boolean
         Exit Function
     End If
     
-    this.SourceFilename = arr(5, 3)
-    this.DestinationFilename = arr(5, 4)
-    this.SourceSheet = arr(6, 3)
-    this.DestinationSheet = arr(6, 4)
-    this.Source = arr(8, 3)
-    this.Destination = arr(8, 4)
-    this.SourceKey = arr(9, 3)
-    this.DestinationKey = arr(9, 4)
-    this.Flags = arr(10, 3)
+    This.SourceFilename = arr(5, 3)
+    This.DestinationFilename = arr(5, 4)
+    This.SourceSheet = arr(6, 3)
+    This.DestinationSheet = arr(6, 4)
+    This.Source = arr(8, 3)
+    This.Destination = arr(8, 4)
+    This.SourceKey = arr(9, 3)
+    This.DestinationKey = arr(9, 4)
+    This.Flags = arr(10, 3)
     
     Dim vpArr As Variant
     vpArr = rng.offset(11, 2).Resize(c - 12, 2).Value2
-    this.ValuePairs = vpArr
+    This.ValuePairs = vpArr
     
     LoadFromRange = True
 End Function
+

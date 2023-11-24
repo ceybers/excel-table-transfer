@@ -14,6 +14,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
+
 '@Folder "TransferHistory"
 Option Explicit
 Implements IView
@@ -24,7 +25,7 @@ Private Type TView
     IsCancelled As Boolean
 End Type
 
-Private this As TView
+Private This As TView
 
 Private Sub cmbCancel_Click()
     OnCancel
@@ -32,7 +33,7 @@ End Sub
 
 Private Sub cmbClear_Click()
     If vbYes = MsgBox("Remove ALL saved tranfers?", vbExclamation + vbYesNo + vbDefaultButton2) Then
-        this.ViewModel.Clear
+        This.ViewModel.Clear
         UpdateListView
     End If
 End Sub
@@ -42,28 +43,28 @@ Private Sub cmbLoad_Click()
 End Sub
 
 Private Sub cmbRefresh_Click()
-    this.ViewModel.Refresh
+    This.ViewModel.Refresh
     UpdateListView
 End Sub
 
 Private Sub cmbRemoveWS_Click()
     If vbYes = MsgBox("Remove ENTIRE transfer history (including hidden worksheet)?", vbExclamation + vbYesNo + vbDefaultButton2) Then
-        this.ViewModel.Remove
+        This.ViewModel.Remove
         MsgBox "Transfer Table History removed!", vbExclamation + vbOKOnly, "Transfer Table History" 'TODO Consts
         OnCancel
     End If
 End Sub
 
 Private Sub lvTransferInstructions_DblClick()
-    If Not this.ViewModel.SelectedInstruction Is Nothing Then
+    If Not This.ViewModel.SelectedInstruction Is Nothing Then
         Me.Hide
     End If
 End Sub
 
 Private Sub lvTransferInstructions_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    this.ViewModel.TrySelect Item.key
-    If Not this.ViewModel.SelectedInstruction Is Nothing Then
-        Me.txtTransferInstruction.value = this.ViewModel.SelectedInstruction.ToString
+    This.ViewModel.TrySelect Item.key
+    If Not This.ViewModel.SelectedInstruction Is Nothing Then
+        Me.txtTransferInstruction.Value = This.ViewModel.SelectedInstruction.ToString
         Me.cmbLoad.Enabled = True
     End If
 End Sub
@@ -79,36 +80,36 @@ Private Function InitializeView() As Boolean
     InitializeView = True
     Me.cmbLoad.Enabled = False
 
-    If this.ViewModel.HasHistory = False Then
+    If This.ViewModel.HasHistory = False Then
         If vbYes = MsgBox("No history found. Initialize?", vbInformation + vbYesNo + vbDefaultButton1, "Transfer Table History") Then
-            this.ViewModel.Create
+            This.ViewModel.Create
         Else
             InitializeView = False
         End If
     End If
     
-    this.ViewModel.Refresh
-    this.ViewModel.InitializeListView Me.lvTransferInstructions
+    This.ViewModel.Refresh
+    This.ViewModel.InitializeListView Me.lvTransferInstructions
     UpdateListView
 End Function
 
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
-    Set this.ViewModel = ViewModel
+    Set This.ViewModel = ViewModel
     
     If InitializeView Then
         Me.Show
-        IView_ShowDialog = Not this.IsCancelled
+        IView_ShowDialog = Not This.IsCancelled
     Else
         OnCancel
     End If
 End Function
 
-
 Private Sub OnCancel()
-    this.IsCancelled = True
+    This.IsCancelled = True
     Me.Hide
 End Sub
 
 Private Sub UpdateListView()
-    this.ViewModel.ItemsToListView Me.lvTransferInstructions
+    This.ViewModel.ItemsToListView Me.lvTransferInstructions
 End Sub
+

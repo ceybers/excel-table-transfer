@@ -49,7 +49,7 @@ Private Sub PrintTransferInstruction(ByVal Transfer As TransferInstruction)
     Debug.Print " FLAGS," & Transfer.Flags
     Debug.Print " VALUES," & Transfer.ValuePairs.Count
     For i = 1 To Transfer.ValuePairs.Count
-         Debug.Print "  " & Transfer.ValuePairs(i).ToString
+        Debug.Print "  " & Transfer.ValuePairs(i).ToString
     Next i
     Debug.Print "END"
 End Sub
@@ -79,10 +79,4 @@ Public Function GetTestTransferInstruction() As TransferInstruction
         .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(4), rhs.ListColumns(3))
     End With
 End Function
-
-
-
-
-
-
 

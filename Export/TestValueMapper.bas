@@ -6,7 +6,6 @@ Option Private Module
 
 '@ExcelHotkey p
 Public Sub Test()
-Attribute Test.VB_ProcData.VB_Invoke_Func = "p\n14"
     Dim vm As ValueMapperViewModel
     Dim view As IView
     
@@ -32,3 +31,4 @@ Attribute Test.VB_ProcData.VB_Invoke_Func = "p\n14"
     End If
 
 End Sub
+

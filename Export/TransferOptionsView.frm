@@ -15,6 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
+
 '@Folder("TransferOptions")
 Option Explicit
 Implements IView
@@ -24,7 +25,7 @@ Private Type TFrmKeyMapper2View
     IsCancelled As Boolean
 End Type
 
-Private this As TFrmKeyMapper2View
+Private This As TFrmKeyMapper2View
 
 Private Sub CheckBox1_Click()
     SetFlag ClearDestinationFirst, Me.CheckBox1
@@ -63,7 +64,7 @@ Private Sub CheckBox9_Click()
 End Sub
 
 Private Sub SetFlag(ByVal flag As TransferOptionsEnum, ByRef cb As MSForms.CheckBox)
-    this.ViewModel.Flags = modTestTransferOptions.SetFlag(this.ViewModel.Flags, flag, cb.value)
+    This.ViewModel.Flags = modTestTransferOptions.SetFlag(This.ViewModel.Flags, flag, cb.Value)
 End Sub
 
 ' ---
@@ -83,19 +84,19 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub OnCancel()
-    this.IsCancelled = True
+    This.IsCancelled = True
     Me.Hide
 End Sub
 
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
-    Set this.ViewModel = ViewModel
-    this.IsCancelled = False
+    Set This.ViewModel = ViewModel
+    This.IsCancelled = False
     
     LoadFlags
     
     Me.Show
     
-    IView_ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not This.IsCancelled
 End Function
 
 Private Sub LoadFlags()
@@ -111,5 +112,6 @@ Private Sub LoadFlags()
 End Sub
 
 Private Sub LoadFlag(ByVal flag As TransferOptionsEnum, ByVal cb As MSForms.CheckBox)
-    cb.value = modTestTransferOptions.HasFlag(this.ViewModel.Flags, flag)
+    cb.Value = modTestTransferOptions.HasFlag(This.ViewModel.Flags, flag)
 End Sub
+

@@ -9,3 +9,4 @@ Public Sub ClearCollection(ByVal coll As Collection)
         coll.Remove i
     Next i
 End Sub
+

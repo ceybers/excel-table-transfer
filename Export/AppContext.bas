@@ -268,13 +268,14 @@ Private Sub TrySaveHistory()
     TransferHistorySerializer.TrySave Transfer
     
     'If HasFlag(transfer.Flags, SaveToHistory) Then
-        'Dim history As TransferHistoryViewModel
-        'Set history = New TransferHistoryViewModel
-        'If history.HasHistory = False Then
-        '    history.Create
-        'End If
-        'history.Refresh
-        'history.Add transfer
-        'history.Save
+    'Dim history As TransferHistoryViewModel
+    'Set history = New TransferHistoryViewModel
+    'If history.HasHistory = False Then
+    '    history.Create
+    'End If
+    'history.Refresh
+    'history.Add transfer
+    'history.Save
     'End If
 End Sub
+

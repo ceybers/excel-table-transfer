@@ -37,3 +37,4 @@ Public Sub AppendRange(ByVal rangeToAppend As Range, ByRef unionRange As Range)
     
     Set unionRange = Application.Union(unionRange, rangeToAppend)
 End Sub
+

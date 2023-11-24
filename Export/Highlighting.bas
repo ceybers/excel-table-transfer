@@ -36,3 +36,4 @@ Public Sub ApplyHighlighting(ByVal rng As Range, ByVal DoHighlight As Boolean)
         .Interior.Color = MAPPED_COLOR
     End With
 End Sub
+

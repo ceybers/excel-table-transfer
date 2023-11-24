@@ -15,6 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
+
 '@Folder "ValueMapper"
 Option Explicit
 Implements IView
@@ -31,7 +32,7 @@ Private Type TFrmKeyMapper2View
     IsCancelled As Boolean
 End Type
 
-Private this As TFrmKeyMapper2View
+Private This As TFrmKeyMapper2View
 
 Private Sub cmbBack_Click()
     vm.GoBack = True
@@ -48,7 +49,7 @@ Private Sub cmbAutoMap_Click()
 End Sub
 
 Private Sub cmbClearSearchLHS_Click()
-   vm.LHSCriteria = vbNullString
+    vm.LHSCriteria = vbNullString
 End Sub
 
 Private Sub cmbClearSearchRHS_Click()
@@ -95,11 +96,11 @@ Private Sub cmbUnmapLeft_Click()
 End Sub
 
 Private Sub chkShowMappedOnlyLHS_Click()
-    vm.ShowMappedOnlyLHS = Me.chkShowMappedOnlyLHS.value
+    vm.ShowMappedOnlyLHS = Me.chkShowMappedOnlyLHS.Value
 End Sub
 
 Private Sub chkShowMappedOnlyRHS_Click()
-    vm.ShowMappedOnlyRHS = Me.chkShowMappedOnlyRHS.value
+    vm.ShowMappedOnlyRHS = Me.chkShowMappedOnlyRHS.Value
 End Sub
 
 Private Sub lvLHS_ItemClick(ByVal Item As MSComctlLib.ListItem)
@@ -202,14 +203,14 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub OnCancel()
-    this.IsCancelled = True
+    This.IsCancelled = True
     Me.Hide
 End Sub
 
 ' ---
 Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     Set vm = ViewModel
-    this.IsCancelled = False
+    This.IsCancelled = False
     
     Set msoImageList = New ImageList
     Set msoImageList = modStandardImageList.GetMSOImageList(ICON_SIZE)
@@ -233,7 +234,7 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     
     Me.Show
     
-    IView_ShowDialog = Not this.IsCancelled
+    IView_ShowDialog = Not This.IsCancelled
 End Function
 
 Public Sub LoadFromVM()
@@ -242,3 +243,4 @@ Public Sub LoadFromVM()
     vm.LoadLHStoListView Me.lvLHS
     vm.LoadRHStoListView Me.lvRHS
 End Sub
+
