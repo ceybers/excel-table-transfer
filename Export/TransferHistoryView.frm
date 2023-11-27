@@ -15,6 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
+
 '@Folder "TransferHistory"
 Option Explicit
 Implements IView

@@ -5,7 +5,7 @@ END
 Attribute VB_Name = "XMLSettings"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
 '@Folder "PersistentStorage.XMLSettings"
@@ -24,7 +24,6 @@ Private Type TState
     Workbook As Workbook
     XPathPrefix As String
 End Type
-
 Private This As TState
 
 ' ---
@@ -54,12 +53,12 @@ Private Function ISettings_GetFlag(ByVal FlagName As String) As Boolean
     
     If Not Result Is Nothing Then
         Select Case UCase$(Result.text)
-        Case TRUE_SYMBOL:
-            ISettings_GetFlag = True
-        Case FALSE_SYMBOL:
-            ISettings_GetFlag = False
-        Case Else:
-            Debug.Assert False
+            Case TRUE_SYMBOL:
+                ISettings_GetFlag = True
+            Case FALSE_SYMBOL:
+                ISettings_GetFlag = False
+            Case Else:
+                Debug.Assert False
         End Select
     End If
 End Function
@@ -108,7 +107,7 @@ Private Function ISettings_GetCollection(ByVal CollectionName As String) As Coll
 End Function
 
 Private Function ISettings_HasCollection(ByVal CollectionName As String) As Boolean
-    ISettings_HasCollection = Not ISettings_GetCollection Is Nothing
+    ISettings_HasCollection = Not ISettings_GetCollection(CollectionName) Is Nothing
 End Function
 
 Private Sub ISettings_SetCollection(ByVal CollectionName As String, ByVal Collection As Collection)
@@ -139,6 +138,7 @@ End Function
 Public Sub Load()
 End Sub
 
+
 Private Property Get RootNode() As String
     RootNode = Mid$(This.XPathPrefix, 2, InStr(2, This.XPathPrefix, "/") - 2)
 End Property
@@ -161,4 +161,3 @@ Private Function GetCustomXMLPart() As CustomXMLPart
     Workbook.CustomXMLParts.Add "<" & RootNode & "/>"
     Set GetCustomXMLPart = Workbook.CustomXMLParts.Item(Workbook.CustomXMLParts.Count)
 End Function
-
