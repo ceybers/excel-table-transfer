@@ -210,7 +210,7 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     Set vm = ViewModel
     This.IsCancelled = False
     
-    Set msoImageList = modStandardImageList.GetMSOImageList(ICON_SIZE)
+    Set msoImageList = StandardImageList.GetMSOImageList(ICON_SIZE)
     
     InitializeTableCombobox Me.cmbTableLHS
     InitializeTableCombobox Me.cmbTableRHS
@@ -294,7 +294,7 @@ Private Sub vm_PropertyChanged(ByVal propertyName As String)
         'Case KeyMapperEvents.LHS_COLUMNS
             
     Case KeyMapperEvents.LHS_KEY_COLUMN
-        ResetQualityControls lhs:=True
+        ResetQualityControls LHS:=True
     Case KeyMapperEvents.RHS_TABLE
         'this.IsInitialLoad = True
         ChangeTable Me.cmbTableRHS, vm.RHSTable
@@ -305,7 +305,7 @@ Private Sub vm_PropertyChanged(ByVal propertyName As String)
         'Case KeyMapperEvents.RHS_COLUMNS
             
     Case KeyMapperEvents.RHS_KEY_COLUMN
-        ResetQualityControls rhs:=True
+        ResetQualityControls RHS:=True
     End Select
     
     Me.cmbSwap.Enabled = vm.CanSwap
@@ -325,12 +325,12 @@ Private Sub TryAutoMatchAgain(ByVal leftToRight As Boolean)
     End If
 End Sub
 
-Private Sub ResetQualityControls(Optional ByVal lhs As Boolean, Optional ByVal rhs As Boolean)
-    If lhs Then
+Private Sub ResetQualityControls(Optional ByVal LHS As Boolean, Optional ByVal RHS As Boolean)
+    If LHS Then
         Me.lvQualityLHS.ListItems.Clear
     End If
 
-    If rhs Then
+    If RHS Then
         Me.lvQualityRHS.ListItems.Clear
     End If
 
@@ -381,11 +381,11 @@ Private Sub PopulateMatchSets()
     Set comp = New KeyColumnComparer
     
     If Me.chkLimitKeyCheck.Value = True Then
-        Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn, False, Me.txtLimitKeyValue.Value)
-        Set comp.rhs = KeyColumn.FromColumn(vm.RHSKeyColumn, False, Me.txtLimitKeyValue.Value)
+        Set comp.LHS = KeyColumn.FromColumn(vm.LHSKeyColumn, False, Me.txtLimitKeyValue.Value)
+        Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn, False, Me.txtLimitKeyValue.Value)
     Else
-        Set comp.lhs = KeyColumn.FromColumn(vm.LHSKeyColumn)
-        Set comp.rhs = KeyColumn.FromColumn(vm.RHSKeyColumn)
+        Set comp.LHS = KeyColumn.FromColumn(vm.LHSKeyColumn)
+        Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn)
     End If
     
     ' This maps the keys to their location in the other array

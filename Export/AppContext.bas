@@ -188,9 +188,9 @@ Private Function TryGetKeyColumns() As Boolean
             GoBack = True
         ElseIf vm.IsValid Then
             If Transfer.Source Is Nothing Or Transfer.Destination Is Nothing Then
-                ClearCollection Transfer.ValuePairs
+                CollectionHelpers.CollectionClear Transfer.ValuePairs
             ElseIf Transfer.Source <> vm.LHSTable Or Transfer.Destination <> vm.RHSTable Then
-                ClearCollection Transfer.ValuePairs
+                CollectionHelpers.CollectionClear Transfer.ValuePairs
             End If
             
             Set Transfer.Source = vm.LHSTable
@@ -225,8 +225,8 @@ Private Function TryMapValueColumns() As Boolean
     Dim vm As ValueMapperViewModel
     Set vm = New ValueMapperViewModel
     
-    Set vm.lhs = Transfer.Source
-    Set vm.rhs = Transfer.Destination
+    Set vm.LHS = Transfer.Source
+    Set vm.RHS = Transfer.Destination
     Set vm.KeyColumnLHS = Transfer.SourceKey
     Set vm.KeyColumnRHS = Transfer.DestinationKey
     vm.Flags = Transfer.Flags
