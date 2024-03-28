@@ -17,12 +17,14 @@ Attribute VB_Exposed = False
 
 
 
+
 '@Folder "SourceOrDestination"
 Option Explicit
 Implements IView
 
 '@MemberAttribute VB_VarHelpID, -1
 Private vm As SourceOrDestinationViewModel
+Attribute vm.VB_VarHelpID = -1
 Private Const ICON_SIZE As Long = 64
 
 Private Type TView
@@ -76,4 +78,3 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     Me.Show
     IView_ShowDialog = Not This.IsCancelled
 End Function
-

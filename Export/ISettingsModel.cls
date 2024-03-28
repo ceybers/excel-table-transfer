@@ -13,13 +13,15 @@ Option Explicit
 
 '@Description "Gets the Settings object for the user-level settings."
 Public Function User() As ISettings
+Attribute User.VB_Description = "Gets the Settings object for the user-level settings."
 End Function
 
 '@Description "Gets the Settings object for the workbook-level settings."
 Public Function Workbook() As ISettings
+Attribute Workbook.VB_Description = "Gets the Settings object for the workbook-level settings."
 End Function
 
 '@Description "Gets the Settings object for the given table's table-level settings."
 Public Function Table(ByVal TableName As String) As ISettings
+Attribute Table.VB_Description = "Gets the Settings object for the given table's table-level settings."
 End Function
-

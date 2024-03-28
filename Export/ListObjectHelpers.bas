@@ -174,6 +174,7 @@ End Function
 
 '@Description "test"
 Public Function TryGetTableFromText(ByVal rangetext As String, ByRef outListObject As ListObject, Optional ByVal openIfClosed As Boolean = False) As Boolean
+Attribute TryGetTableFromText.VB_Description = "test"
     ' Debug.Print "RR"; rangeText
     
     ' Example:
@@ -266,4 +267,3 @@ Public Function ListColumnExists(ByVal ListObject As ListObject, ByVal ListColum
         End If
     Next ListColumn
 End Function
-

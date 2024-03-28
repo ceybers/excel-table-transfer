@@ -15,6 +15,6 @@ Option Explicit
 
 '@Description "Displays the View modally and returns a value indicating confirmation (True) or cancellation (False)."
 Public Function ShowDialog(ByVal ViewModel As IViewModel) As Boolean
+Attribute ShowDialog.VB_Description = "Displays the View modally and returns a value indicating confirmation (True) or cancellation (False)."
 
 End Function
-

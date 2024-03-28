@@ -151,6 +151,7 @@ End Function
 
 '@Description "Save a Collection of TransferInstruction to a worksheet"
 Public Sub SaveTransferInstructionsFromWorksheet(ByVal coll As Collection, ByVal ws As Worksheet)
+Attribute SaveTransferInstructionsFromWorksheet.VB_Description = "Save a Collection of TransferInstruction to a worksheet"
     Dim rows As Long
     Dim rng As Range
     Dim tgtArr As Variant
@@ -199,4 +200,3 @@ Private Function SerializeTransferInstruction(ByVal Transfer As TransferInstruct
     
     SerializeTransferInstruction = Result
 End Function
-

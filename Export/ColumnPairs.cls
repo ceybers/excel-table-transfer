@@ -19,6 +19,7 @@ Private This As TClsColumnPairs
 
 '@Enumerator
 Public Property Get Item() As Collection
+Attribute Item.VB_UserMemId = -4
     Set Item = This.Item
 End Property
 
@@ -137,4 +138,3 @@ Public Function IsMappedRHS(ByVal lc As ListColumn) As Boolean
         End If
     Next colPair
 End Function
-
