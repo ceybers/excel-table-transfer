@@ -2,50 +2,55 @@ Attribute VB_Name = "ArrayHelpers"
 '@Folder "Helpers.Objects"
 Option Explicit
 
-Public Sub ArrayToFilteredRange(ByVal rng As Range, ByVal arr As Variant)
-    Dim fltRng As Range
-    Dim area As Range
-    Dim v As Variant
-    
-    Dim fst As Long
-    Dim top As Long
-    Dim bot As Long
-    Dim hei As Long
-    
-    On Error Resume Next
-    Set fltRng = rng.SpecialCells(xlCellTypeVisible)
-    On Error GoTo 0
-    If fltRng Is Nothing Then Exit Sub
-    
-    If rng.Columns.Count <> 1 Then
-        Err.Raise vbObjectError + 2, , "DisjointRangeToArray only works with range with a column count of 1"
+Private Const ERR_MSG_NOT_SINGLE_COLUMN As String = "DisjointRangeToArray only works with range with a column count of 1"
+Private Const ERR_MSG_NO_VISIBLE_CELLS As String = "No visible cells in Destination Range"
+
+' Used when Transferring and `HasFlag(This.Flags, DestinationFilteredOnly)`
+' SourceArray must be of shape (1 To n, 1 To 1).
+' DestinationRange must be exactly 1 column wide and n columns tall.
+' Values from SourceArray will only be placed into cells in DestinationRange that are visible.
+' Hidden cells in the Range will not be affected.
+Public Sub ArrayToFilteredRange(ByVal SourceArray As Variant, ByVal DestinationRange As Range)
+    If DestinationRange.Columns.Count <> 1 Then
+        Err.Raise vbObjectError + 2, , ERR_MSG_NOT_SINGLE_COLUMN
     End If
     
-    Dim i As Long
+    Dim FilteredRange As Range
+    On Error Resume Next
+        Set FilteredRange = DestinationRange.SpecialCells(xlCellTypeVisible)
+    On Error GoTo 0
+    If FilteredRange Is Nothing Then
+        ' Exit Sub
+        Err.Raise vbObjectError + 2, , ERR_MSG_NO_VISIBLE_CELLS
+    End If
+
+    Dim FirstRow As Long
+    FirstRow = DestinationRange.rows(1).row
     
-    fst = rng.rows(1).row
-    
-    For Each area In fltRng.Areas
-        'Debug.Print area.Address & " of " & rng.Address
-        top = area.rows(1).row
-        bot = area.rows(area.rows.Count).row
-        hei = bot - top + 1
-        'Debug.Print top & " to " & bot & " (" & hei & ")"
+    Dim Area As Range
+    For Each Area In FilteredRange.Areas
+        Dim TopRow As Long
+        TopRow = Area.rows(1).row
         
-        v = area.Value2
+        Dim BottomRow As Long
+        BottomRow = Area.rows(Area.rows.Count).row
         
-        If hei = 1 Then
-            'Debug.Print "0# " & v & " <-- " & (1 + top - fst) & "# " & arr(1 + top - fst, 1)
-            v = arr(1 + top - fst, 1)
+        Dim AreaHeight As Long
+        AreaHeight = BottomRow - TopRow + 1
+        
+        Dim ValueVariant As Variant
+        ValueVariant = Area.Value2
+        
+        If AreaHeight = 1 Then
+            ValueVariant = SourceArray(1 + TopRow - FirstRow, 1)
         Else
-            For i = 1 To hei
-                'Debug.Print i & "# " & v(i, 1) & " <-- " & (i + top - fst) & "# " & arr(i + top - fst, 1)
-                v(i, 1) = arr(i + top - fst, 1)
+            Dim i As Long
+            For i = 1 To AreaHeight
+                ValueVariant(i, 1) = SourceArray(i + TopRow - FirstRow, 1)
             Next
         End If
         
-        'If VarType(v) = vbArray + vbVariant Then Debug.Print LBound(v, 1) & ", " & UBound(v, 1)
-        area.Value2 = v
-    Next area
+        Area.Value2 = ValueVariant
+    Next Area
 End Sub
 
