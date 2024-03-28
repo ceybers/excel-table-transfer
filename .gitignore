@@ -4,3 +4,4 @@ logs
 .gitignore
 Sheet*.cls
 ~$*.xls*
+*.doccls
