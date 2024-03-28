@@ -1,10 +1,10 @@
 Attribute VB_Name = "modSelectTable"
-'@Folder "ZZZRefactor"
+'@IgnoreModule
+'@Folder "MVVM"
 Option Explicit
 
+' 2024/03/28 used when picking 2nd table
 Public Function TrySelectTable(Optional ByRef frm As IView, Optional ByRef vm As SelectTableViewModel) As Boolean
-    Debug.Assert False
-    
     If frm Is Nothing Then
         Set frm = New SelectTableView
     End If

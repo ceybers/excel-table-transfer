@@ -3,32 +3,38 @@ Attribute VB_Name = "WorkbookHelpers"
 Option Explicit
 
 Public Function GetPathFromRangeText(ByVal payload As String) As String
-    Dim a As Integer
-    Dim b As Integer
-    a = InStr(payload, "'")
-    b = InStr(payload, "[")
-    If a = 0 Or b = 0 Then Exit Function
-    GetPathFromRangeText = Mid$(payload, a + 1, b - a - 1)
+    Dim SingleQuote As Long
+    SingleQuote = InStr(payload, "'")
+    
+    Dim SquareBracketLeft As Long
+    SquareBracketLeft = InStr(payload, "[")
+    
+    If SingleQuote = 0 Or SquareBracketLeft = 0 Then Exit Function
+    
+    GetPathFromRangeText = Mid$(payload, SingleQuote + 1, SquareBracketLeft - SingleQuote - 1)
 End Function
 
 Public Function GetFilenameFromRangeText(ByVal payload As String) As String
-    Dim b As Integer
-    Dim c As Integer
-    b = InStr(payload, "[")
-    c = InStr(payload, "]")
-    If b = 0 Or c = 0 Then Exit Function
-    GetFilenameFromRangeText = Mid$(payload, b + 1, c - b - 1)
+    Dim LeftBracket As Long
+    LeftBracket = InStr(payload, "[")
+    
+    Dim RightBracket As Long
+    RightBracket = InStr(payload, "]")
+    
+    If LeftBracket = 0 Or RightBracket = 0 Then Exit Function
+    
+    GetFilenameFromRangeText = Mid$(payload, LeftBracket + 1, RightBracket - LeftBracket - 1)
 End Function
 
-Public Function IsWorkbookOpen(ByVal filename As String) As Boolean
-    Dim wb As Workbook
-    If filename = vbNullString Then Exit Function
+Public Function IsWorkbookOpen(ByVal Filename As String) As Boolean
+    Dim Workbook As Workbook
+    If Filename = vbNullString Then Exit Function
     
-    For Each wb In Application.Workbooks
-        If wb.Name = filename Then
+    For Each Workbook In Application.Workbooks
+        If Workbook.Name = Filename Then
             IsWorkbookOpen = True
             Exit Function
         End If
-    Next wb
+    Next Workbook
 End Function
 

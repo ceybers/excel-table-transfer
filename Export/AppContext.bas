@@ -10,13 +10,13 @@ Private OneTableSelected As ListObject
 
 Private GoBack As Boolean
 
-Public Function PrintTime(ByVal message As String, Optional ByVal Reset As Boolean)
+Public Sub PrintTime(ByVal message As String, Optional ByVal Reset As Boolean)
     Static startTime As Double
     If Reset Or (startTime = 0) Then
         startTime = Timer()
     End If
     Debug.Print message & " " & (Timer() - startTime)
-End Function
+End Sub
 
 Public Sub TransferTable()
 Attribute TransferTable.VB_ProcData.VB_Invoke_Func = "e\n14"

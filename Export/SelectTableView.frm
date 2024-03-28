@@ -53,7 +53,7 @@ Private Sub tvTables_DblClick()
 End Sub
 
 Private Sub tvTables_NodeClick(ByVal Node As MSComctlLib.Node)
-    vm.TrySelect Node.key
+    vm.TrySelect Node.Key
 End Sub
 
 Private Sub vm_CollectionChanged()
@@ -61,11 +61,7 @@ Private Sub vm_CollectionChanged()
 End Sub
 
 Private Sub vm_ItemSelected()
-    If vm.SelectedTable Is Nothing Then
-        Me.cmbOK.Enabled = False
-    Else
-        Me.cmbOK.Enabled = True
-    End If
+    Me.cmbOK.Enabled = Not (vm.SelectedTable Is Nothing)
 End Sub
 
 Private Sub txtSearch_Change()
@@ -116,7 +112,7 @@ Private Sub UpdateListViewWithSelectedTable()
     
     Dim nd As Node
     For Each nd In Me.tvTables.Nodes
-        If nd.key = vm.SelectedTable.Range.Address(external:=True) Then
+        If nd.Key = vm.SelectedTable.Range.Address(external:=True) Then
             nd.Selected = True
             nd.EnsureVisible
 
