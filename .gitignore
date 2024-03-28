@@ -1,7 +1,3 @@
-/node_modules
-logs
-/xvba_excel_backup
-.gitignore
 Sheet*.cls
 ~$*.xls*
 *.doccls
