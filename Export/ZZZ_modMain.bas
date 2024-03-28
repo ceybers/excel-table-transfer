@@ -1,6 +1,6 @@
 Attribute VB_Name = "ZZZ_modMain"
 '@IgnoreModule EmptyIfBlock
-'@Folder "TableTransfer"
+'@Folder "ZZZRefactor"
 Option Explicit
 Option Private Module
 
@@ -15,9 +15,9 @@ Public Sub ZZZ_TransferTableFromHistory()
     Dim vm As TransferHistoryViewModel
     Set vm = New TransferHistoryViewModel
     
-    Dim view As IView
-    Set view = New TransferHistoryView
-    If view.ShowDialog(vm) Then
+    Dim View As IView
+    Set View = New TransferHistoryView
+    If View.ShowDialog(vm) Then
         DoTransferTable vm.SelectedInstruction
     End If
 End Sub
@@ -119,9 +119,9 @@ Private Function TryGetSourceOrDestination(ByRef IsSource As Boolean, ByRef IsDe
     Set vm = New SourceOrDestinationViewModel
     Set vm.ListObject = ThisWorkbook.Worksheets(1).ListObjects(1)
     
-    Dim view As IView
-    Set view = New SourceOrDestinationView
-    If view.ShowDialog(vm) Then
+    Dim View As IView
+    Set View = New SourceOrDestinationView
+    If View.ShowDialog(vm) Then
         IsSource = vm.IsSource
         IsDestination = vm.IsDestination
         TryGetSourceOrDestination = True

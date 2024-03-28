@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 
 
 
-'@Folder "TransferHistory"
+'@Folder "ZZZTransferHistory"
 Option Explicit
 Implements IView
 

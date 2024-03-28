@@ -17,7 +17,7 @@ Attribute VB_Exposed = False
 
 
 
-'@Folder("TransferOptions")
+'@Folder "MVVM.Views"
 Option Explicit
 Implements IView
 

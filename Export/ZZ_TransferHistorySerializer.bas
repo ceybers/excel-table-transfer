@@ -1,5 +1,5 @@
 Attribute VB_Name = "ZZ_TransferHistorySerializer"
-'@Folder("TransferHistory")
+'@Folder "ZZZTransferHistory"
 Option Explicit
 
 Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Integer = 8

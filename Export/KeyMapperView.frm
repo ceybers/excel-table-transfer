@@ -17,7 +17,7 @@ Attribute VB_Exposed = False
 
 
 
-'@Folder "KeyMapper"
+'@Folder "MVVM.Views"
 Option Explicit
 Implements IView
 

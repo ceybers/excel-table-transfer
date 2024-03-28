@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestKeyColumn"
-'@Folder "KeyColumn"
+'@Folder "Tests.Model"
 Option Explicit
 Option Private Module
 

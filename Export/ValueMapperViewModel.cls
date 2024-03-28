@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "ValueMapper"
+'@Folder "MVVM.ViewModels"
 Option Explicit
 Option Compare Text
 Implements IViewModel
@@ -266,7 +266,7 @@ Public Sub InitializeListView(ByVal lv As MSComctlLib.ListView, Optional ByVal r
     With lv
         .Appearance = cc3D
         .BorderStyle = ccNone
-        .view = lvwReport
+        .View = lvwReport
         .Gridlines = True
         .HideSelection = False
         .ColumnHeaders.Clear
@@ -280,7 +280,7 @@ Public Sub InitializeListView(ByVal lv As MSComctlLib.ListView, Optional ByVal r
         With lv
             .CheckBoxes = True
             .ColumnHeaders(1).Width = 70
-            .ColumnHeaders.Add text:="Mapped to", Width:=128
+            .ColumnHeaders.Add text:="Mapped to", Width:=118
         End With
     End If
     

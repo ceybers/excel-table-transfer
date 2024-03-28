@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@IgnoreModule UnassignedVariableUsage
 '@PredeclaredId
-'@Folder("KeyColumn")
+'@Folder "Model.KeyColumn"
 Option Explicit
 
 Private Type TClsKeyColumn

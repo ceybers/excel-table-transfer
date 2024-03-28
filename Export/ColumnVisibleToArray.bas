@@ -1,5 +1,5 @@
 Attribute VB_Name = "ColumnVisibleToArray"
-'@Folder "HelperFunctions"
+'@Folder "Helpers.Objects"
 Option Explicit
 
 Public Function VisibleRangeToArray(ByVal rng As Range) As Variant

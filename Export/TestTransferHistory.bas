@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestTransferHistory"
-'@Folder("TransferHistory")
+'@Folder "ZZZTransferHistory"
 Option Explicit
 
 Public Sub ATest()
@@ -32,9 +32,9 @@ Public Sub Test()
     Set vm = New TransferHistoryViewModel
     'Set vm.ActiveTable = ThisWorkbook.Worksheets(1).ListObjects(1)
     
-    Dim view As IView
-    Set view = New TransferHistoryView
-    If view.ShowDialog(vm) Then
+    Dim View As IView
+    Set View = New TransferHistoryView
+    If View.ShowDialog(vm) Then
         Debug.Assert Not vm.SelectedInstruction Is Nothing
         'Debug.Print "Selected Instruction: " & vm.SelectedInstruction.Name
         'modMain.DoTransferTable vm.SelectedInstruction

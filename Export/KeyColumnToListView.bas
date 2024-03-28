@@ -1,5 +1,5 @@
 Attribute VB_Name = "KeyColumnToListView"
-'@Folder("KeyColumn")
+'@Folder "MVVM.ValueConverters"
 Option Explicit
 
 Public Sub UpdateListView(ByVal lv As ListView)
@@ -31,7 +31,7 @@ End Sub
 
 Private Sub SetListViewProperties(ByVal lv As ListView)
     With lv
-        .view = lvwReport
+        .View = lvwReport
         .HideSelection = False
         .CheckBoxes = False
         .LabelEdit = lvwManual

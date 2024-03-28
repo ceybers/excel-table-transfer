@@ -1,5 +1,5 @@
 Attribute VB_Name = "Highlighting"
-'@Folder "HelperFunctions"
+'@Folder "Model.Formatting"
 Option Explicit
 
 Private Const MAGIC_FORMULA As String = "=""HighlightMapped""=""HighlightMapped"""

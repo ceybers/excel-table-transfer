@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 
 
 
-'@Folder "SelectTable"
+'@Folder "MVVM.Views"
 Option Explicit
 Implements IView
 

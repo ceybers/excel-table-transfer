@@ -1,6 +1,6 @@
 Attribute VB_Name = "AppContext"
 '@IgnoreModule EmptyIfBlock
-'@Folder "TableTransfer"
+'@Folder "MVVM.AppContext"
 Option Explicit
 
 Private Transfer As TransferInstruction
@@ -19,6 +19,7 @@ Public Function PrintTime(ByVal message As String, Optional ByVal Reset As Boole
 End Function
 
 Public Sub TransferTable()
+Attribute TransferTable.VB_ProcData.VB_Invoke_Func = "e\n14"
     PrintTime "Start", True
        
     'MsgBox "Welcome to table transfer wizard"
@@ -133,9 +134,9 @@ Private Function TryGetSourceOrDestination() As Boolean
     Set vm = New SourceOrDestinationViewModel
     Set vm.ListObject = OneTableSelected
     
-    Dim view As IView
-    Set view = New SourceOrDestinationView
-    If view.ShowDialog(vm) Then
+    Dim View As IView
+    Set View = New SourceOrDestinationView
+    If View.ShowDialog(vm) Then
         If vm.IsSource Then
             Set Transfer.Source = OneTableSelected
         ElseIf vm.IsDestination Then
@@ -278,4 +279,3 @@ Private Sub TrySaveHistory()
     'history.Save
     'End If
 End Sub
-

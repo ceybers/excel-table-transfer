@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("TransferHistory")
+'@Folder "ZZZTransferHistory"
 Option Explicit
 Implements IViewModel
 
@@ -90,7 +90,7 @@ End Sub
 
 Public Sub InitializeListView(ByVal lv As ListView)
     With lv
-        .view = lvwReport
+        .View = lvwReport
         .Gridlines = True
         .HideSelection = False
         .LabelEdit = lvwManual

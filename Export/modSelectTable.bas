@@ -1,8 +1,10 @@
 Attribute VB_Name = "modSelectTable"
-'@Folder("SelectTable")
+'@Folder "ZZZRefactor"
 Option Explicit
 
 Public Function TrySelectTable(Optional ByRef frm As IView, Optional ByRef vm As SelectTableViewModel) As Boolean
+    Debug.Assert False
+    
     If frm Is Nothing Then
         Set frm = New SelectTableView
     End If

@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestTransferInstruction"
-'@Folder("TableTransfer")
+'@Folder "Tests.AppContext"
 Option Explicit
 
 Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Integer = 8

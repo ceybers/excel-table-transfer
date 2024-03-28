@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestKeyMapper"
-'@Folder("KeyMapper")
+'@Folder "Tests.MVVM"
 Option Explicit
 Option Private Module
 
@@ -11,8 +11,8 @@ Public Sub TestKeyMapper()
     Set vm = New KeyMapperViewModel
     'vm.LoadFromTransferInstruction ti
     
-    Dim view As IView
-    Set view = New KeyMapperView
+    Dim View As IView
+    Set View = New KeyMapperView
     
     'Set vm.LHSTable = Nothing ' Fails because property guards against null
     'Set vm.RHSTable = Nothing ' Fails because property guards against null
@@ -20,22 +20,22 @@ Public Sub TestKeyMapper()
     Set vm.LHSTable = ti.Source
     Set vm.RHSTable = ti.Destination
     
-    If view.ShowDialog(vm) Then
+    If View.ShowDialog(vm) Then
         Debug.Print "ShowDialog true"
     Else
         Debug.Print "ShowDialog false"
     End If
 End Sub
 
-Public Sub Test()
+Public Sub TestKeyMapperView()
     Debug.Assert True
     
     Dim vm As KeyMapperViewModel
-    Dim view As IView
+    Dim View As IView
     
     Set vm = New KeyMapperViewModel
     
-    Set view = New KeyMapperView
+    Set View = New KeyMapperView
     
     ' TODO Fix
     Dim vview As KeyMapperView
@@ -45,7 +45,7 @@ Public Sub Test()
     Set vm.LHSTable = ThisWorkbook.Worksheets(1).ListObjects(1)
     Set vm.RHSTable = ThisWorkbook.Worksheets(1).ListObjects(2)
     
-    If view.ShowDialog(vm) Then
+    If View.ShowDialog(vm) Then
         Debug.Print "ShowDialog true"
     Else
         Debug.Print "ShowDialog false"

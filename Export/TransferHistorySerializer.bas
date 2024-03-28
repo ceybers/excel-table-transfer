@@ -1,5 +1,5 @@
 Attribute VB_Name = "TransferHistorySerializer"
-'@Folder("TransferHistory")
+'@Folder "ZZZTransferHistory"
 Option Explicit
 
 Private Const WORKSHEET_NAME As String = "CAETransferTableHistory"

@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestColumnVisibleToArray"
-'@Folder("HelperFunctions")
+'@Folder "Tests.Helpers"
 Option Explicit
 Option Private Module
 

@@ -1,5 +1,5 @@
 Attribute VB_Name = "ListObjectHelpers"
-'@Folder("HelperFunctions")
+'@Folder "Helpers.Objects"
 Option Explicit
 
 Private Sub Test()

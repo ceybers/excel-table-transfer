@@ -1,9 +1,9 @@
 Attribute VB_Name = "TestColumnPairs"
-'@Folder "ColumnPairs"
+'@Folder "Tests.Model"
 Option Explicit
 Option Private Module
 
-Public Sub Test()
+Public Sub TestColumnPairs()
     Dim lhs As ListObject
     Dim rhs As ListObject
     

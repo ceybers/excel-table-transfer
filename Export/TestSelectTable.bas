@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestSelectTable"
-'@Folder("SelectTable")
+'@Folder "Tests.MVVM"
 Option Explicit
 Option Private Module
 
@@ -8,10 +8,10 @@ Public Sub Test()
     Set vm = New SelectTableViewModel
     Set vm.ActiveTable = ThisWorkbook.Worksheets(1).ListObjects(1)
     
-    Dim view As IView
-    Set view = New SelectTableView
+    Dim View As IView
+    Set View = New SelectTableView
     
-    If TrySelectTable(view, vm) Then
+    If TrySelectTable(View, vm) Then
         Debug.Print "TrySelectTable result: TRUE"
         Debug.Print " vm.SelectedTable: "; vm.SelectedTable
         Debug.Print " vm.ActiveTable: "; vm.ActiveTable

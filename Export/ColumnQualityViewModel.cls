@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "ColumnQuality"
+'@Folder "MVVM.ViewModels"
 Option Explicit
 Implements IViewModel
 
@@ -92,7 +92,7 @@ End Sub
 
 Private Sub SetListViewProperties(ByVal lv As ListView)
     With lv
-        .view = lvwReport
+        .View = lvwReport
         .HideSelection = False
         .CheckBoxes = False
         .LabelEdit = lvwManual

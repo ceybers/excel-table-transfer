@@ -1,6 +1,6 @@
 Attribute VB_Name = "TestValueMapper"
 '@IgnoreModule EmptyIfBlock
-'@Folder "ValueMapper"
+'@Folder "Tests.MVVM"
 Option Explicit
 Option Private Module
 
@@ -8,11 +8,11 @@ Option Private Module
 Public Sub Test()
 Attribute Test.VB_ProcData.VB_Invoke_Func = "p\n14"
     Dim vm As ValueMapperViewModel
-    Dim view As IView
+    Dim View As IView
     
     Set vm = New ValueMapperViewModel
     
-    Set view = New ValueMapperView
+    Set View = New ValueMapperView
     
     ' TODO Fix
     Dim vview As ValueMapperView
@@ -25,7 +25,7 @@ Attribute Test.VB_ProcData.VB_Invoke_Func = "p\n14"
     Set vm.KeyColumnLHS = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
     Set vm.KeyColumnRHS = ThisWorkbook.Worksheets(2).ListObjects(1).ListColumns(1)
     
-    If view.ShowDialog(vm) Then
+    If View.ShowDialog(vm) Then
         'Debug.Print "ShowDialog true"
     Else
         'Debug.Print "ShowDialog false"

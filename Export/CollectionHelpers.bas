@@ -1,5 +1,5 @@
 Attribute VB_Name = "CollectionHelpers"
-'@Folder("HelperFunctions")
+'@Folder "Helpers.Objects"
 Option Explicit
 
 Public Sub ClearCollection(ByVal coll As Collection)

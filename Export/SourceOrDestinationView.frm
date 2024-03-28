@@ -18,7 +18,8 @@ Attribute VB_Exposed = False
 
 
 
-'@Folder "SourceOrDestination"
+
+'@Folder "MVVM.Views"
 Option Explicit
 Implements IView
 

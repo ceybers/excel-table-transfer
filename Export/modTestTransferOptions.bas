@@ -1,5 +1,5 @@
 Attribute VB_Name = "modTestTransferOptions"
-'@Folder("TransferOptions")
+'@Folder "ZZZRefactor"
 Option Explicit
 Option Private Module
 
@@ -27,10 +27,10 @@ Public Sub Test()
     Set vm = New TransferOptionsViewModel
     vm.Flags = ClearDestinationFirst + ReplaceEmptyOnly + DestinationFilteredOnly
     
-    Dim view As IView
-    Set view = New TransferOptionsView
+    Dim View As IView
+    Set View = New TransferOptionsView
     
-    If view.ShowDialog(vm) Then
+    If View.ShowDialog(vm) Then
         PrintFlags vm.Flags
     Else
         Debug.Print "Cancelled"
