@@ -23,17 +23,18 @@ Public Property Get ListColumn() As ListColumn
     Set ListColumn = This.ListColumn
 End Property
 
-Public Property Set ListColumn(ByVal rhs As ListColumn)
-    Set This.ListColumn = rhs
-    Results = KeyColumn.FromColumn(rhs)
+Public Property Set ListColumn(ByVal RHS As ListColumn)
+    Set This.ListColumn = RHS
+    'Results = KeyColumn.FromColumn(RHS)
+    Set This.Results = KeyColumn.FromColumn(RHS)
 End Property
 
 Public Property Get Results() As KeyColumn
     Set Results = This.Results
 End Property
 
-Public Property Let Results(ByVal rhs As KeyColumn)
-    Set This.Results = rhs
+Public Property Let Results(ByVal RHS As KeyColumn)
+    Set This.Results = RHS
 End Property
 
 ' Functions
@@ -49,34 +50,34 @@ Public Sub UpdateListView(ByVal lv As ListView)
         Exit Sub
     End If
     
-    Dim target As Long
-    target = This.Results.Range.Cells.Count
+    Dim Target As Long
+    Target = This.Results.Range.Cells.Count
     
-    AddListViewItem lv, "Distinct", This.Results.Count, target
-    AddListViewItem lv, "Unique", This.Results.UniqueKeys.Count, target
+    AddListViewItem lv, "Distinct", This.Results.Count, Target
+    AddListViewItem lv, "Unique", This.Results.UniqueKeys.Count, Target
     AddListViewItem lv, "Non-Text", This.Results.NonTextCount, 0
     AddListViewItem lv, "Errors", This.Results.ErrorCount, 0
     AddListViewItem lv, "Blanks", This.Results.BlankCount, 0
     AddListViewItem lv, "Count", This.Results.Range.Cells.Count, -1
     
-    With lv.ListItems(lv.ListItems.Count)
+    With lv.ListItems.Item(lv.ListItems.Count)
         .Bold = True
-        .ListSubItems(1).Bold = True
+        .ListSubItems.Item(1).Bold = True
     End With
 End Sub
 
-Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal Value As Integer, ByVal target As Long)
+Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal Value As Long, ByVal Target As Long)
     Dim icon As String
     
-    If Value = target Then
+    If Value = Target Then
         icon = "Tick"
-    ElseIf Value < target And target > 0 Then
+    ElseIf Value < Target And Target > 0 Then
         icon = "TraceError"
     Else
         icon = "Cross"
     End If
     
-    If target = -1 Then
+    If Target = -1 Then
         icon = "AutoSum"
     End If
     
@@ -105,18 +106,18 @@ Private Sub SetListViewProperties(ByVal lv As ListView)
     
     lv.ColumnHeaders.Add text:="Description"
     lv.ColumnHeaders.Add text:="Value"
-    lv.ColumnHeaders(2).Alignment = lvwColumnRight
-    lv.ColumnHeaders(2).Width = (72 / 2)
-    lv.ColumnHeaders(1).Width = lv.Width - (72 / 2) - 5
+    lv.ColumnHeaders.Item(2).Alignment = lvwColumnRight
+    lv.ColumnHeaders.Item(2).Width = (72 / 2)
+    lv.ColumnHeaders.Item(1).Width = lv.Width - (72 / 2) - 5
 End Sub
 
 Private Sub SetListViewImageList(ByVal lv As ListView)
-    Dim il As ImageList
+    'Dim il As ImageList
     'If lv.Icons Is Nothing Then
-    If True Then
-        Set il = GetMSOImageList
+    'If True Then
+        'Set il = GetMSOImageList
         Set lv.Icons = GetMSOImageList(32)
         Set lv.SmallIcons = GetMSOImageList(16)
-    End If
+    'End If
 End Sub
 

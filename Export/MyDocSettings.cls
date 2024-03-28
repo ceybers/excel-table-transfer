@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'@IgnoreModule ProcedureNotUsed
 '@PredeclaredId
 '@Folder "PersistentStorage.MyDocSettings"
 Option Explicit
@@ -25,7 +26,7 @@ Private Const COMMENT_CHAR As String = ";"
 
 Private Type TState
     UUID As String
-    filename As String
+    Filename As String
     
     Lines() As String
     
@@ -50,12 +51,12 @@ Public Property Let UUID(ByVal vNewValue As String)
     This.UUID = vNewValue
 End Property
 
-Public Property Get filename() As String
-    filename = This.filename
+Public Property Get Filename() As String
+    Filename = This.Filename
 End Property
 
-Public Property Let filename(ByVal vNewValue As String)
-    This.filename = vNewValue
+Public Property Let Filename(ByVal vNewValue As String)
+    This.Filename = vNewValue
 End Property
 
 ' ---
@@ -130,7 +131,7 @@ Private Sub ISettings_SetCollection(ByVal CollectionName As String, ByVal Collec
     
     Dim i As Long
     For i = 1 To Collection.Count
-        Result.Add key:=("N" & (i - 1)), Item:=CStr(Collection(i))
+        Result.Add Key:=("N" & (i - 1)), Item:=CStr(Collection.Item(i))
     Next i
     
     Set This.Collections.Item(CollectionName) = Result
@@ -149,10 +150,10 @@ Private Function GetFolder() As String
 End Function
 
 Private Function GetFullPath() As String
-    GetFullPath = Environ$("USERPROFILE") & "\" & SUBFOLDER & "\" & This.filename
+    GetFullPath = Environ$("USERPROFILE") & "\" & SUBFOLDER & "\" & This.Filename
 End Function
 
-Private Function CollectionNameToSection(ByVal CollectionName As String)
+Private Function CollectionNameToSection(ByVal CollectionName As String) As String
     CollectionNameToSection = COLLECTIONS_HEADER & CollectionName & "]"
 End Function
 
@@ -163,7 +164,7 @@ End Function
 
 ' ---
 
-Private Sub class_initialize()
+Private Sub Class_Initialize()
     Set This.Flags = New Scripting.Dictionary
     Set This.Settings = New Scripting.Dictionary
     Set This.Collections = New Scripting.Dictionary
@@ -171,12 +172,12 @@ Private Sub class_initialize()
     This.AutoSave = True
 End Sub
 
-Public Function Create(ByVal UUID As String, ByVal filename As String) As ISettings
+Public Function Create(ByVal UUID As String, ByVal Filename As String) As ISettings
     Dim Result As MyDocSettings
     Set Result = New MyDocSettings
     With Result
         .UUID = UUID
-        .filename = filename
+        .Filename = Filename
         .Load
     End With
     
@@ -232,26 +233,26 @@ Private Sub LoadSection(ByVal SectionHeading As String, ByVal Dictionary As Scri
         If Left$(ThisLine, 1) = "[" Then Exit Sub
         
         If DelimiterIndex > 0 Then
-            Dim key As String
+            Dim Key As String
             Dim Value As String
-            key = Trim$(Left$(ThisLine, DelimiterIndex - 1))
+            Key = Trim$(Left$(ThisLine, DelimiterIndex - 1))
             Value = Trim$(Mid$(ThisLine, DelimiterIndex + 1))
             
-            Dictionary.Add key:=key, Item:=Value
+            Dictionary.Add Key:=Key, Item:=Value
         End If
     Next i
 End Sub
 
-Private Function LoadCollection(ByVal CollectionName As String)
+Private Sub LoadCollection(ByVal CollectionName As String)
     Dim Result As Scripting.Dictionary
     Set Result = New Scripting.Dictionary
-    This.Collections.Add key:=CollectionName, Item:=Result
+    This.Collections.Add Key:=CollectionName, Item:=Result
     
     Dim SectionName As String
     SectionName = CollectionNameToSection(CollectionName)
     
     LoadSection SectionName, Result
-End Function
+End Sub
 
 Private Sub SaveData()
     Dim FileNumber As Long
@@ -263,9 +264,9 @@ Private Sub SaveData()
     SaveSection FileNumber, FLAGS_HEADER, This.Flags
     SaveSection FileNumber, SETTINGS_HEADER, This.Settings
     
-    Dim key As Variant
-    For Each key In This.Collections.Keys
-        SaveSection FileNumber, CollectionNameToSection(key), This.Collections.Item(key)
+    Dim Key As Variant
+    For Each Key In This.Collections.Keys
+        SaveSection FileNumber, CollectionNameToSection(Key), This.Collections.Item(Key)
     Next
     
     Close #FileNumber
@@ -274,19 +275,19 @@ End Sub
 Private Sub SaveSection(ByVal FileNumber As Long, ByVal SectionHeading As String, ByVal Dictionary As Scripting.Dictionary)
     Print #FileNumber, SectionHeading
     
-    Dim key As Variant
-    For Each key In Dictionary.Keys
-        Print #FileNumber, key; DELIMITER_CHAR; Dictionary.Item(key)
-    Next key
+    Dim Key As Variant
+    For Each Key In Dictionary.Keys
+        Print #FileNumber, Key; DELIMITER_CHAR; Dictionary.Item(Key)
+    Next Key
 End Sub
 
-Private Function IsKeyValid(ByVal key As String) As Boolean
-    If key = vbNullString Then Exit Function
-    If InStr(key, "=") > 0 Then Exit Function
-    If InStr(key, ";") > 0 Then Exit Function
-    If InStr(key, vbCr) > 0 Then Exit Function
-    If InStr(key, vbLf) > 0 Then Exit Function
-    If key <> Trim$(key) Then Exit Function
+Private Function IsKeyValid(ByVal Key As String) As Boolean
+    If Key = vbNullString Then Exit Function
+    If InStr(Key, "=") > 0 Then Exit Function
+    If InStr(Key, ";") > 0 Then Exit Function
+    If InStr(Key, vbCr) > 0 Then Exit Function
+    If InStr(Key, vbLf) > 0 Then Exit Function
+    If Key <> Trim$(Key) Then Exit Function
     
     IsKeyValid = True
 End Function

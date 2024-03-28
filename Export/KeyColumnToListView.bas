@@ -12,13 +12,13 @@ Public Sub UpdateListView(ByVal lv As ListView)
     'AddListViewItem lv, "Blanks", This.Results.BlankCount, "Cross"
     'AddListViewItem lv, "Count", This.Results.Range.Cells.Count, "AutoSum"
     
-    With lv.ListItems(lv.ListItems.Count)
+    With lv.ListItems.Item(lv.ListItems.Count)
         .Bold = True
-        .ListSubItems(1).Bold = True
+        .ListSubItems.Item(1).Bold = True
     End With
 End Sub
 
-Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal Value As Integer, ByVal icon As String)
+Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal Value As Long, ByVal icon As String)
     With lv.ListItems.Add(text:=caption, icon:=icon, SmallIcon:=icon)
         .ListSubItems.Add text:=Value
     End With
@@ -44,18 +44,18 @@ Private Sub SetListViewProperties(ByVal lv As ListView)
     
     lv.ColumnHeaders.Add text:="Description"
     lv.ColumnHeaders.Add text:="Value"
-    lv.ColumnHeaders(2).Alignment = lvwColumnRight
-    lv.ColumnHeaders(2).Width = (72 / 2)
-    lv.ColumnHeaders(1).Width = lv.Width - (72 / 2) - 5
+    lv.ColumnHeaders.Item(2).Alignment = lvwColumnRight
+    lv.ColumnHeaders.Item(2).Width = (72 / 2)
+    lv.ColumnHeaders.Item(1).Width = lv.Width - (72 / 2) - 5
 End Sub
 
 Private Sub SetListViewImageList(ByVal lv As ListView)
-    Dim il As ImageList
+    'Dim il As ImageList
     'If lv.Icons Is Nothing Then
-    If True Then
-        Set il = GetMSOImageList
+    'If True Then
+        'Set il = GetMSOImageList
         Set lv.Icons = GetMSOImageList(32)
         Set lv.SmallIcons = GetMSOImageList(16)
-    End If
+    'End If
 End Sub
 

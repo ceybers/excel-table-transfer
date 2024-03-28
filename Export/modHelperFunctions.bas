@@ -14,8 +14,8 @@ Public Function TableFromString(ByVal s As String) As ListObject
     n(2) = Replace(n(2), " (active)", vbNullString)
     
     Set wb = Workbooks(n(0))
-    Set ws = wb.Worksheets(n(1))
-    Set lo = ws.ListObjects(n(2))
+    Set ws = wb.Worksheets.Item(n(1))
+    Set lo = ws.ListObjects.Item(n(2))
     
     Set TableFromString = lo
 End Function

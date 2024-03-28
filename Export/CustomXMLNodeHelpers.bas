@@ -20,6 +20,7 @@ Public Sub UpsertCollection(ByVal CustomXMLPart As CustomXMLPart, ByVal XPath As
         Result.Delete
     End If
     
+    '@Ignore AssignmentNotUsed
     Set Result = GetOrCreateXPath(CustomXMLPart, XPath)
     
     Dim Item As Variant

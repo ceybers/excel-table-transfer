@@ -11,6 +11,7 @@ Private Const DEFAULT_MSO_KEYS As String = "root,BlogHomePage;wb,FileSaveAsExcel
 
 '@Description "Returns a new ImageList object pre-populated with a standardised list of default icons."
 Public Function GetMSOImageList(Optional ByVal IconSize As Long = DEFAULT_ICON_SIZE) As ImageList
+Attribute GetMSOImageList.VB_Description = "Returns a new ImageList object pre-populated with a standardised list of default icons."
     Dim Result As ImageList
     Set Result = New ImageList
     
@@ -27,5 +28,3 @@ Private Sub AddImageToImageList(ByVal ImageList As ImageList, ByVal Key As Strin
     Set Picture = Application.CommandBars.GetImageMso(ImageMso, IconSize, IconSize)
     ImageList.ListImages.Add 1, Key, Picture
 End Sub
-
-

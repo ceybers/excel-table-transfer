@@ -23,9 +23,7 @@ Implements IView
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents vm As SelectTableViewModel
 Attribute vm.VB_VarHelpID = -1
-Private Const ICON_SIZE As Integer = 16
-Private msoImageList As ImageList
-
+Private Const ICON_SIZE As Long = 16
 Private Type TView
     IsCancelled As Boolean
 End Type

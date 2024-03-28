@@ -2,7 +2,7 @@ Attribute VB_Name = "TestTransferInstruction"
 '@Folder "Tests.AppContext"
 Option Explicit
 
-Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Integer = 8
+Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Long = 8
 
 Public Sub TestAutoTransfer()
     Dim Transfer As TransferInstruction
@@ -14,7 +14,7 @@ Public Sub TestAutoTransfer()
     'Exit Sub
     
     'Dim loadedTI As Collection
-    'Set loadedTI = DeserializeTransferInstructions(ThisWorkbook.Worksheets(4))
+    'Set loadedTI = DeserializeTransferInstructions(ThisWorkbook.Worksheets.Item(4))
     'Debug.Print loadedTI.Count
     
     'Debug.Print "Deserialized:"
@@ -25,14 +25,14 @@ Public Sub TestAutoTransfer()
     
     'loadedTI(2).Transfer
     
-    'TransferHistorySerializer.SaveTransferInstructionsFromWorksheet loadedTI, ThisWorkbook.Worksheets(4)
+    'TransferHistorySerializer.SaveTransferInstructionsFromWorksheet loadedTI, ThisWorkbook.Worksheets.Item(4)
     
     'Exit Sub
     
     With Transfer.Destination
-        .ListColumns(2).DataBodyRange.Clear
-        .ListColumns(3).DataBodyRange.Clear
-        .ListColumns(4).DataBodyRange.Clear
+        .ListColumns.Item(2).DataBodyRange.Clear
+        .ListColumns.Item(3).DataBodyRange.Clear
+        .ListColumns.Item(4).DataBodyRange.Clear
     End With
     
     Transfer.Transfer
@@ -49,34 +49,34 @@ Private Sub PrintTransferInstruction(ByVal Transfer As TransferInstruction)
     Debug.Print " FLAGS," & Transfer.Flags
     Debug.Print " VALUES," & Transfer.ValuePairs.Count
     For i = 1 To Transfer.ValuePairs.Count
-        Debug.Print "  " & Transfer.ValuePairs(i).ToString
+        Debug.Print "  " & Transfer.ValuePairs.Item(i).ToString
     Next i
     Debug.Print "END"
 End Sub
 
 Public Function GetTestTransferInstruction() As TransferInstruction
-    Dim lhs As ListObject
-    Dim rhs As ListObject
+    Dim LHS As ListObject
+    Dim RHS As ListObject
     
     Set GetTestTransferInstruction = New TransferInstruction
     
-    Set lhs = ThisWorkbook.Worksheets(1).ListObjects(1)
-    Set rhs = ThisWorkbook.Worksheets(1).ListObjects(2)
+    Set LHS = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
+    Set RHS = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2)
     
     With GetTestTransferInstruction
-        Set .Source = lhs
-        Set .Destination = rhs
+        Set .Source = LHS
+        Set .Destination = RHS
         
-        Set .SourceKey = lhs.ListColumns(1)
-        Set .DestinationKey = rhs.ListColumns(1)
+        Set .SourceKey = LHS.ListColumns.Item(1)
+        Set .DestinationKey = RHS.ListColumns.Item(1)
             
         .Flags = AddFlag(.Flags, ClearDestinationFirst)
         .Flags = AddFlag(.Flags, DestinationFilteredOnly)
         .Flags = AddFlag(.Flags, HighlightMapped)
     
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(2), rhs.ListColumns(4))
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(3), rhs.ListColumns(2))
-        .ValuePairs.Add ColumnPair.Create(lhs.ListColumns(4), rhs.ListColumns(3))
+        .ValuePairs.Add ColumnPair.Create(LHS.ListColumns.Item(2), RHS.ListColumns.Item(4))
+        .ValuePairs.Add ColumnPair.Create(LHS.ListColumns.Item(3), RHS.ListColumns.Item(2))
+        .ValuePairs.Add ColumnPair.Create(LHS.ListColumns.Item(4), RHS.ListColumns.Item(3))
     End With
 End Function
 

@@ -32,7 +32,7 @@ Public Function TrySave(ByVal ti As TransferInstruction) As Boolean
     If TryGetWorksheet(ThisWorkbook, WORKSHEET_NAME, ws) = False Then
         Dim curWS As Worksheet
         Set curWS = ActiveSheet
-        Set ws = ActiveWorkbook.Worksheets.Add(After:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count))
+        Set ws = ActiveWorkbook.Worksheets.Add(After:=ActiveWorkbook.Worksheets.Item(ActiveWorkbook.Worksheets.Count))
         ws.Name = WORKSHEET_NAME
         ws.Visible = xlSheetVeryHidden
         curWS.Activate

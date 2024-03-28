@@ -42,8 +42,8 @@ Public Sub TestKeyMapperView()
     Set vview = KeyMapperView
     vview.DEBUG_EVENTS = True
     
-    Set vm.LHSTable = ThisWorkbook.Worksheets(1).ListObjects(1)
-    Set vm.RHSTable = ThisWorkbook.Worksheets(1).ListObjects(2)
+    Set vm.LHSTable = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
+    Set vm.RHSTable = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2)
     
     If View.ShowDialog(vm) Then
         Debug.Print "ShowDialog true"
@@ -56,8 +56,8 @@ Public Sub TestRemoveUnmappedKeys()
     Dim comp As KeyColumnComparer
     
     Set comp = New KeyColumnComparer
-    Set comp.lhs = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1))
-    Set comp.rhs = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(2))
+    Set comp.LHS = KeyColumn.FromColumn(ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1).ListColumns.Item(1))
+    Set comp.RHS = KeyColumn.FromColumn(ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2).ListColumns.Item(2))
 
     Dim mapResult As Variant
     mapResult = comp.Map
@@ -69,11 +69,12 @@ Public Sub TestAppendUnmappedKeys()
     Dim comp As KeyColumnComparer
     
     Set comp = New KeyColumnComparer
-    Set comp.lhs = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1))
-    Set comp.rhs = KeyColumn.FromColumn(ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(2))
+    Set comp.LHS = KeyColumn.FromColumn(ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1).ListColumns.Item(1))
+    Set comp.RHS = KeyColumn.FromColumn(ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2).ListColumns.Item(2))
 
-    Dim mapResult As Variant
-    mapResult = comp.Map
+    'Dim mapResult As Variant
+    'mapResult = comp.Map
+    comp.Map
     
     AppendUnmappedKeys comp
 End Sub
@@ -85,11 +86,11 @@ Public Sub RemoveUnmappedKeys(ByVal comp As KeyColumnComparer, Optional ByRef ca
    
     Dim i As Long
     Dim rng As Range
-    Set rng = comp.rhs.Range
+    Set rng = comp.RHS.Range
     
     For i = rng.rows.Count To 1 Step -1
-        If cachedMappedResults(rng.rows(i).row) = -1 Then
-            rng.rows(i).EntireRow.Delete
+        If cachedMappedResults(rng.rows.Item(i).row) = -1 Then
+            rng.rows.Item(i).EntireRow.Delete
         End If
     Next i
 End Sub
@@ -100,12 +101,12 @@ Public Sub AppendUnmappedKeys(ByVal comp As KeyColumnComparer)
     Dim lr As ListRow
     Dim i As Long
      
-    Set lc = GetListColumnFromRange(comp.rhs.Range)
+    Set lc = GetListColumnFromRange(comp.RHS.Range)
     Set lo = lc.parent
 
     For i = 1 To comp.LeftOnly.Count
         Set lr = lo.ListRows.Add(alwaysinsert:=True)
-        lr.Range.Cells(1, lc.Index).Value2 = comp.LeftOnly.Item(i)
+        lr.Range.Cells.Item(1, lc.Index).Value2 = comp.LeftOnly.Item(i)
     Next i
 End Sub
 

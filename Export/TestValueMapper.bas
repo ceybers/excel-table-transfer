@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestValueMapper"
-'@IgnoreModule EmptyIfBlock
+'@IgnoreModule
 '@Folder "Tests.MVVM"
 Option Explicit
 Option Private Module
@@ -19,11 +19,11 @@ Attribute Test.VB_ProcData.VB_Invoke_Func = "p\n14"
     Set vview = ValueMapperView
     'vview.DEBUG_EVENTS = True
     
-    Set vm.lhs = ThisWorkbook.Worksheets(1).ListObjects(1)
-    Set vm.rhs = ThisWorkbook.Worksheets(1).ListObjects(2)
+    Set vm.LHS = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
+    Set vm.RHS = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2)
     
-    Set vm.KeyColumnLHS = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
-    Set vm.KeyColumnRHS = ThisWorkbook.Worksheets(2).ListObjects(1).ListColumns(1)
+    Set vm.KeyColumnLHS = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1).ListColumns.Item(1)
+    Set vm.KeyColumnRHS = ThisWorkbook.Worksheets.Item(2).ListObjects.Item(1).ListColumns.Item(1)
     
     If View.ShowDialog(vm) Then
         'Debug.Print "ShowDialog true"

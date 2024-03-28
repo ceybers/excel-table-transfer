@@ -5,9 +5,9 @@ Option Explicit
 
 Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Integer = 8
 
-Public Sub Test()
+Private Sub Test()
     Dim Result As Variant
-    Set Result = LoadTransferInstructionsFromWorksheet(ThisWorkbook.Worksheets("CAETransferTableHistory"))
+    Set Result = LoadTransferInstructionsFromWorksheet(ThisWorkbook.Worksheets.Item("CAETransferTableHistory"))
     
     Dim ti As TransferInstructionUnref
     Set ti = Result(1)
@@ -142,7 +142,7 @@ Public Function ZZ_LoadTransferInstructionsFromWorksheet(ByVal ws As Worksheet) 
             RHS = Split(curArr(2), ",")(1)
                 
             If Not ti.Source Is Nothing And Not ti.Destination Is Nothing Then
-                ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns(LHS), ti.Destination.ListColumns(RHS))
+                ti.ValuePairs.Add ColumnPair.Create(ti.Source.ListColumns.Item(LHS), ti.Destination.ListColumns.Item(RHS))
             End If
         End Select
     Next i

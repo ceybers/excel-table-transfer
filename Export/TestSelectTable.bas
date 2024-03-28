@@ -6,7 +6,7 @@ Option Private Module
 Public Sub Test()
     Dim vm As SelectTableViewModel
     Set vm = New SelectTableViewModel
-    Set vm.ActiveTable = ThisWorkbook.Worksheets(1).ListObjects(1)
+    Set vm.ActiveTable = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
     
     Dim View As IView
     Set View = New SelectTableView

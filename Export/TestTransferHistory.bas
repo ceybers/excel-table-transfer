@@ -3,15 +3,15 @@ Attribute VB_Name = "TestTransferHistory"
 '@Folder "ZZZTransferHistory"
 Option Explicit
 
-Public Sub ATest()
+Private Sub ATest()
     Dim tiUr As TransferInstructionUnref
     TransferHistorySerializer.TryLoad tiUr
     
     Dim ti As TransferInstruction
     Set ti = New TransferInstruction
     
-    'Set ti.Source = ThisWorkbook.Worksheets(1).ListObjects(1)
-    'Set ti.Destination = ThisWorkbook.Worksheets(1).ListObjects(2)
+    'Set ti.Source = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
+    'Set ti.Destination = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2)
     Set ti.UnRef = tiUr
     
     ti.LoadFlags
@@ -21,17 +21,17 @@ Public Sub ATest()
     
     Debug.Print "ti.Transfer "; ti.Transfer
     
-    'Set rng = ActiveWorkbook.Worksheets("CAETransferTableHistory").Range("L20")
+    'Set rng = ActiveWorkbook.Worksheets.Item("CAETransferTableHistory").Range("L20")
     'ti.SaveToRange rng
     
     ' TransferHistorySerializer.TrySave ti
     'Stop
 End Sub
 
-Public Sub Test()
+Private Sub Test()
     Dim vm As TransferHistoryViewModel
     Set vm = New TransferHistoryViewModel
-    'Set vm.ActiveTable = ThisWorkbook.Worksheets(1).ListObjects(1)
+    'Set vm.ActiveTable = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
     
     Dim View As IView
     Set View = New TransferHistoryView

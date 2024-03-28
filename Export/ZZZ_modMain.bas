@@ -55,8 +55,8 @@ Private Sub DoTransferTable(Transfer As TransferInstruction)
         Exit Sub
     End If
 
-    'Set Transfer.SourceKey = ThisWorkbook.Worksheets(1).ListObjects(1).ListColumns(1)
-    'Set Transfer.DestinationKey = ThisWorkbook.Worksheets(1).ListObjects(2).ListColumns(1)
+    'Set Transfer.SourceKey = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1).ListColumns.Item(1)
+    'Set Transfer.DestinationKey = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2).ListColumns.Item(1)
 NoTableSelected:
     If GetKeyColumns(Transfer) Then
         ' continue
@@ -79,12 +79,12 @@ AlreadyValid:
     
     'Dim lhs As ListObject
     'Dim rhs As ListObject
-    'Set lhs = ThisWorkbook.Worksheets(1).ListObjects(1)
-    'Set rhs = ThisWorkbook.Worksheets(1).ListObjects(2)
+    'Set lhs = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
+    'Set rhs = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2)
     
-    'Transfer.ValuePairs.Add ColumnPair.Create(lhs.ListColumns(2), rhs.ListColumns(2))
-    'Transfer.ValuePairs.Add ColumnPair.Create(lhs.ListColumns(3), rhs.ListColumns(3))
-    'Transfer.ValuePairs.Add ColumnPair.Create(lhs.ListColumns(4), rhs.ListColumns(4))
+    'Transfer.ValuePairs.Add ColumnPair.Create(lhs.ListColumns.Item(2), rhs.ListColumns.Item(2))
+    'Transfer.ValuePairs.Add ColumnPair.Create(lhs.ListColumns.Item(3), rhs.ListColumns.Item(3))
+    'Transfer.ValuePairs.Add ColumnPair.Create(lhs.ListColumns.Item(4), rhs.ListColumns.Item(4))
      
     Transfer.Transfer
     
@@ -119,7 +119,7 @@ End Function
 Private Function TryGetSourceOrDestination(ByRef IsSource As Boolean, ByRef IsDestination As Boolean) As Boolean
     Dim vm As SourceOrDestinationViewModel
     Set vm = New SourceOrDestinationViewModel
-    Set vm.ListObject = ThisWorkbook.Worksheets(1).ListObjects(1)
+    Set vm.ListObject = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
     
     Dim View As IView
     Set View = New SourceOrDestinationView

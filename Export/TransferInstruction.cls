@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@IgnoreModule
-'@Folder "Model.TransferInstruction"
+'@Folder "Worksheets"
 Option Explicit
 
 Private Type TState
@@ -344,8 +344,8 @@ Public Function TryLoadTables() As Boolean
     Dim wsRHS As Worksheet
 
     On Error Resume Next
-    Set wsLHS = wbLHS.Worksheets(This.UnRef.SourceSheet)
-    Set wsRHS = wbRHS.Worksheets(This.UnRef.DestinationSheet)
+    Set wsLHS = wbLHS.Worksheets.Item(This.UnRef.SourceSheet)
+    Set wsRHS = wbRHS.Worksheets.Item(This.UnRef.DestinationSheet)
     On Error GoTo 0
     
     If wsLHS Is Nothing Then Exit Function
@@ -355,8 +355,8 @@ Public Function TryLoadTables() As Boolean
     Dim loRHS As ListObject
 
     On Error Resume Next
-    Set loLHS = wsLHS.ListObjects(This.UnRef.Source)
-    Set loRHS = wsRHS.ListObjects(This.UnRef.Destination)
+    Set loLHS = wsLHS.ListObjects.Item(This.UnRef.Source)
+    Set loRHS = wsRHS.ListObjects.Item(This.UnRef.Destination)
     On Error GoTo 0
     
     If loLHS Is Nothing Then Exit Function
@@ -375,7 +375,7 @@ Public Function TryLoadKeyColumns() As Boolean
     Dim lc As ListColumn
     
     On Error Resume Next
-    Set lc = This.Source.ListColumns(This.UnRef.SourceKey)
+    Set lc = This.Source.ListColumns.Item(This.UnRef.SourceKey)
     On Error GoTo 0
     If Not lc Is Nothing Then
         Set This.SourceKey = lc
@@ -385,7 +385,7 @@ Public Function TryLoadKeyColumns() As Boolean
     
     Set lc = Nothing
     On Error Resume Next
-    Set lc = This.Destination.ListColumns(This.UnRef.DestinationKey)
+    Set lc = This.Destination.ListColumns.Item(This.UnRef.DestinationKey)
     On Error GoTo 0
     If Not lc Is Nothing Then
         Set This.DestinationKey = lc
@@ -408,8 +408,8 @@ Public Function TryLoadValuePairs() As Boolean
         Dim LHS As ListColumn
         Dim RHS As ListColumn
         On Error Resume Next
-        Set LHS = This.Source.ListColumns(vp(i, 1))
-        Set RHS = This.Destination.ListColumns(vp(i, 2))
+        Set LHS = This.Source.ListColumns.Item(vp(i, 1))
+        Set RHS = This.Destination.ListColumns.Item(vp(i, 2))
         On Error GoTo 0
         If Not LHS Is Nothing And Not RHS Is Nothing Then
             This.ValuePairs.Add ColumnPair.Create(LHS, RHS)

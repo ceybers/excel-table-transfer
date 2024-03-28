@@ -13,10 +13,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
 '@Folder "MVVM.Views"
 Option Explicit
 Implements IView
@@ -24,7 +20,7 @@ Implements IView
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents vm As KeyMapperViewModel
 Attribute vm.VB_VarHelpID = -1
-Private Const ICON_SIZE As Integer = 16
+Private Const ICON_SIZE As Long = 16
 Private msoImageList As ImageList
 
 Public DEBUG_EVENTS As Boolean

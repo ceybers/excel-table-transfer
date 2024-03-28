@@ -20,10 +20,8 @@ Implements IView
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents vm As ValueMapperViewModel
 Attribute vm.VB_VarHelpID = -1
-Private Const ICON_SIZE As Integer = 16
+Private Const ICON_SIZE As Long = 16
 Private msoImageList As ImageList
-
-Public DEBUG_EVENTS As Boolean
 
 Private Type TFrmKeyMapper2View
     IsCancelled As Boolean
@@ -116,7 +114,7 @@ Private Sub vm_CollectionChangedLHS()
     Dim current As String
     
     If Not Me.lvLHS.SelectedItem Is Nothing Then
-        current = Me.lvLHS.SelectedItem.key
+        current = Me.lvLHS.SelectedItem.Key
     End If
     
     vm.LoadLHStoListView Me.lvLHS
@@ -124,8 +122,8 @@ Private Sub vm_CollectionChangedLHS()
     If current <> vbNullString Then
         If Not TryReselectListItem(Me.lvLHS, current) Then
             If Me.lvLHS.ListItems.Count > 0 Then
-                Me.lvLHS.ListItems(1).Selected = True
-                lvLHS_ItemClick Me.lvLHS.ListItems(1)
+                Me.lvLHS.ListItems.Item(1).Selected = True
+                lvLHS_ItemClick Me.lvLHS.ListItems.Item(1)
             End If
         End If
     End If
@@ -135,7 +133,7 @@ Private Sub vm_CollectionChangedRHS()
     Dim current As String
     
     If Not Me.lvRHS.SelectedItem Is Nothing Then
-        current = Me.lvRHS.SelectedItem.key
+        current = Me.lvRHS.SelectedItem.Key
     End If
     
     vm.LoadRHStoListView Me.lvRHS
@@ -144,18 +142,18 @@ Private Sub vm_CollectionChangedRHS()
     If current <> vbNullString Then
         If Not TryReselectListItem(Me.lvRHS, current) Then
             If Me.lvRHS.ListItems.Count > 0 Then
-                Me.lvRHS.ListItems(1).Selected = True
-                lvRHS_ItemClick Me.lvRHS.ListItems(1)
+                Me.lvRHS.ListItems.Item(1).Selected = True
+                lvRHS_ItemClick Me.lvRHS.ListItems.Item(1)
             End If
         End If
     End If
 End Sub
 
-Private Function TryReselectListItem(ByVal lv As ListView, ByVal key As String) As Boolean
+Private Function TryReselectListItem(ByVal lv As ListView, ByVal Key As String) As Boolean
     Dim i As Long
     For i = 1 To lv.ListItems.Count
-        If lv.ListItems(i).key = key Then
-            lv.ListItems(i).Selected = True
+        If lv.ListItems.Item(i).Key = Key Then
+            lv.ListItems.Item(i).Selected = True
             TryReselectListItem = True
             Exit Function
         End If
@@ -210,7 +208,7 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     This.IsCancelled = False
     
     Set msoImageList = New ImageList
-    Set msoImageList = modStandardImageList.GetMSOImageList(ICON_SIZE)
+    Set msoImageList = StandardImageList.GetMSOImageList(ICON_SIZE)
     
     Set Me.lvLHS.Icons = msoImageList
     Set Me.lvLHS.SmallIcons = msoImageList
@@ -219,13 +217,13 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     
     LoadFromVM
     
-    lvLHS_ItemClick Me.lvLHS.ListItems(1)
-    lvRHS_ItemClick Me.lvRHS.ListItems(1)
+    lvLHS_ItemClick Me.lvLHS.ListItems.Item(1)
+    lvRHS_ItemClick Me.lvRHS.ListItems.Item(1)
     
     vm_MappingChanged
     
-    Me.cmbClearSearchLHS.Picture = msoImageList.ListImages("delete").Picture
-    Me.cmbClearSearchRHS.Picture = msoImageList.ListImages("delete").Picture
+    Me.cmbClearSearchLHS.Picture = msoImageList.ListImages.Item("delete").Picture
+    Me.cmbClearSearchRHS.Picture = msoImageList.ListImages.Item("delete").Picture
     
     vm.AutomapIfEmpty
     

@@ -10,7 +10,7 @@ Public Function GetMyDocSettings() As ISettings
     Set Settings = New MyDocSettings
     
     With Settings
-        .filename = TABLE_TRANSFER_TOOL_SETTINGS_FILENAME
+        .Filename = TABLE_TRANSFER_TOOL_SETTINGS_FILENAME
         .UUID = TABLE_TRANSFER_TOOL_SETTINGS_UUID
         .Load
     End With

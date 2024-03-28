@@ -6,7 +6,7 @@ Option Private Module
 Public Sub Test()
     Dim vm As SourceOrDestinationViewModel
     Set vm = New SourceOrDestinationViewModel
-    Set vm.ListObject = ThisWorkbook.Worksheets(1).ListObjects(1)
+    Set vm.ListObject = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
     
     Dim View As IView
     Set View = New SourceOrDestinationView

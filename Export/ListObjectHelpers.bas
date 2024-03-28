@@ -6,7 +6,7 @@ Private Sub Test()
     Dim lo As ListObject
     Dim Result As String
     
-    Set lo = ThisWorkbook.Worksheets(1).ListObjects(1)
+    Set lo = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
     'Debug.Print ListObjectToStringName(lo)
     
     'result = "'C:\Users\User\Documents\excel-related-table-tool\[Production.xlsm]Sheet1'!$A$1:$C$5"
@@ -17,7 +17,7 @@ Private Sub Test()
         Debug.Print "Path Filename Worksheet Range [OK]"
     End If
     
-    Result = "[Production.xlsm]Sheet1!$A$1:$C$5" ' Closed file
+    'Result = "[Production.xlsm]Sheet1!$A$1:$C$5" ' Closed file
     Result = "[Development.xlsm]Sheet1!$A$1:$C$5"
     Set lo = StringNameToListObject(Result)
     If lo Is Nothing Then
@@ -47,7 +47,7 @@ Public Function GetListColumnFromRange(ByVal rng As Range) As ListColumn
     
     Set lo = rng.ListObject
     For Each lc In lo.ListColumns
-        If lc.Range.column = rng.Cells(1, 1).column Then
+        If lc.Range.column = rng.Cells.Item(1, 1).column Then
             Set GetListColumnFromRange = lc
             Exit Function
         End If
@@ -56,8 +56,8 @@ End Function
 
 Public Function StringNameToListObject(ByVal stringName As String) As ListObject
     Dim path As String
-    Dim filename As String
-    Dim worksheetName As String
+    Dim Filename As String
+    Dim WorksheetName As String
     Dim rangetext As String
     
     Dim splitByRange As Variant
@@ -69,37 +69,37 @@ Public Function StringNameToListObject(ByVal stringName As String) As ListObject
     
     If UBound(splitByQuotes, 1) = 2 Then
         path = Split(Split(splitByQuotes(1), "]")(0), "[")(0)
-        filename = Split(Split(splitByQuotes(1), "]")(0), "[")(1)
-        worksheetName = Split(splitByQuotes(1), "]")(1)
+        Filename = Split(Split(splitByQuotes(1), "]")(0), "[")(1)
+        WorksheetName = Split(splitByQuotes(1), "]")(1)
     Else
         If UBound(Split(splitByRange(0), "]"), 1) = 0 Then
-            worksheetName = splitByRange(0)
+            WorksheetName = splitByRange(0)
         Else
-            filename = Split(splitByRange(0), "]")(0)
-            filename = Right$(filename, Len(filename) - 1)
-            worksheetName = Split(splitByRange(0), "]")(1)
+            Filename = Split(splitByRange(0), "]")(0)
+            Filename = Right$(Filename, Len(Filename) - 1)
+            WorksheetName = Split(splitByRange(0), "]")(1)
         End If
     End If
     
     If False Then
         Debug.Print "Path="; path
-        Debug.Print "Filename="; filename
-        Debug.Print "Worksheetname="; worksheetName
+        Debug.Print "Filename="; Filename
+        Debug.Print "Worksheetname="; WorksheetName
         Debug.Print "Range="; rangetext
-        Stop
+        Debug.Assert False
     End If
     
     Dim wb As Workbook
     Dim ws As Worksheet
     Dim rng As Range
     
-    If filename = vbNullString Then
+    If Filename = vbNullString Then
         Set wb = ThisWorkbook
     Else
-        If Not TryGetWorkbook(filename, wb, path) Then Exit Function
+        If Not TryGetWorkbook(Filename, wb, path) Then Exit Function
     End If
     
-    If TryGetWorkSheet(wb, worksheetName, ws) Then
+    If TryGetWorksheet(wb, WorksheetName, ws) Then
         Set rng = ws.Range(rangetext)
         'Debug.Print rng.Address
         If rng.ListObject Is Nothing Then
@@ -114,27 +114,28 @@ Public Function StringNameToListObject(ByVal stringName As String) As ListObject
     'Debug.Print vbNullString
 End Function
 
-Public Function TryGetWorkSheet(ByVal wb As Workbook, ByVal worksheetName As String, ByRef ws As Worksheet) As Boolean
+'@Obsolete "ZZZ"
+Public Function ZZZ_TryGetWorksheet(ByVal wb As Workbook, ByVal WorksheetName As String, ByRef ws As Worksheet) As Boolean
     Dim curWS As Worksheet
     For Each curWS In wb.Worksheets
-        If curWS.Name = worksheetName Then
+        If curWS.Name = WorksheetName Then
             Set ws = curWS
-            TryGetWorkSheet = True
+            ZZZ_TryGetWorksheet = True
         End If
     Next curWS
 End Function
 
-Public Function TryGetWorkbook(ByVal filename As String, ByRef wb As Workbook, Optional path As String = vbNullString) As Boolean
+Public Function TryGetWorkbook(ByVal Filename As String, ByRef wb As Workbook, Optional ByVal path As String = vbNullString) As Boolean
     Dim curWB As Workbook
     For Each curWB In Application.Workbooks
         If path = vbNullString Then
-            If curWB.Name = filename Then
+            If curWB.Name = Filename Then
                 Set wb = curWB
                 TryGetWorkbook = True
                 Exit Function
             End If
         Else
-            If curWB.fullname = path & filename Then
+            If curWB.fullname = path & Filename Then
                 Set wb = curWB
                 TryGetWorkbook = True
                 Exit Function
@@ -146,11 +147,11 @@ End Function
 Public Function ListObjectToStringName(ByVal lo As ListObject, Optional ByVal ShowFilename As Boolean = False, Optional ByVal ShowPath As Boolean = False) As String
     Debug.Assert Not lo Is Nothing
     
-    Dim ws As Worksheet
-    Dim wb As Workbook
+    'Dim ws As Worksheet
+    'Dim wb As Workbook
     
-    Set ws = lo.parent
-    Set wb = ws.parent
+    'Set ws = lo.parent
+    'Set wb = ws.parent
     
     If ShowFilename Or ShowPath Then
         ListObjectToStringName = lo.Range.Address(external:=True)
@@ -173,7 +174,7 @@ Public Function TryGetListColumnFromText(ByVal columnName As String, ByVal lo As
 End Function
 
 '@Description "test"
-Public Function TryGetTableFromText(ByVal rangetext As String, ByRef outListObject As ListObject, Optional ByVal openIfClosed As Boolean = False) As Boolean
+Public Function TryGetTableFromText(ByVal rangetext As String, ByRef outListObject As ListObject) As Boolean
 Attribute TryGetTableFromText.VB_Description = "test"
     ' Debug.Print "RR"; rangeText
     
@@ -188,15 +189,15 @@ Attribute TryGetTableFromText.VB_Description = "test"
     Dim wb As Workbook
     Dim ws As Worksheet
     Dim rng As Range
-    Dim sheetname As String
+    Dim SheetName As String
     Dim rangeaddress As String
-    Dim filename As String
+    Dim Filename As String
     
-    filename = WorkbookHelpers.GetFilenameFromRangeText(rangetext)
-    If IsWorkbookOpen(filename) Then
-        Set wb = Application.Workbooks(filename)
-        sheetname = Mid$(rangetext, InStr(rangetext, "]") + 1, InStr(rangetext, "!") - InStr(rangetext, "]") - 1)
-        Set ws = wb.Worksheets(sheetname)        ' TODO Error trap this
+    Filename = WorkbookHelpers.GetFilenameFromRangeText(rangetext)
+    If IsWorkbookOpen(Filename) Then
+        Set wb = Application.Workbooks.[_Default](Filename)
+        SheetName = Mid$(rangetext, InStr(rangetext, "]") + 1, InStr(rangetext, "!") - InStr(rangetext, "]") - 1)
+        Set ws = wb.Worksheets.Item(SheetName)        ' TODO Error trap this
         rangeaddress = Mid$(rangetext, InStr(rangetext, "!") + 1, Len(rangetext) - InStr(rangetext, "!") - 1)
         'Debug.Print rangeaddress
         Set rng = ws.Range(rangeaddress)
@@ -209,8 +210,9 @@ Attribute TryGetTableFromText.VB_Description = "test"
         End If
     Else
         MsgBox "TryGetTableFromText DoOpen NYI"
-        Dim path As String
-        path = WorkbookHelpers.GetPathFromRangeText(rangetext)
+        
+        'Dim path As String
+        'path = WorkbookHelpers.GetPathFromRangeText(rangetext)
         'Debug.Print path
         ' Need a flag for Transfer class if we cannot open the workbook from an old serialized instructionf
     End If

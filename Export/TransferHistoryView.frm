@@ -63,7 +63,7 @@ Private Sub lvTransferInstructions_DblClick()
 End Sub
 
 Private Sub lvTransferInstructions_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    This.ViewModel.TrySelect Item.key
+    This.ViewModel.TrySelect Item.Key
     If Not This.ViewModel.SelectedInstruction Is Nothing Then
         Me.txtTransferInstruction.Value = This.ViewModel.SelectedInstruction.ToString
         Me.cmbLoad.Enabled = True

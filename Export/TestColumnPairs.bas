@@ -4,11 +4,11 @@ Option Explicit
 Option Private Module
 
 Public Sub TestColumnPairs()
-    Dim lhs As ListObject
-    Dim rhs As ListObject
+    Dim LHS As ListObject
+    Dim RHS As ListObject
     
-    Set lhs = ThisWorkbook.Worksheets(1).ListObjects(1)
-    Set rhs = ThisWorkbook.Worksheets(1).ListObjects(2)
+    Set LHS = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
+    Set RHS = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2)
     
     Dim colPairs As ColumnPairs
     Set colPairs = New ColumnPairs
@@ -16,26 +16,26 @@ Public Sub TestColumnPairs()
     Dim colPair As ColumnPair
     
     
-    Set colPair = ColumnPair.Create(lhs.ListColumns(2), rhs.ListColumns(2))
+    Set colPair = ColumnPair.Create(LHS.ListColumns.Item(2), RHS.ListColumns.Item(2))
     colPairs.Add colPair
     
-    Set colPair = ColumnPair.Create(lhs.ListColumns(3), rhs.ListColumns(4))
+    Set colPair = ColumnPair.Create(LHS.ListColumns.Item(3), RHS.ListColumns.Item(4))
     colPairs.Add colPair
     
-    Set colPair = ColumnPair.Create(lhs.ListColumns(4), rhs.ListColumns(3))
+    Set colPair = ColumnPair.Create(LHS.ListColumns.Item(4), RHS.ListColumns.Item(3))
     colPairs.Add colPair
     
     'PrintColumnPairs colPairs
     Dim Result As Variant
     
-    Set Result = colPairs.GetPair(rhs:=rhs.ListColumns(1))
+    Set Result = colPairs.GetPair(RHS:=RHS.ListColumns.Item(1))
     If Result Is Nothing Then
         Debug.Print "Not found"
     Else
         Debug.Print Result.ToString
     End If
     
-    Set colPair = ColumnPair.Create(lhs.ListColumns(1), rhs.ListColumns(2))
+    Set colPair = ColumnPair.Create(LHS.ListColumns.Item(1), RHS.ListColumns.Item(2))
     colPairs.Add colPair
     'PrintColumnPairs colPairs
     

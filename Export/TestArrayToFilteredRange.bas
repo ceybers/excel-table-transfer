@@ -7,7 +7,7 @@ Option Private Module
 Private Assert As Object
 Private Fakes As Object
 
-Dim Worksheet As Worksheet
+Private Worksheet As Worksheet
     
 '@ModuleInitialize
 Private Sub ModuleInitialize()
@@ -25,7 +25,7 @@ End Sub
 
 '@TestInitialize
 Private Sub TestInitialize()
-    Set Worksheet = ThisWorkbook.Worksheets("TestArrayToFilteredRange")
+    Set Worksheet = ThisWorkbook.Worksheets.Item("TestArrayToFilteredRange")
     With Worksheet
         .Cells.Clear
         .Range("A1").Value2 = "a"
@@ -41,15 +41,13 @@ Private Sub TestCleanup()
     Worksheet.Cells.Clear
 End Sub
 
-'@TestMethod("Uncategorized")
-Private Sub TestMethod1()                        'TODO Rename test
+'@TestMethod("ArrayToFilteredRange")
+Private Sub TestArrayToFilteredRange()
     On Error GoTo TestFail
     
     'Arrange:
-    
-    'Act:
-    Worksheet.rows(2).Hidden = True
-    Worksheet.rows(5).Hidden = True
+    Worksheet.rows.Item(2).Hidden = True
+    Worksheet.rows.Item(5).Hidden = True
     
     Dim SourceArray(1 To 6, 1 To 1) As Variant
     SourceArray(1, 1) = "a1"
@@ -59,11 +57,14 @@ Private Sub TestMethod1()                        'TODO Rename test
     SourceArray(5, 1) = "a5"
     SourceArray(6, 1) = "a6"
     
+    
+    'Act:
     ArrayHelpers.ArrayToFilteredRange SourceArray, Worksheet.Range("A1:A6")
     
-    Worksheet.rows(2).Hidden = False
-    Worksheet.rows(5).Hidden = False
+    Worksheet.rows.Item(2).Hidden = False
+    Worksheet.rows.Item(5).Hidden = False
     
+    'Assert:
     With Worksheet.Range("A1:A6").Cells
         Debug.Assert .Item(1).Value2 = "a1"
         Debug.Assert .Item(2).Value2 = vbNullString
@@ -73,7 +74,6 @@ Private Sub TestMethod1()                        'TODO Rename test
         Debug.Assert .Item(6).Value2 = "a6"
     End With
     
-    'Assert:
     Assert.Succeed
 
 TestExit:

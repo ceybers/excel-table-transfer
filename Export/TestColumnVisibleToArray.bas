@@ -1,4 +1,5 @@
 Attribute VB_Name = "TestColumnVisibleToArray"
+'@IgnoreModule
 '@Folder "Tests.Helpers"
 Option Explicit
 Option Private Module
@@ -12,9 +13,9 @@ Public Sub Test()
     Dim v As Variant
     
     Set wb = ThisWorkbook
-    Set ws = wb.Worksheets(1)
-    Set lo = ws.ListObjects(1)
-    Set lc = lo.ListColumns(1)
+    Set ws = wb.Worksheets.Item(1)
+    Set lo = ws.ListObjects.Item(1)
+    Set lc = lo.ListColumns.Item(1)
     Set rng = lc.DataBodyRange                   '.SpecialCells(xlCellTypeVisible)
     v = VisibleRangeToArray(rng)
     

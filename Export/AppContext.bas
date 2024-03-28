@@ -18,6 +18,7 @@ Public Sub PrintTime(ByVal message As String, Optional ByVal Reset As Boolean)
     Debug.Print message & " " & (Timer() - startTime)
 End Sub
 
+'@ExcelHotkey e
 Public Sub TransferTable()
 Attribute TransferTable.VB_ProcData.VB_Invoke_Func = "e\n14"
     PrintTime "Start", True
@@ -31,8 +32,8 @@ Attribute TransferTable.VB_ProcData.VB_Invoke_Func = "e\n14"
     End If
     
     ' DEBUG
-    'Set Transfer.Source = ThisWorkbook.Worksheets(1).ListObjects(1)
-    'Set Transfer.Destination = ThisWorkbook.Worksheets(1).ListObjects(2)
+    'Set Transfer.Source = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
+    'Set Transfer.Destination = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2)
     
     If CheckTablesAvailable = False Then Exit Sub
     PrintTime "CheckTablesAvailable"

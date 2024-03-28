@@ -15,17 +15,17 @@ Private Type TViewModel
     ' TODO Reset to before changes
     ' i.e. StartEditing, StopEditing, CancelEditing
     ' OldFlags as integer
-    Flags As Integer
+    Flags As Long
 End Type
 
 Private This As TViewModel
 
-Public Property Get Flags() As Integer
+Public Property Get Flags() As Long
     Flags = This.Flags
 End Property
 
-Public Property Let Flags(ByVal rhs As Integer)
-    This.Flags = rhs
+Public Property Let Flags(ByVal RHS As Long)
+    This.Flags = RHS
 End Property
 
 Private Function IViewModel_IsValid() As Boolean

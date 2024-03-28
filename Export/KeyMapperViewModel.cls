@@ -11,7 +11,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IViewModel
 
-Private Const BEST_MATCH_DISTINCT_THRESHOLD = 0.75
+Private Const BEST_MATCH_DISTINCT_THRESHOLD As Double = 0.75
 
 Public Event PropertyChanged(ByVal propertyName As String)
 Public Event CheckCompleted()
@@ -45,28 +45,32 @@ Public Property Get AppendNewKeys() As Boolean
     AppendNewKeys = This.AppendNewKeys
 End Property
 
-Public Property Let AppendNewKeys(ByVal rhs As Boolean)
-    This.AppendNewKeys = rhs
+Public Property Let AppendNewKeys(ByVal RHS As Boolean)
+    This.AppendNewKeys = RHS
 End Property
 
 Public Property Get RemoveOrphanKeys() As Boolean
     RemoveOrphanKeys = This.RemoveOrphanKeys
 End Property
 
-Public Property Let RemoveOrphanKeys(ByVal rhs As Boolean)
-    This.RemoveOrphanKeys = rhs
+Public Property Let RemoveOrphanKeys(ByVal RHS As Boolean)
+    This.RemoveOrphanKeys = RHS
 End Property
 
 Public Property Get GoBack() As Boolean
     GoBack = This.GoBack
 End Property
 
-Public Property Let GoBack(ByVal rhs As Boolean)
-    This.GoBack = rhs
+Public Property Let GoBack(ByVal RHS As Boolean)
+    This.GoBack = RHS
 End Property
 
-Public Property Let IsDirty(ByVal rhs As Boolean)
-    This.IsDirty = rhs
+Public Property Get IsDirty() As Boolean
+    IsDirty = This.IsDirty
+End Property
+
+Public Property Let IsDirty(ByVal RHS As Boolean)
+    This.IsDirty = RHS
 End Property
 
 Public Property Get LHSTable() As ListObject
@@ -123,16 +127,16 @@ Public Property Get LHSColumns() As Collection
     Set LHSColumns = This.LHSColumns
 End Property
 
-Public Property Set LHSColumns(ByVal rhs As Collection)
-    Set This.LHSColumns = rhs
+Public Property Set LHSColumns(ByVal RHS As Collection)
+    Set This.LHSColumns = RHS
 End Property
 
 Public Property Get RHSColumns() As Collection
     Set RHSColumns = This.RHSColumns
 End Property
 
-Public Property Set RHSColumns(ByVal rhs As Collection)
-    Set This.RHSColumns = rhs
+Public Property Set RHSColumns(ByVal RHS As Collection)
+    Set This.RHSColumns = RHS
 End Property
 
 Public Property Get LHSKeyColumn() As ListColumn
@@ -200,29 +204,29 @@ Private Sub UpdateColumns(ByVal lo As ListObject, ByVal coll As Collection)
     Next i
     
     For Each lc In lo.ListColumns
-        coll.Add Item:=lc, key:=lc.Name
+        coll.Add Item:=lc, Key:=lc.Name
     Next lc
 End Sub
 
-Private Sub class_initialize()
+Private Sub Class_Initialize()
     Set This.LHSColumns = New Collection
     Set This.RHSColumns = New Collection
 End Sub
 
-Public Sub TrySelectLHS(ByVal key As String)
-    If key <> vbNullString Then
+Public Sub TrySelectLHS(ByVal Key As String)
+    If Key <> vbNullString Then
         On Error Resume Next
-        Set LHSKeyColumn = This.LHSColumns(key)
+        Set LHSKeyColumn = This.LHSColumns.Item(Key)
         On Error GoTo 0
         Debug.Assert Not LHSKeyColumn Is Nothing
     End If
 End Sub
 
-Public Sub TrySelectRHS(ByVal key As String)
-    If key <> vbNullString Then
+Public Sub TrySelectRHS(ByVal Key As String)
+    If Key <> vbNullString Then
         ' TODO This failed in production
         On Error Resume Next
-        Set RHSKeyColumn = This.RHSColumns(key)
+        Set RHSKeyColumn = This.RHSColumns.Item(Key)
         On Error GoTo 0
         Debug.Assert Not RHSKeyColumn Is Nothing
     End If
@@ -329,7 +333,7 @@ Public Sub UpdateMatch()
     RaiseEvent MatchChanged
 End Sub
 
-Public Function TryGuess(Optional Force As Boolean = False) As Boolean
+Public Function TryGuess(Optional ByVal Force As Boolean = False) As Boolean
     'Debug.Print "TryGuess()"
     If This.LHSTable Is Nothing Then Exit Function
     If This.RHSTable Is Nothing Then Exit Function
@@ -354,26 +358,25 @@ Public Function TryGuess(Optional Force As Boolean = False) As Boolean
     
     Dim i As Long
     Dim j As Long
-    Dim thisScore As Double
     Dim comp As KeyColumnComparer
     Set comp = New KeyColumnComparer
     For i = 1 To lhsCount
-        Set comp.lhs = KeyColumn.FromColumn(This.LHSColumns(i), False, 1000)
-        'PrintTime "KeyColumn.FromColumn(this.LHSColumns(i))"
-        If comp.lhs.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
+        Set comp.LHS = KeyColumn.FromColumn(This.LHSColumns.Item(i), False, 1000)
+        'PrintTime "KeyColumn.FromColumn(this.LHSColumns.Item(i))"
+        If comp.LHS.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
             For j = 1 To rhsCount
                 If (Timer() - startTime) > timeLimit Then GoTo TimeLimitExceeded
-                Set comp.rhs = KeyColumn.FromColumn(This.RHSColumns(j), False, 1000)
-                'PrintTime "KeyColumn.FromColumn(this.RHSColumns(i))"
-                If Not comp.rhs Is Nothing Then
-                    If comp.rhs.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
+                Set comp.RHS = KeyColumn.FromColumn(This.RHSColumns.Item(j), False, 1000)
+                'PrintTime "KeyColumn.FromColumn(this.RHSColumns.Item(i))"
+                If Not comp.RHS Is Nothing Then
+                    If comp.RHS.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
                         comp.Map
     
                         If comp.Score > bestScore Then
                             'Debug.Print "New best score: " & comp.Score & " (" & i & "," & j & ")"
                             bestScore = comp.Score
-                            Set bestLHS = This.LHSColumns(i)
-                            Set bestRHS = This.RHSColumns(j)
+                            Set bestLHS = This.LHSColumns.Item(i)
+                            Set bestRHS = This.RHSColumns.Item(j)
                         End If
                     End If
                 End If
@@ -391,7 +394,7 @@ TimeLimitExceeded:
     TryGuess = True
 End Function
 
-Public Function TryGuessUserdefined(Optional Force As Boolean = False) As Boolean
+Public Function TryGuessUserdefined() As Boolean
     Dim UserdefinedKeys As Collection
     If Not GetMyDocSettings.HasCollection("UserdefinedKeys") Then Exit Function
     Set UserdefinedKeys = GetMyDocSettings.GetCollection("UserdefinedKeys")
@@ -400,8 +403,8 @@ Public Function TryGuessUserdefined(Optional Force As Boolean = False) As Boolea
     For Each UserdefinedKey In UserdefinedKeys
         If ListObjectHelpers.ListColumnExists(This.LHSTable, UserdefinedKey) _
         And ListObjectHelpers.ListColumnExists(This.RHSTable, UserdefinedKey) Then
-            Set LHSKeyColumn = This.LHSColumns(UserdefinedKey)
-            Set RHSKeyColumn = This.RHSColumns(UserdefinedKey)
+            Set LHSKeyColumn = This.LHSColumns.Item(UserdefinedKey)
+            Set RHSKeyColumn = This.RHSColumns.Item(UserdefinedKey)
     
             This.IsAutoGuessed = True
             TryGuessUserdefined = True

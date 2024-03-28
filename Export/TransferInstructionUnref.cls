@@ -141,7 +141,7 @@ Public Function AsReferenced() As TransferInstruction
         If TryGetListObjectFromWorkbook(wbLHS, This.Source, lo) Then
             Set ti.Source = lo
             On Error Resume Next
-            Set ti.SourceKey = ti.Source.ListColumns(This.SourceKey)
+            Set ti.SourceKey = ti.Source.ListColumns.Item(This.SourceKey)
             On Error GoTo 0
         End If
     End If
@@ -150,7 +150,7 @@ Public Function AsReferenced() As TransferInstruction
         If TryGetListObjectFromWorkbook(wbRHS, This.Destination, lo) Then
             Set ti.Destination = lo
             On Error Resume Next
-            Set ti.DestinationKey = ti.Destination.ListColumns(This.DestinationKey)
+            Set ti.DestinationKey = ti.Destination.ListColumns.Item(This.DestinationKey)
             On Error GoTo 0
         End If
     End If

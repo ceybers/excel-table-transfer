@@ -12,7 +12,7 @@ Option Explicit
 Option Compare Text
 Implements IViewModel
 
-Private Const ICON_SIZE As Integer = 16
+Private Const ICON_SIZE As Long = 16
 
 Public Event CollectionChanged()
 Public Event ItemSelected()
@@ -54,8 +54,8 @@ Public Property Get SelectedTable() As ListObject
     Set SelectedTable = This.SelectedTable
 End Property
 
-Public Property Set SelectedTable(ByVal rhs As ListObject)
-    Set This.SelectedTable = rhs
+Public Property Set SelectedTable(ByVal RHS As ListObject)
+    Set This.SelectedTable = RHS
     RaiseEvent ItemSelected
 End Property
 
@@ -63,8 +63,8 @@ Public Property Get ActiveTable() As ListObject
     Set ActiveTable = This.ActiveTable
 End Property
 
-Public Property Set ActiveTable(ByVal rhs As ListObject)
-    Set This.ActiveTable = rhs
+Public Property Set ActiveTable(ByVal RHS As ListObject)
+    Set This.ActiveTable = RHS
     Load
 End Property
 
@@ -72,8 +72,8 @@ Public Property Get SearchCriteria() As String
     SearchCriteria = This.SearchCriteria
 End Property
 
-Public Property Let SearchCriteria(ByVal rhs As String)
-    This.SearchCriteria = rhs
+Public Property Let SearchCriteria(ByVal RHS As String)
+    This.SearchCriteria = RHS
     Load
 End Property
 
@@ -103,11 +103,11 @@ Private Function GetAllTables() As Collection
     Next wb
 End Function
 
-Public Sub TrySelect(ByVal key As String)
+Public Sub TrySelect(ByVal Key As String)
     Dim lo As ListObject
     
     If Not This.ActiveTable Is Nothing Then
-        If This.ActiveTable.Range.Address(external:=True) = key Then
+        If This.ActiveTable.Range.Address(external:=True) = Key Then
             ' Set selected table to nothing, otherwise we can still double click the active table and
             ' it will close the dialog and return the previously selected valid table
             Set SelectedTable = Nothing
@@ -116,7 +116,7 @@ Public Sub TrySelect(ByVal key As String)
     End If
     
     For Each lo In This.Tables
-        If lo.Range.Address(external:=True) = key Then
+        If lo.Range.Address(external:=True) = Key Then
             Set SelectedTable = lo
             Exit Sub
         End If
@@ -143,7 +143,7 @@ Private Sub TrySelectOther()
     Next lo
 End Sub
 
-Private Sub class_initialize()
+Private Sub Class_Initialize()
     This.AutoSelected = False
     Load
 End Sub
@@ -155,10 +155,10 @@ End Function
 
 Public Sub LoadTreeview(ByVal tv As MSComctlLib.TreeView)
     With tv
-        .ImageList = GetMSOImageList(ICON_SIZE)
+        Set .ImageList = GetMSOImageList(ICON_SIZE)
         
         .Nodes.Clear
-        .Nodes.Add key:="Root", text:="Excel", image:="Excel"
+        .Nodes.Add Key:="Root", text:="Excel", image:="Excel"
         
         .LineStyle = tvwTreeLines
         .Appearance = cc3D
@@ -186,7 +186,7 @@ Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
     Dim ws As Worksheet
     Dim wb As Workbook
     
-    Dim key As String
+    Dim Key As String
     Dim parent As String
     Dim nd As Node
     Dim image As String
@@ -195,21 +195,21 @@ Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
     
     If TypeOf obj Is Workbook Then
         Set wb = obj
-        key = "[" & wb.Name & "]"
+        Key = "[" & wb.Name & "]"
         parent = "Root"
         image = "wb"
         text = wb.Name
         
     ElseIf TypeOf obj Is Worksheet Then
         Set ws = obj
-        key = "[" & ws.parent.Name & "]" & ws.Name
+        Key = "[" & ws.parent.Name & "]" & ws.Name
         parent = "[" & ws.parent.Name & "]"
         image = "ws"
         text = ws.Name
         
     ElseIf TypeOf obj Is ListObject Then
         Set lo = obj
-        key = lo.Range.Address(external:=True)
+        Key = lo.Range.Address(external:=True)
         parent = "[" & lo.parent.parent.Name & "]" & lo.parent.Name
         image = "lo"
         text = lo.Name
@@ -226,13 +226,13 @@ Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
     End If
     
     For Each nd In tv.Nodes
-        If nd.key = key Then Exit Sub
+        If nd.Key = Key Then Exit Sub
     Next nd
     
-    tv.Nodes.Add relative:=parent, Relationship:=tvwChild, key:=key, text:=text, image:=image
+    tv.Nodes.Add relative:=parent, Relationship:=tvwChild, Key:=Key, text:=text, image:=image
     
     If image = "activeLo" Then
-        tv.Nodes(key).ForeColor = RGB(192, 192, 192)
+        tv.Nodes.ControlDefault(Key).ForeColor = RGB(192, 192, 192)
     End If
 End Sub
 

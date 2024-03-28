@@ -69,7 +69,7 @@ Public Sub Create()
 
     Dim curWS As Worksheet
     Set curWS = ActiveSheet
-    Set Worksheet = ActiveWorkbook.Worksheets.Add(After:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count))
+    Set Worksheet = ActiveWorkbook.Worksheets.Add(After:=ActiveWorkbook.Worksheets.Item(ActiveWorkbook.Worksheets.Count))
     Worksheet.Name = WORKSHEET_NAME
     Worksheet.Visible = xlSheetVeryHidden
     curWS.Activate
