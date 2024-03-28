@@ -393,6 +393,7 @@ End Function
 
 Public Function TryGuessUserdefined(Optional Force As Boolean = False) As Boolean
     Dim UserdefinedKeys As Collection
+    If Not GetMyDocSettings.HasCollection("UserdefinedKeys") Then Exit Function
     Set UserdefinedKeys = GetMyDocSettings.GetCollection("UserdefinedKeys")
     
     Dim UserdefinedKey As Variant
