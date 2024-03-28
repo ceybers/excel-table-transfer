@@ -1,22 +1,18 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} ValueMapperView 
    Caption         =   "Map Value Columns"
-   ClientHeight    =   6525
+   ClientHeight    =   9015.001
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   9360.001
    OleObjectBlob   =   "ValueMapperView.frx":0000
-   StartUpPosition =   1  'CenterOwner
+   StartUpPosition =   2  'CenterScreen
 End
 Attribute VB_Name = "ValueMapperView"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
 '@Folder "ValueMapper"
 Option Explicit
 Implements IView
@@ -70,10 +66,10 @@ Private Sub cmbOptions_Click()
     Set optionVM = New TransferOptionsViewModel
     optionVM.Flags = vm.Flags
     
-    Dim view As IView
-    Set view = New TransferOptionsView
+    Dim View As IView
+    Set View = New TransferOptionsView
     
-    If view.ShowDialog(optionVM) Then
+    If View.ShowDialog(optionVM) Then
         vm.Flags = optionVM.Flags
     Else
         'Debug.Print "Cancelled"

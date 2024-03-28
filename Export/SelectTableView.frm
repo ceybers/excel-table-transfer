@@ -1,12 +1,12 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} SelectTableView 
    Caption         =   "Select Table"
-   ClientHeight    =   4995
+   ClientHeight    =   9015.001
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   3240
+   ClientWidth     =   9360.001
    OleObjectBlob   =   "SelectTableView.frx":0000
-   StartUpPosition =   1  'CenterOwner
+   StartUpPosition =   2  'CenterScreen
 End
 Attribute VB_Name = "SelectTableView"
 Attribute VB_GlobalNameSpace = False

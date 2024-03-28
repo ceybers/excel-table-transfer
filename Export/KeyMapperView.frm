@@ -1,12 +1,12 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} KeyMapperView 
    Caption         =   "Key Column Mapper"
-   ClientHeight    =   8445.001
+   ClientHeight    =   9015.001
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   5880
+   ClientWidth     =   9360.001
    OleObjectBlob   =   "KeyMapperView.frx":0000
-   StartUpPosition =   1  'CenterOwner
+   StartUpPosition =   2  'CenterScreen
 End
 Attribute VB_Name = "KeyMapperView"
 Attribute VB_GlobalNameSpace = False
@@ -405,7 +405,7 @@ End Sub
 
 Private Sub CollectionToListView(ByVal coll As Collection, ByVal lv As ListView, ByVal header As String)
     With lv
-        .view = lvwReport
+        .View = lvwReport
         .Gridlines = True
         .ListItems.Clear
         .ColumnHeaders.Clear
