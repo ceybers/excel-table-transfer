@@ -10,15 +10,8 @@ Private OneTableSelected As ListObject
 
 Private GoBack As Boolean
 
-Public Sub PrintTime(ByVal message As String, Optional ByVal Reset As Boolean)
-    Static startTime As Double
-    If Reset Or (startTime = 0) Then
-        startTime = Timer()
-    End If
-    Debug.Print message & " " & (Timer() - startTime)
-End Sub
-
 '@ExcelHotkey e
+'@EntryPoint
 Public Sub TransferTable()
 Attribute TransferTable.VB_ProcData.VB_Invoke_Func = "e\n14"
     PrintTime "Start", True
@@ -268,15 +261,4 @@ End Sub
 
 Private Sub TrySaveHistory()
     TransferHistorySerializer.TrySave Transfer
-    
-    'If HasFlag(transfer.Flags, SaveToHistory) Then
-    'Dim history As TransferHistoryViewModel
-    'Set history = New TransferHistoryViewModel
-    'If history.HasHistory = False Then
-    '    history.Create
-    'End If
-    'history.Refresh
-    'history.Add transfer
-    'history.Save
-    'End If
 End Sub
