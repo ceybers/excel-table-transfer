@@ -1,4 +1,5 @@
 Attribute VB_Name = "TestTransferHistory"
+'@IgnoreModule
 '@Folder "ZZZTransferHistory"
 Option Explicit
 

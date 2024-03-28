@@ -1,4 +1,5 @@
 Attribute VB_Name = "ZZZTableToArray"
+'@IgnoreModule
 '@Folder "ZZZRefactor"
 Option Explicit
 

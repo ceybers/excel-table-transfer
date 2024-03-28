@@ -1,4 +1,5 @@
 Attribute VB_Name = "modHelperFunctions"
+'@IgnoreModule
 '@Folder "ZZZRefactor"
 Option Explicit
 

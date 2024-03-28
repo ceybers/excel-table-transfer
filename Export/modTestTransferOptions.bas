@@ -1,4 +1,5 @@
 Attribute VB_Name = "modTestTransferOptions"
+'@IgnoreModule
 '@Folder "ZZZRefactor"
 Option Explicit
 Option Private Module

@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+'@IgnoreModule
 '@Folder "ZZZTransferHistory"
 Option Explicit
 Implements IViewModel
@@ -17,10 +18,11 @@ Public Items As Collection
 Public Worksheet As Worksheet
 Public SelectedInstruction As TransferInstruction
 
-Private Sub class_initialize()
+Private Sub Class_Initialize()
     Set Items = New Collection
     If HasHistory Then
-        Set Worksheet = WorksheetHelpers.GetWorksheetByName(WORKSHEET_NAME)
+        'Set Worksheet = WorksheetHelpers.TryGetWorksheet(WORKSHEET_NAME)
+        TryGetWorksheet ThisWorkbook, WORKSHEET_NAME, Worksheet
     End If
 End Sub
 
@@ -29,7 +31,7 @@ Private Function IViewModel_IsValid() As Boolean
 End Function
 
 Public Function HasHistory() As Boolean
-    HasHistory = WorksheetHelpers.DoesWorksheetExist(WORKSHEET_NAME)
+    HasHistory = WorksheetHelpers.WorksheetExists(ActiveWorkbook, WORKSHEET_NAME)
 End Function
 
 Public Sub Add(ByVal TransferInstruction As TransferInstruction)
@@ -45,7 +47,7 @@ End Sub
 Public Sub Refresh()
     Dim Result As Variant
     'Debug.Assert Not Worksheet Is Nothing
-    ClearCollection Items
+    CollectionHelpers.CollectionClear Items
     If Not Worksheet Is Nothing Then
         Set Result = LoadTransferInstructionsFromWorksheet(Worksheet)
         If Not Result Is Nothing Then
@@ -57,7 +59,7 @@ End Sub
 Public Sub Clear()
     Debug.Assert Not Worksheet Is Nothing
     Worksheet.UsedRange.EntireRow.Delete
-    ClearCollection Items
+    CollectionHelpers.CollectionClear Items
 End Sub
 
 Public Sub Create()
@@ -67,7 +69,7 @@ Public Sub Create()
 
     Dim curWS As Worksheet
     Set curWS = ActiveSheet
-    Set Worksheet = ActiveWorkbook.Worksheets.Add(after:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count))
+    Set Worksheet = ActiveWorkbook.Worksheets.Add(After:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count))
     Worksheet.Name = WORKSHEET_NAME
     Worksheet.Visible = xlSheetVeryHidden
     curWS.Activate
@@ -105,7 +107,7 @@ Public Sub ItemsToListView(ByVal lv As ListView)
     
     Dim i As Long
     For i = 1 To Items.Count
-        lv.ListItems.Add text:=Items(i).Name, key:="KEY" & i
+        lv.ListItems.Add text:=Items(i).Name, Key:="KEY" & i
     Next i
     
     If HasHistory Then
@@ -117,10 +119,10 @@ Public Sub ItemsToListView(ByVal lv As ListView)
     End If
 End Sub
 
-Public Sub TrySelect(ByVal key As String)
+Public Sub TrySelect(ByVal Key As String)
     Dim i As Long
-    Debug.Assert Len(key) > 3
-    i = val(Right$(key, Len(key) - 3))
+    Debug.Assert Len(Key) > 3
+    i = val(Right$(Key, Len(Key) - 3))
     Debug.Assert i <= Items.Count
     Set SelectedInstruction = Items(i)
 End Sub

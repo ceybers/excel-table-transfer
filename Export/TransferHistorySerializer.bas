@@ -1,4 +1,5 @@
 Attribute VB_Name = "TransferHistorySerializer"
+'@IgnoreModule
 '@Folder "ZZZTransferHistory"
 Option Explicit
 
@@ -8,7 +9,7 @@ Private Const RANGE_TO_REMOVE As String = "A:D"
 Public Function TryLoad(ByRef tiUr As TransferInstructionUnref) As Boolean
     Dim ws As Worksheet
     
-    If TryGetWorksheetByName(WORKSHEET_NAME, ws) = False Then
+    If TryGetWorksheet(ThisWorkbook, WORKSHEET_NAME, ws) = False Then
         Exit Function
     End If
     
@@ -28,10 +29,10 @@ Public Function TrySave(ByVal ti As TransferInstruction) As Boolean
     
     Dim ws As Worksheet
     
-    If TryGetWorksheetByName(WORKSHEET_NAME, ws) = False Then
+    If TryGetWorksheet(ThisWorkbook, WORKSHEET_NAME, ws) = False Then
         Dim curWS As Worksheet
         Set curWS = ActiveSheet
-        Set ws = ActiveWorkbook.Worksheets.Add(after:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count))
+        Set ws = ActiveWorkbook.Worksheets.Add(After:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count))
         ws.Name = WORKSHEET_NAME
         ws.Visible = xlSheetVeryHidden
         curWS.Activate

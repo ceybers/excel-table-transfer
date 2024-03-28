@@ -1,4 +1,6 @@
 Attribute VB_Name = "ZZZ_modMain"
+'@IgnoreModule
+'@IgnoreModule
 '@IgnoreModule EmptyIfBlock
 '@Folder "ZZZRefactor"
 Option Explicit
@@ -155,8 +157,8 @@ End Function
 Private Function SetValueMapping(ByVal Transfer As TransferInstruction) As Boolean
     Dim vm As ValueMapperViewModel
     Set vm = New ValueMapperViewModel
-    Set vm.lhs = Transfer.Source
-    Set vm.rhs = Transfer.Destination
+    Set vm.LHS = Transfer.Source
+    Set vm.RHS = Transfer.Destination
     Set vm.KeyColumnLHS = Transfer.SourceKey
     Set vm.KeyColumnRHS = Transfer.DestinationKey
     vm.Flags = Transfer.Flags

@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+'@IgnoreModule
 '@Folder "ZZZTransferHistory"
 Option Explicit
 
@@ -30,88 +31,88 @@ Public Property Get LastRun() As Date
     LastRun = This.LastRun
 End Property
 
-Public Property Let LastRun(ByVal rhs As Date)
-    This.LastRun = rhs
+Public Property Let LastRun(ByVal RHS As Date)
+    This.LastRun = RHS
 End Property
 
 Public Property Get SourceSheet() As String
     SourceSheet = This.SourceSheet
 End Property
 
-Public Property Let SourceSheet(ByVal rhs As String)
-    This.SourceSheet = rhs
+Public Property Let SourceSheet(ByVal RHS As String)
+    This.SourceSheet = RHS
 End Property
 
 Public Property Get DestinationSheet() As String
     DestinationSheet = This.DestinationSheet
 End Property
 
-Public Property Let DestinationSheet(ByVal rhs As String)
-    This.DestinationSheet = rhs
+Public Property Let DestinationSheet(ByVal RHS As String)
+    This.DestinationSheet = RHS
 End Property
 
 Public Property Get SourceFilename() As String
     SourceFilename = This.SourceFilename
 End Property
 
-Public Property Let SourceFilename(ByVal rhs As String)
-    This.SourceFilename = rhs
+Public Property Let SourceFilename(ByVal RHS As String)
+    This.SourceFilename = RHS
 End Property
 
 Public Property Get DestinationFilename() As String
     DestinationFilename = This.DestinationFilename
 End Property
 
-Public Property Let DestinationFilename(ByVal rhs As String)
-    This.DestinationFilename = rhs
+Public Property Let DestinationFilename(ByVal RHS As String)
+    This.DestinationFilename = RHS
 End Property
 
 Public Property Get Source() As String
     Source = This.Source
 End Property
 
-Public Property Let Source(ByVal rhs As String)
-    This.Source = rhs
+Public Property Let Source(ByVal RHS As String)
+    This.Source = RHS
 End Property
 
 Public Property Get Destination() As String
     Destination = This.Destination
 End Property
 
-Public Property Let Destination(ByVal rhs As String)
-    This.Destination = rhs
+Public Property Let Destination(ByVal RHS As String)
+    This.Destination = RHS
 End Property
 
 Public Property Get SourceKey() As String
     SourceKey = This.SourceKey
 End Property
 
-Public Property Let SourceKey(ByVal rhs As String)
-    This.SourceKey = rhs
+Public Property Let SourceKey(ByVal RHS As String)
+    This.SourceKey = RHS
 End Property
 
 Public Property Get DestinationKey() As String
     DestinationKey = This.DestinationKey
 End Property
 
-Public Property Let DestinationKey(ByVal rhs As String)
-    This.DestinationKey = rhs
+Public Property Let DestinationKey(ByVal RHS As String)
+    This.DestinationKey = RHS
 End Property
 
 Public Property Get ValuePairs() As Variant
     Let ValuePairs = This.ValuePairs
 End Property
 
-Public Property Let ValuePairs(ByVal rhs As Variant)
-    Let This.ValuePairs = rhs
+Public Property Let ValuePairs(ByVal RHS As Variant)
+    Let This.ValuePairs = RHS
 End Property
 
 Public Property Get Flags() As Integer
     Flags = This.Flags
 End Property
 
-Public Property Let Flags(ByVal rhs As Integer)
-    This.Flags = rhs
+Public Property Let Flags(ByVal RHS As Integer)
+    This.Flags = RHS
 End Property
 
 ' TODO Invert this so that TI can try and load from a TIUnref
