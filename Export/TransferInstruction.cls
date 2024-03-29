@@ -135,10 +135,10 @@ Public Function Transfer() As Boolean
     
     SetMapResult
     
-    Dim colPair As ColumnPair
-    For Each colPair In ValuePairs
-        TransferOne colPair
-    Next colPair
+    Dim ColPair As ColumnPair
+    For Each ColPair In ValuePairs
+        TransferOne ColPair
+    Next ColPair
     
     UpdateHighlighting
 
@@ -152,8 +152,8 @@ Private Sub SetMapResult()
     MapResult = Compare.Map(HasFlag(This.Flags, SourceFilteredOnly), HasFlag(This.Flags, DestinationFilteredOnly))
 End Sub
 
-Private Sub TransferOne(ByVal colPair As ColumnPair)
-    DoTransfer MapResult, colPair.LHS, colPair.RHS
+Private Sub TransferOne(ByVal ColPair As ColumnPair)
+    DoTransfer MapResult, ColPair.LHS, ColPair.RHS
 End Sub
 
 Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal Destination As ListColumn)
@@ -187,8 +187,8 @@ Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal D
     
     arrLHS = Source.DataBodyRange.Value2
     arrRHS = Destination.DataBodyRange.Value2
-    arrLHSOffset = Source.DataBodyRange.row
-    arrRHSOffset = Destination.DataBodyRange.row
+    arrLHSOffset = Source.DataBodyRange.Row
+    arrRHSOffset = Destination.DataBodyRange.Row
     
     Dim cellRange As Range
     Dim copiedRange As Range
@@ -246,7 +246,7 @@ Private Sub RemoveUnmappedKeys()
     Set rng = comp.RHS.Range
     
     For i = rng.rows.Count To 1 Step -1
-        If cachedMappedResults(rng.rows(i).row) = -1 Then
+        If cachedMappedResults(rng.rows(i).Row) = -1 Then
             rng.rows(i).EntireRow.Delete
         End If
     Next i

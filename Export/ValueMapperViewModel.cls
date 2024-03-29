@@ -183,13 +183,13 @@ End Sub
 
 Private Function IsMappedLHS(ByVal columnName As String) As Boolean
     Err.Raise 5, , "no"
-    Dim colPair As ColumnPair
-    For Each colPair In This.ValuePairs
-        If colPair.LHS.Name = columnName Then
+    Dim ColPair As ColumnPair
+    For Each ColPair In This.ValuePairs
+        If ColPair.LHS.Name = columnName Then
             IsMappedLHS = True
             Exit Function
         End If
-    Next colPair
+    Next ColPair
 End Function
 
 Public Sub LoadRHStoListView(ByVal lv As ListView)
@@ -247,13 +247,13 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
 End Sub
 
 Private Function GetMappedTo(ByVal columnName As String) As String
-    Dim colPair As ColumnPair
-    For Each colPair In This.ValuePairs
-        If colPair.RHS.Name = columnName Then
-            GetMappedTo = colPair.LHS.Name
+    Dim ColPair As ColumnPair
+    For Each ColPair In This.ValuePairs
+        If ColPair.RHS.Name = columnName Then
+            GetMappedTo = ColPair.LHS.Name
             Exit Function
         End If
-    Next colPair
+    Next ColPair
 End Function
 
 Private Function IsColumnMapped(ByVal columnName As String) As Boolean
@@ -288,10 +288,10 @@ End Sub
 Public Sub TryMap()
     Debug.Assert Not This.SelectedLHS Is Nothing
     Debug.Assert Not This.SelectedRHS Is Nothing
-    Dim colPair As ColumnPair
-    Set colPair = ColumnPair.Create(This.SelectedLHS, This.SelectedRHS)
-    This.ValuePairs.AddOrReplace colPair
-    This.CheckedValuePairs.AddOrReplace colPair
+    Dim ColPair As ColumnPair
+    Set ColPair = ColumnPair.Create(This.SelectedLHS, This.SelectedRHS)
+    This.ValuePairs.AddOrReplace ColPair
+    This.CheckedValuePairs.AddOrReplace ColPair
     
     This.IsAutoMapped = False
     
@@ -302,26 +302,26 @@ Public Sub TryMap()
 End Sub
 
 Public Sub TryUnMap()
-    Dim colPair As ColumnPair
+    Dim ColPair As ColumnPair
     
-    If This.ValuePairs.TryGetPair(colPair, , This.SelectedRHS) Then
-        If This.SelectedValuePair Is colPair Then
+    If This.ValuePairs.TryGetPair(ColPair, , This.SelectedRHS) Then
+        If This.SelectedValuePair Is ColPair Then
             Set This.SelectedValuePair = Nothing
         End If
         
-        This.CheckedValuePairs.Remove colPair
-        This.ValuePairs.Remove colPair
+        This.CheckedValuePairs.Remove ColPair
+        This.ValuePairs.Remove ColPair
         
         RaiseEvent SelectionChanged
         RaiseEvent MappingChanged
     End If
 End Sub
 
-Private Function DoesMappingExist(ByVal colPair As ColumnPair) As Boolean
+Private Function DoesMappingExist(ByVal ColPair As ColumnPair) As Boolean
     Dim RHS As ColumnPair
     For Each RHS In This.ValuePairs
         'If colPair.Equals(rhs) Then
-        If colPair.RHS Is RHS.RHS Then
+        If ColPair.RHS Is RHS.RHS Then
             DoesMappingExist = True
             Exit Function
         End If
@@ -329,32 +329,32 @@ Private Function DoesMappingExist(ByVal colPair As ColumnPair) As Boolean
 End Function
 
 Private Function IsMappingSelected(ByVal columnName As String) As Boolean
-    Dim colPair As ColumnPair
-    For Each colPair In This.CheckedValuePairs   ' TODO DRY
-        If colPair.RHS.Name = columnName Then
+    Dim ColPair As ColumnPair
+    For Each ColPair In This.CheckedValuePairs   ' TODO DRY
+        If ColPair.RHS.Name = columnName Then
             IsMappingSelected = True
             Exit Function
         End If
-    Next colPair
+    Next ColPair
 End Function
 
 Public Sub TryCheck(ByVal Item As MSComctlLib.ListItem)
     Dim lc As ListColumn
-    Dim colPair As ColumnPair
+    Dim ColPair As ColumnPair
     
     If TryGetListColumnByName(This.RHS, Item.Key, lc) Then
         If Item.checked Then
             If This.ValuePairs.IsMappedRHS(lc) Then
-                If This.ValuePairs.TryGetPair(ColumnPair:=colPair, RHS:=lc) Then
-                    This.CheckedValuePairs.Add colPair
+                If This.ValuePairs.TryGetPair(ColumnPair:=ColPair, RHS:=lc) Then
+                    This.CheckedValuePairs.Add ColPair
                 End If
             Else
                 Item.checked = False
             End If
         Else
             If This.ValuePairs.IsMappedRHS(lc) Then
-                If This.ValuePairs.TryGetPair(ColumnPair:=colPair, RHS:=lc) Then
-                    This.CheckedValuePairs.Remove colPair
+                If This.ValuePairs.TryGetPair(ColumnPair:=ColPair, RHS:=lc) Then
+                    This.CheckedValuePairs.Remove ColPair
                 Else
                     Debug.Print "TryCheck Failed"
                 End If
@@ -380,9 +380,9 @@ Public Sub TrySelectRHS(ByVal Item As MSComctlLib.ListItem)
         Set This.SelectedRHS = lc
     End If
     
-    Dim colPair As ColumnPair
-    Set colPair = This.ValuePairs.GetPair(RHS:=lc)
-    Set This.SelectedValuePair = colPair
+    Dim ColPair As ColumnPair
+    Set ColPair = This.ValuePairs.GetPair(RHS:=lc)
+    Set This.SelectedValuePair = ColPair
 
     RaiseEvent SelectionChanged
 End Sub
@@ -467,16 +467,16 @@ End Sub
 Private Sub TryAutomap()
     Dim LHS As ListColumn
     Dim RHS As ListColumn
-    Dim colPair As ColumnPair
+    Dim ColPair As ColumnPair
     
     For Each RHS In This.RHS.ListColumns
         If Not RHS Is This.KeyColumnRHS Then
             If TryGetListColumnByName(This.LHS, RHS.Name, LHS) Then
                 If Not LHS Is This.KeyColumnLHS Then
                     If ListColumnHasArray(RHS) = False Then
-                        Set colPair = ColumnPair.Create(LHS, RHS)
-                        This.ValuePairs.Add colPair
-                        This.CheckedValuePairs.Add colPair
+                        Set ColPair = ColumnPair.Create(LHS, RHS)
+                        This.ValuePairs.Add ColPair
+                        This.CheckedValuePairs.Add ColPair
                     End If
                 End If
             End If
@@ -488,10 +488,10 @@ Private Sub TryAutomap()
 End Sub
 
 Public Sub LoadFromTransferInstruction(ByVal ti As TransferInstruction)
-    Dim colPair As ColumnPair
-    For Each colPair In ti.ValuePairs
-        This.ValuePairs.Add colPair
-        This.CheckedValuePairs.Add colPair
-    Next colPair
+    Dim ColPair As ColumnPair
+    For Each ColPair In ti.ValuePairs
+        This.ValuePairs.Add ColPair
+        This.CheckedValuePairs.Add ColPair
+    Next ColPair
 End Sub
 

@@ -3,7 +3,9 @@ Attribute VB_Name = "AppContext"
 '@Folder "MVVM.AppContext"
 Option Explicit
 
-Private Transfer As TransferInstruction
+'Private Transfer As TransferInstruction
+Private Transfer2 As TransferInstruction2
+
 Private SelectTableVM As SelectTableViewModel
 
 Private OneTableSelected As ListObject
@@ -20,9 +22,10 @@ Attribute TransferTable.VB_ProcData.VB_Invoke_Func = "e\n14"
     
     InitializeViewModels
     
-    If TryLoadHistory Then
-        GoTo Rewind3
-    End If
+    ' This won't work with TransferInstruction2
+    'If TryLoadHistory Then
+    '    GoTo Rewind3
+    'End If
     
     ' DEBUG
     'Set Transfer.Source = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
@@ -44,16 +47,19 @@ Rewind2:
     If TryGetKeyColumns = False Then Exit Sub
     If GoBack Then
         GoBack = False
-        Set Transfer.Source = Nothing
-        Set Transfer.Destination = Nothing
+        'Set Transfer.Source = Nothing
+        Set Transfer2.Source.Table = Nothing
+        'Set Transfer.Destination = Nothing
+        Set Transfer2.Destination.Table = Nothing
         GoTo Rewind1
     End If
     PrintTime "TryGetKeyColumns"
     
 Rewind3:
-    If Not Transfer.UnRef Is Nothing And Transfer.ValuePairs.Count = 0 Then
-        Transfer.TryLoadValuePairs
-    End If
+    ' TODO Migrating Transfer to Transfer2
+    'If Not Transfer.UnRef Is Nothing And Transfer.ValuePairs.Count = 0 Then
+    '    Transfer.TryLoadValuePairs
+    'End If
     If TryMapValueColumns = False Then Exit Sub
     If GoBack Then
         GoBack = False
@@ -72,28 +78,16 @@ Rewind3:
 End Sub
 
 Private Sub InitializeViewModels()
-    Set Transfer = New TransferInstruction
-    Transfer.SetDefaultFlags
+    'Set Transfer = New TransferInstruction
+    'Transfer.SetDefaultFlags
+    
+    Set Transfer2 = New TransferInstruction2
     
     Set SelectTableVM = New SelectTableViewModel
 End Sub
 
+'@Obsolete
 Private Function TryLoadHistory() As Boolean
-    TryLoadHistory = True
-    Dim tiUr As TransferInstructionUnref
-    If TransferHistorySerializer.TryLoad(tiUr) Then
-        Set Transfer.UnRef = tiUr
-        Transfer.LoadFlags
-        If Transfer.TryLoadTables = False Then
-            TryLoadHistory = False
-        End If
-        If Transfer.TryLoadKeyColumns = False Then
-            TryLoadHistory = False
-        End If
-        'Debug.Print Transfer.TryLoadValuePairs
-    Else
-        TryLoadHistory = False
-    End If
 End Function
 
 Private Function CheckTablesAvailable() As Boolean
@@ -116,11 +110,12 @@ End Function
 Private Function TryGetSourceOrDestination() As Boolean
     TryGetSourceOrDestination = True
     
-    If Not Transfer.Source Is Nothing And Not Transfer.Destination Is Nothing Then
-        ' Tables already set in TransferInstruction
-        ' TODO Check what happens if we set them, but press Back button on next dialog
-        Exit Function
-    End If
+    ' TODO CHK If we need this guard
+    'If Not Transfer.Source Is Nothing And Not Transfer.Destination Is Nothing Then
+    '    ' Tables already set in TransferInstruction
+    '    ' TODO Check what happens if we set them, but press Back button on next dialog
+    '    Exit Function
+    'End If
     
     If OneTableSelected Is Nothing Then Exit Function
     
@@ -132,9 +127,11 @@ Private Function TryGetSourceOrDestination() As Boolean
     Set View = New SourceOrDestinationView
     If View.ShowDialog(vm) Then
         If vm.IsSource Then
-            Set Transfer.Source = OneTableSelected
+            'Set Transfer.Source = OneTableSelected
+            Set Transfer2.Source.Table = OneTableSelected
         ElseIf vm.IsDestination Then
-            Set Transfer.Destination = OneTableSelected
+            'Set Transfer.Destination = OneTableSelected
+            Set Transfer2.Destination.Table = OneTableSelected
         Else
             TryGetSourceOrDestination = False
         End If
@@ -146,7 +143,7 @@ End Function
 Private Function TryGetSecondTable() As Boolean
     Set SelectTableVM.ActiveTable = OneTableSelected
         
-    If Not Transfer.Source Is Nothing And Not Transfer.Destination Is Nothing Then
+    If Not Transfer2.Source.Table Is Nothing And Not Transfer2.Destination.Table Is Nothing Then
         ' Tables already set in TransferInstruction
         ' TODO Check what happens if we set them, but press Back button on next dialog
         ' Might need to implement arg Optional Force as Boolean
@@ -155,10 +152,12 @@ Private Function TryGetSecondTable() As Boolean
     End If
     
     If TrySelectTable(Nothing, SelectTableVM) Then
-        If Transfer.Source Is Nothing Then
-            Set Transfer.Source = SelectTableVM.SelectedTable
-        ElseIf Transfer.Destination Is Nothing Then
-            Set Transfer.Destination = SelectTableVM.SelectedTable
+        If Transfer2.Source.Table Is Nothing Then
+            'Set Transfer.Source = SelectTableVM.SelectedTable
+            Set Transfer2.Source.Table = SelectTableVM.SelectedTable
+        ElseIf Transfer2.Destination.Table Is Nothing Then
+            'Set Transfer.Destination = SelectTableVM.SelectedTable
+            Set Transfer2.Destination.Table = SelectTableVM.SelectedTable
         Else
             Debug.Assert False
         End If
@@ -171,8 +170,8 @@ Private Function TryGetKeyColumns() As Boolean
     
     Dim vm As KeyMapperViewModel
     Set vm = New KeyMapperViewModel
-    Set vm.LHSTable = Transfer.Source
-    Set vm.RHSTable = Transfer.Destination
+    Set vm.LHSTable = Transfer2.Source.Table
+    Set vm.RHSTable = Transfer2.Destination.Table
     
     Dim frm As IView
     Set frm = New KeyMapperView
@@ -181,28 +180,35 @@ Private Function TryGetKeyColumns() As Boolean
         If vm.GoBack Then
             GoBack = True
         ElseIf vm.IsValid Then
-            If Transfer.Source Is Nothing Or Transfer.Destination Is Nothing Then
-                CollectionHelpers.CollectionClear Transfer.ValuePairs
-            ElseIf Transfer.Source <> vm.LHSTable Or Transfer.Destination <> vm.RHSTable Then
-                CollectionHelpers.CollectionClear Transfer.ValuePairs
+            If Transfer2.Source.Table Is Nothing Or Transfer2.Destination.Table Is Nothing Then
+                ' TODO Migrating Transfer to Transfer2
+                'CollectionHelpers.CollectionClear Transfer.ValuePairs
+            ElseIf Transfer2.Source.Table <> vm.LHSTable Or Transfer2.Destination.Table <> vm.RHSTable Then
+                ' TODO Migrating Transfer to Transfer2
+                'CollectionHelpers.CollectionClear Transfer.ValuePairs
             End If
             
-            Set Transfer.Source = vm.LHSTable
-            Set Transfer.Destination = vm.RHSTable
-            Set Transfer.SourceKey = vm.LHSKeyColumn
-            Set Transfer.DestinationKey = vm.RHSKeyColumn
+            'Set Transfer.Source = vm.LHSTable
+            'Set Transfer.Destination = vm.RHSTable
+            'Set Transfer.SourceKey = vm.LHSKeyColumn
+            'Set Transfer.DestinationKey = vm.RHSKeyColumn
             
-            If vm.AppendNewKeys Then
-                Transfer.Flags = AddFlag(Transfer.Flags, AppendUnmapped)
-            Else
-                Transfer.Flags = RemoveFlag(Transfer.Flags, AppendUnmapped)
-            End If
+            Set Transfer2.Source.Table = vm.LHSTable
+            Set Transfer2.Destination.Table = vm.RHSTable
+            Transfer2.Source.KeyColumnName = vm.LHSKeyColumn.Name
+            Transfer2.Destination.KeyColumnName = vm.RHSKeyColumn.Name
             
-            If vm.RemoveOrphanKeys Then
-                Transfer.Flags = AddFlag(Transfer.Flags, RemoveUnmapped)
-            Else
-                Transfer.Flags = RemoveFlag(Transfer.Flags, RemoveUnmapped)
-            End If
+            'If vm.AppendNewKeys Then
+            '    Transfer.Flags = AddFlag(Transfer.Flags, AppendUnmapped)
+            'Else
+            '    Transfer.Flags = RemoveFlag(Transfer.Flags, AppendUnmapped)
+            'End If
+            
+            'If vm.RemoveOrphanKeys Then
+            '    Transfer.Flags = AddFlag(Transfer.Flags, RemoveUnmapped)
+            'Else
+            '    Transfer.Flags = RemoveFlag(Transfer.Flags, RemoveUnmapped)
+            'End If
             
             TryGetKeyColumns = True
         Else
@@ -219,13 +225,13 @@ Private Function TryMapValueColumns() As Boolean
     Dim vm As ValueMapperViewModel
     Set vm = New ValueMapperViewModel
     
-    Set vm.LHS = Transfer.Source
-    Set vm.RHS = Transfer.Destination
-    Set vm.KeyColumnLHS = Transfer.SourceKey
-    Set vm.KeyColumnRHS = Transfer.DestinationKey
-    vm.Flags = Transfer.Flags
+    Set vm.LHS = Transfer2.Source.Table
+    Set vm.RHS = Transfer2.Destination.Table
+    Set vm.KeyColumnLHS = Transfer2.Source.KeyColumn
+    Set vm.KeyColumnRHS = Transfer2.Destination.KeyColumn
+    'vm.Flags = Transfer.Flags
     
-    vm.LoadFromTransferInstruction Transfer
+    'vm.LoadFromTransferInstruction Transfer
     
     Dim frm As IView
     Set frm = New ValueMapperView
@@ -234,8 +240,11 @@ Private Function TryMapValueColumns() As Boolean
         If vm.GoBack Then
             GoBack = True
         Else
-            Set Transfer.ValuePairs = vm.checked
-            Transfer.Flags = vm.Flags
+            'Set Transfer.ValuePairs = vm.checked ' Collection<ColumnPair>
+            'Transfer.Flags = vm.Flags
+            
+            UpdateTransferInstruction Transfer2, vm.checked
+            
             TryMapValueColumns = True
         End If
     Else
@@ -244,10 +253,16 @@ Private Function TryMapValueColumns() As Boolean
 End Function
 
 Private Sub DoTransfer()
-    Dim timeStart As Long
-    Dim timeTaken As Long
+    Dim timeStart As Double
     timeStart = Timer()
-    Transfer.Transfer
+    
+    'Transfer.Transfer
+    Transfer2.Transfer
+    Transfer2.PostProcess New RemoveHighlighting
+    Transfer2.PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged
+    Transfer2.PostProcess HighlightChanges.Create(2, RGB(204, 255, 153)) ' 0->A new
+    
+    Dim timeTaken As Double
     timeTaken = Timer() - timeStart
     
     Dim timeStr As String
@@ -260,5 +275,5 @@ Private Sub DoTransfer()
 End Sub
 
 Private Sub TrySaveHistory()
-    TransferHistorySerializer.TrySave Transfer
+    'TransferHistorySerializer.TrySave Transfer
 End Sub

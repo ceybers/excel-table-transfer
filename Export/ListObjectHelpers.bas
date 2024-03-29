@@ -13,7 +13,7 @@ Public Function GetListColumnFromRange(ByVal rng As Range) As ListColumn
     
     Set lo = rng.ListObject
     For Each lc In lo.ListColumns
-        If lc.Range.column = rng.Cells.Item(1, 1).column Then
+        If lc.Range.Column = rng.Cells.Item(1, 1).Column Then
             Set GetListColumnFromRange = lc
             Exit Function
         End If

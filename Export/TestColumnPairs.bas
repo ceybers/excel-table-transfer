@@ -47,25 +47,25 @@ Private Sub TestColumnPairs()
     Set colPairs = New ColumnPairs
 
     'Act:
-    Dim colPair As ColumnPair
+    Dim ColPair As ColumnPair
     
-    Set colPair = ColumnPair.Create(LHS.ListColumns.Item(2), RHS.ListColumns.Item(2))
-    colPairs.Add colPair
+    Set ColPair = ColumnPair.Create(LHS.ListColumns.Item(2), RHS.ListColumns.Item(2))
+    colPairs.Add ColPair
     
-    Set colPair = ColumnPair.Create(LHS.ListColumns.Item(3), RHS.ListColumns.Item(4))
-    colPairs.Add colPair
+    Set ColPair = ColumnPair.Create(LHS.ListColumns.Item(3), RHS.ListColumns.Item(4))
+    colPairs.Add ColPair
     
-    Set colPair = ColumnPair.Create(LHS.ListColumns.Item(4), RHS.ListColumns.Item(3))
-    colPairs.Add colPair
+    Set ColPair = ColumnPair.Create(LHS.ListColumns.Item(4), RHS.ListColumns.Item(3))
+    colPairs.Add ColPair
     
     'Assert:
     Dim Result As Variant
     Set Result = colPairs.GetPair(RHS:=RHS.ListColumns.Item(2))
     If Result Is Nothing Then GoTo TestFail
     
-    Set colPair = ColumnPair.Create(LHS.ListColumns.Item(1), RHS.ListColumns.Item(2))
-    colPairs.Add colPair
-    colPairs.AddOrReplace colPair
+    Set ColPair = ColumnPair.Create(LHS.ListColumns.Item(1), RHS.ListColumns.Item(2))
+    colPairs.Add ColPair
+    colPairs.AddOrReplace ColPair
 
     Assert.Succeed
 

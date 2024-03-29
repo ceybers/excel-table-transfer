@@ -271,7 +271,7 @@ Private Function IsRangeASingleColumn(ByVal Range As Range) As Boolean
     
     Dim Area As Range
     For Each Area In Range.Areas
-        If Area.column <> Range.column Then
+        If Area.Column <> Range.Column Then
             Exit Function
         End If
     Next Area
@@ -281,19 +281,19 @@ End Function
 
 Private Function DisjointRangeToArray(ByVal Range As Range) As Variant
     Dim FirstRow As Long
-    FirstRow = Range.row
+    FirstRow = Range.Row
     
     Dim LastRow As Long
     'LastRow = FirstRow ' TODO CHK What is the initial value?
     
     Dim Area As Range
     For Each Area In Range.Areas
-        If FirstRow > Range.row Then
-            FirstRow = Range.row
+        If FirstRow > Range.Row Then
+            FirstRow = Range.Row
         End If
         
         Dim ThisLastRow As Long
-        ThisLastRow = Area.row + Area.rows.Count - 1
+        ThisLastRow = Area.Row + Area.rows.Count - 1
         
         If ThisLastRow > LastRow Then
             LastRow = ThisLastRow
@@ -307,10 +307,10 @@ Private Function DisjointRangeToArray(ByVal Range As Range) As Variant
         If VarType(Area) = (vbArray + vbVariant) Then
             Dim ValueVariant As Variant
             For Each ValueVariant In Area
-                ResultArray(ValueVariant.row) = (ValueVariant)
+                ResultArray(ValueVariant.Row) = (ValueVariant)
             Next ValueVariant
         Else
-            ResultArray(Area.row) = (Area.Value2)
+            ResultArray(Area.Row) = (Area.Value2)
         End If
     Next Area
     

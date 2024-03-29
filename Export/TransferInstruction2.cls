@@ -33,13 +33,25 @@ Public Property Get Destination() As TransferTable
     Set Destination = This.Destination
 End Property
 
+Public Property Get Comparer() As IValueComparer
+    Set Comparer = This.Comparer
+End Property
+
+Public Property Set Comparer(ByVal vNewValue As IValueComparer)
+    Set This.Comparer = vNewValue
+End Property
+
+Public Property Get Deltas() As Variant
+    Deltas = This.ValueDeltas
+End Property
+
 Private Sub Class_Initialize()
     Set This.Source = New TransferTable
     Set This.Destination = New TransferTable
 End Sub
 
 Public Sub Transfer()
-    Set This.Comparer = New ChangeComparer
+    Set This.Comparer = New NonBlankComparer
     
     If Not IsValid Then
         Debug.Print "TransferInstruction not valid"
@@ -111,7 +123,7 @@ Private Sub TransferColumn(ByVal FieldIndex As Long)
         
         If This.Comparer.Compare(SourceValue, DestinationValue) Then
             Dim CellDelta As Variant
-            CellDelta = GetTransferCellDelta(i, FieldIndex, _
+            CellDelta = GetTransferCellDelta(Destination.ValueColumns(FieldIndex).Index, This.KeyMap(i, 3), _
                 This.KeyMap(i, 1), SourceColumn.Name, DestinationColumn.Name, _
                 SourceValue, DestinationValue)
                 
@@ -125,4 +137,7 @@ Private Sub TransferColumn(ByVal FieldIndex As Long)
     DestinationColumn.DataBodyRange.Value2 = DestinationVariantArray
 End Sub
 
+Public Sub PostProcess(ByVal PostProcessor As ITransferPostProcesser)
+    PostProcessor.Execute Me
+End Sub
 

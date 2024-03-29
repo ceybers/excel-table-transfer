@@ -19,25 +19,25 @@ End Type
 
 Private This As TState
 
-'Public Property Get Table() As ListObject
-'    Set Table = This.Table
-'End Property
+Public Property Get Table() As ListObject
+    Set Table = This.Table
+End Property
 
-'Public Property Set Table(ByVal RHS As ListObject)
-'    Set This.Table = RHS
-'End Property
+Public Property Set Table(ByVal RHS As ListObject)
+    Set This.Table = RHS
+End Property
 
-'Public Property Get KeyColumn() As ListColumn
-'    Set KeyColumn = This.Table.ListColumns.Item(This.KeyColumnName)
-'End Property
+Public Property Get KeyColumn() As ListColumn
+    Set KeyColumn = This.Table.ListColumns.Item(This.KeyColumnName)
+End Property
 
-'Public Property Get KeyColumnName() As String
-'    KeyColumnName = This.KeyColumnName
-'End Property
+Public Property Get KeyColumnName() As String
+    KeyColumnName = This.KeyColumnName
+End Property
 
-'Public Property Let KeyColumnName(ByVal RHS As String)
-'    This.KeyColumnName = RHS
-'End Property
+Public Property Let KeyColumnName(ByVal RHS As String)
+    This.KeyColumnName = RHS
+End Property
 
 Public Property Get ValueColumns() As Variant
     ValueColumns = This.ValueColumns

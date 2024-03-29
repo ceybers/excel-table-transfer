@@ -26,15 +26,15 @@ Public Sub ArrayToFilteredRange(ByVal SourceArray As Variant, ByVal DestinationR
     End If
 
     Dim FirstRow As Long
-    FirstRow = DestinationRange.rows.Item(1).row
+    FirstRow = DestinationRange.rows.Item(1).Row
     
     Dim Area As Range
     For Each Area In FilteredRange.Areas
         Dim TopRow As Long
-        TopRow = Area.rows.Item(1).row
+        TopRow = Area.rows.Item(1).Row
         
         Dim BottomRow As Long
-        BottomRow = Area.rows.Item(Area.rows.Count).row
+        BottomRow = Area.rows.Item(Area.rows.Count).Row
         
         Dim AreaHeight As Long
         AreaHeight = BottomRow - TopRow + 1
