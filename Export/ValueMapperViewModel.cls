@@ -237,7 +237,7 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
                 End With
             End If
             
-            'li.checked = This.CheckedValuePairs.IsMappedRHS(lc)
+            li.checked = (This.CheckedValuePairs.IsMappedRHS(lc))
             
             If ListColumnHasArray(lc) Then
                 li.SmallIcon = "Fx"
@@ -349,7 +349,7 @@ Public Sub TryCheck(ByVal Item As MSComctlLib.ListItem)
                     This.CheckedValuePairs.Add colPair
                 End If
             Else
-                'Item.checked = False
+                Item.checked = False
             End If
         Else
             If This.ValuePairs.IsMappedRHS(lc) Then
