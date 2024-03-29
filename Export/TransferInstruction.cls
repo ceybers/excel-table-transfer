@@ -17,7 +17,7 @@ Private Type TState
     SourceKey As ListColumn
     DestinationKey As ListColumn
     ValuePairs As Collection
-    mapResult As Variant
+    MapResult As Variant
     Flags As Integer
     CopiedCells As Range
     LastRun As Date
@@ -87,20 +87,20 @@ Public Property Set ValuePairs(ByVal RHS As Collection)
     Set This.ValuePairs = RHS
 End Property
 
-Public Property Get mapResult() As Variant
-    If IsObject(This.mapResult) Then
-        Set mapResult = This.mapResult
+Public Property Get MapResult() As Variant
+    If IsObject(This.MapResult) Then
+        Set MapResult = This.MapResult
     Else
-        mapResult = This.mapResult
+        MapResult = This.MapResult
     End If
 End Property
 
-Public Property Let mapResult(ByVal RHS As Variant)
-    This.mapResult = RHS
+Public Property Let MapResult(ByVal RHS As Variant)
+    This.MapResult = RHS
 End Property
 
-Public Property Set mapResult(ByVal RHS As Variant)
-    Set This.mapResult = RHS
+Public Property Set MapResult(ByVal RHS As Variant)
+    Set This.MapResult = RHS
 End Property
 
 ' Ctor
@@ -149,11 +149,11 @@ Private Sub SetMapResult()
     Dim compare As KeyColumnComparer
     Set compare = KeyColumnComparer.Create(KeyColumn.FromColumn(SourceKey), KeyColumn.FromColumn(DestinationKey))
     
-    mapResult = compare.Map(HasFlag(This.Flags, SourceFilteredOnly), HasFlag(This.Flags, DestinationFilteredOnly))
+    MapResult = compare.Map(HasFlag(This.Flags, SourceFilteredOnly), HasFlag(This.Flags, DestinationFilteredOnly))
 End Sub
 
 Private Sub TransferOne(ByVal colPair As ColumnPair)
-    DoTransfer mapResult, colPair.LHS, colPair.RHS
+    DoTransfer MapResult, colPair.LHS, colPair.RHS
 End Sub
 
 Private Sub DoTransfer(ByVal Map As Variant, ByVal Source As ListColumn, ByVal Destination As ListColumn)

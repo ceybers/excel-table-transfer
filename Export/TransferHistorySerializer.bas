@@ -1,49 +1,59 @@
 Attribute VB_Name = "TransferHistorySerializer"
 '@IgnoreModule
-'@Folder "ZZZTransferHistory"
+'@Folder "Model.TransferHistory"
 Option Explicit
 
 Private Const WORKSHEET_NAME As String = "CAETransferTableHistory"
 Private Const RANGE_TO_REMOVE As String = "A:D"
 
-Public Function TryLoad(ByRef tiUr As TransferInstructionUnref) As Boolean
-    Dim ws As Worksheet
+Public Function TryLoad(ByRef TransferInstructionUnref As TransferInstructionUnref) As Boolean
+    Dim Worksheet As Worksheet
     
-    If TryGetWorksheet(ThisWorkbook, WORKSHEET_NAME, ws) = False Then
+    If TryGetWorksheet(ThisWorkbook, WORKSHEET_NAME, Worksheet) = False Then
         Exit Function
     End If
     
-    Dim rng
-    Set rng = ws.Range("A1")
+    Dim Range As Range
+    Set Range = Worksheet.Range("A1")
     
-    Set tiUr = New TransferInstructionUnref
-    If tiUr.LoadFromRange(rng) = False Then
+    Set TransferInstructionUnref = New TransferInstructionUnref
+    If TransferInstructionUnref.LoadFromRange(Range) = False Then
         Exit Function
     End If
     
     TryLoad = True
 End Function
 
-Public Function TrySave(ByVal ti As TransferInstruction) As Boolean
-    Debug.Assert Not ti Is Nothing
+Public Function TrySave(ByVal TransferInstruction As TransferInstruction) As Boolean
+    Debug.Assert Not TransferInstruction Is Nothing
     
-    Dim ws As Worksheet
+    Dim Worksheet As Worksheet
     
-    If TryGetWorksheet(ThisWorkbook, WORKSHEET_NAME, ws) = False Then
-        Dim curWS As Worksheet
-        Set curWS = ActiveSheet
-        Set ws = ActiveWorkbook.Worksheets.Add(After:=ActiveWorkbook.Worksheets.Item(ActiveWorkbook.Worksheets.Count))
-        ws.Name = WORKSHEET_NAME
-        ws.Visible = xlSheetVeryHidden
-        curWS.Activate
+    If TryGetWorksheet(ThisWorkbook, WORKSHEET_NAME, Worksheet) = False Then
+        Set Worksheet = CreateNewHistoryWorksheet
     End If
     
-    ws.Range(RANGE_TO_REMOVE).Clear
+    Worksheet.Range(RANGE_TO_REMOVE).Clear
     
-    Dim rng
-    Set rng = ws.Range("A1")
-    ti.SaveToRange rng
+    Dim Range As Range
+    Set Range = Worksheet.Range("A1")
+    TransferInstruction.SaveToRange Range
     
     TrySave = True
 End Function
 
+Private Function CreateNewHistoryWorksheet() As Worksheet
+    Dim CurrentWorksheet As Worksheet
+    Set CurrentWorksheet = ActiveSheet
+    
+    Dim Result As Worksheet
+    Set Result = ActiveWorkbook.Worksheets.Add(After:=ActiveWorkbook.Worksheets.Item(ActiveWorkbook.Worksheets.Count))
+    With Result
+        .Name = WORKSHEET_NAME
+        .Visible = xlSheetVeryHidden
+    End With
+    
+    CurrentWorksheet.Activate
+    
+    Set CreateNewHistoryWorksheet = Result
+End Function

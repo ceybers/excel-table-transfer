@@ -351,8 +351,8 @@ Public Function TryGuess(Optional ByVal Force As Boolean = False) As Boolean
     If lhsCount > 10 Then lhsCount = 10
     If rhsCount > 10 Then rhsCount = 10
     
-    Dim startTime As Double
-    startTime = Timer()
+    Dim StartTime As Double
+    StartTime = Timer()
     Dim timeLimit As Double
     timeLimit = 3#
     
@@ -365,7 +365,7 @@ Public Function TryGuess(Optional ByVal Force As Boolean = False) As Boolean
         'PrintTime "KeyColumn.FromColumn(this.LHSColumns.Item(i))"
         If comp.LHS.DistinctPercentage > BEST_MATCH_DISTINCT_THRESHOLD Then
             For j = 1 To rhsCount
-                If (Timer() - startTime) > timeLimit Then GoTo TimeLimitExceeded
+                If (Timer() - StartTime) > timeLimit Then GoTo TimeLimitExceeded
                 Set comp.RHS = KeyColumn.FromColumn(This.RHSColumns.Item(j), False, 1000)
                 'PrintTime "KeyColumn.FromColumn(this.RHSColumns.Item(i))"
                 If Not comp.RHS Is Nothing Then
