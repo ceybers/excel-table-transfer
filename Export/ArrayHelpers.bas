@@ -1,4 +1,5 @@
 Attribute VB_Name = "ArrayHelpers"
+'@IgnoreModule UseMeaningfulName, ProcedureNotUsed
 '@Folder "Helpers.Objects"
 Option Explicit
 

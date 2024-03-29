@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@IgnoreModule
-'@Folder "ZZZTransferHistory"
+'@Folder "Model.TransferHistory"
 Option Explicit
 
 Private Type TState

@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@IgnoreModule
-'@Folder "ZZZTransferHistory"
+'@Folder "Model.TransferHistory"
 Option Explicit
 Implements IViewModel
 
@@ -39,21 +39,23 @@ Public Sub Add(ByVal TransferInstruction As TransferInstruction)
     Items.Add TransferInstruction
 End Sub
 
+'@Obsolete
 Public Sub Save()
-    Worksheet.UsedRange.EntireRow.Delete
-    SaveTransferInstructionsFromWorksheet Items, Worksheet
+    'Worksheet.UsedRange.EntireRow.Delete
+    'SaveTransferInstructionsFromWorksheet Items, Worksheet
 End Sub
 
+'@Obsolete
 Public Sub Refresh()
-    Dim Result As Variant
+    'Dim Result As Variant
     'Debug.Assert Not Worksheet Is Nothing
-    CollectionHelpers.CollectionClear Items
-    If Not Worksheet Is Nothing Then
-        Set Result = LoadTransferInstructionsFromWorksheet(Worksheet)
-        If Not Result Is Nothing Then
-            Set Items = Result
-        End If
-    End If
+    'CollectionHelpers.CollectionClear Items
+    'If Not Worksheet Is Nothing Then
+    '    Set Result = LoadTransferInstructionsFromWorksheet(Worksheet)
+    '    If Not Result Is Nothing Then
+    '        Set Items = Result
+    '    End If
+    'End If
 End Sub
 
 Public Sub Clear()
@@ -90,40 +92,4 @@ Public Sub Remove()
     End If
 End Sub
 
-Public Sub InitializeListView(ByVal lv As ListView)
-    With lv
-        .View = lvwReport
-        .Gridlines = True
-        .HideSelection = False
-        .LabelEdit = lvwManual
-        .FullRowSelect = True
-        .ColumnHeaders.Clear
-        .ColumnHeaders.Add text:="Transfer Instruction", Width:=144
-    End With
-End Sub
-
-Public Sub ItemsToListView(ByVal lv As ListView)
-    lv.ListItems.Clear
-    
-    Dim i As Long
-    For i = 1 To Items.Count
-        lv.ListItems.Add text:=Items(i).Name, Key:="KEY" & i
-    Next i
-    
-    If HasHistory Then
-        If lv.ListItems.Count = 0 Then
-            lv.ListItems.Add text:="(No items found)" ' TODO Const
-        End If
-    Else
-        lv.ListItems.Add text:="(No history found)" ' TODO Const
-    End If
-End Sub
-
-Public Sub TrySelect(ByVal Key As String)
-    Dim i As Long
-    Debug.Assert Len(Key) > 3
-    i = val(Right$(Key, Len(Key) - 3))
-    Debug.Assert i <= Items.Count
-    Set SelectedInstruction = Items(i)
-End Sub
 

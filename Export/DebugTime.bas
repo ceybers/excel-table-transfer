@@ -1,5 +1,5 @@
 Attribute VB_Name = "DebugTime"
-'@Folder("Helpers")
+'@Folder "Helpers.Common"
 Option Explicit
 
 Private Const TIME_FORMAT_STRING As String = "000.000"

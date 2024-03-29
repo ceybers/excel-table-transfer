@@ -7,6 +7,8 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+Attribute VB_Description = "Stores bitwise flags between 1 and 30 inclusive."
+'@IgnoreModule ProcedureNotUsed
 '@ModuleDescription "Stores bitwise flags between 1 and 30 inclusive."
 '@Folder "Helpers.Common"
 Option Explicit
@@ -41,7 +43,7 @@ Public Sub Remove(ByVal Flag As Long)
     This.State = This.State - (2 ^ Flag)
 End Sub
 
-Public Function Equals(ByVal RHS As BitwiseFlags)
+Public Function Equals(ByVal RHS As BitwiseFlags) As Boolean
     Equals = (This.State = RHS.State)
 End Function
 
