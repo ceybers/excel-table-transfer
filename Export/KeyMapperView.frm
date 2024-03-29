@@ -284,7 +284,7 @@ Private Sub vm_PropertyChanged(ByVal propertyName As String)
         'this.IsInitialLoad = True
         ChangeTable Me.cmbTableLHS, vm.LHSTable
         PopulateColumns Me.cmbColumnLHS, vm.LHSTable
-        TryAutoMatchAgain leftToRight:=False
+        TryAutoMatchAgain leftToRight:=True
         This.IsInitialLoad = False
         'this.IsUserChangingTable = False
         'Case KeyMapperEvents.LHS_COLUMNS
@@ -295,7 +295,7 @@ Private Sub vm_PropertyChanged(ByVal propertyName As String)
         'this.IsInitialLoad = True
         ChangeTable Me.cmbTableRHS, vm.RHSTable
         PopulateColumns Me.cmbColumnRHS, vm.RHSTable
-        TryAutoMatchAgain leftToRight:=True
+        TryAutoMatchAgain leftToRight:=False
         This.IsInitialLoad = False
         'this.IsUserChangingTable = False
         'Case KeyMapperEvents.RHS_COLUMNS
