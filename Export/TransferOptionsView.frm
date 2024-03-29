@@ -64,8 +64,8 @@ Private Sub CheckBox9_Click()
     SetFlag HighlightMapped, Me.CheckBox9
 End Sub
 
-Private Sub SetFlag(ByVal flag As TransferOptionsEnum, ByVal cb As MSForms.CheckBox)
-    This.ViewModel.Flags = modTestTransferOptions.SetFlag(This.ViewModel.Flags, flag, cb.Value)
+Private Sub SetFlag(ByVal Flag As TransferOptionsEnum, ByVal cb As MSForms.CheckBox)
+    This.ViewModel.Flags = TransferOptions.SetFlag(This.ViewModel.Flags, Flag, cb.Value)
 End Sub
 
 ' ---
@@ -112,7 +112,7 @@ Private Sub LoadFlags()
     LoadFlag HighlightMapped, Me.CheckBox9
 End Sub
 
-Private Sub LoadFlag(ByVal flag As TransferOptionsEnum, ByVal cb As MSForms.CheckBox)
-    cb.Value = modTestTransferOptions.HasFlag(This.ViewModel.Flags, flag)
+Private Sub LoadFlag(ByVal Flag As TransferOptionsEnum, ByVal cb As MSForms.CheckBox)
+    cb.Value = TransferOptions.HasFlag(This.ViewModel.Flags, Flag)
 End Sub
 
