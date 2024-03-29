@@ -416,5 +416,7 @@ Private Sub CollectionToListView(ByVal coll As Collection, ByVal lv As ListView,
         Next v
         lv.ColumnHeaders.Add text:=header & " (" & coll.Count & ")"
     End If
+    
+    lv.ColumnHeaders.Item(1).Width = lv.Width - 16
 End Sub
 

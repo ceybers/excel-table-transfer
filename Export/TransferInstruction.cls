@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@IgnoreModule
-'@Folder "Worksheets"
+'@Folder "Model.TransferInstruction"
 Option Explicit
 
 Private Type TState
@@ -146,10 +146,10 @@ Public Function Transfer() As Boolean
 End Function
 
 Private Sub SetMapResult()
-    Dim compare As KeyColumnComparer
-    Set compare = KeyColumnComparer.Create(KeyColumn.FromColumn(SourceKey), KeyColumn.FromColumn(DestinationKey))
+    Dim Compare As KeyColumnComparer
+    Set Compare = KeyColumnComparer.Create(KeyColumn.FromColumn(SourceKey), KeyColumn.FromColumn(DestinationKey))
     
-    MapResult = compare.Map(HasFlag(This.Flags, SourceFilteredOnly), HasFlag(This.Flags, DestinationFilteredOnly))
+    MapResult = Compare.Map(HasFlag(This.Flags, SourceFilteredOnly), HasFlag(This.Flags, DestinationFilteredOnly))
 End Sub
 
 Private Sub TransferOne(ByVal colPair As ColumnPair)

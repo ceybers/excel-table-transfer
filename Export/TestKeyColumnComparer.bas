@@ -84,14 +84,14 @@ Private Sub SubPasteMap(ByVal Map As Variant)
     rng.Value2 = arr
 End Sub
 
-Private Sub DebugPrint(ByVal compare As KeyColumnComparer)
+Private Sub DebugPrint(ByVal Compare As KeyColumnComparer)
     Debug.Print "TEST KeyColumnComparer"
     Debug.Print "===="
-    Debug.Print "IsSubsetLHS = " & compare.IsSubsetLHS
-    Debug.Print "IsSubsetRHS = " & compare.IsSubsetRHS
-    Debug.Print "IsMatch = " & compare.IsMatch
-    Debug.Print "LHSOnly = " & compare.LeftOnly.Count
-    Debug.Print "RHSOnly = " & compare.RightOnly.Count
-    Debug.Print "Intersection = " & compare.Intersection.Count
+    Debug.Print "IsSubsetLHS = " & Compare.IsSubsetLHS
+    Debug.Print "IsSubsetRHS = " & Compare.IsSubsetRHS
+    Debug.Print "IsMatch = " & Compare.IsMatch
+    Debug.Print "LHSOnly = " & Compare.LeftOnly.Count
+    Debug.Print "RHSOnly = " & Compare.RightOnly.Count
+    Debug.Print "Intersection = " & Compare.Intersection.Count
     Debug.Print vbNullString
 End Sub
