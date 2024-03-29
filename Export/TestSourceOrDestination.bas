@@ -1,9 +1,10 @@
 Attribute VB_Name = "TestSourceOrDestination"
+'@IgnoreModule
 '@Folder "Tests.MVVM"
 Option Explicit
 Option Private Module
 
-Public Sub Test()
+Public Sub TestSourceOrDestinationMVVM()
     Dim vm As SourceOrDestinationViewModel
     Set vm = New SourceOrDestinationViewModel
     Set vm.ListObject = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)

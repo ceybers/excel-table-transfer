@@ -1,4 +1,5 @@
 Attribute VB_Name = "TestKeyMapper"
+'@IgnoreModule
 '@Folder "Tests.MVVM"
 Option Explicit
 Option Private Module
@@ -59,10 +60,10 @@ Public Sub TestRemoveUnmappedKeys()
     Set comp.LHS = KeyColumn.FromColumn(ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1).ListColumns.Item(1))
     Set comp.RHS = KeyColumn.FromColumn(ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2).ListColumns.Item(2))
 
-    Dim mapResult As Variant
-    mapResult = comp.Map
+    Dim MapResult As Variant
+    MapResult = comp.Map
     
-    RemoveUnmappedKeys comp, mapResult
+    RemoveUnmappedKeys comp, MapResult
 End Sub
 
 Public Sub TestAppendUnmappedKeys()

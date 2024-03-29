@@ -2,8 +2,9 @@ Attribute VB_Name = "TestTransferInstruction"
 '@Folder "Tests.AppContext"
 Option Explicit
 
-Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Long = 8
+'Private Const TRANSFER_SERIALIZED_OBJECT_ROW_COUNT As Long = 8
 
+'@EntryPoint
 Public Sub TestAutoTransfer()
     Dim Transfer As TransferInstruction
     Set Transfer = GetTestTransferInstruction
@@ -35,6 +36,7 @@ Public Sub TestAutoTransfer()
         .ListColumns.Item(4).DataBodyRange.Clear
     End With
     
+    '@Ignore FunctionReturnValueDiscarded
     Transfer.Transfer
 End Sub
 

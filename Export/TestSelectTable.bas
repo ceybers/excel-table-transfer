@@ -1,9 +1,10 @@
 Attribute VB_Name = "TestSelectTable"
+'@IgnoreModule
 '@Folder "Tests.MVVM"
 Option Explicit
 Option Private Module
 
-Public Sub Test()
+Public Sub TestSelectTableMVVM()
     Dim vm As SelectTableViewModel
     Set vm = New SelectTableViewModel
     Set vm.ActiveTable = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)

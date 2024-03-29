@@ -4,9 +4,8 @@ Attribute VB_Name = "TestValueMapper"
 Option Explicit
 Option Private Module
 
-'@ExcelHotkey p
-Public Sub Test()
-Attribute Test.VB_ProcData.VB_Invoke_Func = "p\n14"
+Public Sub TestValueMapperMVVM()
+Attribute TestValueMapperMVVM.VB_ProcData.VB_Invoke_Func = "p\n14"
     Dim vm As ValueMapperViewModel
     Dim View As IView
     

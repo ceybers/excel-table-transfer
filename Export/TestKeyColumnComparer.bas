@@ -1,28 +1,67 @@
 Attribute VB_Name = "TestKeyColumnComparer"
+'@IgnoreModule
+'@TestModule
 '@Folder "Tests.Model"
 Option Explicit
 Option Private Module
 
-Public Sub TestCompareKeyColumns()
-    Dim compare As KeyColumnComparer
-    Set compare = KeyColumnComparer.Create(GetLHS, GetRHS)
+Private Assert As Object
+Private Fakes As Object
+
+'@ModuleInitialize
+Private Sub ModuleInitialize()
+    'this method runs once per module.
+    Set Assert = CreateObject("Rubberduck.AssertClass")
+    Set Fakes = CreateObject("Rubberduck.FakesProvider")
+End Sub
+
+'@ModuleCleanup
+Private Sub ModuleCleanup()
+    'this method runs once per module.
+    Set Assert = Nothing
+    Set Fakes = Nothing
+End Sub
+
+'@TestInitialize
+Private Sub TestInitialize()
+    'This method runs before every test in the module..
+End Sub
+
+'@TestCleanup
+Private Sub TestCleanup()
+    'this method runs after every test in the module.
+End Sub
+
+
+
+'@TestMethod("KeyColumn")
+Private Sub TestKeyColumn()
+    On Error GoTo TestFail
     
-    compare.LHS.PrintKeys
+    'Arrange:
     
-    Debug.Print "TEST"
-    Debug.Print "===="
-    Debug.Print "IsSubsetLHS = " & compare.IsSubsetLHS
-    Debug.Print "IsSubsetRHS = " & compare.IsSubsetRHS
-    Debug.Print "IsMatch = " & compare.IsMatch
-    Debug.Print "LHSOnly = " & compare.LeftOnly.Count
-    Debug.Print "RHSOnly = " & compare.RightOnly.Count
-    Debug.Print "Intersection = " & compare.Intersection.Count
-    Debug.Print vbNullString
+    'Act:
+    Dim Comparer As KeyColumnComparer
+    Set Comparer = KeyColumnComparer.Create(GetLHS, GetRHS)
     
-    Dim mapResult As Variant
-    mapResult = compare.Map
-    SubPasteMap mapResult
-    Debug.Print "mapped"
+    'Comparer.LHS.PrintKeys
+    'DebugPrint Comparer
+    
+    Dim MapResult As Variant
+    MapResult = Comparer.Map
+    'SubPasteMap MapResult
+    
+    'Assert:
+    Assert.Succeed
+
+TestExit:
+    '@Ignore UnhandledOnErrorResumeNext
+    On Error Resume Next
+    
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+    Resume TestExit
 End Sub
 
 Private Function GetLHS() As KeyColumn
@@ -32,13 +71,6 @@ End Function
 Private Function GetRHS() As KeyColumn
     Set GetRHS = KeyColumn.FromRange(ThisWorkbook.Worksheets.Item(2).Range("C2:C13"))
 End Function
-
-Private Sub PrintCollection(ByVal coll As Collection)
-    Dim v As Variant
-    For Each v In coll
-        Debug.Print CStr(v)
-    Next v
-End Sub
 
 Private Sub SubPasteMap(ByVal Map As Variant)
     Dim rng As Range
@@ -52,3 +84,14 @@ Private Sub SubPasteMap(ByVal Map As Variant)
     rng.Value2 = arr
 End Sub
 
+Private Sub DebugPrint(ByVal compare As KeyColumnComparer)
+    Debug.Print "TEST KeyColumnComparer"
+    Debug.Print "===="
+    Debug.Print "IsSubsetLHS = " & compare.IsSubsetLHS
+    Debug.Print "IsSubsetRHS = " & compare.IsSubsetRHS
+    Debug.Print "IsMatch = " & compare.IsMatch
+    Debug.Print "LHSOnly = " & compare.LeftOnly.Count
+    Debug.Print "RHSOnly = " & compare.RightOnly.Count
+    Debug.Print "Intersection = " & compare.Intersection.Count
+    Debug.Print vbNullString
+End Sub

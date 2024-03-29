@@ -1,18 +1,69 @@
 Attribute VB_Name = "TestKeyColumn"
+'@IgnoreModule
+'@TestModule
 '@Folder "Tests.Model"
 Option Explicit
 Option Private Module
 
-Public Sub Test()
-    Dim ws As Worksheet
-    Dim rng As Range
+Private Assert As Object
+Private Fakes As Object
+
+'@ModuleInitialize
+Private Sub ModuleInitialize()
+    'this method runs once per module.
+    Set Assert = CreateObject("Rubberduck.AssertClass")
+    Set Fakes = CreateObject("Rubberduck.FakesProvider")
+End Sub
+
+'@ModuleCleanup
+Private Sub ModuleCleanup()
+    'this method runs once per module.
+    Set Assert = Nothing
+    Set Fakes = Nothing
+End Sub
+
+'@TestInitialize
+Private Sub TestInitialize()
+    'This method runs before every test in the module..
+End Sub
+
+'@TestCleanup
+Private Sub TestCleanup()
+    'this method runs after every test in the module.
+End Sub
+
+'@TestMethod("KeyColumn")
+Private Sub TestKeyColumn()
+    On Error GoTo TestFail
+    
+    'Arrange:
+    'Act:
+    Dim Worksheet As Worksheet
+    Set Worksheet = ThisWorkbook.Worksheets.Item(2)
+    
+    Dim Range As Range
+    Set Range = Worksheet.Range("A2:A5,A14")
+    
     Dim Key As KeyColumn
+    Set Key = KeyColumn.FromRange(Range, True, True)
+
+    'DebugPrint Key
     
-    Set ws = ThisWorkbook.Worksheets.Item(2)
-    Set rng = ws.Range("A2:A5,A14")              ',C2:C13")
-    Set Key = KeyColumn.FromRange(rng, True, True)
+    'Assert:
+    Assert.Succeed
+
+TestExit:
+    '@Ignore UnhandledOnErrorResumeNext
+    On Error Resume Next
     
-    Debug.Print "TEST"
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+    Resume TestExit
+End Sub
+
+Private Sub DebugPrint(ByVal Key As KeyColumn)
+    Debug.Print "TEST KeyColumn"
     Debug.Print "===="
     Debug.Print "Distinct = " & Key.Count
     Debug.Print "Unique = " & Key.UniqueKeys.Count
@@ -24,43 +75,3 @@ Public Sub Test()
     Debug.Print "Find 'Right Only2' = " & Key.Find("Right Only2")
     Debug.Print vbNullString
 End Sub
-
-Public Sub TestPerformance()
-    Dim ws As Worksheet
-    Dim rng As Range
-    Dim Key As KeyColumn
-    'Dim arr As Variant
-    Dim findThis As String
-    
-    Set ws = ThisWorkbook.Worksheets.Item(3)
-    Set rng = ws.ListObjects.Item(1).ListColumns.Item(1).DataBodyRange
-    Set Key = KeyColumn.FromRange(rng, True)
-    findThis = rng.Cells.Item(500, 1).Value2
-    'arr = rng.Value2
-    
-    Dim i As Long
-    Dim start As Double
-    start = Timer
-    
-    For i = 1 To 100
-        Key.Find findThis
-        'FindInArray arr, findThis
-    Next i
-    
-    Debug.Print Timer - start
-    
-    ' 10000 6.69140625   0.62890625   0.59375
-    '  1000 0.63671875   0.0625       0.0625
-    '   100 0.05859375   0.00390625   0.0078125
-End Sub
-
-Private Function FindInArray(ByVal arr As Variant, ByVal Value As String) As Long
-    Dim i As Long
-    For i = 1 To UBound(arr, 1)
-        If arr(i, 1) = Value Then
-            FindInArray = i
-            Exit Function
-        End If
-    Next i
-End Function
-

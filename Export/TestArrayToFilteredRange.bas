@@ -1,4 +1,5 @@
 Attribute VB_Name = "TestArrayToFilteredRange"
+'@IgnoreModule
 '@TestModule
 '@Folder "Tests.Helpers"
 Option Explicit
