@@ -71,6 +71,8 @@ Public Sub Evaluate()
     
     'DebugPrintHeader
     GenerateKeyMap
+    If IsEmpty(This.KeyMap) Then Exit Sub
+    
     TransferColumns
     UpdateTransferDeltas
     'DebugPrintDeltas
@@ -152,6 +154,8 @@ Private Sub TransferColumn(ByVal FieldIndex As Long)
 End Sub
 
 Public Sub Commit(ByVal Commiter As ICommitStrategy)
+    If IsEmpty(This.ValueDeltas) Then Exit Sub
+    
     Commiter.Commit Destination, This.ValueDeltas
 End Sub
 

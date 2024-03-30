@@ -98,11 +98,14 @@ Private Sub ISettings_SetSetting(ByVal SettingName As String, ByVal Value As Str
 End Sub
 
 Private Function ISettings_GetCollection(ByVal CollectionName As String) As Collection
-    If Not This.Collections.Exists(CollectionName) Then
-        Err.Raise vbObjectError + 9, "MyDocSettings", "Collection does not exist"
-    End If
     Dim Result As Collection
     Set Result = New Collection
+    
+    If Not This.Collections.Exists(CollectionName) Then
+        'Err.Raise vbObjectError + 9, "MyDocSettings", "Collection does not exist"
+        Set ISettings_GetCollection = Result
+        Exit Function
+    End If
     
     Dim Arr As Variant
     Arr = This.Collections.Item(CollectionName).Items

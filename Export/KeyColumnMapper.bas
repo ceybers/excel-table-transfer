@@ -24,6 +24,11 @@ Public Function MapKeyColumns(ByVal LHS As ListColumn, ByVal RHS As ListColumn) 
         End If
     Next i
     
+    If MatchCount = 0 Then
+        MapKeyColumns = Empty
+        Exit Function
+    End If
+    
     ReDim Result(1 To MatchCount, 1 To 3)
     
     Dim Cursor As Long
