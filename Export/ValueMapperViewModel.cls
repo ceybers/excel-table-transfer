@@ -163,9 +163,9 @@ Public Sub UpdateLHStoListView(ByVal lv As ListView)
             If lc Is This.KeyColumnLHS Then
                 li.SmallIcon = "Key"
             ElseIf This.ValuePairs.GetPair(LHS:=lc) Is Nothing Then
-                li.SmallIcon = "Cross"
+                li.SmallIcon = Empty
             Else
-                li.SmallIcon = "Tick"
+                li.SmallIcon = "Link"
             End If
         End If
     Next li
@@ -214,13 +214,15 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
                 End With
             ElseIf This.ValuePairs.IsMappedRHS(lc) Then
                 Set mappedTo = This.ValuePairs.GetPair(RHS:=lc)
-                li.SmallIcon = "Tick"
+                'li.SmallIcon = "Tick"
+                li.SmallIcon = "Link"
                 With li.ListSubItems.Item(1)
                     .Text = mappedTo.LHS.Name
                     .ForeColor = RGB(0, 0, 0)
                 End With
             Else
-                li.SmallIcon = "Cross"
+                'li.SmallIcon = "Cross"
+                li.SmallIcon = Empty
                 With li.ListSubItems.Item(1)
                     .Text = NOT_MAPPED
                     .ForeColor = RGB(128, 128, 128)
