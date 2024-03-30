@@ -371,8 +371,9 @@ End Function
 
 Public Function TryGuessUserdefined() As Boolean
     Dim UserdefinedKeys As Collection
-    If Not GetMyDocSettings.HasCollection("UserdefinedKeys") Then Exit Function
-    Set UserdefinedKeys = GetMyDocSettings.GetCollection("UserdefinedKeys")
+    ' TODO Reimplement Settings Model
+    'If Not GetMyDocSettings.HasCollection("UserdefinedKeys") Then Exit Function
+    'Set UserdefinedKeys = GetMyDocSettings.GetCollection("UserdefinedKeys")
     
     Dim UserdefinedKey As Variant
     For Each UserdefinedKey In UserdefinedKeys
