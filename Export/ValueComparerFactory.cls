@@ -8,25 +8,25 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "Model.ValueComparer.Factory"
+'@Folder "Model2.ValueComparer.Factory"
 Option Explicit
 
 ' VarType 8 (and 5 and 11) only
-Public Property Get Default()
+Public Property Get Default() As IValueComparer
     Set Default = New ChangeComparer
 End Property
 
 ' Ignore errors, Empty, and Len=0 strings
-Public Property Get NonBlank()
+Public Property Get NonBlank() As IValueComparer
     Set Default = New NonBlankComparer
 End Property
 
 ' Always transfer everything
-Public Property Get NullAlways()
-    'Set NullAlways = New NullAlwaysComparer
+Public Property Get NullAlways() As IValueComparer
+    Set NullAlways = New NullAlwaysComparer
 End Property
 
 ' Ignore errors on LHS or RHS, always transfer everything else
-Public Property Get Overwrite()
-    'Set Overwrite = New OverwriteComparer
+Public Property Get Overwrite() As IValueComparer
+    Set Overwrite = New OverwriteComparer
 End Property

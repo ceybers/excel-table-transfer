@@ -1,5 +1,5 @@
 Attribute VB_Name = "ColumnPairToTransferInstruction"
-'@Folder("Model.TransferInstruction2")
+'@Folder "Model2.TransferInstruction2"
 Option Explicit
 
 Public Sub UpdateTransferInstruction(ByVal TransferInstruction As TransferInstruction2, _
@@ -29,3 +29,4 @@ Private Function ColPairCollectionToArray(ByVal ColPairCollection As Collection,
     
     ColPairCollectionToArray = Result
 End Function
+

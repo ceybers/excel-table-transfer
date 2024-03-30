@@ -2,7 +2,7 @@ Attribute VB_Name = "ListObjectHelpers"
 '@Folder "Helpers.Objects"
 Option Explicit
 
-' Ref by TrestKeyMapper
+' Ref by KeyMapper?
 Public Function GetListColumnFromRange(ByVal rng As Range) As ListColumn
     If rng Is Nothing Then Exit Function
     If rng.ListObject Is Nothing Then Exit Function

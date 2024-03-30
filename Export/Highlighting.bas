@@ -5,11 +5,7 @@ Option Explicit
 Private Const MAGIC_FORMULA As String = "=OR(TRUE,""HighlightMapped;b92d7b59-e7ec-4db0-a7c6-5a6ad86ceac2"")"
 Private Const MAPPED_COLOR As Long = 10092492 '#CCFF99
 
-Public Sub ApplyHighlighting(ByVal Range As Range, Optional ByVal Color As Long)
-    If Color = 0 Then Color = MAPPED_COLOR
-    
-    'RemoveExistingHighlighting Range.parent
-    
+Public Sub ApplyHighlighting(ByVal Range As Range, Optional ByVal Color As Long = MAPPED_COLOR)
     Dim FormatConditions As FormatConditions
     Set FormatConditions = Range.FormatConditions
     

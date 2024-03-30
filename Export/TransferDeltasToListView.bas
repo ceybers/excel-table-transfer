@@ -1,5 +1,5 @@
 Attribute VB_Name = "TransferDeltasToListView"
-'@Folder("MVVM.ValueConverters")
+'@Folder "MVVM2.ValueConverters"
 Option Explicit
 
 Private Const KEY_HEADER As String = "Keys"
@@ -102,3 +102,4 @@ Private Sub AddSelectAll(ByVal ListView As ListView)
     ListItem.ForeColor = SELECT_ALL_COLOR
     ListItem.Key = SELECT_ALL
 End Sub
+

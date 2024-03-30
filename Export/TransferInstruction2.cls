@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Model.TransferInstruction2"
+'@Folder "Model2.TransferInstruction2"
 Option Explicit
 
 Private Const MAX_PRINT_DELTAS As Long = 10
@@ -22,6 +22,8 @@ Private Type TState
 
     ValueDeltas As Variant
     ValueDeltaCursor As Long
+    
+    TransferDeltas As TransferDeltas
 End Type
 Private This As TState
 
@@ -31,6 +33,10 @@ End Property
 
 Public Property Get Destination() As TransferTable
     Set Destination = This.Destination
+End Property
+
+Public Property Get TransferDeltas() As TransferDeltas
+    Set TransferDeltas = This.TransferDeltas
 End Property
 
 Public Property Get Comparer() As IValueComparer
@@ -48,6 +54,11 @@ End Property
 Private Sub Class_Initialize()
     Set This.Source = New TransferTable
     Set This.Destination = New TransferTable
+    Set This.TransferDeltas = New TransferDeltas
+End Sub
+
+Public Sub SetComparer(ByVal Comparer As IValueComparer)
+    Set This.Comparer = Comparer
 End Sub
 
 Public Sub Transfer()
@@ -61,12 +72,13 @@ Public Sub Transfer()
     'DebugPrintHeader
     GenerateKeyMap
     TransferColumns
+    UpdateTransferDeltas
     'DebugPrintDeltas
 End Sub
 
-Private Function ValuePairCount() As Long
-    ValuePairCount = Source.ValueColumnCount
-End Function
+'Private Function ValuePairCount() As Long
+'    ValuePairCount = Source.ValueColumnCount
+'End Function
 
 Private Function IsValid() As Boolean
     If Source Is Nothing Then Exit Function
@@ -137,7 +149,21 @@ Private Sub TransferColumn(ByVal FieldIndex As Long)
     DestinationColumn.DataBodyRange.Value2 = DestinationVariantArray
 End Sub
 
+Private Sub UpdateTransferDeltas()
+    This.TransferDeltas.Load This.ValueDeltas
+    
+    Dim i As Long
+    For i = LBound(This.KeyMap) To UBound(This.KeyMap)
+        This.TransferDeltas.Keys.Add This.KeyMap(i, 1)
+    Next i
+    
+    For i = 0 To (Destination.ValueColumnCount - 1)
+        This.TransferDeltas.Fields.Add Destination.ValueColumns(i)
+    Next i
+End Sub
+
 Public Sub PostProcess(ByVal PostProcessor As ITransferPostProcesser)
     PostProcessor.Execute Me
 End Sub
+
 

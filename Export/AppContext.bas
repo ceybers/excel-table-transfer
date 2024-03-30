@@ -73,6 +73,11 @@ Rewind3:
     PrintTime "DoTransfer"
     
     'NoRewind
+    DoTransferPreview
+    DoPostProcessing
+    PrintTime "TransferDelta"
+    
+    'NoRewind
     TrySaveHistory
     PrintTime "TrySaveHistory"
 End Sub
@@ -256,22 +261,39 @@ Private Sub DoTransfer()
     Dim timeStart As Double
     timeStart = Timer()
     
-    'Transfer.Transfer
     Transfer2.Transfer
-    Transfer2.PostProcess New RemoveHighlighting
-    Transfer2.PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged
-    Transfer2.PostProcess HighlightChanges.Create(2, RGB(204, 255, 153)) ' 0->A new
     
     Dim timeTaken As Double
     timeTaken = Timer() - timeStart
     
-    Dim timeStr As String
-    timeStr = Format$(timeTaken, "0.00")
+    'Dim timeStr As String
+    'timeStr = Format$(timeTaken, "0.00")
     
-    Dim completionMessage As String
-    completionMessage = "Table transfer complete." & vbCrLf & "Time taken: " & timeStr & " second(s)"
+    'Dim completionMessage As String
+    'completionMessage = "Table transfer complete." & vbCrLf & "Time taken: " & timeStr & " second(s)"
     
-    MsgBox completionMessage, vbInformation + vbOKOnly, "Table Transfer Tool"
+    'MsgBox completionMessage, vbInformation + vbOKOnly, "Table Transfer Tool"
+End Sub
+
+Private Sub DoTransferPreview()
+    Dim View As IView2
+    Set View = TransferDeltasView
+    
+    Dim ViewModel As TransferDeltasViewModel
+    Set ViewModel = New TransferDeltasViewModel
+    ViewModel.Load Transfer2.TransferDeltas
+    
+    If View.ShowDialog(ViewModel) Then
+        Debug.Print "dotransferdelta t"
+    Else
+        Debug.Print "dotransferdelta f"
+    End If
+End Sub
+
+Private Sub DoPostProcessing()
+    Transfer2.PostProcess New RemoveHighlighting
+    Transfer2.PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged
+    Transfer2.PostProcess HighlightChanges.Create(2, RGB(204, 255, 153)) ' 0->A new
 End Sub
 
 Private Sub TrySaveHistory()

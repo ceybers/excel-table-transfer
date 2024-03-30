@@ -1,5 +1,5 @@
 Attribute VB_Name = "KeyColumnMapper"
-'@Folder "Model.TransferInstruction2"
+'@Folder "Model2.TransferInstruction2"
 Option Explicit
 
 Public Function MapKeyColumns(ByVal LHS As ListColumn, ByVal RHS As ListColumn) As Variant

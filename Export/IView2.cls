@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Interface
-'@Folder "MVVM.Infrastructure.Abstract"
+'@Folder "MVVM2.Infrastructure.Abstract"
 Option Explicit
 
 Public Function ShowDialog(ByVal ViewModel As Object) As Boolean

@@ -13,7 +13,8 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder "MVVM.Views"
+'@IgnoreModule HungarianNotation
+'@Folder "MVVM2.Views"
 Option Explicit
 Implements IView2
 
@@ -76,7 +77,7 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
 End Sub
 
 Private Sub UserForm_Activate()
-    Set Me.lblTargetIcon.Picture = frmPictures.lblTarget.Picture
+    Set Me.lblTargetIcon.Picture = frmPictures16.lblTarget.Picture
 End Sub
 
 Private Function IView2_ShowDialog(ByVal ViewModel As Object) As Boolean
@@ -131,5 +132,4 @@ Private Sub TryShowAll()
     UpdateListViewRHS
     UpdateButtons
 End Sub
-
 

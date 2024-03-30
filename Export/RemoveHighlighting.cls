@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("Model.TransferInstruction2.PostProcessing")
+'@Folder "Model2.TransferInstruction2.PostProcessing"
 Option Explicit
 Implements ITransferPostProcesser
 
