@@ -49,7 +49,7 @@ Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As Transfer
             Dim Column As Long
             Column = TransferInstruction.Deltas(i)(DeltaIndex.tdCol)
             
-            AppendRange RangeToAppend:=DestinationRange.Cells(Row, Column), UnionRange:=Target
+            AppendRange RangeToAppend:=DestinationRange.Cells.Item(Row, Column), UnionRange:=Target
         End If
     Next i
     

@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} SelectTableView 
    Caption         =   "Select Table"
-   ClientHeight    =   9015.001
+   ClientHeight    =   5730
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   9360.001
+   ClientWidth     =   4080
    OleObjectBlob   =   "SelectTableView.frx":0000
    StartUpPosition =   2  'CenterScreen
 End

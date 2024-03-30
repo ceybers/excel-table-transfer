@@ -132,7 +132,7 @@ Private Sub ISettings_SetCollection(ByVal CollectionName As String, ByVal Collec
     
     Dim i As Long
     For i = 1 To Collection.Count
-        Result.Add Key:=("N" & (i - 1)), Item:=CStr(Collection(i))
+        Result.Add Key:=("N" & (i - 1)), Item:=CStr(Collection.Item(i))
     Next i
     
     Set This.Collections.Item(CollectionName) = Result
@@ -154,7 +154,7 @@ Private Function GetFullPath() As String
     GetFullPath = Environ$("USERPROFILE") & "\" & SUBFOLDER & "\" & This.Filename
 End Function
 
-Private Function CollectionNameToSection(ByVal CollectionName As String)
+Private Function CollectionNameToSection(ByVal CollectionName As String) As String
     CollectionNameToSection = COLLECTIONS_HEADER & CollectionName & "]"
 End Function
 
@@ -243,7 +243,7 @@ Private Sub LoadSection(ByVal SectionHeading As String, ByVal Dictionary As Scri
     Next i
 End Sub
 
-Private Function LoadCollection(ByVal CollectionName As String)
+Private Sub LoadCollection(ByVal CollectionName As String)
     Dim Result As Scripting.Dictionary
     Set Result = New Scripting.Dictionary
     This.Collections.Add Key:=CollectionName, Item:=Result
@@ -252,7 +252,7 @@ Private Function LoadCollection(ByVal CollectionName As String)
     SectionName = CollectionNameToSection(CollectionName)
     
     LoadSection SectionName, Result
-End Function
+End Sub
 
 Private Sub SaveData()
     Dim FileNumber As Long

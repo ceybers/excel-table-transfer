@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "PersistentStorage"
+'@Folder "PersistentStorage.Model"
 Option Explicit
 Implements ISettingsModel
 

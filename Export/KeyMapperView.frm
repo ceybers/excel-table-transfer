@@ -24,7 +24,7 @@ Attribute vm.VB_VarHelpID = -1
 Private Const ICON_SIZE As Long = 16
 Private msoImageList As ImageList
 
-Public DEBUG_EVENTS As Boolean
+Private DEBUG_EVENTS As Boolean
 
 Private Const NO_TABLE_SELECTED As String = "(No table selected)"
 
@@ -127,16 +127,18 @@ Private Sub cmbSwap_Click()
 End Sub
 
 Private Sub cmbTableLHS_DropButtonClick()
-    If TrySelectTable(Nothing, This.SelectTableVM) Then
-        Set vm.LHSTable = This.SelectTableVM.SelectedTable
+    Dim SelectedTable As ListObject
+    If TrySelectTable(vm.RHSTable, SelectedTable) Then
+        Set vm.LHSTable = SelectedTable
     End If
     
     Me.cmbColumnLHS.SetFocus
 End Sub
 
 Private Sub cmbTableRHS_DropButtonClick()
-    If TrySelectTable(Nothing, This.SelectTableVM) Then
-        Set vm.RHSTable = This.SelectTableVM.SelectedTable
+    Dim SelectedTable As ListObject
+    If TrySelectTable(vm.LHSTable, SelectedTable) Then
+        Set vm.RHSTable = SelectedTable
     End If
     
     Me.cmbColumnRHS.SetFocus

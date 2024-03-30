@@ -138,14 +138,9 @@ End Function
 Public Sub Load()
 End Sub
 
-
 Private Property Get RootNode() As String
     RootNode = Mid$(This.XPathPrefix, 2, InStr(2, This.XPathPrefix, "/") - 2)
 End Property
-
-Public Sub DebugPrint()
-    Debug.Print GetCustomXMLPart.XML
-End Sub
 
 Private Function GetCustomXMLPart() As CustomXMLPart
     Dim Result As CustomXMLNode

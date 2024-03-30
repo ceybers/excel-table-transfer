@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestDebugTransferInstruction"
-'@Folder("MVVM2.AppContext")
+'@Folder "Tests.MVVM"
 Option Explicit
 
 Public Function GetDebugTransfer() As TransferInstruction2

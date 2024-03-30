@@ -18,7 +18,7 @@ End Property
 
 ' Ignore errors, Empty, and Len=0 strings
 Public Property Get NonBlank() As IValueComparer
-    Set Default = New NonBlankComparer
+    Set NonBlank = New NonBlankComparer
 End Property
 
 ' Always transfer everything

@@ -13,7 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@IgnoreModule SetAssignmentWithIncompatibleObjectType
+'@IgnoreModule HungarianNotation, SetAssignmentWithIncompatibleObjectType
 '@Folder "MVVM2.Views"
 Option Explicit
 

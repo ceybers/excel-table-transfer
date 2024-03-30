@@ -1,5 +1,5 @@
 Attribute VB_Name = "TestTransferSerializer"
-'@Folder("MVVM2.AppContext")
+'@Folder "Tests.MVVM"
 Option Explicit
 
 Private Transfer As TransferInstruction2

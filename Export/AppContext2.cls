@@ -208,7 +208,7 @@ Private Function TryValueMapper() As ViewResult
         Case vrNext
             UpdateTransferInstruction This.Transfer, ViewModel.CheckedValuePairs
             This.Transfer.Evaluate
-        Case vrFinish
+        'Case vrFinish
             'UpdateTransferInstruction This.Transfer, ViewModel.CheckedValuePairs
             'This.Transfer.Evaluate
             'If IsEmpty(This.Transfer.Deltas) Then
