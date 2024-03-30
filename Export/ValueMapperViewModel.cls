@@ -486,5 +486,13 @@ Public Sub LoadFromTransferInstruction2(ByVal Transfer As TransferInstruction2)
         Set .KeyColumnLHS = Transfer.Source.KeyColumn
         Set .KeyColumnRHS = Transfer.Destination.KeyColumn
     End With
+    
+    Dim i As Long
+    For i = 0 To Transfer.Source.ValueColumnCount - 1
+        Dim NewColumnPair As ColumnPair
+        Set NewColumnPair = ColumnPair.Create(Transfer.Source.ValueColumns(i), Transfer.Destination.ValueColumns(i))
+        This.ValuePairs.Add NewColumnPair
+        This.CheckedValuePairs.Add NewColumnPair
+    Next i
 End Sub
 

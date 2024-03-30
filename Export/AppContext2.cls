@@ -15,16 +15,24 @@ Private Const MSG_NOT_ENOUGH_TABLES As String = "Not enough tables available to 
 
 Private Type TState
     Transfer As TransferInstruction2
+    Settings As TransferSettings
 End Type
 Private This As TState
 
 Public Sub Start()
-    'Set This.Transfer = New TransferInstruction2
+    Set This.Settings = New TransferSettings
+    Set This.Transfer = New TransferInstruction2
     
 'DEBUG:
-    Set This.Transfer = GetDebugTransfer
-    GoTo RewindValueMapper
+    'Set This.Transfer = GetDebugTransfer
+    'GoTo RewindValueMapper
 
+RewindReloadRecent:
+    Select Case TryReloadRecent
+        Case vrNext
+            GoTo RewindValueMapper
+    End Select
+    
 RewindSourceOrDestination:
     Select Case TrySourceOrDestination
         Case vrCancel
@@ -52,9 +60,9 @@ RewindValueMapper:
         Case vrBack
             GoTo RewindKeyMapper
         Case vrCancel
-            'Exit Sub
+            Exit Sub
         Case vrFinish
-            'exit sub
+            Exit Sub
     End Select
     
 RewindTransferDeltas:
@@ -64,9 +72,31 @@ RewindTransferDeltas:
         Case vrBack
             GoTo RewindValueMapper
         Case vrCancel, vrFinish
-            Exit Sub
+            'Exit Sub
     End Select
+    
+    SaveTransferHistory
 End Sub
+
+Private Function TryReloadRecent() As ViewResult
+    This.Settings.LoadMRU
+    
+    Dim RecentTransfers As Collection
+    Set RecentTransfers = This.Settings.RecentTransfers.ToCollection
+    
+    Dim RecentTransfer As Variant
+    For Each RecentTransfer In RecentTransfers
+        Dim SerialString As String
+        SerialString = Base64toString(RecentTransfer)
+        
+        Dim TestTransfer As TransferInstruction2
+        If TransferInstructionSerializer.TryDeserialize(SerialString, TestTransfer) Then
+            Set This.Transfer = TestTransfer
+            TryReloadRecent = vrNext
+            Exit Function
+        End If
+    Next RecentTransfer
+End Function
 
 Private Function TrySourceOrDestination() As ViewResult
     Dim ViewModel As SourceOrDestinationViewModel
@@ -196,4 +226,15 @@ Private Sub DoPostProcessing()
         .PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged
         .PostProcess HighlightChanges.Create(2, RGB(204, 255, 153)) ' 0->A new
     End With
+End Sub
+
+Private Sub SaveTransferHistory()
+    Dim SerialString As String
+    SerialString = TransferInstructionSerializer.Serialize(This.Transfer)
+    
+    Dim Base64Serial As String
+    Base64Serial = StringtoBase64(SerialString)
+    
+    This.Settings.RecentTransfers.Add Base64Serial
+    This.Settings.SaveMRU
 End Sub
