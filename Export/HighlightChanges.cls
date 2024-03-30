@@ -41,13 +41,13 @@ Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As Transfer
     Set DestinationRange = TransferInstruction.Destination.Table.DataBodyRange
     
     Dim i As Long
-    For i = 1 To UBound(TransferInstruction.Deltas)
+    For i = 0 To UBound(TransferInstruction.Deltas)
         If TransferInstruction.Deltas(i)(7) = This.ChangeType Then
             Dim Row As Long
-            Row = TransferInstruction.Deltas(i)(1)
+            Row = TransferInstruction.Deltas(i)(DeltaIndex.tdRow)
             
             Dim Column As Long
-            Column = TransferInstruction.Deltas(i)(0)
+            Column = TransferInstruction.Deltas(i)(DeltaIndex.tdCol)
             
             AppendRange RangeToAppend:=DestinationRange.Cells(Row, Column), UnionRange:=Target
         End If

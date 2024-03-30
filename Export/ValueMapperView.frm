@@ -35,7 +35,6 @@ Private Sub cmbBack_Click()
     Me.Hide
 End Sub
 
-' ---
 Private Sub cmbCancel_Click()
     OnCancel
 End Sub
@@ -60,6 +59,11 @@ Private Sub cmbMapRight_Click()
     vm.TryMap
 End Sub
 
+Private Sub cmbNext_Click()
+    vm.GoNext = True
+    Me.Hide
+End Sub
+
 Private Sub cmbOptions_Click()
     Dim optionVM As TransferOptionsViewModel
     Set optionVM = New TransferOptionsViewModel
@@ -77,6 +81,7 @@ End Sub
 
 Private Sub cmbReset_Click()
     vm.Reset
+    vm_MappingChanged
 End Sub
 
 Private Sub cmbSelectNone_Click()
@@ -171,6 +176,8 @@ Private Sub vm_MappingChanged()
     Me.cmbSelectNone.Enabled = vm.CanSelectNone
     
     vm_SelectionChanged
+    
+    Me.cmbNext.Enabled = (vm.checked.Count > 0)
 End Sub
 
 Private Sub vm_SelectionChanged()

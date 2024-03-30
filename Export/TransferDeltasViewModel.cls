@@ -14,8 +14,17 @@ Private Const MAX_LIMIT_DELTAS As Long = 1000000
 
 Private Type TState
     TransferDeltas As TransferDeltas
+    GoBack As Boolean
 End Type
 Private This As TState
+
+Public Property Get GoBack() As Boolean
+    GoBack = This.GoBack
+End Property
+
+Public Property Let GoBack(ByVal vNewValue As Boolean)
+    This.GoBack = vNewValue
+End Property
 
 Public Property Get Keys() As Collection
     Set Keys = This.TransferDeltas.Keys

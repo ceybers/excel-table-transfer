@@ -61,7 +61,7 @@ Public Sub SetComparer(ByVal Comparer As IValueComparer)
     Set This.Comparer = Comparer
 End Sub
 
-Public Sub Transfer()
+Public Sub Evaluate()
     Set This.Comparer = New NonBlankComparer
     
     If Not IsValid Then
@@ -100,6 +100,8 @@ End Sub
 Private Sub TransferColumns()
     ReDim This.ValueDeltas(0 To (UBound(This.KeyMap) * Source.ValueColumnCount))
     
+    This.ValueDeltaCursor = 0
+    
     Dim i As Long
     For i = 1 To Source.ValueColumnCount
         TransferColumn i - 1
@@ -135,18 +137,22 @@ Private Sub TransferColumn(ByVal FieldIndex As Long)
         
         If This.Comparer.Compare(SourceValue, DestinationValue) Then
             Dim CellDelta As Variant
-            CellDelta = GetTransferCellDelta(Destination.ValueColumns(FieldIndex).Index, This.KeyMap(i, 3), _
+            CellDelta = GetTransferCellDelta(This.KeyMap(i, 3), Destination.ValueColumns(FieldIndex).Index, _
                 This.KeyMap(i, 1), SourceColumn.Name, DestinationColumn.Name, _
                 SourceValue, DestinationValue)
                 
             This.ValueDeltas(This.ValueDeltaCursor) = CellDelta
             This.ValueDeltaCursor = This.ValueDeltaCursor + 1
             
-            DestinationVariantArray(This.KeyMap(i, 3), 1) = SourceValue
+            'DestinationVariantArray(This.KeyMap(i, 3), 1) = SourceValue
         End If
     Next i
         
-    DestinationColumn.DataBodyRange.Value2 = DestinationVariantArray
+    'DestinationColumn.DataBodyRange.Value2 = DestinationVariantArray
+End Sub
+
+Public Sub Commit(ByVal Commiter As ICommitStrategy)
+    Commiter.Commit Destination, This.ValueDeltas
 End Sub
 
 Private Sub UpdateTransferDeltas()

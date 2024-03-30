@@ -22,6 +22,13 @@ Attribute TransferTable.VB_ProcData.VB_Invoke_Func = "e\n14"
     
     InitializeViewModels
     
+    ' DEBUG
+    Set Transfer2.Source.Table = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(1)
+    Set Transfer2.Destination.Table = ThisWorkbook.Worksheets.Item(1).ListObjects.Item(2)
+    Transfer2.Source.KeyColumnName = "KeyA"
+    Transfer2.Destination.KeyColumnName = "KeyB"
+    GoTo Rewind3
+    
     ' This won't work with TransferInstruction2
     'If TryLoadHistory Then
     '    GoTo Rewind3
@@ -73,13 +80,19 @@ Rewind3:
     PrintTime "DoTransfer"
     
     'NoRewind
-    DoTransferPreview
+    If TryTransferPreview = False Then Exit Sub
+    If GoBack Then
+        GoBack = False
+        GoTo Rewind3
+    End If
+    PrintTime "TryTransferPreview"
+    
     DoPostProcessing
-    PrintTime "TransferDelta"
+    PrintTime "DoPostProcessing"
     
     'NoRewind
-    TrySaveHistory
-    PrintTime "TrySaveHistory"
+    'TrySaveHistory
+    'PrintTime "TrySaveHistory"
 End Sub
 
 Private Sub InitializeViewModels()
@@ -261,7 +274,7 @@ Private Sub DoTransfer()
     Dim timeStart As Double
     timeStart = Timer()
     
-    Transfer2.Transfer
+    Transfer2.Evaluate
     
     Dim timeTaken As Double
     timeTaken = Timer() - timeStart
@@ -275,7 +288,7 @@ Private Sub DoTransfer()
     'MsgBox completionMessage, vbInformation + vbOKOnly, "Table Transfer Tool"
 End Sub
 
-Private Sub DoTransferPreview()
+Private Function TryTransferPreview() As Boolean
     Dim View As IView2
     Set View = TransferDeltasView
     
@@ -283,12 +296,20 @@ Private Sub DoTransferPreview()
     Set ViewModel = New TransferDeltasViewModel
     ViewModel.Load Transfer2.TransferDeltas
     
-    If View.ShowDialog(ViewModel) Then
-        Debug.Print "dotransferdelta t"
-    Else
-        Debug.Print "dotransferdelta f"
-    End If
-End Sub
+    Select Case View.ShowDialog(ViewModel)
+        Case ViewResultEnum.vrCancel
+            TryTransferPreview = False
+        Case ViewResultEnum.vrBack
+            TryTransferPreview = True
+            GoBack = True
+        Case ViewResultEnum.vrNext
+            TryTransferPreview = True
+            Transfer2.Commit CommitterFactory.FullColumn
+        Case ViewResultEnum.vrFinish
+            TryTransferPreview = True
+            Transfer2.Commit CommitterFactory.FullColumn
+    End Select
+End Function
 
 Private Sub DoPostProcessing()
     Transfer2.PostProcess New RemoveHighlighting

@@ -41,6 +41,7 @@ Private Type TClsValueMapperViewModel
     ShowMappedOnlyRHS As Boolean
     
     GoBack As Boolean
+    GoNext As Boolean
 End Type
 
 Private This As TClsValueMapperViewModel
@@ -51,6 +52,14 @@ End Property
 
 Public Property Let GoBack(ByVal RHS As Boolean)
     This.GoBack = RHS
+End Property
+
+Public Property Get GoNext() As Boolean
+    GoNext = This.GoBack
+End Property
+
+Public Property Let GoNext(ByVal RHS As Boolean)
+    This.GoNext = RHS
 End Property
 
 Public Property Get ShowMappedOnlyLHS() As Boolean

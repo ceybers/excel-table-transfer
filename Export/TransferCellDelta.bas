@@ -22,7 +22,7 @@ Public Function GetTransferCellDelta(ByVal KeyIndex As Long, ByVal ValueIndex As
     Dim Result As Variant
     Result = Array(KeyIndex, ValueIndex, _
         Key, SourceColumnName, DestinationColumnName, _
-        SourceValue, DestinationValue, _
+        DestinationValue, SourceValue, _
         ChangeType.GetChangeType(SourceValue, DestinationValue))
         
     GetTransferCellDelta = Result
