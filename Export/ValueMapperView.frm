@@ -177,7 +177,7 @@ Private Sub vm_MappingChanged()
     
     vm_SelectionChanged
     
-    Me.cmbNext.Enabled = (vm.checked.Count > 0)
+    Me.cmbNext.Enabled = (vm.CheckedValuePairs.Count > 0)
 End Sub
 
 Private Sub vm_SelectionChanged()

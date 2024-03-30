@@ -40,8 +40,8 @@ Public Function HasFlag(ByVal Flags As Long, ByVal Flag As TransferOptionsEnum) 
     HasFlag = (Flags And Flag) = Flag
 End Function
 
-Public Function SetFlag(ByVal Flags As Long, ByVal Flag As TransferOptionsEnum, ByVal checked As Boolean) As Long
-    If checked Then
+Public Function SetFlag(ByVal Flags As Long, ByVal Flag As TransferOptionsEnum, ByVal Checked As Boolean) As Long
+    If Checked Then
         SetFlag = AddFlag(Flags, Flag)
     Else
         SetFlag = RemoveFlag(Flags, Flag)

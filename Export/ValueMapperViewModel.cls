@@ -106,8 +106,8 @@ Public Property Set KeyColumnRHS(ByVal RHS As ListColumn)
     Set This.KeyColumnRHS = RHS
 End Property
 
-Public Property Get checked() As Collection
-    Set checked = This.CheckedValuePairs.Item
+Public Property Get CheckedValuePairs() As Collection
+    Set CheckedValuePairs = This.CheckedValuePairs.Item
 End Property
 
 Public Property Get LHS() As ListObject
@@ -246,7 +246,7 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
                 End With
             End If
             
-            li.checked = (This.CheckedValuePairs.IsMappedRHS(lc))
+            li.Checked = (This.CheckedValuePairs.IsMappedRHS(lc))
             
             If ListColumnHasArray(lc) Then
                 li.SmallIcon = "Fx"
@@ -352,13 +352,13 @@ Public Sub TryCheck(ByVal Item As MSComctlLib.ListItem)
     Dim ColPair As ColumnPair
     
     If TryGetListColumnByName(This.RHS, Item.Key, lc) Then
-        If Item.checked Then
+        If Item.Checked Then
             If This.ValuePairs.IsMappedRHS(lc) Then
                 If This.ValuePairs.TryGetPair(ColumnPair:=ColPair, RHS:=lc) Then
                     This.CheckedValuePairs.Add ColPair
                 End If
             Else
-                Item.checked = False
+                Item.Checked = False
             End If
         Else
             If This.ValuePairs.IsMappedRHS(lc) Then
@@ -502,5 +502,14 @@ Public Sub LoadFromTransferInstruction(ByVal ti As TransferInstruction)
         This.ValuePairs.Add ColPair
         This.CheckedValuePairs.Add ColPair
     Next ColPair
+End Sub
+
+Public Sub LoadFromTransferInstruction2(ByVal Transfer As TransferInstruction2)
+    With This
+        Set .LHS = Transfer.Source.Table
+        Set .RHS = Transfer.Destination.Table
+        Set .KeyColumnLHS = Transfer.Source.KeyColumn
+        Set .KeyColumnRHS = Transfer.Destination.KeyColumn
+    End With
 End Sub
 

@@ -261,7 +261,7 @@ Private Function TryMapValueColumns() As Boolean
             'Set Transfer.ValuePairs = vm.checked ' Collection<ColumnPair>
             'Transfer.Flags = vm.Flags
             
-            UpdateTransferInstruction Transfer2, vm.checked
+            UpdateTransferInstruction Transfer2, vm.CheckedValuePairs
             
             TryMapValueColumns = True
         End If
