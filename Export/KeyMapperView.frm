@@ -53,6 +53,11 @@ Private Sub cmbNext_Click()
     Me.Hide
 End Sub
 
+Private Sub cmbStart_Click()
+    This.Result = vrStart
+    Me.Hide
+End Sub
+
 ' --- Controls
 Private Sub chkAddNewKeys_Click()
     If Me.chkAddNewKeys.Value = True Then

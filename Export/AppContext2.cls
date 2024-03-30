@@ -36,6 +36,8 @@ RewindSelectTable:
     
 RewindKeyMapper:
     Select Case TryKeyMapper
+        'Case vrStart
+        '    GoTo RewindSourceOrDestination
         Case vrBack
             GoTo RewindSelectTable
         Case vrCancel
@@ -52,6 +54,8 @@ RewindValueMapper:
     
 RewindTransferDeltas:
     Select Case TryTransferDeltas
+        Case vrStart
+            GoTo RewindKeyMapper
         Case vrBack
             GoTo RewindValueMapper
         Case vrCancel, vrFinish
@@ -74,8 +78,13 @@ Private Function TrySourceOrDestination() As ViewResult
         Exit Function
     End If
     
+    If Selection.ListObject Is Nothing Then
+        TrySourceOrDestination = vrNext
+        Exit Function
+    End If
+        
     Result = View.ShowDialog(ViewModel)
-   
+    
     Select Case Result
         Case vrNext
             If ViewModel.IsSource Then

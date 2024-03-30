@@ -5,8 +5,8 @@ Option Explicit
 Private Const DEFAULT_ICON_SIZE As Long = 16
 Private Const DEFAULT_MSO_KEYS As String = "root,BlogHomePage;wb,FileSaveAsExcelXlsx;" & _
     "ws,HeaderFooterSheetNameInsert;lo,CreateTable;col,TableColumnSelect;activeLo,TableSelect;" & _
-    "delete,Delete;AutoSum,AutoSum;MagicWand,QueryBuilder;TraceError,TraceError;" & _
-    "Tick,AcceptInvitation;Cross,DeclineInvitation;Key,AdpPrimaryKey;Fx,TableFormulaDialog;" & _
+    "delete,Delete;AutoSum,AutoSum;MagicWand,QueryBuilder;" & _
+    "Key,AdpPrimaryKey;Fx,TableFormulaDialog;" & _
     "Excel,MicrosoftExcel"
 
 '@Description "Returns a new ImageList object pre-populated with a standardised list of default icons."
@@ -19,6 +19,10 @@ Attribute GetMSOImageList.VB_Description = "Returns a new ImageList object pre-p
     For Each ImageTuple In Split(DEFAULT_MSO_KEYS, ";")
         AddImageToImageList Result, Split(ImageTuple, ",")(0), Split(ImageTuple, ",")(1), IconSize
     Next ImageTuple
+    
+    Result.ListImages.Add 1, "Tick", frmPictures16.lblComplete.Picture
+    Result.ListImages.Add 1, "TraceError", frmPictures16.lblWarning.Picture
+    Result.ListImages.Add 1, "Cross", frmPictures16.lblRemove.Picture
     
     Set GetMSOImageList = Result
 End Function

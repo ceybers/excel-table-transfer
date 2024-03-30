@@ -178,8 +178,9 @@ Private Sub InitializeControls()
     Set Me.lvRHS.Icons = msoImageList
     Set Me.lvRHS.SmallIcons = msoImageList
     
-    Me.cmbClearSearchLHS.Picture = msoImageList.ListImages.Item("delete").Picture
-    Me.cmbClearSearchRHS.Picture = msoImageList.ListImages.Item("delete").Picture
+    ' TODO These look really bad. IPictDisp issues on specifically Button controls vs being okay on Labels?
+    Me.cmbClearSearchLHS.Picture = msoImageList.ListImages.Item("Cross").Picture
+    Me.cmbClearSearchRHS.Picture = msoImageList.ListImages.Item("Cross").Picture
 End Sub
 
 Public Sub LoadFromVM()

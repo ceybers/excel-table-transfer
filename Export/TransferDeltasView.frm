@@ -18,7 +18,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IView2
 
-Private Const LBL_HEADING As String = "Preview the differences between the tables and the proposed changes before applying them to the Destination table."
+Private Const LBL_HEADING As String = "Table differences compared successfully. The changes can be previewed below before applying them to the Destination table."
 
 Private Type TState
     ViewModel As TransferDeltasViewModel
@@ -46,8 +46,17 @@ Private Sub cmbNext_Click()
     Me.Hide
 End Sub
 
+Private Sub cmbStart_Click()
+    This.Result = vrStart
+    Me.Hide
+End Sub
+
 Private Sub cmbShowAll_Click()
     DoShowAll
+End Sub
+
+Private Sub lblTargetIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    frmAbout.Show
 End Sub
 
 Private Sub lvKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
@@ -78,7 +87,7 @@ Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
 End Function
 
 Private Sub InitializeControls()
-    Set Me.lblTargetIcon.Picture = frmPictures32.lblDesktop.Picture
+    Set Me.lblTargetIcon.Picture = frmPictures32.lblCompareChanges.Picture
     
     Me.lblHeading.caption = LBL_HEADING
     
