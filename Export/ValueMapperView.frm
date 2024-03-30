@@ -66,10 +66,6 @@ Private Sub cmbMapRight_Click()
     vm.TryMap
 End Sub
 
-Private Sub cmbOptions_Click()
-    ShowOptions
-End Sub
-
 Private Sub cmbReset_Click()
     vm.Reset
     vm_MappingChanged
@@ -236,20 +232,4 @@ Private Sub vm_SelectionChanged()
     
     Me.txtSearchLHS = vm.LHSCriteria
     Me.txtSearchRHS = vm.RHSCriteria
-End Sub
-
-' TODO Move this out (or refactor to new MVVM)
-Private Sub ShowOptions()
-    Dim optionVM As TransferOptionsViewModel
-    Set optionVM = New TransferOptionsViewModel
-    optionVM.Flags = vm.Flags
-    
-    Dim View As IView
-    Set View = New TransferOptionsView
-    
-    If View.ShowDialog(optionVM) Then
-        vm.Flags = optionVM.Flags
-    Else
-        'Debug.Print "Cancelled"
-    End If
 End Sub

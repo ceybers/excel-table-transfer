@@ -19,31 +19,3 @@ Public Enum TransferOptionsEnum
     
     HighlightMapped = 2 ^ 9                      ' 512
 End Enum
-
-Public Function AddFlag(ByVal Flags As Long, ByVal Flag As TransferOptionsEnum) As Long
-    If Not HasFlag(Flags, Flag) Then
-        AddFlag = Flags + Flag
-    Else
-        AddFlag = Flags
-    End If
-End Function
-
-Public Function RemoveFlag(ByVal Flags As Long, ByVal Flag As TransferOptionsEnum) As Long
-    If HasFlag(Flags, Flag) Then
-        RemoveFlag = Flags - Flag
-    Else
-        RemoveFlag = Flags
-    End If
-End Function
-
-Public Function HasFlag(ByVal Flags As Long, ByVal Flag As TransferOptionsEnum) As Boolean
-    HasFlag = (Flags And Flag) = Flag
-End Function
-
-Public Function SetFlag(ByVal Flags As Long, ByVal Flag As TransferOptionsEnum, ByVal Checked As Boolean) As Long
-    If Checked Then
-        SetFlag = AddFlag(Flags, Flag)
-    Else
-        SetFlag = RemoveFlag(Flags, Flag)
-    End If
-End Function

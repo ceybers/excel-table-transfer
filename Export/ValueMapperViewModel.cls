@@ -39,28 +39,9 @@ Private Type TClsValueMapperViewModel
     
     ShowMappedOnlyLHS As Boolean
     ShowMappedOnlyRHS As Boolean
-    
-    GoBack As Boolean
-    GoNext As Boolean
 End Type
 
 Private This As TClsValueMapperViewModel
-
-Public Property Get GoBack() As Boolean
-    GoBack = This.GoBack
-End Property
-
-Public Property Let GoBack(ByVal RHS As Boolean)
-    This.GoBack = RHS
-End Property
-
-Public Property Get GoNext() As Boolean
-    GoNext = This.GoBack
-End Property
-
-Public Property Let GoNext(ByVal RHS As Boolean)
-    This.GoNext = RHS
-End Property
 
 Public Property Get ShowMappedOnlyLHS() As Boolean
     ShowMappedOnlyLHS = This.ShowMappedOnlyLHS
@@ -494,14 +475,6 @@ Private Sub TryAutomap()
 
     This.IsAutoMapped = True
     RaiseEvent MappingChanged
-End Sub
-
-Public Sub LoadFromTransferInstruction(ByVal ti As TransferInstruction)
-    Dim ColPair As ColumnPair
-    For Each ColPair In ti.ValuePairs
-        This.ValuePairs.Add ColPair
-        This.CheckedValuePairs.Add ColPair
-    Next ColPair
 End Sub
 
 Public Sub LoadFromTransferInstruction2(ByVal Transfer As TransferInstruction2)

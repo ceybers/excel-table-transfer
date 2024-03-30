@@ -34,7 +34,6 @@ Private Type TViewModel
     QualityRHS As KeyColumn
     MatchResults As KeyColumnComparer
     '---
-    GoBack As Boolean
     AppendNewKeys As Boolean
     RemoveOrphanKeys As Boolean
 End Type
@@ -55,14 +54,6 @@ End Property
 
 Public Property Let RemoveOrphanKeys(ByVal RHS As Boolean)
     This.RemoveOrphanKeys = RHS
-End Property
-
-Public Property Get GoBack() As Boolean
-    GoBack = This.GoBack
-End Property
-
-Public Property Let GoBack(ByVal RHS As Boolean)
-    This.GoBack = RHS
 End Property
 
 Public Property Get IsDirty() As Boolean
@@ -174,24 +165,6 @@ Public Property Set RHSKeyColumn(ByVal lo As ListColumn)
 End Property
 
 ' --- Subs
-Public Sub LoadFromTransferInstruction(ByVal ti As TransferInstruction)
-    If Not ti.Source Is Nothing Then
-        Set LHSTable = ti.Source
-    End If
-    
-    If Not ti.Source Is Nothing Then
-        Set RHSTable = ti.Destination
-    End If
-    
-    If Not ti.Source Is Nothing Then
-        Set LHSKeyColumn = ti.SourceKey
-    End If
-    
-    If Not ti.Source Is Nothing Then
-        Set RHSKeyColumn = ti.DestinationKey
-    End If
-End Sub
-
 Private Sub UpdateColumns(ByVal lo As ListObject, ByVal coll As Collection)
     ' TODO This fails when selecting new table in key select dialog
     Debug.Assert Not lo Is Nothing
