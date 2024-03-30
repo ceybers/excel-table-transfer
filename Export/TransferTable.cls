@@ -36,7 +36,17 @@ Public Property Get KeyColumnName() As String
 End Property
 
 Public Property Let KeyColumnName(ByVal RHS As String)
-    This.KeyColumnName = RHS
+    If Not This.KeyColumnName = vbNullString Then
+        If This.KeyColumnName = RHS Then
+            Exit Property
+        End If
+    End If
+    
+    If ListColumnHelpers.Exists(This.Table, RHS) Then
+        This.KeyColumnName = RHS
+    End If
+    
+    'Err.Raise vbObjectError + 15, , "Key Column doesn't exist"
 End Property
 
 Public Property Get ValueColumns() As Variant
@@ -55,9 +65,11 @@ Public Property Get ValueColumnCount() As Long
     ValueColumnCount = UBound(This.ValueColumns) - LBound(This.ValueColumns) + 1
 End Property
 
-Public Sub Load(ByVal Table As ListObject, ByVal KeyColumnName As String, ByVal ValueColumnNames As Variant)
+Public Sub Load(ByVal Table As ListObject, ByVal mKeyColumnName As String, ByVal ValueColumnNames As Variant)
     Set This.Table = Table
-    This.KeyColumnName = KeyColumnName
+    
+    KeyColumnName = mKeyColumnName
+
     This.ValueColumnNames = ValueColumnNames
     
     '@Ignore FunctionReturnValueDiscarded
@@ -66,7 +78,8 @@ End Sub
 
 Public Function IsValid() As Boolean
     If This.Table Is Nothing Then Exit Function
-    Debug.Assert Not This.Table.ListColumns.Item(This.KeyColumnName) Is Nothing
+    If This.KeyColumnName = vbNullString Then Exit Function
+    If IsEmpty(This.ValueColumns) Then Exit Function
     
     IsValid = True
 End Function
@@ -80,7 +93,7 @@ End Function
 
 '@Ignore FunctionReturnValueAlwaysDiscarded
 Public Function TryGetValueListColumns(ByRef OutListColumns As Variant) As Boolean
-    If Not IsValid Then
+    If This.Table Is Nothing Then
         Exit Function
     End If
     
@@ -89,11 +102,16 @@ Public Function TryGetValueListColumns(ByRef OutListColumns As Variant) As Boole
     
     Dim i As Long
     For i = 0 To UBound(Result)
-        Set Result(i) = This.Table.ListColumns.Item(This.ValueColumnNames(i))
+        Dim ListColumn As ListColumn
+        If TryGetListColumn(This.Table, This.ValueColumnNames(i), ListColumn) Then
+            Set Result(i) = ListColumn
+        Else
+            ReDim Result(0 To 0)
+            Exit Function
+        End If
     Next i
     
     OutListColumns = Result
     
     TryGetValueListColumns = True
 End Function
-

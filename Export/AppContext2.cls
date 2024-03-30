@@ -19,8 +19,11 @@ End Type
 Private This As TState
 
 Public Sub Start()
-    Set This.Transfer = New TransferInstruction2
-    'Set This.Transfer = GetDebugTransfer
+    'Set This.Transfer = New TransferInstruction2
+    
+'DEBUG:
+    Set This.Transfer = GetDebugTransfer
+    GoTo RewindValueMapper
 
 RewindSourceOrDestination:
     Select Case TrySourceOrDestination
@@ -48,8 +51,10 @@ RewindValueMapper:
     Select Case TryValueMapper
         Case vrBack
             GoTo RewindKeyMapper
-        Case vrCancel, vrFinish
-            Exit Sub
+        Case vrCancel
+            'Exit Sub
+        Case vrFinish
+            'exit sub
     End Select
     
 RewindTransferDeltas:

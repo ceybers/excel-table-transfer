@@ -31,7 +31,7 @@ Public Function TryGetWorkbook(ByVal Filename As String, ByRef wb As Workbook, O
                 Exit Function
             End If
         Else
-            If curWB.fullname = path & Filename Then
+            If curWB.FullName = path & Filename Then
                 Set wb = curWB
                 TryGetWorkbook = True
                 Exit Function
@@ -114,4 +114,15 @@ Public Function GetAllTablesInApplication() As Collection
     Next Workbook
     
     Set GetAllTablesInApplication = Result
+End Function
+
+Public Function TryGetListObjectFromCollection(ByVal TableCollection As Collection, ByVal ListObjectName As String, ByRef OutListObject As ListObject) As Boolean
+    Dim ListObject As ListObject
+    For Each ListObject In TableCollection
+        If ListObjectName = ListObject.Name Then
+            Set OutListObject = ListObject
+            TryGetListObjectFromCollection = True
+            Exit Function
+        End If
+    Next ListObject
 End Function
