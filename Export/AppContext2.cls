@@ -62,7 +62,7 @@ RewindValueMapper:
         Case vrCancel
             Exit Sub
         Case vrFinish
-            Exit Sub
+            GoTo FinishEarly
     End Select
     
 RewindTransferDeltas:
@@ -72,9 +72,10 @@ RewindTransferDeltas:
         Case vrBack
             GoTo RewindValueMapper
         Case vrCancel, vrFinish
-            'Exit Sub
+            GoTo FinishEarly
     End Select
     
+FinishEarly:
     SaveTransferHistory
 End Sub
 
@@ -222,9 +223,11 @@ End Function
 
 Private Sub DoPostProcessing()
     With This.Transfer
-        .PostProcess New RemoveHighlighting
+        .PostProcess PostProcessorFactory.RemoveHighlighting
         .PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged
         .PostProcess HighlightChanges.Create(2, RGB(204, 255, 153)) ' 0->A new
+        .PostProcess PostProcessorFactory.TransferColumnWidths
+        .PostProcess PostProcessorFactory.TransferNumberFormat
     End With
 End Sub
 

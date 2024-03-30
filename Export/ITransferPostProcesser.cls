@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Interface
-'@Folder "Model2.TransferInstruction2.PostProcessing"
+'@Folder "Model2.PostProcessors"
 Option Explicit
 
 Public Sub Execute(ByVal TransferInstruction As TransferInstruction2)

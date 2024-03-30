@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "Model2.TransferInstruction2.PostProcessing"
+'@Folder "Model2.PostProcessors"
 Option Explicit
 Implements ITransferPostProcesser
 
