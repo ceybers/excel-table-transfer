@@ -172,7 +172,7 @@ Public Sub UpdateLHStoListView(ByVal lv As ListView)
 End Sub
 
 Private Function IsMappedLHS(ByVal columnName As String) As Boolean
-    Err.Raise 5, , "no"
+    Err.Raise 5, "ValueMapperViewModel", "IsMappedLHS failed"
     Dim ColPair As ColumnPair
     For Each ColPair In This.ValuePairs
         If ColPair.LHS.Name = columnName Then

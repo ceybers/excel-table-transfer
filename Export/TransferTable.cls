@@ -42,6 +42,11 @@ Public Property Let KeyColumnName(ByVal RHS As String)
         End If
     End If
     
+    If RHS = vbNullString Then
+        This.KeyColumnName = vbNullString
+        Exit Property
+    End If
+    
     If ListColumnHelpers.Exists(This.Table, RHS) Then
         This.KeyColumnName = RHS
     End If
@@ -62,7 +67,11 @@ End Property
 'End Property
 
 Public Property Get ValueColumnCount() As Long
-    ValueColumnCount = UBound(This.ValueColumns) - LBound(This.ValueColumns) + 1
+    If IsEmpty(This.ValueColumns) Then
+        ValueColumnCount = 0
+    Else
+        ValueColumnCount = UBound(This.ValueColumns) - LBound(This.ValueColumns) + 1
+    End If
 End Property
 
 Public Sub Load(ByVal Table As ListObject, ByVal mKeyColumnName As String, ByVal ValueColumnNames As Variant)

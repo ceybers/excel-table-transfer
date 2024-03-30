@@ -126,6 +126,10 @@ Private Sub vm_MappingChanged()
     vm_SelectionChanged
     
     Me.cmbNext.Enabled = (vm.CheckedValuePairs.Count > 0)
+    If Me.cmbNext.Enabled Then
+        Me.cmbNext.SetFocus
+    End If
+    Me.cmbFinish.Enabled = False ' Always go to TransferDeltasMVVM before committing
 End Sub
 
 Private Sub txtSearchLHS_Change()

@@ -88,12 +88,21 @@ Private Sub AddItem(ByVal ListView As ListView, ByVal Text As String, ByVal Memb
 End Sub
 
 Private Sub UpdateHeader(ByVal ListView As ListView, ByVal Member As tdType, ByVal Count As Long)
+    Dim HeaderText As String
+    
     Select Case Member
         Case tdType.tdKeyMember
-            ListView.ColumnHeaders.Item(1).Text = KEY_HEADER & " (" & CStr(Count) & ")"
+            HeaderText = KEY_HEADER
         Case tdType.tdField
-            ListView.ColumnHeaders.Item(1).Text = FIELD_HEADER & " (" & CStr(Count) & ")"
+            HeaderText = FIELD_HEADER
     End Select
+    
+    If Count = -1 Then
+        ListView.ColumnHeaders.Item(1).Text = vbNullString
+        ListView.ListItems.Clear
+    Else
+        ListView.ColumnHeaders.Item(1).Text = HeaderText & " (" & CStr(Count + 0) & ")"
+    End If
 End Sub
 
 Private Sub AddSelectAll(ByVal ListView As ListView)

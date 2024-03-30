@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("Model")
+'@Folder "Model2.Settings"
 Option Explicit
 
 Private Const SETTINGS_UUID As String = "{e0daadf3-7046-4d50-95c4-5df5ad6b2bba}"
@@ -18,6 +18,7 @@ Private Const MRU_NAME_RECENT_TRANSFERS As String = "RecentTransfers"
 Private Type TState
     User As ISettings
     Workbooks As Object
+    ListObjects As Object
     
     RecentTransfers As IMostRecentlyUsed
 End Type
@@ -36,6 +37,7 @@ Private Sub Class_Initialize()
         UUID:=SETTINGS_UUID, _
         Filename:=SETTINGS_FILENAME)
     Set This.Workbooks = CreateObject("Scripting.Dictionary")
+    Set This.ListObjects = CreateObject("Scripting.Dictionary")
     Set This.RecentTransfers = New MostRecentlyUsed
 End Sub
 
@@ -45,12 +47,29 @@ Public Function GetWorkbookSettings(ByVal Workbook As Workbook) As ISettings
         Set WorkbookSettings = XMLSettingsFactory.CreateWorkbookSettings( _
           Workbook:=Workbook, _
           RootNode:=XML_ROOT_NODE_NAME)
-        This.Workbooks.Add WorkbookSettings
+        This.Workbooks.Add Key:=Workbook, Item:=WorkbookSettings
     Else
         Set WorkbookSettings = This.Workbooks.Item(Workbook)
     End If
     
     Set GetWorkbookSettings = WorkbookSettings
+End Function
+
+Public Function GetListObjectSettings(ByVal ListObject As ListObject) As ISettings
+    Dim WorkbookSettings As XMLSettings
+    Set WorkbookSettings = GetWorkbookSettings(ListObject.Parent.Parent)
+    
+    Dim ListObjectSettings As XMLSettings
+    If Not This.ListObjects.Exists(ListObject) Then
+        Set ListObjectSettings = XMLSettingsFactory.CreateTableSettings( _
+          TableName:=ListObject.Name, _
+          WorkbookSettings:=WorkbookSettings)
+        This.ListObjects.Add Key:=ListObject, Item:=ListObjectSettings
+    Else
+        Set ListObjectSettings = This.ListObjects.Item(ListObject)
+    End If
+    
+    Set GetListObjectSettings = ListObjectSettings
 End Function
 
 Public Sub LoadMRU()
@@ -60,3 +79,4 @@ End Sub
 Public Sub SaveMRU()
     This.User.SetCollection MRU_NAME_RECENT_TRANSFERS, This.RecentTransfers.ToCollection
 End Sub
+

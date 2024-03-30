@@ -10,6 +10,8 @@ Attribute VB_Exposed = False
 '@Folder "MVVM2.AppContext"
 Option Explicit
 
+Private Const LAST_KEY_USED As String = "LastKeyUsed"
+
 Private Const MSG_CAPTION As String = "Table Transfer Tool"
 Private Const MSG_NOT_ENOUGH_TABLES As String = "Not enough tables available to start a transfer!"
 
@@ -50,7 +52,7 @@ RewindKeyMapper:
         'Case vrStart
         '    GoTo RewindSourceOrDestination
         Case vrBack
-            GoTo RewindSelectTable
+            GoTo RewindSourceOrDestination
         Case vrCancel
             Exit Sub
     End Select
@@ -61,8 +63,8 @@ RewindValueMapper:
             GoTo RewindKeyMapper
         Case vrCancel
             Exit Sub
-        Case vrFinish
-            GoTo FinishEarly
+        'Case vrFinish
+        '    GoTo FinishEarly
     End Select
     
 RewindTransferDeltas:
@@ -125,7 +127,9 @@ Private Function TrySourceOrDestination() As ViewResult
         Case vrNext
             If ViewModel.IsSource Then
                 Set This.Transfer.Source.Table = Selection.ListObject
+                Set This.Transfer.Destination.Table = Nothing
             ElseIf ViewModel.IsDestination Then
+                Set This.Transfer.Source.Table = Nothing
                 Set This.Transfer.Destination.Table = Selection.ListObject
             End If
     End Select
@@ -136,6 +140,12 @@ End Function
 Private Function TrySelectTable() As ViewResult
     Dim ViewModel As SelectTableViewModel
     Set ViewModel = New SelectTableViewModel
+    
+    If Not This.Transfer.Source.Table Is Nothing Then
+        Set ViewModel.ActiveTable = This.Transfer.Source.Table
+    ElseIf Not This.Transfer.Destination.Table Is Nothing Then
+        Set ViewModel.ActiveTable = This.Transfer.Destination.Table
+    End If
     
     Dim View As IView2
     Set View = New SelectTableView
@@ -161,6 +171,13 @@ Private Function TryKeyMapper() As ViewResult
     Dim ViewModel As KeyMapperViewModel
     Set ViewModel = New KeyMapperViewModel
     ViewModel.LoadFromTransferInstruction2 This.Transfer
+    
+    Dim ListObjectSettings As ISettings
+    Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Source.Table)
+    This.Transfer.Source.KeyColumnName = ListObjectSettings.GetSetting(LAST_KEY_USED)
+    
+    Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Destination.Table)
+    This.Transfer.Destination.KeyColumnName = ListObjectSettings.GetSetting(LAST_KEY_USED)
     
     Dim View As IView2
     Set View = New KeyMapperView
@@ -192,10 +209,14 @@ Private Function TryValueMapper() As ViewResult
             UpdateTransferInstruction This.Transfer, ViewModel.CheckedValuePairs
             This.Transfer.Evaluate
         Case vrFinish
-            UpdateTransferInstruction This.Transfer, ViewModel.CheckedValuePairs
-            This.Transfer.Evaluate
-            This.Transfer.Commit CommitterFactory.FullColumn
-            DoPostProcessing
+            'UpdateTransferInstruction This.Transfer, ViewModel.CheckedValuePairs
+            'This.Transfer.Evaluate
+            'If IsEmpty(This.Transfer.Deltas) Then
+            '    Result = vrNext
+            'Else
+            '    This.Transfer.Commit CommitterFactory.FullColumn
+            '    DoPostProcessing
+            'End If
     End Select
     
     TryValueMapper = Result
@@ -222,6 +243,8 @@ Private Function TryTransferDeltas() As ViewResult
 End Function
 
 Private Sub DoPostProcessing()
+    If IsEmpty(This.Transfer.Deltas) Then Exit Sub
+    
     With This.Transfer
         .PostProcess PostProcessorFactory.RemoveHighlighting
         .PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged
@@ -232,6 +255,8 @@ Private Sub DoPostProcessing()
 End Sub
 
 Private Sub SaveTransferHistory()
+    If IsEmpty(This.Transfer.Deltas) Then Exit Sub
+    
     Dim SerialString As String
     SerialString = TransferInstructionSerializer.Serialize(This.Transfer)
     
@@ -240,4 +265,11 @@ Private Sub SaveTransferHistory()
     
     This.Settings.RecentTransfers.Add Base64Serial
     This.Settings.SaveMRU
+    
+    Dim ListObjectSettings As ISettings
+    Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Source.Table)
+    ListObjectSettings.SetSetting LAST_KEY_USED, This.Transfer.Source.KeyColumnName
+    
+    Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Destination.Table)
+    ListObjectSettings.SetSetting LAST_KEY_USED, This.Transfer.Destination.KeyColumnName
 End Sub

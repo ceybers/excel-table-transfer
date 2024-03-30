@@ -19,6 +19,7 @@ Option Explicit
 Implements IView2
 
 Private Const LBL_HEADING As String = "Table differences compared successfully. The changes can be previewed below before applying them to the Destination table."
+Private Const LBL_NO_DELTAS As String = "Table differences compared successfully." & vbCrLf & "No changes were found."
 
 Private Type TState
     ViewModel As TransferDeltasViewModel
@@ -80,6 +81,7 @@ Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
     UpdateListViewLHS
     UpdateListViewRHS
     UpdateButtons
+    UpdateNoChanges
     
     Me.Show
     
@@ -99,6 +101,17 @@ End Sub
 Private Sub UpdateButtons()
     Me.cmbShowAll.Enabled = This.ViewModel.CanShowAll
     Me.cmbNext.Enabled = False ' This is the last step, user will click 'Finish' instead
+    Me.cmbFinish.Enabled = This.ViewModel.CanFinish
+    
+    If Me.cmbFinish.Enabled Then
+        Me.cmbFinish.SetFocus
+    End If
+End Sub
+
+Private Sub UpdateNoChanges()
+    If This.ViewModel.CanFinish = False Then
+        Me.lblHeading.caption = LBL_NO_DELTAS
+    End If
 End Sub
 
 Private Sub UpdateListViewLHS()
