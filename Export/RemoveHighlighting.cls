@@ -12,5 +12,5 @@ Option Explicit
 Implements ITransferPostProcesser
 
 Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As TransferInstruction2)
-    Highlighting.RemoveExistingHighlighting TransferInstruction.Destination.Table.parent
+    Highlighting.RemoveExistingHighlighting TransferInstruction.Destination.Table.Parent
 End Sub

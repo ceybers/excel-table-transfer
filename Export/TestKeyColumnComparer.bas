@@ -75,13 +75,13 @@ End Function
 Private Sub SubPasteMap(ByVal Map As Variant)
     Dim rng As Range
     Set rng = ThisWorkbook.Worksheets.Item(2).ListObjects.Item(2).ListColumns.Item(2).DataBodyRange
-    Dim arr As Variant
-    arr = rng.Value2
+    Dim Arr As Variant
+    Arr = rng.Value2
     Dim i As Long
-    For i = LBound(arr, 1) To UBound(arr, 1)
-        arr(i, 1) = Map(i + 1)
+    For i = LBound(Arr, 1) To UBound(Arr, 1)
+        Arr(i, 1) = Map(i + 1)
     Next i
-    rng.Value2 = arr
+    rng.Value2 = Arr
 End Sub
 
 Private Sub DebugPrint(ByVal Compare As KeyColumnComparer)

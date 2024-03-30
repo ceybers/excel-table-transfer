@@ -153,8 +153,8 @@ Public Sub LoadTreeview(ByVal tv As MSComctlLib.TreeView)
     
     Dim lo As ListObject
     For Each lo In This.Tables
-        TryAddNode tv, lo.parent.parent
-        TryAddNode tv, lo.parent
+        TryAddNode tv, lo.Parent.Parent
+        TryAddNode tv, lo.Parent
         TryAddNode tv, lo
     Next lo
     
@@ -170,7 +170,7 @@ Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
     Dim wb As Workbook
     
     Dim Key As String
-    Dim parent As String
+    Dim Parent As String
     Dim nd As Node
     Dim image As String
     Dim Text As String
@@ -179,21 +179,21 @@ Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
     If TypeOf obj Is Workbook Then
         Set wb = obj
         Key = "[" & wb.Name & "]"
-        parent = "Root"
+        Parent = "Root"
         image = "wb"
         Text = wb.Name
         
     ElseIf TypeOf obj Is Worksheet Then
         Set ws = obj
-        Key = "[" & ws.parent.Name & "]" & ws.Name
-        parent = "[" & ws.parent.Name & "]"
+        Key = "[" & ws.Parent.Name & "]" & ws.Name
+        Parent = "[" & ws.Parent.Name & "]"
         image = "ws"
         Text = ws.Name
         
     ElseIf TypeOf obj Is ListObject Then
         Set lo = obj
         Key = lo.Range.Address(External:=True)
-        parent = "[" & lo.parent.parent.Name & "]" & lo.parent.Name
+        Parent = "[" & lo.Parent.Parent.Name & "]" & lo.Parent.Name
         image = "lo"
         Text = lo.Name
         suffix = vbNullString
@@ -212,7 +212,7 @@ Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
         If nd.Key = Key Then Exit Sub
     Next nd
     
-    tv.Nodes.Add relative:=parent, Relationship:=tvwChild, Key:=Key, Text:=Text, image:=image
+    tv.Nodes.Add relative:=Parent, Relationship:=tvwChild, Key:=Key, Text:=Text, image:=image
     
     If image = "activeLo" Then
         tv.Nodes.ControlDefault(Key).ForeColor = RGB(192, 192, 192)

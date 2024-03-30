@@ -74,9 +74,9 @@ End Sub
 Private Function SerializeTable(ByVal ListObject As ListObject) As String
     Dim Result(0 To 3) As Variant
     With ListObject
-        Result(0) = .parent.parent.FullName ' Workbook
-        Result(1) = .parent.parent.Name ' Workbook
-        Result(2) = .parent.Name ' Worksheet
+        Result(0) = .Parent.Parent.FullName ' Workbook
+        Result(1) = .Parent.Parent.Name ' Workbook
+        Result(2) = .Parent.Name ' Worksheet
         Result(3) = .Name ' ListObject
     End With
     
