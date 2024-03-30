@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-'@Folder("Helpers.CollectionEx")
+'@Folder "PersistentStorage.MostRecentlyUsed"
 '@Interface
 
 '@Description "Sets the maximum length of items in the structure. Reducing the size trunctuates existing elements."

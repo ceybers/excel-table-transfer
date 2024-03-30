@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 Attribute VB_Description = "Data structure for storing a Most Recently Used list."
 '@ModuleDescription "Data structure for storing a Most Recently Used list."
 '@PredeclaredId
-'@Folder("Helpers.CollectionEx")
+'@Folder "PersistentStorage.MostRecentlyUsed"
 Option Explicit
 
 Implements IMostRecentlyUsed
