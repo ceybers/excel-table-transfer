@@ -158,7 +158,7 @@ Public Sub LoadTreeview(ByVal tv As MSComctlLib.TreeView)
         Set .ImageList = GetMSOImageList(ICON_SIZE)
         
         .Nodes.Clear
-        .Nodes.Add Key:="Root", text:="Excel", image:="Excel"
+        .Nodes.Add Key:="Root", Text:="Excel", image:="Excel"
         
         .LineStyle = tvwTreeLines
         .Appearance = cc3D
@@ -190,7 +190,7 @@ Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
     Dim parent As String
     Dim nd As Node
     Dim image As String
-    Dim text As String
+    Dim Text As String
     Dim suffix As String
     
     If TypeOf obj Is Workbook Then
@@ -198,21 +198,21 @@ Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
         Key = "[" & wb.Name & "]"
         parent = "Root"
         image = "wb"
-        text = wb.Name
+        Text = wb.Name
         
     ElseIf TypeOf obj Is Worksheet Then
         Set ws = obj
         Key = "[" & ws.parent.Name & "]" & ws.Name
         parent = "[" & ws.parent.Name & "]"
         image = "ws"
-        text = ws.Name
+        Text = ws.Name
         
     ElseIf TypeOf obj Is ListObject Then
         Set lo = obj
         Key = lo.Range.Address(external:=True)
         parent = "[" & lo.parent.parent.Name & "]" & lo.parent.Name
         image = "lo"
-        text = lo.Name
+        Text = lo.Name
         suffix = vbNullString
         
         If Not This.ActiveTable Is Nothing Then
@@ -222,14 +222,14 @@ Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
             End If
         End If
         
-        text = text & suffix
+        Text = Text & suffix
     End If
     
     For Each nd In tv.Nodes
         If nd.Key = Key Then Exit Sub
     Next nd
     
-    tv.Nodes.Add relative:=parent, Relationship:=tvwChild, Key:=Key, text:=text, image:=image
+    tv.Nodes.Add relative:=parent, Relationship:=tvwChild, Key:=Key, Text:=Text, image:=image
     
     If image = "activeLo" Then
         tv.Nodes.ControlDefault(Key).ForeColor = RGB(192, 192, 192)

@@ -155,8 +155,8 @@ Public Sub LoadLHStoListView(ByVal lv As ListView)
     For Each lc In LHS.ListColumns
         If (LHSCriteria = vbNullString) Or (lc.Name Like LHSCriteria & "*") Then
             If (This.ShowMappedOnlyLHS = False) Or (Not This.ValuePairs.GetPair(LHS:=lc) Is Nothing) Then
-                Set li = lv.ListItems.Add(Key:=lc.Name, text:=lc.Name)
-                li.ListSubItems.Add text:=GetColumnHeaderFromListColumn(lc)
+                Set li = lv.ListItems.Add(Key:=lc.Name, Text:=lc.Name)
+                li.ListSubItems.Add Text:=GetColumnHeaderFromListColumn(lc)
             End If
         End If
     Next lc
@@ -200,9 +200,9 @@ Public Sub LoadRHStoListView(ByVal lv As ListView)
     For Each lc In RHS.ListColumns
         If RHSCriteria = vbNullString Or lc.Name Like RHSCriteria & "*" Then
             If (This.ShowMappedOnlyRHS = False) Or (This.ValuePairs.IsMappedRHS(lc)) Then
-                With lv.ListItems.Add(Key:=lc.Name, text:=lc.Name)
-                    .ListSubItems.Add text:=vbNullString
-                    .ListSubItems.Add text:=GetColumnHeaderFromListColumn(lc)
+                With lv.ListItems.Add(Key:=lc.Name, Text:=lc.Name)
+                    .ListSubItems.Add Text:=vbNullString
+                    .ListSubItems.Add Text:=GetColumnHeaderFromListColumn(lc)
                 End With
             End If
         End If
@@ -219,20 +219,20 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
             If lc Is This.KeyColumnRHS Then
                 li.SmallIcon = "Key"
                 With li.ListSubItems.Item(1)
-                    .text = KEY_COLUMN
+                    .Text = KEY_COLUMN
                     .ForeColor = RGB(212, 175, 55)
                 End With
             ElseIf This.ValuePairs.IsMappedRHS(lc) Then
                 Set mappedTo = This.ValuePairs.GetPair(RHS:=lc)
                 li.SmallIcon = "Tick"
                 With li.ListSubItems.Item(1)
-                    .text = mappedTo.LHS.Name
+                    .Text = mappedTo.LHS.Name
                     .ForeColor = RGB(0, 0, 0)
                 End With
             Else
                 li.SmallIcon = "Cross"
                 With li.ListSubItems.Item(1)
-                    .text = NOT_MAPPED
+                    .Text = NOT_MAPPED
                     .ForeColor = RGB(128, 128, 128)
                 End With
             End If
@@ -268,7 +268,7 @@ Public Sub InitializeListView(ByVal lv As MSComctlLib.ListView, Optional ByVal R
         .Gridlines = True
         .HideSelection = False
         .ColumnHeaders.Clear
-        .ColumnHeaders.Add text:="Column", Width:=100
+        .ColumnHeaders.Add Text:="Column", Width:=100
         .LabelEdit = lvwManual
         .FullRowSelect = True
         .CheckBoxes = False
@@ -278,11 +278,11 @@ Public Sub InitializeListView(ByVal lv As MSComctlLib.ListView, Optional ByVal R
         With lv
             .CheckBoxes = True
             .ColumnHeaders.Item(1).Width = 70
-            .ColumnHeaders.Add text:="Mapped to", Width:=118
+            .ColumnHeaders.Add Text:="Mapped to", Width:=118
         End With
     End If
     
-    lv.ColumnHeaders.Add text:="R1C1", Width:=40
+    lv.ColumnHeaders.Add Text:="R1C1", Width:=40
 End Sub
 
 Public Sub TryMap()

@@ -19,8 +19,8 @@ Public Sub UpdateListView(ByVal lv As ListView)
 End Sub
 
 Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal Value As Long, ByVal icon As String)
-    With lv.ListItems.Add(text:=caption, icon:=icon, SmallIcon:=icon)
-        .ListSubItems.Add text:=Value
+    With lv.ListItems.Add(Text:=caption, icon:=icon, SmallIcon:=icon)
+        .ListSubItems.Add Text:=Value
     End With
 End Sub
 
@@ -42,8 +42,8 @@ Private Sub SetListViewProperties(ByVal lv As ListView)
     lv.ListItems.Clear
     lv.ColumnHeaders.Clear
     
-    lv.ColumnHeaders.Add text:="Description"
-    lv.ColumnHeaders.Add text:="Value"
+    lv.ColumnHeaders.Add Text:="Description"
+    lv.ColumnHeaders.Add Text:="Value"
     lv.ColumnHeaders.Item(2).Alignment = lvwColumnRight
     lv.ColumnHeaders.Item(2).Width = (72 / 2)
     lv.ColumnHeaders.Item(1).Width = lv.Width - (72 / 2) - 5

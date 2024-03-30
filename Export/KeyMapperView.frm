@@ -408,13 +408,13 @@ Private Sub CollectionToListView(ByVal coll As Collection, ByVal lv As ListView,
     End With
     
     If coll Is Nothing Then
-        lv.ColumnHeaders.Add text:=header & " (0)"
+        lv.ColumnHeaders.Add Text:=header & " (0)"
     Else
         Dim v As Variant
         For Each v In coll
-            lv.ListItems.Add text:=v
+            lv.ListItems.Add Text:=v
         Next v
-        lv.ColumnHeaders.Add text:=header & " (" & coll.Count & ")"
+        lv.ColumnHeaders.Add Text:=header & " (" & coll.Count & ")"
     End If
     
     lv.ColumnHeaders.Item(1).Width = lv.Width - 16
