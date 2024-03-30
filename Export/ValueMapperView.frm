@@ -16,27 +16,38 @@ Attribute VB_Exposed = False
 '@IgnoreModule HungarianNotation
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView
+Implements IView2
 
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents vm As ValueMapperViewModel
 Attribute vm.VB_VarHelpID = -1
 Private Const ICON_SIZE As Long = 16
-Private msoImageList As ImageList
 
 Private Type TFrmKeyMapper2View
-    IsCancelled As Boolean
+    'IsCancelled As Boolean
+    Result As ViewResult
 End Type
 
 Private This As TFrmKeyMapper2View
 
 Private Sub cmbBack_Click()
-    vm.GoBack = True
+    This.Result = vrBack
     Me.Hide
 End Sub
 
 Private Sub cmbCancel_Click()
-    OnCancel
+    This.Result = vrCancel
+    Me.Hide
+End Sub
+
+Private Sub cmbFinish_Click()
+    This.Result = vrFinish
+    Me.Hide
+End Sub
+
+Private Sub cmbNext_Click()
+    This.Result = vrNext
+    Me.Hide
 End Sub
 
 Private Sub cmbAutoMap_Click()
@@ -51,32 +62,12 @@ Private Sub cmbClearSearchRHS_Click()
     vm.RHSCriteria = vbNullString
 End Sub
 
-Private Sub cmbFinish_Click()
-    Me.Hide
-End Sub
-
 Private Sub cmbMapRight_Click()
     vm.TryMap
 End Sub
 
-Private Sub cmbNext_Click()
-    vm.GoNext = True
-    Me.Hide
-End Sub
-
 Private Sub cmbOptions_Click()
-    Dim optionVM As TransferOptionsViewModel
-    Set optionVM = New TransferOptionsViewModel
-    optionVM.Flags = vm.Flags
-    
-    Dim View As IView
-    Set View = New TransferOptionsView
-    
-    If View.ShowDialog(optionVM) Then
-        vm.Flags = optionVM.Flags
-    Else
-        'Debug.Print "Cancelled"
-    End If
+    ShowOptions
 End Sub
 
 Private Sub cmbReset_Click()
@@ -114,6 +105,89 @@ End Sub
 
 Private Sub lvRHS_ItemCheck(ByVal Item As MSComctlLib.ListItem)
     vm.TryCheck Item
+End Sub
+
+Private Function TryReselectListItem(ByVal lv As ListView, ByVal Key As String) As Boolean
+    Dim i As Long
+    For i = 1 To lv.ListItems.Count
+        If lv.ListItems.Item(i).Key = Key Then
+            lv.ListItems.Item(i).Selected = True
+            TryReselectListItem = True
+            Exit Function
+        End If
+    Next i
+End Function
+
+Private Sub vm_MappingChanged()
+    vm.UpdateLHStoListView Me.lvLHS
+    vm.UpdateRHStoListView Me.lvRHS
+    
+    Me.cmbReset.Enabled = vm.CanReset
+    Me.cmbAutoMap.Enabled = vm.CanAutoMap
+    Me.cmbSelectAll.Enabled = vm.CanSelectAll
+    Me.cmbSelectNone.Enabled = vm.CanSelectNone
+    
+    vm_SelectionChanged
+    
+    Me.cmbNext.Enabled = (vm.CheckedValuePairs.Count > 0)
+End Sub
+
+Private Sub txtSearchLHS_Change()
+    If IsNull(Me.txtSearchLHS) Then Exit Sub
+    vm.LHSCriteria = Me.txtSearchLHS
+End Sub
+
+Private Sub txtSearchRHS_Change()
+    If IsNull(Me.txtSearchRHS) Then Exit Sub
+    vm.RHSCriteria = Me.txtSearchRHS
+End Sub
+
+Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
+    If CloseMode = VbQueryClose.vbFormControlMenu Then
+        This.Result = vrCancel
+    End If
+End Sub
+
+' ---
+Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
+    Set vm = ViewModel
+    
+    InitializeControls
+    
+    LoadFromVM
+    
+    lvLHS_ItemClick Me.lvLHS.ListItems.Item(1)
+    lvRHS_ItemClick Me.lvRHS.ListItems.Item(1)
+    
+    vm_MappingChanged
+    
+    vm.AutomapIfEmpty
+    
+    Me.Show
+    
+    IView2_ShowDialog = This.Result
+End Function
+
+Private Sub InitializeControls()
+    Dim msoImageList As ImageList
+    Set msoImageList = New ImageList
+    Set msoImageList = StandardImageList.GetMSOImageList(ICON_SIZE)
+    
+    Set Me.lvLHS.Icons = msoImageList
+    Set Me.lvLHS.SmallIcons = msoImageList
+    Set Me.lvRHS.Icons = msoImageList
+    Set Me.lvRHS.SmallIcons = msoImageList
+    
+    Me.cmbClearSearchLHS.Picture = msoImageList.ListImages.Item("delete").Picture
+    Me.cmbClearSearchRHS.Picture = msoImageList.ListImages.Item("delete").Picture
+End Sub
+
+Public Sub LoadFromVM()
+    vm.InitializeListView Me.lvLHS
+    vm.InitializeListView Me.lvRHS, True
+    
+    vm.LoadLHStoListView Me.lvLHS
+    vm.LoadRHStoListView Me.lvRHS
 End Sub
 
 Private Sub vm_CollectionChangedLHS()
@@ -155,31 +229,6 @@ Private Sub vm_CollectionChangedRHS()
     End If
 End Sub
 
-Private Function TryReselectListItem(ByVal lv As ListView, ByVal Key As String) As Boolean
-    Dim i As Long
-    For i = 1 To lv.ListItems.Count
-        If lv.ListItems.Item(i).Key = Key Then
-            lv.ListItems.Item(i).Selected = True
-            TryReselectListItem = True
-            Exit Function
-        End If
-    Next i
-End Function
-
-Private Sub vm_MappingChanged()
-    vm.UpdateLHStoListView Me.lvLHS
-    vm.UpdateRHStoListView Me.lvRHS
-    
-    Me.cmbReset.Enabled = vm.CanReset
-    Me.cmbAutoMap.Enabled = vm.CanAutoMap
-    Me.cmbSelectAll.Enabled = vm.CanSelectAll
-    Me.cmbSelectNone.Enabled = vm.CanSelectNone
-    
-    vm_SelectionChanged
-    
-    Me.cmbNext.Enabled = (vm.CheckedValuePairs.Count > 0)
-End Sub
-
 Private Sub vm_SelectionChanged()
     Me.cmbMapRight.Enabled = vm.CanMapRight
     Me.cmbUnmapLeft.Enabled = vm.CanUnmapLeft
@@ -188,62 +237,18 @@ Private Sub vm_SelectionChanged()
     Me.txtSearchRHS = vm.RHSCriteria
 End Sub
 
-Private Sub txtSearchLHS_Change()
-    If IsNull(Me.txtSearchLHS) Then Exit Sub
-    vm.LHSCriteria = Me.txtSearchLHS
-End Sub
-
-Private Sub txtSearchRHS_Change()
-    If IsNull(Me.txtSearchRHS) Then Exit Sub
-    vm.RHSCriteria = Me.txtSearchRHS
-End Sub
-
-Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
-    If CloseMode = VbQueryClose.vbFormControlMenu Then
-        Cancel = True
-        OnCancel
+' TODO Move this out (or refactor to new MVVM)
+Private Sub ShowOptions()
+    Dim optionVM As TransferOptionsViewModel
+    Set optionVM = New TransferOptionsViewModel
+    optionVM.Flags = vm.Flags
+    
+    Dim View As IView
+    Set View = New TransferOptionsView
+    
+    If View.ShowDialog(optionVM) Then
+        vm.Flags = optionVM.Flags
+    Else
+        'Debug.Print "Cancelled"
     End If
 End Sub
-
-Private Sub OnCancel()
-    This.IsCancelled = True
-    Me.Hide
-End Sub
-
-' ---
-Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
-    Set vm = ViewModel
-    This.IsCancelled = False
-    
-    Set msoImageList = New ImageList
-    Set msoImageList = StandardImageList.GetMSOImageList(ICON_SIZE)
-    
-    Set Me.lvLHS.Icons = msoImageList
-    Set Me.lvLHS.SmallIcons = msoImageList
-    Set Me.lvRHS.Icons = msoImageList
-    Set Me.lvRHS.SmallIcons = msoImageList
-    
-    LoadFromVM
-    
-    lvLHS_ItemClick Me.lvLHS.ListItems.Item(1)
-    lvRHS_ItemClick Me.lvRHS.ListItems.Item(1)
-    
-    vm_MappingChanged
-    
-    Me.cmbClearSearchLHS.Picture = msoImageList.ListImages.Item("delete").Picture
-    Me.cmbClearSearchRHS.Picture = msoImageList.ListImages.Item("delete").Picture
-    
-    vm.AutomapIfEmpty
-    
-    Me.Show
-    
-    IView_ShowDialog = Not This.IsCancelled
-End Function
-
-Public Sub LoadFromVM()
-    vm.InitializeListView Me.lvLHS
-    vm.InitializeListView Me.lvRHS, True
-    vm.LoadLHStoListView Me.lvLHS
-    vm.LoadRHStoListView Me.lvRHS
-End Sub
-

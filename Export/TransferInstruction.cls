@@ -286,9 +286,9 @@ Public Function ToString() As String
     Dim i As Long
     
     Result = Result & "TRANSFER" & vbCrLf
-    Result = Result & " SRC," & This.Source.Range.Address(external:=True) & vbCrLf
+    Result = Result & " SRC," & This.Source.Range.Address(External:=True) & vbCrLf
     Result = Result & " SRCKEY," & This.SourceKey.Name & vbCrLf
-    Result = Result & " DST," & This.Destination.Range.Address(external:=True) & vbCrLf
+    Result = Result & " DST," & This.Destination.Range.Address(External:=True) & vbCrLf
     Result = Result & " DSTKEY," & This.DestinationKey.Name & vbCrLf
     Result = Result & " FLAGS," & This.Flags & vbCrLf
     Result = Result & " VALUES," & This.ValuePairs.Count & vbCrLf

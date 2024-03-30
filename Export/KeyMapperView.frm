@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 '@IgnoreModule HungarianNotation
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView
+Implements IView2
 
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents vm As KeyMapperViewModel
@@ -31,12 +31,27 @@ Private Const NO_TABLE_SELECTED As String = "(No table selected)"
 Private Type TFrmKeyMapper2View
     SelectTableVM As SelectTableViewModel
     IsLoaded As Boolean
-    IsCancelled As Boolean
     IsInitialLoad As Boolean
     IsUserChangingTable As Boolean
+    Result As ViewResult
 End Type
 
 Private This As TFrmKeyMapper2View
+
+Private Sub cmbCancel_Click()
+    This.Result = vrCancel
+    Me.Hide
+End Sub
+
+Private Sub cmbBack_Click()
+    This.Result = vrBack
+    Me.Hide
+End Sub
+
+Private Sub cmbNext_Click()
+    This.Result = vrNext
+    Me.Hide
+End Sub
 
 ' --- Controls
 Private Sub chkAddNewKeys_Click()
@@ -57,18 +72,9 @@ Private Sub chkRemoveOrphans_Click()
     vm.RemoveOrphanKeys = Me.chkRemoveOrphans.Value
 End Sub
 
-Private Sub cmbBack_Click()
-    vm.GoBack = True
-    Me.Hide
-End Sub
-
 Private Sub cmbBestMatch_Click()
     vm.TryGuess
     vm.TryGuessUserdefined
-End Sub
-
-Private Sub cmbCancel_Click()
-    OnCancel
 End Sub
 
 Private Sub cmbCheckKeys_Click()
@@ -103,11 +109,6 @@ Private Sub cmbColumnRHS_DropButtonClick()
     End If
 End Sub
 
-Private Sub cmbHistory_Click()
-    OnCancel
-    'modMain.TransferTableFromHistory
-End Sub
-
 Private Sub cmbMatchLTR_Click()
     vm.TryAutoMatch True, True
 End Sub
@@ -134,10 +135,6 @@ Private Sub cmbTableRHS_DropButtonClick()
     End If
     
     Me.cmbColumnRHS.SetFocus
-End Sub
-
-Private Sub cmbNext_Click()
-    Me.Hide
 End Sub
 
 ' --- Subs
@@ -186,18 +183,12 @@ End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
-        Cancel = True
-        OnCancel
+        This.Result = vrCancel
     End If
 End Sub
 
-Private Sub OnCancel()
-    This.IsCancelled = True
-    Me.Hide
-End Sub
-
 ' ---
-Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
+Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
     PrintTime "KeyMapperView"
     DEBUG_EVENTS = False
     This.IsInitialLoad = True
@@ -205,7 +196,6 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     Set This.SelectTableVM = New SelectTableViewModel
     
     Set vm = ViewModel
-    This.IsCancelled = False
     
     Set msoImageList = StandardImageList.GetMSOImageList(ICON_SIZE)
     
@@ -226,7 +216,7 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
     This.IsInitialLoad = False
     Me.Show
     
-    IView_ShowDialog = Not This.IsCancelled
+    IView2_ShowDialog = This.Result
 End Function
 
 Private Sub InitializeTableCombobox(ByVal cmb As ComboBox)

@@ -12,10 +12,10 @@ Private OneTableSelected As ListObject
 
 Private GoBack As Boolean
 
-'@ExcelHotkey e
+'@ExcelHotkey
 '@EntryPoint
-Public Sub TransferTable()
-Attribute TransferTable.VB_ProcData.VB_Invoke_Func = "e\n14"
+Private Sub TransferTable()
+Attribute TransferTable.VB_ProcData.VB_Invoke_Func = " \n14"
     PrintTime "Start", True
        
     'MsgBox "Welcome to table transfer wizard"
@@ -297,15 +297,15 @@ Private Function TryTransferPreview() As Boolean
     ViewModel.Load Transfer2.TransferDeltas
     
     Select Case View.ShowDialog(ViewModel)
-        Case ViewResultEnum.vrCancel
+        Case modViewResult.ViewResult.vrCancel
             TryTransferPreview = False
-        Case ViewResultEnum.vrBack
+        Case modViewResult.ViewResult.vrBack
             TryTransferPreview = True
             GoBack = True
-        Case ViewResultEnum.vrNext
+        Case modViewResult.ViewResult.vrNext
             TryTransferPreview = True
             Transfer2.Commit CommitterFactory.FullColumn
-        Case ViewResultEnum.vrFinish
+        Case modViewResult.ViewResult.vrFinish
             TryTransferPreview = True
             Transfer2.Commit CommitterFactory.FullColumn
     End Select

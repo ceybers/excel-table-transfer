@@ -78,7 +78,7 @@ Public Property Let SearchCriteria(ByVal RHS As String)
 End Property
 
 Private Sub Load()
-    Set This.Tables = GetAllTables
+    Set This.Tables = GetAllTablesInApplication
     
     ' Check if there are exactly 2 tables and one is already set as active
     TrySelectOther
@@ -86,28 +86,11 @@ Private Sub Load()
     RaiseEvent CollectionChanged
 End Sub
 
-Private Function GetAllTables() As Collection
-    Set GetAllTables = New Collection
-    Dim wb As Workbook
-    Dim ws As Worksheet
-    Dim lo As ListObject
-    
-    For Each wb In Application.Workbooks
-        For Each ws In wb.Worksheets
-            For Each lo In ws.ListObjects
-                If (This.SearchCriteria = vbNullString) Or (lo.Name Like This.SearchCriteria) Then
-                    GetAllTables.Add lo, lo.Range.Address(external:=True)
-                End If
-            Next lo
-        Next ws
-    Next wb
-End Function
-
 Public Sub TrySelect(ByVal Key As String)
     Dim lo As ListObject
     
     If Not This.ActiveTable Is Nothing Then
-        If This.ActiveTable.Range.Address(external:=True) = Key Then
+        If This.ActiveTable.Range.Address(External:=True) = Key Then
             ' Set selected table to nothing, otherwise we can still double click the active table and
             ' it will close the dialog and return the previously selected valid table
             Set SelectedTable = Nothing
@@ -116,7 +99,7 @@ Public Sub TrySelect(ByVal Key As String)
     End If
     
     For Each lo In This.Tables
-        If lo.Range.Address(external:=True) = Key Then
+        If lo.Range.Address(External:=True) = Key Then
             Set SelectedTable = lo
             Exit Sub
         End If
@@ -135,7 +118,7 @@ Private Sub TrySelectOther()
     
     Dim lo As ListObject
     For Each lo In This.Tables
-        If lo.Range.Address(external:=True) <> This.ActiveTable.Range.Address(external:=True) Then
+        If lo.Range.Address(External:=True) <> This.ActiveTable.Range.Address(External:=True) Then
             Set SelectedTable = lo
             This.AutoSelected = True
             Exit Sub
@@ -209,14 +192,14 @@ Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
         
     ElseIf TypeOf obj Is ListObject Then
         Set lo = obj
-        Key = lo.Range.Address(external:=True)
+        Key = lo.Range.Address(External:=True)
         parent = "[" & lo.parent.parent.Name & "]" & lo.parent.Name
         image = "lo"
         Text = lo.Name
         suffix = vbNullString
         
         If Not This.ActiveTable Is Nothing Then
-            If This.ActiveTable.Range.Address(external:=True) = lo.Range.Address(external:=True) Then
+            If This.ActiveTable.Range.Address(External:=True) = lo.Range.Address(External:=True) Then
                 suffix = " (active)"
                 image = "activeLo"
             End If

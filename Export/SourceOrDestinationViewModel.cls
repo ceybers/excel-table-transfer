@@ -48,3 +48,13 @@ Private Function IViewModel_IsValid() As Boolean
     IViewModel_IsValid = True
 End Function
 
+
+Public Function CanSelect() As Boolean
+    Dim AllTables As Collection
+    Set AllTables = ListObjectHelpers.GetAllTablesInApplication
+    If AllTables Is Nothing Then Exit Function
+    If AllTables.Count = 0 Then Exit Function
+    
+    CanSelect = True
+End Function
+

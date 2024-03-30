@@ -22,7 +22,7 @@ Private Const LBL_HEADING As String = "Preview the differences between the table
 
 Private Type TState
     ViewModel As TransferDeltasViewModel
-    Result As ViewResultEnum
+    Result As ViewResult
 End Type
 Private This As TState
 
@@ -64,7 +64,7 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     End If
 End Sub
 
-Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResultEnum
+Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
     Set This.ViewModel = ViewModel
     
     InitializeControls

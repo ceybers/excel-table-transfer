@@ -44,9 +44,9 @@ Private Sub PrintTransferInstruction(ByVal Transfer As TransferInstruction)
     Dim i As Long
     
     Debug.Print "TRANSFER"
-    Debug.Print " SRC," & Transfer.Source.Range.Address(external:=True)
+    Debug.Print " SRC," & Transfer.Source.Range.Address(External:=True)
     Debug.Print " SRCKEY," & Transfer.SourceKey.Name
-    Debug.Print " DST," & Transfer.Destination.Range.Address(external:=True)
+    Debug.Print " DST," & Transfer.Destination.Range.Address(External:=True)
     Debug.Print " DSTKEY," & Transfer.DestinationKey.Name
     Debug.Print " FLAGS," & Transfer.Flags
     Debug.Print " VALUES," & Transfer.ValuePairs.Count

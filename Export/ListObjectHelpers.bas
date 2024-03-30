@@ -95,3 +95,23 @@ Public Function ListColumnExists(ByVal ListObject As ListObject, ByVal ListColum
         End If
     Next ListColumn
 End Function
+
+
+Public Function GetAllTablesInApplication() As Collection
+    Dim Result As Collection
+    Set Result = New Collection
+    
+    Dim Workbook As Workbook
+    Dim Worksheet As Worksheet
+    Dim ListObject As ListObject
+    
+    For Each Workbook In Application.Workbooks
+        For Each Worksheet In Workbook.Worksheets
+            For Each ListObject In Worksheet.ListObjects
+                Result.Add ListObject, ListObject.Range.Address(External:=True)
+            Next ListObject
+        Next Worksheet
+    Next Workbook
+    
+    Set GetAllTablesInApplication = Result
+End Function

@@ -11,5 +11,5 @@ Attribute VB_Exposed = False
 '@Folder "MVVM2.Infrastructure.Abstract"
 Option Explicit
 
-Public Function ShowDialog(ByVal ViewModel As Object) As ViewResultEnum
+Public Function ShowDialog(ByVal ViewModel As Object) As ViewResult
 End Function

@@ -234,10 +234,12 @@ End Sub
 
 Public Function TryAutoMatch(ByVal leftToRight As Boolean, ByVal Quiet As Boolean) As Boolean
     If leftToRight And LHSKeyColumn Is Nothing Then
+        Exit Function
         Debug.Assert False
     End If
     
     If leftToRight = False And LHSKeyColumn Is Nothing Then
+        Exit Function
         Debug.Assert False
     End If
     
@@ -441,4 +443,16 @@ Public Sub TrySwap()
     TrySelectRHS lhsKeyColName
 End Sub
 
+Public Sub LoadFromTransferInstruction2(ByVal Transfer As TransferInstruction2)
+    Set LHSTable = Transfer.Source.Table
+    Set RHSTable = Transfer.Destination.Table
+End Sub
 
+Public Sub SaveToTransferInstruction(ByVal Transfer As TransferInstruction2)
+    With This
+        Set Transfer.Source.Table = .LHSTable
+        Set Transfer.Destination.Table = .RHSTable
+        Transfer.Source.KeyColumnName = .LHSKeyColumn.Name
+        Transfer.Destination.KeyColumnName = .RHSKeyColumn.Name
+    End With
+End Sub

@@ -14,26 +14,19 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@IgnoreModule HungarianNotation
-
-
-
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView
+Implements IView2
 
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents vm As SelectTableViewModel
 Attribute vm.VB_VarHelpID = -1
 Private Const ICON_SIZE As Long = 16
+
 Private Type TView
-    IsCancelled As Boolean
+    Result As ViewResult
 End Type
-
 Private This As TView
-
-Private Sub cmbCancel_Click()
-    OnCancel
-End Sub
 
 Private Sub cmbClearSearch_Click()
     Me.txtSearch = vbNullString
@@ -42,11 +35,13 @@ Private Sub cmbClearSearch_Click()
 End Sub
 
 Private Sub cmbOK_Click()
+    This.Result = vrNext
     Me.Hide
 End Sub
 
 Private Sub tvTables_DblClick()
     If Not vm.SelectedTable Is Nothing Then
+        This.Result = vrNext
         Me.Hide
     End If
 End Sub
@@ -67,20 +62,20 @@ Private Sub txtSearch_Change()
     vm.SearchCriteria = (txtSearch & "*")
 End Sub
 
+
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
-        Cancel = True
-        OnCancel
+        This.Result = vrCancel
     End If
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
+Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
     Set vm = ViewModel
     
     InitializeView
     
     If vm.AutoSelected = True Then
-        IView_ShowDialog = True
+        IView2_ShowDialog = vrNext
         Exit Function
     End If
     
@@ -88,11 +83,10 @@ Private Function IView_ShowDialog(ByVal ViewModel As IViewModel) As Boolean
         Me.Show
     End If
     
-    IView_ShowDialog = Not This.IsCancelled
+    IView2_ShowDialog = This.Result
 End Function
 
 Private Sub InitializeView()
-    This.IsCancelled = False
     Me.txtSearch = vbNullString
     Me.cmbOK.Enabled = False
     
@@ -111,7 +105,7 @@ Private Sub UpdateListViewWithSelectedTable()
     
     Dim nd As Node
     For Each nd In Me.tvTables.Nodes
-        If nd.Key = vm.SelectedTable.Range.Address(external:=True) Then
+        If nd.Key = vm.SelectedTable.Range.Address(External:=True) Then
             nd.Selected = True
             nd.EnsureVisible
 
@@ -120,10 +114,5 @@ Private Sub UpdateListViewWithSelectedTable()
             Exit Sub
         End If
     Next nd
-End Sub
-
-Private Sub OnCancel()
-    This.IsCancelled = True
-    Me.Hide
 End Sub
 
