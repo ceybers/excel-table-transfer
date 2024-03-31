@@ -76,7 +76,13 @@ Private Sub UpdateListItem(ByVal ListItem As MSComctlLib.ListItem, ByVal ValueCo
         Case ValueColumn.HasErrors
             ListItem.SmallIcon = MSO_ERRORS
         Case ValueColumn.HasNumbers
-            ListItem.SmallIcon = MSO_TYPE_LONG
+            If ValueColumn.DataType = vbCurrency Then
+                ListItem.SmallIcon = MSO_TYPE_CURRENCY
+            ElseIf ValueColumn.DataType = vbDate Then
+                ListItem.SmallIcon = MSO_TYPE_DATE
+            Else
+                ListItem.SmallIcon = MSO_TYPE_LONG
+            End If
         Case Else
             ListItem.SmallIcon = MSO_TYPE_STRING
     End Select

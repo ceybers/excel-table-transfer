@@ -14,6 +14,8 @@ Private Const MAX_LIMIT_DELTAS As Long = 1000000
 
 Private Type TState
     TransferDeltas As TransferDeltas
+    Source As ListObject ' Reference so we can get NumberFormats per ListColumn
+    Destination As ListObject ' Reference so we can get NumberFormats per ListColumn
 End Type
 Private This As TState
 
@@ -29,9 +31,31 @@ Public Property Get Deltas() As Collection
     Set Deltas = This.TransferDeltas.Items
 End Property
 
-Public Sub Load(ByVal TransferDeltas As TransferDeltas)
+Public Sub Load(ByVal TransferDeltas As TransferDeltas, ByVal Source As ListObject, ByVal Destination As ListObject)
     Set This.TransferDeltas = TransferDeltas
+    Set This.Source = Source
+    Set This.Destination = Destination
 End Sub
+
+Public Function GetNumberFormats(ByVal Direction As TransferDirection) As Object
+    Dim Result As Object
+    Set Result = CreateObject("Scripting.Dictionary")
+    
+    Dim ListColumns As ListColumns
+    If Direction = ttSource Then
+        Set ListColumns = This.Source.ListColumns
+    Else
+        Set ListColumns = This.Destination.ListColumns
+    End If
+    
+    Dim ListColumn As ListColumn
+    For Each ListColumn In ListColumns
+        Result(ListColumn.Name) = ListColumn.DataBodyRange.Cells.Item(1, 1).NumberFormat
+        If Result(ListColumn.Name) = "General" Then Result(ListColumn.Name) = "@"
+    Next ListColumn
+    
+    Set GetNumberFormats = Result
+End Function
 
 Public Sub TrySelectKey(ByVal Key As String)
     This.TransferDeltas.KeyFilter = Key

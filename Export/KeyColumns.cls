@@ -48,5 +48,8 @@ Private Sub GenerateKeyColumns()
 End Sub
 
 Public Sub TrySelect(ByVal ColumnName As String)
-    Set This.Selected = This.KeyColumns.Item(ColumnName)
+    Dim ListColumn As ListColumn
+    If ListColumnHelpers.TryGetListColumn(This.ListObject, ColumnName, ListColumn) Then
+        Set This.Selected = This.KeyColumns.Item(ColumnName)
+    End If
 End Sub

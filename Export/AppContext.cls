@@ -55,8 +55,6 @@ RewindValueMapper:
             GoTo RewindKeyMapper
         Case vrCancel
             Exit Sub
-        'Case vrFinish
-        '    GoTo FinishEarly
     End Select
     
 RewindTransferDeltas:
@@ -65,7 +63,7 @@ RewindTransferDeltas:
             GoTo RewindKeyMapper
         Case vrBack
             GoTo RewindValueMapper
-        Case vrCancel, vrFinish
+        Case vrCancel, vrNext
             GoTo FinishEarly
     End Select
     
@@ -186,7 +184,7 @@ Private Function TryTransferDeltas() As ViewResult
     
     Dim ViewModel As DeltasPreviewViewModel
     Set ViewModel = New DeltasPreviewViewModel
-    ViewModel.Load This.Transfer.TransferDeltas
+    ViewModel.Load This.Transfer.TransferDeltas, This.Transfer.Source.Table, This.Transfer.Destination.Table
     
     Dim View As IView
     Set View = DeltasPreviewView
@@ -208,7 +206,7 @@ Private Sub DoPostProcessing()
     
     With This.Transfer
         .PostProcess PostProcessorFactory.RemoveHighlighting
-        .PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged
+        .PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged 'TODO Move to constants
         .PostProcess HighlightChanges.Create(2, RGB(204, 255, 153)) ' 0->A new
         .PostProcess PostProcessorFactory.TransferColumnWidths
         .PostProcess PostProcessorFactory.TransferNumberFormat

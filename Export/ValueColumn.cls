@@ -18,6 +18,8 @@ Public IsMapped As Boolean
 Public IsFormula As Boolean
 Public IsEmpty As Boolean
 
+Public DataType As Long
+
 Public HasErrors As Boolean
 Public HasBoolean As Boolean
 Public HasNumbers As Boolean

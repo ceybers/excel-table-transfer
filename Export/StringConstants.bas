@@ -21,6 +21,12 @@ Public Const FIELD_HEADER As String = "Fields"
 Public Const SELECT_ALL As String = "(Select all)"
 Public Const SELECT_ALL_COLOR As String = 8421504 'RGB(128, 128, 128)
 
+Public Const ERR_CAPTION As String = "#ERROR"
+
+Public Const NUM_FMT_NUMBER As String = "Standard" '"0.00"
+Public Const NUM_FMT_CURRENCY As String = "Currency" '"$# ##0.00"
+Public Const NUM_FMT_DATE As String = "Long Date" '"yyyy/mm/dd"
+
 Public Const HDR_TXT_VALUE_MAPPER As String = "Which columns contain the data you want to transfer?" & vbCrLf & vbCrLf & _
     "Select pairs of columns from the Source and Destination tables and add them to the Mapped columns."
 

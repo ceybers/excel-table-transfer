@@ -67,10 +67,10 @@ Private Sub GenerateValueColumns()
         Dim ValueColumn As ValueColumn
         Set ValueColumn = New ValueColumn
         ValueColumn.Load ListColumn
-        'With ValueColumn
-        '    .Name = ListColumn.Name
-        'End With
+        
         ValueColumn.IsSelectable = IsValueColumnSelectable(ValueColumn)
+        ValueColumn.DataType = VarType(ListColumn.DataBodyRange.Cells.Item(1, 1).Value)
+        
         This.ValueColumns.Add Key:=ListColumn.Name, Item:=ValueColumn
     Next ListColumn
 End Sub

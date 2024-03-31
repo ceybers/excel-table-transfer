@@ -42,7 +42,7 @@ Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As Transfer
     
     Dim i As Long
     For i = 0 To UBound(TransferInstruction.Deltas)
-        If TransferInstruction.Deltas(i)(7) = This.ChangeType Then
+        If TransferInstruction.Deltas(i)(DeltaIndex.tdChangeType) = This.ChangeType Then
             Dim Row As Long
             Row = TransferInstruction.Deltas(i)(DeltaIndex.tdRow)
             
