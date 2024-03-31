@@ -41,4 +41,6 @@ Public Const DELTAS_PREVIEW_NO_RESULTS As String = "Table differences compared s
 
 Public Const ERR_SOURCE As String = "Table Transfer Tool"
 
-
+Public Const APP_TITLE As String = "Table Transfer Tool"
+Public Const APP_VERSION As String = "Version 1.8.3-dev"
+Public Const APP_COPYRIGHT As String = "Copyright © 2024 Craig Eybers" & vbCrLf & "All rights reserved."

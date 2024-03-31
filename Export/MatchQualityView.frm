@@ -28,6 +28,14 @@ Private Sub cboCancel_Click()
     Me.Hide
 End Sub
 
+Private Sub mpgMatchQuality_Change()
+    If Me.mpgMatchQuality.Value = 1 Then
+        Me.txtMatchQuality.SetFocus
+        Me.txtMatchQuality.SelStart = 0
+        Me.txtMatchQuality.SelLength = Len(Me.txtMatchQuality.Text)
+    End If
+End Sub
+
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
         This.Result = vrCancel
@@ -50,6 +58,8 @@ Private Sub InitializeControls()
     MatchQualityToListView.Initialize Me.lvIntersection
     MatchQualityToListView.Initialize Me.lvRightOnly
     MatchQualityToTextBox.Initialize Me.txtMatchQuality
+    
+    Me.mpgMatchQuality.Value = 0
 End Sub
 
 Private Sub UpdateControls()

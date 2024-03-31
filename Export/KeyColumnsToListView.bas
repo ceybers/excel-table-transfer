@@ -29,7 +29,7 @@ Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal KeyColumns As KeyC
     
     If Not KeyColumns.Selected Is Nothing Then
         With ListView.ListItems.Item(KeyColumns.Selected.Name)
-            .SmallIcon = MSO_SELECTED
+            .SmallIcon = MSO_KEY
             .Bold = True
             .Selected = True
         End With
@@ -39,6 +39,6 @@ End Sub
 Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal KeyColumn As KeyColumn)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Key:=KeyColumn.Name, Text:=KeyColumn.Name)
-    ListItem.SmallIcon = MSO_ITEM
+    ListItem.SmallIcon = IconConstants.MSO_CELL
 End Sub
 

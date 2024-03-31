@@ -28,8 +28,8 @@ Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal KeyColumn As KeyCo
     Total = KeyColumn.Range.Count
     
     With KeyColumn
-        AddItem ListView, "Distinct", .Keys.Count, IIf(.Keys.Count = Total, MSO_ACCEPT, IIf(.Keys.Count = 0, MSO_ERRORS, MSO_WARNING))
-        AddItem ListView, "Unique", .UniqueKeys.Count, IIf(.UniqueKeys.Count = Total, MSO_ACCEPT, IIf(.Keys.Count = 0, MSO_ERRORS, MSO_WARNING))
+        AddItem ListView, "Distinct", .Keys.Count, IIf(.Keys.Count = Total, MSO_ACCEPT, IIf(.Keys.Count = 0, IconConstants.MSO_ERROR, MSO_WARNING))
+        AddItem ListView, "Unique", .UniqueKeys.Count, IIf(.UniqueKeys.Count = Total, MSO_ACCEPT, IIf(.Keys.Count = 0, IconConstants.MSO_ERROR, MSO_WARNING))
         AddItem ListView, "Non-text", .NonTextCount, IIf(.NonTextCount > 0, MSO_WARNING, MSO_ACCEPT)
         AddItem ListView, "Blanks", .BlankCount, IIf(.BlankCount > 0, MSO_WARNING, MSO_ACCEPT)
         AddItem ListView, "Errors", .ErrorCount, IIf(.ErrorCount > 0, MSO_WARNING, MSO_ACCEPT)
@@ -48,3 +48,4 @@ Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal Text As String
     Set ListItem = ListView.ListItems.Add(Text:=Text, SmallIcon:=Icon)
     ListItem.ListSubItems.Add Text:=CStr(Value)
 End Sub
+
