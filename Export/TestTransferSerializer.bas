@@ -2,7 +2,7 @@ Attribute VB_Name = "TestTransferSerializer"
 '@Folder "Tests.MVVM"
 Option Explicit
 
-Private Transfer As TransferInstruction2
+Private Transfer As TransferInstruction
 
 Private Sub TestTransferSerializer()
     TransferInstructionSerializer.Serialize Transfer

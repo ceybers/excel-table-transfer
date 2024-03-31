@@ -2,12 +2,12 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "TransferInstruction2"
+Attribute VB_Name = "TransferInstruction"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Model2.TransferInstruction2"
+'@Folder "MVVM.Model.TransferInstruction"
 Option Explicit
 
 Private Const MAX_PRINT_DELTAS As Long = 10
@@ -66,6 +66,7 @@ Public Sub Evaluate()
     
     If Not IsValid Then
         Debug.Print "TransferInstruction not valid"
+        Err.Raise vbObjectError + 15, ERR_SOURCE, "Could not load Transfer Instruction"
         Exit Sub
     End If
     
@@ -160,6 +161,8 @@ Public Sub Commit(ByVal Commiter As ICommitStrategy)
 End Sub
 
 Private Sub UpdateTransferDeltas()
+    Set This.TransferDeltas = New TransferDeltas
+    
     This.TransferDeltas.Load This.ValueDeltas
     
     Dim i As Long

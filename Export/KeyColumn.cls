@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "Model.KeyColumn"
+'@Folder "MVVM.Model.KeyColumn"
 Option Explicit
 
 Private Const ERR_MSG_EMPTY_TABLE As String = "Cannot create clsKeyColumn with a column in an empty table"
@@ -19,6 +19,8 @@ Private Const ERR_MSG_NO_VISIBLE_CELLS As String = "KeyColumn.LoadRange failed"
 Private Const DEFAULT_LIMIT As Long = 2147483647
 
 Private Type TClsKeyColumn
+    Name As String
+    
     Dictionary As Object
     Range As Range
     Array As Variant
@@ -36,6 +38,14 @@ Private Type TClsKeyColumn
 End Type
 
 Private This As TClsKeyColumn
+
+Public Property Get Name() As String
+    Name = This.Name
+End Property
+
+Public Property Let Name(ByVal vNewValue As String)
+    This.Name = vNewValue
+End Property
 
 Public Property Get DistinctPercentage() As Double
     If This.Range.Cells.Count = 0 Then Exit Property
@@ -121,6 +131,7 @@ End Sub
 
 Public Function FromColumn(ByVal ListColumn As ListColumn, Optional ByVal IncludeNumbers As Boolean = False, Optional ByVal Limit As Long) As KeyColumn
     Set FromColumn = FromRange(ListColumn.DataBodyRange, IncludeNumbers, False, Limit)
+    FromColumn.Name = ListColumn.Name
 End Function
 
 Public Function FromRange(ByVal Range As Range, Optional ByVal IncludeNumbers As Boolean = False, _
@@ -336,4 +347,5 @@ Private Sub SetDistinct()
         This.Distinct.Add Key
     Next Key
 End Sub
+
 

@@ -1,4 +1,9 @@
 # Change Log
+## v1.8.2-dev (2024/03/31)
+- Overhauled all the UI dialogs.
+- Fixed error when trying to transfer data with no matching keys.
+- Fixed some weird edge case bugs.
+ 
 ## v1.8.1-dev (2024/03/30)
 - Completely rewrote Transfer code. Faster, more efficient, more easily extensible.
 - Started refactoring legacy UI to MVVM pattern.

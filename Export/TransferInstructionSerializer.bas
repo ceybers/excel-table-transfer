@@ -1,11 +1,11 @@
 Attribute VB_Name = "TransferInstructionSerializer"
-'@Folder("Model2.TransferInstruction2")
+'@Folder "MVVM.Model.TransferInstruction"
 Option Explicit
 
 Private Const ASC_UNIT_SEPARATOR As Long = 134 '31
 Private Const ASC_RECORD_SEPARATOR As Long = 135 '30
 
-Public Function Serialize(ByVal Transfer As TransferInstruction2) As String
+Public Function Serialize(ByVal Transfer As TransferInstruction) As String
     Dim Result(0 To 6) As Variant
     
     Result(0) = SerializeTable(Transfer.Source.Table)
@@ -19,14 +19,14 @@ Public Function Serialize(ByVal Transfer As TransferInstruction2) As String
     Serialize = Join(Result, Chr$(ASC_RECORD_SEPARATOR))
 End Function
 
-Public Function TryDeserialize(ByVal SerialString As String, ByRef OutTransfer As TransferInstruction2) As Boolean
+Public Function TryDeserialize(ByVal SerialString As String, ByRef OutTransfer As TransferInstruction) As Boolean
     Set OutTransfer = Deserialize(SerialString)
     TryDeserialize = OutTransfer.Source.IsValid And OutTransfer.Destination.IsValid
 End Function
 
-Public Function Deserialize(ByVal SerialString As String) As TransferInstruction2
-    Dim Transfer As TransferInstruction2
-    Set Transfer = New TransferInstruction2
+Public Function Deserialize(ByVal SerialString As String) As TransferInstruction
+    Dim Transfer As TransferInstruction
+    Set Transfer = New TransferInstruction
     
     'SerialString = "C:\Users\User\Repos\Public\excel-table-transfer\Development.xlsm†Development.xlsm†Sheet1†Table1‡KeyA‡C:\Users\User\Repos\Public\excel-table-transfer\Development.xlsm†Development.xlsm†Sheet1†Table2‡KeyB‡2‡data2†data3‡data2†data3"
     

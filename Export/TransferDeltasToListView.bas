@@ -1,24 +1,13 @@
 Attribute VB_Name = "TransferDeltasToListView"
-'@Folder "MVVM2.ValueConverters"
+'@Folder "MVVM.ValueConverters"
 Option Explicit
 
-Private Const KEY_HEADER As String = "Keys"
-Private Const FIELD_HEADER As String = "Fields"
-Public Const SELECT_ALL As String = "(Select all)"
-Private Const SELECT_ALL_COLOR As String = 8421504 'RGB(128, 128, 128)
-
-Public Enum tdType
-    tdKeyMember
-    tdField
-    tdDelta
-End Enum
-
-Public Sub Initialize(ByVal ListView As ListView, ByVal Member As tdType)
+Public Sub Initialize(ByVal ListView As MSComctlLib.ListView, ByVal Member As MemberType)
     With ListView
         .ListItems.Clear
         .View = lvwReport
         .FullRowSelect = True
-        .Gridlines = True
+        .Gridlines = False
         .LabelEdit = lvwManual
         .BorderStyle = ccNone
         .HideSelection = False
@@ -27,13 +16,13 @@ Public Sub Initialize(ByVal ListView As ListView, ByVal Member As tdType)
     SetColumnHeaders ListView, Member
 End Sub
 
-Private Sub SetColumnHeaders(ByVal ListView As ListView, ByVal Member As tdType)
+Private Sub SetColumnHeaders(ByVal ListView As MSComctlLib.ListView, ByVal Member As MemberType)
     With ListView
         .ColumnHeaders.Clear
         .ColumnHeaders.Add Text:="#", Width:=ListView.Width - 16
     End With
     
-    If Member = tdDelta Then
+    If Member = ttDelta Then
         ListView.ColumnHeaders.Item(1).Text = "Before"
         ListView.ColumnHeaders.Add Text:="After"
         ListView.ColumnHeaders.Item(1).Width = (ListView.Width - 16) / 2
@@ -41,59 +30,76 @@ Private Sub SetColumnHeaders(ByVal ListView As ListView, ByVal Member As tdType)
     End If
 End Sub
 
-Public Sub Load(ByVal ListView As ListView, ByVal TransferDeltasViewModel As TransferDeltasViewModel, _
-    ByVal Member As tdType)
+Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal ViewModel As DeltasPreviewViewModel, _
+    ByVal Member As MemberType)
     ListView.ListItems.Clear
     
     'If TransferDeltasViewModel Is Nothing Then Exit Sub
-    Debug.Assert Not TransferDeltasViewModel Is Nothing
-    Debug.Assert Not TransferDeltasViewModel.Deltas Is Nothing
+    Debug.Assert Not ViewModel Is Nothing
+    Debug.Assert Not ViewModel.Deltas Is Nothing
+    
+    Dim SourceNumberFormats As Object
+    Set SourceNumberFormats = ViewModel.GetNumberFormats(ttSource)
+    
+    Dim DestinationNumberFormats As Object
+    Set DestinationNumberFormats = ViewModel.GetNumberFormats(ttDestination)
     
     Dim Item As Variant
-    If Member = tdDelta Then
+    If Member = ttDelta Then
         Dim TransferDelta As TransferDelta
-        For Each TransferDelta In TransferDeltasViewModel.Deltas
-            AddItemTransferDelta ListView, TransferDelta
+        For Each TransferDelta In ViewModel.Deltas
+            AddItemTransferDelta ListView, TransferDelta, SourceNumberFormats(TransferDelta.FieldSource), DestinationNumberFormats(TransferDelta.FieldDestination)
         Next TransferDelta
-    ElseIf Member = tdKeyMember Then
+    ElseIf Member = ttKeyMember Then
         AddSelectAll ListView
-        For Each Item In TransferDeltasViewModel.Keys
-            AddItem ListView, Item, Member
+        For Each Item In ViewModel.Keys
+            AddItem ListView, Item
         Next Item
-        UpdateHeader ListView, Member, (TransferDeltasViewModel.Keys.Count - 1)
-    ElseIf Member = tdField Then
+        UpdateHeader ListView, Member, (ViewModel.Keys.Count - 1)
+    ElseIf Member = ttField Then
         AddSelectAll ListView
-        For Each Item In TransferDeltasViewModel.Fields
-            AddItem ListView, Item, Member
+        For Each Item In ViewModel.Fields
+            AddItem ListView, Item
         Next Item
-        UpdateHeader ListView, Member, (TransferDeltasViewModel.Fields.Count - 1)
+        UpdateHeader ListView, Member, (ViewModel.Fields.Count - 1)
     End If
 End Sub
 
-Private Sub AddItemTransferDelta(ByVal ListView As ListView, ByVal TransferDelta As TransferDelta)
-    Dim ListItem As ListItem
-    Set ListItem = ListView.ListItems.Add(Text:=TransferDelta.ValueBefore)
-    ListItem.ListSubItems.Add Text:=TransferDelta.ValueAfter
-End Sub
-
-Private Sub AddItem(ByVal ListView As ListView, ByVal Text As String, ByVal Member As tdType)
-    Dim ListItem As ListItem
+Private Sub AddItemTransferDelta(ByVal ListView As MSComctlLib.ListView, ByVal TransferDelta As TransferDelta, _
+    ByVal SourceNumberFormat As String, ByVal DestinationNumberFormat As String)
+    Dim ValueBeforeFormatted As String
+    Dim ValueAfterFormatted As String
     
-    Select Case Member
-        Case tdType.tdKeyMember
-                Set ListItem = ListView.ListItems.Add(Text:=Text)
-        Case tdType.tdField
-                Set ListItem = ListView.ListItems.Add(Text:=Text)
+    Select Case TransferDelta.DataType
+        Case vbError
+            ValueBeforeFormatted = CStr(TransferDelta.ValueBefore)
+            ValueAfterFormatted = ERR_CAPTION
+        Case vbDouble
+            ValueBeforeFormatted = Format$(TransferDelta.ValueBefore, DestinationNumberFormat)
+            ValueAfterFormatted = Format$(TransferDelta.ValueAfter, SourceNumberFormat)
+        Case vbString
+            ValueBeforeFormatted = TransferDelta.ValueBefore
+            ValueAfterFormatted = TransferDelta.ValueAfter
+        Case Else
+            Err.Raise vbObjectError + 15, ERR_SOURCE, "Unexpected VarType"
     End Select
+    
+    Dim ListItem As ListItem
+    Set ListItem = ListView.ListItems.Add(Text:=ValueBeforeFormatted)
+    ListItem.ListSubItems.Add Text:=ValueAfterFormatted
 End Sub
 
-Private Sub UpdateHeader(ByVal ListView As ListView, ByVal Member As tdType, ByVal Count As Long)
+Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal Text As String)
+    ListView.ListItems.Add Text:=Text
+End Sub
+
+Private Sub UpdateHeader(ByVal ListView As MSComctlLib.ListView, ByVal Member As MemberType, ByVal Count As Long)
     Dim HeaderText As String
     
     Select Case Member
-        Case tdType.tdKeyMember
+        Case ttKeyMember
             HeaderText = KEY_HEADER
-        Case tdType.tdField
+        Case ttField
             HeaderText = FIELD_HEADER
     End Select
     
@@ -105,10 +111,11 @@ Private Sub UpdateHeader(ByVal ListView As ListView, ByVal Member As tdType, ByV
     End If
 End Sub
 
-Private Sub AddSelectAll(ByVal ListView As ListView)
+Private Sub AddSelectAll(ByVal ListView As MSComctlLib.ListView)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Text:=SELECT_ALL)
     ListItem.ForeColor = SELECT_ALL_COLOR
     ListItem.Key = SELECT_ALL
 End Sub
+
 

@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} KeyMapperView 
-   Caption         =   "Key Column Mapper"
-   ClientHeight    =   9015.001
+   Caption         =   "Table Transfer Tool"
+   ClientHeight    =   5820
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   9360.001
@@ -13,179 +13,72 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@IgnoreModule HungarianNotation
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView2
+Implements IView
 
-'@MemberAttribute VB_VarHelpID, -1
-Private WithEvents vm As KeyMapperViewModel
-Attribute vm.VB_VarHelpID = -1
-Private Const ICON_SIZE As Long = 16
-Private msoImageList As ImageList
-
-Private DEBUG_EVENTS As Boolean
-
-Private Const NO_TABLE_SELECTED As String = "(No table selected)"
-
-Private Type TFrmKeyMapper2View
-    SelectTableVM As SelectTableViewModel
-    IsLoaded As Boolean
-    IsInitialLoad As Boolean
-    IsUserChangingTable As Boolean
+Private Type TState
+    ViewModel As KeyMapperViewModel
     Result As ViewResult
 End Type
+Private This As TState
 
-Private This As TFrmKeyMapper2View
-
-Private Sub cmbCancel_Click()
-    This.Result = vrCancel
-    Me.Hide
-End Sub
-
-Private Sub cmbBack_Click()
+Private Sub cboBack_Click()
     This.Result = vrBack
     Me.Hide
 End Sub
 
-Private Sub cmbNext_Click()
+Private Sub cboNext_Click()
     This.Result = vrNext
     Me.Hide
 End Sub
 
-Private Sub cmbStart_Click()
-    This.Result = vrStart
+Private Sub cboCancel_Click()
+    This.Result = vrCancel
     Me.Hide
 End Sub
 
-' --- Controls
-Private Sub chkAddNewKeys_Click()
-    If Me.chkAddNewKeys.Value = True Then
-        vm.AppendNewKeys = True
-    ElseIf Me.chkAddNewKeys.Value = False Then
-        vm.AppendNewKeys = False
-    Else
-        ' Tri state checkbox, do nothing?
-    End If
-End Sub
-
-Private Sub chkLimitKeyCheck_Click()
-    Me.txtLimitKeyValue.Enabled = Me.chkLimitKeyCheck.Value
-End Sub
-
-Private Sub chkRemoveOrphans_Click()
-    vm.RemoveOrphanKeys = Me.chkRemoveOrphans.Value
-End Sub
-
-Private Sub cmbBestMatch_Click()
-    vm.TryGuess
-    vm.TryGuessUserdefined
-End Sub
-
-Private Sub cmbCheckKeys_Click()
-    vm.UpdateMatch
-End Sub
-
-Private Sub cmbCheckQuality_Click()
-    vm.UpdatePreviews
-End Sub
-
-Private Sub cmbColumnLHS_DropButtonClick()
-    If Me.cmbColumnLHS = vm.LHSKeyColumn.Name Then
-        Exit Sub
-    End If
+Private Sub lvSrcKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    This.ViewModel.Source.TrySelect Item.Key
+    This.ViewModel.TryEvaluateMatch
     
-    vm.TrySelectLHS Me.cmbColumnLHS
+    UpdateListViewLHS
+    UpdateResults
+End Sub
+
+Private Sub lvDstKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    This.ViewModel.Destination.TrySelect Item.Key
+    This.ViewModel.TryEvaluateMatch
     
-    If This.IsInitialLoad = False Then
-        vm.TryAutoMatch leftToRight:=True, Quiet:=False
-    End If
+    UpdateListViewRHS
+    UpdateResults
 End Sub
 
-Private Sub cmbColumnRHS_DropButtonClick()
-    If Me.cmbColumnRHS = vm.RHSKeyColumn.Name Then
-        Exit Sub
-    End If
-    
-    vm.TrySelectRHS Me.cmbColumnRHS
-    
-    If This.IsInitialLoad = False Then
-        vm.TryAutoMatch leftToRight:=False, Quiet:=False
-    End If
+Private Sub lvSrcKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As stdole.OLE_XPOS_PIXELS, ByVal y As stdole.OLE_YPOS_PIXELS)
+    UpdateButtons
 End Sub
 
-Private Sub cmbMatchLTR_Click()
-    vm.TryAutoMatch True, True
+Private Sub lvDstKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As stdole.OLE_XPOS_PIXELS, ByVal y As stdole.OLE_YPOS_PIXELS)
+    UpdateButtons
 End Sub
 
-Private Sub cmbMatchRTL_Click()
-    vm.TryAutoMatch False, True
+Private Sub cmbDstQuality_DropButtonClick()
+    Me.cmbDstQuality.Enabled = False
+    Me.cmbDstQuality.Enabled = True
+    This.ViewModel.ShowQuality TransferDirection.ttDestination
+
 End Sub
 
-Private Sub cmbSwap_Click()
-    vm.TrySwap
+Private Sub cmbMatchQuality_DropButtonClick()
+    Me.cmbMatchQuality.Enabled = False
+    Me.cmbMatchQuality.Enabled = True
+    This.ViewModel.ShowMatchDetails
 End Sub
 
-Private Sub cmbTableLHS_DropButtonClick()
-    Dim SelectedTable As ListObject
-    If TrySelectTable(vm.RHSTable, SelectedTable) Then
-        Set vm.LHSTable = SelectedTable
-    End If
-    
-    Me.cmbColumnLHS.SetFocus
-End Sub
-
-Private Sub cmbTableRHS_DropButtonClick()
-    Dim SelectedTable As ListObject
-    If TrySelectTable(vm.LHSTable, SelectedTable) Then
-        Set vm.RHSTable = SelectedTable
-    End If
-    
-    Me.cmbColumnRHS.SetFocus
-End Sub
-
-' --- Subs
-Private Sub ChangeTable(ByVal cmb As ComboBox, ByVal lo As ListObject)
-    Debug.Assert cmb.ListCount > 0
-    
-    cmb.RemoveItem 0
-    cmb.AddItem lo.Name
-    cmb = lo.Name
-End Sub
-
-Private Sub PopulateColumns(ByVal cmb As ComboBox, ByVal lo As ListObject)
-    Dim currentColumn As String
-    currentColumn = cmb
-    
-    Dim canRememberColumn As Boolean
-    canRememberColumn = False
-
-    cmb.Clear
-
-    Dim lc As ListColumn
-    For Each lc In lo.ListColumns
-        cmb.AddItem lc.Name
-        
-        If lc.Name = currentColumn Then
-            canRememberColumn = True
-        End If
-    Next lc
-    
-    If canRememberColumn Then
-        cmb = currentColumn
-    Else
-        cmb = cmb.List(0)
-    End If
-End Sub
-
-Private Sub txtLimitKeyValue_Exit(ByVal Cancel As MSForms.ReturnBoolean)
-    If Not IsNumeric(Me.txtLimitKeyValue.Value) Then
-        Cancel = True
-    ElseIf CLng(Me.txtLimitKeyValue.Value) < 1 Then
-        Cancel = True
-    ElseIf CLng(Me.txtLimitKeyValue.Value) > 10000 Then
-        Cancel = True
-    End If
+Private Sub cmbSrcQuality_DropButtonClick()
+    Me.cmbSrcQuality.Enabled = False
+    Me.cmbSrcQuality.Enabled = True
+    This.ViewModel.ShowQuality TransferDirection.ttSource
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -194,227 +87,56 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     End If
 End Sub
 
-' ---
-Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
-    PrintTime "KeyMapperView"
-    DEBUG_EVENTS = False
-    This.IsInitialLoad = True
+Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    frmAbout.Show
+End Sub
+
+Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
+    Set This.ViewModel = ViewModel
     
-    Set This.SelectTableVM = New SelectTableViewModel
+    InitializeControls
+    UpdateListViewLHS
+    UpdateListViewRHS
+    UpdateResults
+    UpdateButtons
     
-    Set vm = ViewModel
-    
-    Set msoImageList = StandardImageList.GetMSOImageList(ICON_SIZE)
-    
-    InitializeTableCombobox Me.cmbTableLHS
-    InitializeTableCombobox Me.cmbTableRHS
-    
-    LoadTablesFromVM
-    PrintTime "LoadTablesFromVM"
-    LoadFlagsFromVM
-    PrintTime "LoadFlagsFromVM"
-    vm.TryGuess
-    PrintTime "TryGuess"
-    vm.TryGuessUserdefined
-    PrintTime "TryGuessUserdefined"
-    
-    This.IsLoaded = True
-    
-    This.IsInitialLoad = False
     Me.Show
     
-    IView2_ShowDialog = This.Result
+    IView_ShowDialog = This.Result
 End Function
 
-Private Sub InitializeTableCombobox(ByVal cmb As ComboBox)
-    With cmb
-        .Clear
-        .AddItem NO_TABLE_SELECTED
-        .Value = NO_TABLE_SELECTED
-    End With
-End Sub
-
-Public Sub LoadTablesFromVM()
-    If Not vm.LHSTable Is Nothing Then
-        vm_PropertyChanged KeyMapperEvents.LHS_TABLE
-        vm_PropertyChanged KeyMapperEvents.LHS_KEY_COLUMN
-    End If
+Private Sub InitializeControls()
+    Me.lblHeaderText.Caption = HDR_TXT_KEY_MAPPER
     
-    If Not vm.LHSKeyColumn Is Nothing Then
-        'vm_PropertyChanged KeyMapperEvents.LHS_KEY_COLUMN
-    End If
+    KeyColumnsToListView.Initialize Me.lvSrcKeys
+    KeyColumnsToListView.Initialize Me.lvDstKeys
+End Sub
+
+Private Sub UpdateListViewLHS()
+    KeyColumnsToListView.Load Me.lvSrcKeys, This.ViewModel.Source
+    KeyColumnsToComboBox.Load Me.cmbSrcQuality, This.ViewModel.Source
+End Sub
+
+Private Sub UpdateListViewRHS()
+    KeyColumnsToListView.Load Me.lvDstKeys, This.ViewModel.Destination
+    KeyColumnsToComboBox.Load Me.cmbDstQuality, This.ViewModel.Destination
+End Sub
+
+Private Sub UpdateResults()
+    MatchQualityToComboBox.Load Me.cmbMatchQuality, This.ViewModel.MatchQuality
+End Sub
+
+Private Sub UpdateButtons()
+    Me.cboBack.Enabled = True
+    Me.cboNext.Enabled = This.ViewModel.CanNext
+    Me.cboCancel.Enabled = True
     
-    If Not vm.RHSTable Is Nothing Then
-        vm_PropertyChanged KeyMapperEvents.RHS_TABLE
-        vm_PropertyChanged KeyMapperEvents.RHS_KEY_COLUMN
-    End If
+    Me.cmbSrcQuality.Enabled = Not This.ViewModel.Source.Selected Is Nothing
+    Me.cmbDstQuality.Enabled = Not This.ViewModel.Destination.Selected Is Nothing
+    Me.cmbMatchQuality.Enabled = Not This.ViewModel.MatchQuality Is Nothing
     
-    If Not vm.RHSKeyColumn Is Nothing Then
-        'vm_PropertyChanged KeyMapperEvents.RHS_KEY_COLUMN
+    If This.ViewModel.CanNext Then
+        Me.cboNext.SetFocus
     End If
-End Sub
-
-Public Sub LoadFlagsFromVM()
-    Me.chkAddNewKeys.Value = vm.AppendNewKeys
-    Me.chkRemoveOrphans.Value = vm.RemoveOrphanKeys
-    
-    Me.chkAddNewKeys.Enabled = False
-    Me.chkRemoveOrphans.Enabled = False
-End Sub
-
-Private Sub vm_MatchChanged()
-    PopulateMatchSets
-    UpdateCheckButton
-    Me.cmbNext.SetFocus
-End Sub
-
-Private Sub vm_PreviewChanged()
-    PopulateKeyPreview Me.lvQualityLHS, vm.LHSKeyColumn
-    PopulateKeyPreview Me.lvQualityRHS, vm.RHSKeyColumn
-    UpdateCheckButton
-    Me.cmbCheckKeys.SetFocus
-End Sub
-
-Private Sub vm_PropertyChanged(ByVal propertyName As String)
-    If DEBUG_EVENTS = True Then Debug.Print "Property changed: " & propertyName
-    Select Case propertyName
-    Case KeyMapperEvents.LHS_TABLE
-        'this.IsInitialLoad = True
-        ChangeTable Me.cmbTableLHS, vm.LHSTable
-        PopulateColumns Me.cmbColumnLHS, vm.LHSTable
-        TryAutoMatchAgain leftToRight:=True
-        This.IsInitialLoad = False
-        'this.IsUserChangingTable = False
-        'Case KeyMapperEvents.LHS_COLUMNS
-            
-    Case KeyMapperEvents.LHS_KEY_COLUMN
-        ResetQualityControls LHS:=True
-    Case KeyMapperEvents.RHS_TABLE
-        'this.IsInitialLoad = True
-        ChangeTable Me.cmbTableRHS, vm.RHSTable
-        PopulateColumns Me.cmbColumnRHS, vm.RHSTable
-        TryAutoMatchAgain leftToRight:=False
-        This.IsInitialLoad = False
-        'this.IsUserChangingTable = False
-        'Case KeyMapperEvents.RHS_COLUMNS
-            
-    Case KeyMapperEvents.RHS_KEY_COLUMN
-        ResetQualityControls RHS:=True
-    End Select
-    
-    Me.cmbSwap.Enabled = vm.CanSwap
-    If Me.cmbColumnLHS = Me.cmbColumnRHS Then
-        Me.cmbMatchLTR.Enabled = False
-        Me.cmbMatchRTL.Enabled = False
-    Else
-        Me.cmbMatchLTR.Enabled = True
-        Me.cmbMatchRTL.Enabled = True
-    End If
-End Sub
-
-Private Sub TryAutoMatchAgain(ByVal leftToRight As Boolean)
-    'If this.IsInitialLoad = True Then Exit Sub
-    If vm.TryAutoMatch(leftToRight, True) = False Then
-        vm.TryGuess
-    End If
-End Sub
-
-Private Sub ResetQualityControls(Optional ByVal LHS As Boolean, Optional ByVal RHS As Boolean)
-    If LHS Then
-        Me.lvQualityLHS.ListItems.Clear
-    End If
-
-    If RHS Then
-        Me.lvQualityRHS.ListItems.Clear
-    End If
-
-    Me.lvSetLHS.ListItems.Clear
-    Me.lvSetInner.ListItems.Clear
-    Me.lvSetRHS.ListItems.Clear
-
-    UpdateCheckButton
-    UpdateComboColumn
-End Sub
-
-Private Sub UpdateCheckButton()
-    Me.cmbCheckQuality.Enabled = vm.CanCheck
-    Me.cmbCheckKeys.Enabled = vm.CanMatch
-    Me.cmbNext.Enabled = vm.CanContinue
-End Sub
-
-Private Sub UpdateComboColumn()
-    If Not vm.LHSKeyColumn Is Nothing Then
-        If Me.cmbColumnLHS <> vm.LHSKeyColumn.Name Then
-            Me.cmbColumnLHS = vm.LHSKeyColumn.Name
-        End If
-    End If
-    
-    If Not vm.RHSKeyColumn Is Nothing Then
-        If Me.cmbColumnRHS <> vm.RHSKeyColumn.Name Then
-            Me.cmbColumnRHS = vm.RHSKeyColumn.Name
-        End If
-    End If
-
-    If vm.CanCheck Then
-        Me.cmbCheckQuality.SetFocus
-    End If
-End Sub
-
-Private Sub PopulateKeyPreview(ByVal lv As ListView, ByVal lc As ListColumn)
-    '@MemberAttribute VB_VarHelpID, -1
-    Dim vm As ColumnQualityViewModel
-    Set vm = New ColumnQualityViewModel
-    Set vm.ListColumn = lc
-    vm.InitializeListView lv
-    vm.UpdateListView lv
-    Set vm = Nothing
-End Sub
-
-Private Sub PopulateMatchSets()
-    Dim comp As KeyColumnComparer
-    Set comp = New KeyColumnComparer
-    
-    If Me.chkLimitKeyCheck.Value = True Then
-        Set comp.LHS = KeyColumn.FromColumn(vm.LHSKeyColumn, False, Me.txtLimitKeyValue.Value)
-        Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn, False, Me.txtLimitKeyValue.Value)
-    Else
-        Set comp.LHS = KeyColumn.FromColumn(vm.LHSKeyColumn)
-        Set comp.RHS = KeyColumn.FromColumn(vm.RHSKeyColumn)
-    End If
-    
-    ' This maps the keys to their location in the other array
-    ' It doesn't calculate LeftOny/Intersection/RightOnly -
-    ' this is done on Set .LHS/.RHS
-    'comp.Map
-    
-    CollectionToListView comp.LeftOnly, Me.lvSetLHS, "Additions"
-    CollectionToListView comp.Intersection, Me.lvSetInner, "Matches"
-    CollectionToListView comp.RightOnly, Me.lvSetRHS, "Orphans"
-
-    Me.chkAddNewKeys.Enabled = (Me.lvSetLHS.ListItems.Count > 0)
-    Me.chkRemoveOrphans.Enabled = (Me.lvSetRHS.ListItems.Count > 0)
-
-    Set comp = Nothing
-End Sub
-
-Private Sub CollectionToListView(ByVal coll As Collection, ByVal lv As ListView, ByVal header As String)
-    With lv
-        .View = lvwReport
-        .Gridlines = True
-        .ListItems.Clear
-        .ColumnHeaders.Clear
-    End With
-    
-    If coll Is Nothing Then
-        lv.ColumnHeaders.Add Text:=header & " (0)"
-    Else
-        Dim v As Variant
-        For Each v In coll
-            lv.ListItems.Add Text:=v
-        Next v
-        lv.ColumnHeaders.Add Text:=header & " (" & coll.Count & ")"
-    End If
-    
-    lv.ColumnHeaders.Item(1).Width = lv.Width - 16
 End Sub
 

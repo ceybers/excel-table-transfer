@@ -1,5 +1,5 @@
 Attribute VB_Name = "Highlighting"
-'@Folder "Model.Formatting"
+'@Folder "MVVM.Model.Formatting"
 Option Explicit
 
 Private Const MAGIC_FORMULA As String = "=OR(TRUE,""HighlightMapped;b92d7b59-e7ec-4db0-a7c6-5a6ad86ceac2"")"

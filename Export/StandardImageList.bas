@@ -3,9 +3,6 @@ Attribute VB_Name = "StandardImageList"
 Option Explicit
 
 Private Const DEFAULT_ICON_SIZE As Long = 16
-Private Const DEFAULT_MSO_KEYS As String = "root,BlogHomePage;wb,FileSaveAsExcelXlsx;" & _
-    "ws,HeaderFooterSheetNameInsert;lo,CreateTable;col,TableColumnSelect;activeLo,TableSelect;" & _
-    "delete,Delete;AutoSum,AutoSum;MagicWand,QueryBuilder;" & "Excel,MicrosoftExcel"
 
 '@Description "Returns a new ImageList object pre-populated with a standardised list of default icons."
 Public Function GetMSOImageList(Optional ByVal IconSize As Long = DEFAULT_ICON_SIZE) As ImageList
@@ -13,17 +10,18 @@ Attribute GetMSOImageList.VB_Description = "Returns a new ImageList object pre-p
     Dim Result As ImageList
     Set Result = New ImageList
     
-    Dim ImageTuple As Variant
-    For Each ImageTuple In Split(DEFAULT_MSO_KEYS, ";")
-        AddImageToImageList Result, Split(ImageTuple, ",")(0), Split(ImageTuple, ",")(1), IconSize
-    Next ImageTuple
+    Dim Controls As Controls
+    Set Controls = frmPictures16.Controls
+    If IconSize = 32 Then Set Controls = frmPictures32.Controls
     
-    Result.ListImages.Add 1, "Tick", frmPictures16.lblComplete.Picture
-    Result.ListImages.Add 1, "TraceError", frmPictures16.lblWarning.Picture
-    Result.ListImages.Add 1, "Cross", frmPictures16.lblRemove.Picture
-    Result.ListImages.Add 1, "Key", frmPictures16.lblKey.Picture
-    Result.ListImages.Add 1, "Fx", frmPictures16.lblFunction.Picture
-    Result.ListImages.Add 1, "Link", frmPictures16.lblLink.Picture
+    Dim Control As Control
+    For Each Control In Controls
+        If TypeOf Control Is MSForms.Label Then
+            Dim Label As MSForms.Label
+            Set Label = Control
+            Result.ListImages.Add Key:=Control.Name, Picture:=Label.Picture
+        End If
+    Next Control
     
     Set GetMSOImageList = Result
 End Function

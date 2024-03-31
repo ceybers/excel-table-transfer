@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Model2.TransferDeltas"
+'@Folder "MVVM.Model.TransferDeltas"
 Option Explicit
 
 Private Type TState
@@ -18,6 +18,7 @@ Private Type TState
     FieldDestination As String
     ValueBefore As String
     ValueAfter As String
+    DataType As VbVarType
     ChangeType As Long
 End Type
 Private This As TState
@@ -50,6 +51,10 @@ Public Property Get ValueAfter() As String
     ValueAfter = This.ValueAfter
 End Property
 
+Public Property Get DataType() As VbVarType
+    DataType = This.DataType
+End Property
+
 Public Property Get ChangeType() As Long
     ChangeType = This.ChangeType
 End Property
@@ -63,8 +68,9 @@ Public Sub Load(ByVal DeltaVariant As Variant)
         .ColumnIndex = DeltaVariant(DeltaIndex.tdCol)
         .FieldSource = DeltaVariant(DeltaIndex.tdFieldSrc)
         .FieldDestination = DeltaVariant(DeltaIndex.tdFieldDst)
-        .ValueBefore = CStr(DeltaVariant(DeltaIndex.tdValueBefore))
-        .ValueAfter = CStr(DeltaVariant(DeltaIndex.tdValueAfter))
+        .ValueBefore = DeltaVariant(DeltaIndex.tdValueBefore)
+        .ValueAfter = DeltaVariant(DeltaIndex.tdValueAfter)
+        .DataType = DeltaVariant(DeltaIndex.tdVarType)
         .ChangeType = DeltaVariant(DeltaIndex.tdChangeType)
     End With
 End Sub

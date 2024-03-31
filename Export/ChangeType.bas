@@ -1,52 +1,42 @@
 Attribute VB_Name = "ChangeType"
-'@Folder "Model2.TransferInstruction2"
+'@Folder "MVVM.Model.TransferInstruction"
 Option Explicit
 
-
-Public Enum ChangeTypeEnum
-    Invalid
-    BlankUnchanged ' 0->0
-    ValueReplacesBlank ' A->0
-    BlankReplacesValue ' 0->A
-    ValueUnchanged ' A->A
-    ValueChanged ' A->B
-End Enum
-
-Public Function GetChangeType(ByVal LHS As Variant, ByVal RHS As Variant) As ChangeTypeEnum
+Public Function GetChangeType(ByVal LHS As Variant, ByVal RHS As Variant) As ChangeType2
     Dim LHSVarType As Long
     LHSVarType = GetVarTypeMod(LHS)
     
     Dim RHSVarType As Long
     RHSVarType = GetVarTypeMod(RHS)
     
-    If LHSVarType = 10 Or RHSVarType = 10 Then GetChangeType = Invalid
+    If LHSVarType = 10 Or RHSVarType = 10 Then GetChangeType = ttInvalidType
     
-    If LHSVarType = 0 And RHSVarType = 0 Then GetChangeType = BlankUnchanged
-    If LHSVarType = 0 And RHSVarType = 8 Then GetChangeType = BlankReplacesValue
-    If LHSVarType = 8 And RHSVarType = 0 Then GetChangeType = ValueReplacesBlank
+    If LHSVarType = 0 And RHSVarType = 0 Then GetChangeType = ttBlankUnchanged
+    If LHSVarType = 0 And RHSVarType = 8 Then GetChangeType = ttBlankReplacesValue
+    If LHSVarType = 8 And RHSVarType = 0 Then GetChangeType = ttValueReplacesBlank
     
     If LHSVarType = 8 And RHSVarType = 8 Then
         If LHS = RHS Then
-            GetChangeType = ValueUnchanged
+            GetChangeType = ttValueUnchanged
         Else
-            GetChangeType = ValueChanged
+            GetChangeType = ttValueChanged
         End If
     End If
 End Function
 
-Public Function ChangeTypeToString(ByVal Value As ChangeTypeEnum) As String
+Public Function ChangeTypeToString(ByVal Value As ChangeType2) As String
     Select Case Value
-        Case ChangeTypeEnum.Invalid
+        Case ttInvalidType
             ChangeTypeToString = "Invalid"
-        Case ChangeTypeEnum.BlankUnchanged
+        Case ttBlankUnchanged
             ChangeTypeToString = "BlankUnchanged"
-        Case ChangeTypeEnum.ValueReplacesBlank
+        Case ttValueReplacesBlank
             ChangeTypeToString = "ValueReplacesBlank"
-        Case ChangeTypeEnum.BlankReplacesValue
+        Case ttBlankReplacesValue
             ChangeTypeToString = "BlankReplacesValue"
-        Case ChangeTypeEnum.ValueUnchanged
+        Case ttValueUnchanged
             ChangeTypeToString = "ValueUnchanged"
-        Case ChangeTypeEnum.ValueChanged
+        Case ttValueChanged
             ChangeTypeToString = "ValueChanged"
     End Select
 End Function

@@ -1,5 +1,5 @@
 Attribute VB_Name = "TransferCellDelta"
-'@Folder "Model2.TransferInstruction2"
+'@Folder "MVVM.Model.TransferInstruction"
 Option Explicit
 
 Public Enum DeltaIndex
@@ -12,6 +12,7 @@ Public Enum DeltaIndex
     tdValueAfter
     'tdVarTypeBefore
     'tdVarTypeAfter
+    tdVarType
     tdChangeType
 End Enum
 
@@ -22,7 +23,7 @@ Public Function GetTransferCellDelta(ByVal KeyIndex As Long, ByVal ValueIndex As
     Dim Result As Variant
     Result = Array(KeyIndex, ValueIndex, _
         Key, SourceColumnName, DestinationColumnName, _
-        DestinationValue, SourceValue, _
+        DestinationValue, SourceValue, VarType(SourceValue), _
         ChangeType.GetChangeType(SourceValue, DestinationValue))
         
     GetTransferCellDelta = Result
@@ -31,7 +32,7 @@ End Function
 Public Function ToString(ByVal CellDelta As Variant) As String
     Debug.Assert Not IsEmpty(CellDelta)
     
-    Dim Result(1 To 21) As String
+    Dim Result(1 To 23) As String
     Result(1) = "CHG: '"
     Result(2) = CellDelta(tdKey)
     Result(3) = "' x ('"
@@ -51,8 +52,10 @@ Public Function ToString(ByVal CellDelta As Variant) As String
     'Result(17) = ","
     'Result(18) = CStr(VarType(CellDelta(tdVarTypeAfter)))
     'Result(19) = ","
-    Result(20) = ChangeType.ChangeTypeToString(CellDelta(tdChangeType))
-    Result(21) = "]"
+    Result(20) = CellDelta(tdVarType)
+    Result(21) = ","
+    Result(22) = ChangeType.ChangeTypeToString(CellDelta(tdChangeType))
+    Result(23) = "]"
     
     ToString = Join(Result, vbNullString)
 End Function

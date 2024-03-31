@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@IgnoreModule UnassignedVariableUsage
 '@PredeclaredId
-'@Folder "Model.KeyColumn"
+'@Folder "MVVM.Model.KeyColumn"
 Option Explicit
 
 Private Const ERR_MSG_EMPTY_TABLE As String = "Cannot Map KeyColumns with an empty table"

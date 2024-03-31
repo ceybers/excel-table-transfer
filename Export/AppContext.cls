@@ -2,12 +2,12 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "AppContext2"
+Attribute VB_Name = "AppContext"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "MVVM2.AppContext"
+'@Folder "MVVM.AppContext"
 Option Explicit
 
 Private Const LAST_KEY_USED As String = "LastKeyUsed"
@@ -16,15 +16,15 @@ Private Const MSG_CAPTION As String = "Table Transfer Tool"
 Private Const MSG_NOT_ENOUGH_TABLES As String = "Not enough tables available to start a transfer!"
 
 Private Type TState
-    Transfer As TransferInstruction2
+    Transfer As TransferInstruction
     Settings As TransferSettings
 End Type
 Private This As TState
 
 Public Sub Start()
     Set This.Settings = New TransferSettings
-    Set This.Transfer = New TransferInstruction2
-    
+    Set This.Transfer = New TransferInstruction
+
 'DEBUG:
     'Set This.Transfer = GetDebugTransfer
     'GoTo RewindValueMapper
@@ -32,27 +32,19 @@ Public Sub Start()
 RewindReloadRecent:
     Select Case TryReloadRecent
         Case vrNext
-            GoTo RewindValueMapper
-    End Select
-    
-RewindSourceOrDestination:
-    Select Case TrySourceOrDestination
-        Case vrCancel
-            Exit Sub
+            GoTo RewindTransferDeltas
     End Select
 
-RewindSelectTable:
-    Select Case TrySelectTable
+RewindTablePicker:
+    Select Case TryTablePicker
         Case vrCancel
             Exit Sub
     End Select
     
 RewindKeyMapper:
     Select Case TryKeyMapper
-        'Case vrStart
-        '    GoTo RewindSourceOrDestination
         Case vrBack
-            GoTo RewindSourceOrDestination
+            GoTo RewindTablePicker
         Case vrCancel
             Exit Sub
     End Select
@@ -63,8 +55,6 @@ RewindValueMapper:
             GoTo RewindKeyMapper
         Case vrCancel
             Exit Sub
-        'Case vrFinish
-        '    GoTo FinishEarly
     End Select
     
 RewindTransferDeltas:
@@ -73,7 +63,7 @@ RewindTransferDeltas:
             GoTo RewindKeyMapper
         Case vrBack
             GoTo RewindValueMapper
-        Case vrCancel, vrFinish
+        Case vrCancel, vrNext
             GoTo FinishEarly
     End Select
     
@@ -92,7 +82,7 @@ Private Function TryReloadRecent() As ViewResult
         Dim SerialString As String
         SerialString = Base64toString(RecentTransfer)
         
-        Dim TestTransfer As TransferInstruction2
+        Dim TestTransfer As TransferInstruction
         If TransferInstructionSerializer.TryDeserialize(SerialString, TestTransfer) Then
             Set This.Transfer = TestTransfer
             TryReloadRecent = vrNext
@@ -101,85 +91,44 @@ Private Function TryReloadRecent() As ViewResult
     Next RecentTransfer
 End Function
 
-Private Function TrySourceOrDestination() As ViewResult
-    Dim ViewModel As SourceOrDestinationViewModel
-    Set ViewModel = New SourceOrDestinationViewModel
+Private Function TryTablePicker() As ViewResult
+    Dim ViewModel As TablePickerViewModel
+    Set ViewModel = New TablePickerViewModel
+    ViewModel.Load
     
-    Dim View As IView2
-    Set View = New SourceOrDestinationView
+    Set ViewModel.SourceTable = This.Transfer.Source.Table
+    Set ViewModel.DestinationTable = This.Transfer.Destination.Table
     
-    Dim Result As ViewResult
-    
-    If ViewModel.CanSelect = False Then
-        MsgBox MSG_NOT_ENOUGH_TABLES, vbExclamation + vbOKOnly, MSG_CAPTION
-        TrySourceOrDestination = vrCancel
-        Exit Function
-    End If
-    
-    If Selection.ListObject Is Nothing Then
-        TrySourceOrDestination = vrNext
-        Exit Function
-    End If
-        
-    Result = View.ShowDialog(ViewModel)
-    
-    Select Case Result
-        Case vrNext
-            If ViewModel.IsSource Then
-                Set This.Transfer.Source.Table = Selection.ListObject
-                Set This.Transfer.Destination.Table = Nothing
-            ElseIf ViewModel.IsDestination Then
-                Set This.Transfer.Source.Table = Nothing
-                Set This.Transfer.Destination.Table = Selection.ListObject
-            End If
-    End Select
-    
-    TrySourceOrDestination = Result
-End Function
-
-Private Function TrySelectTable() As ViewResult
-    Dim ViewModel As SelectTableViewModel
-    Set ViewModel = New SelectTableViewModel
-    
-    If Not This.Transfer.Source.Table Is Nothing Then
-        Set ViewModel.ActiveTable = This.Transfer.Source.Table
-    ElseIf Not This.Transfer.Destination.Table Is Nothing Then
-        Set ViewModel.ActiveTable = This.Transfer.Destination.Table
-    End If
-    
-    Dim View As IView2
-    Set View = New SelectTableView
+    Dim View As IView
+    Set View = New TablePickerView
     
     Dim Result As ViewResult
     Result = View.ShowDialog(ViewModel)
   
     Select Case Result
         Case vrNext
-            If This.Transfer.Source.Table Is Nothing Then
-                Set This.Transfer.Source.Table = ViewModel.SelectedTable
-            ElseIf This.Transfer.Destination.Table Is Nothing Then
-                Set This.Transfer.Destination.Table = ViewModel.SelectedTable
-            Else
-                Err.Raise vbObjectError + 14, "TrySelectTable", "Failed to set selected table."
-            End If
+            Set This.Transfer.Source.Table = ViewModel.SourceTable
+            Set This.Transfer.Destination.Table = ViewModel.DestinationTable
     End Select
     
-    TrySelectTable = Result
+    TryTablePicker = Result
 End Function
 
 Private Function TryKeyMapper() As ViewResult
     Dim ViewModel As KeyMapperViewModel
     Set ViewModel = New KeyMapperViewModel
-    ViewModel.LoadFromTransferInstruction2 This.Transfer
+    ViewModel.Load This.Transfer.Source.Table, This.Transfer.Destination.Table
     
     Dim ListObjectSettings As ISettings
     Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Source.Table)
-    This.Transfer.Source.KeyColumnName = ListObjectSettings.GetSetting(LAST_KEY_USED)
+    ViewModel.Source.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
     
     Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Destination.Table)
-    This.Transfer.Destination.KeyColumnName = ListObjectSettings.GetSetting(LAST_KEY_USED)
+    ViewModel.Destination.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
     
-    Dim View As IView2
+    ViewModel.TryEvaluateMatch
+    
+    Dim View As IView
     Set View = New KeyMapperView
     
     Dim Result As ViewResult
@@ -187,7 +136,8 @@ Private Function TryKeyMapper() As ViewResult
     
     Select Case Result
         Case vrNext
-            ViewModel.SaveToTransferInstruction This.Transfer
+            This.Transfer.Source.KeyColumnName = ViewModel.Source.Selected.Name
+            This.Transfer.Destination.KeyColumnName = ViewModel.Destination.Selected.Name
     End Select
     
     TryKeyMapper = Result
@@ -196,45 +146,54 @@ End Function
 Private Function TryValueMapper() As ViewResult
     Dim ViewModel As ValueMapperViewModel
     Set ViewModel = New ValueMapperViewModel
-    ViewModel.LoadFromTransferInstruction2 This.Transfer
+    With ViewModel.Source
+        .AllowEmpty = True
+        .AllowError = False
+        .AllowFormula = True
+        .Load This.Transfer.Source.Table
+        .SetKeyColumn This.Transfer.Source.KeyColumnName
+    End With
     
-    Dim View As IView2
-    Set View = New ValueMapperView
+    With ViewModel.Destination
+        .AllowEmpty = True
+        .AllowError = True
+        .AllowFormula = False
+        .Load This.Transfer.Destination.Table
+        .SetKeyColumn This.Transfer.Destination.KeyColumnName
+    End With
+    
+    Dim View As IView
+    Set View = ValueMapperView
     
     Dim Result As ViewResult
     Result = View.ShowDialog(ViewModel)
     
     Select Case Result
         Case vrNext
-            UpdateTransferInstruction This.Transfer, ViewModel.CheckedValuePairs
-            This.Transfer.Evaluate
-        'Case vrFinish
-            'UpdateTransferInstruction This.Transfer, ViewModel.CheckedValuePairs
-            'This.Transfer.Evaluate
-            'If IsEmpty(This.Transfer.Deltas) Then
-            '    Result = vrNext
-            'Else
-            '    This.Transfer.Commit CommitterFactory.FullColumn
-            '    DoPostProcessing
-            'End If
+            With This.Transfer
+                .Source.Load .Source.Table, .Source.KeyColumnName, ViewModel.Mapped.GetArray(ttSource)
+                .Destination.Load .Destination.Table, .Destination.KeyColumnName, ViewModel.Mapped.GetArray(ttDestination)
+            End With
     End Select
     
     TryValueMapper = Result
 End Function
 
 Private Function TryTransferDeltas() As ViewResult
-    Dim ViewModel As TransferDeltasViewModel
-    Set ViewModel = New TransferDeltasViewModel
-    ViewModel.Load This.Transfer.TransferDeltas
+    This.Transfer.Evaluate
     
-    Dim View As IView2
-    Set View = TransferDeltasView
+    Dim ViewModel As DeltasPreviewViewModel
+    Set ViewModel = New DeltasPreviewViewModel
+    ViewModel.Load This.Transfer.TransferDeltas, This.Transfer.Source.Table, This.Transfer.Destination.Table
+    
+    Dim View As IView
+    Set View = DeltasPreviewView
     
     Dim Result As ViewResult
     Result = View.ShowDialog(ViewModel)
     
     Select Case Result
-        Case vrFinish
+        Case vrNext
             This.Transfer.Commit CommitterFactory.FullColumn
             DoPostProcessing
     End Select
@@ -247,7 +206,7 @@ Private Sub DoPostProcessing()
     
     With This.Transfer
         .PostProcess PostProcessorFactory.RemoveHighlighting
-        .PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged
+        .PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged 'TODO Move to constants
         .PostProcess HighlightChanges.Create(2, RGB(204, 255, 153)) ' 0->A new
         .PostProcess PostProcessorFactory.TransferColumnWidths
         .PostProcess PostProcessorFactory.TransferNumberFormat

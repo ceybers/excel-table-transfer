@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder("Model2.Commiter")
+'@Folder "MVVM.Model.Commiters"
 Option Explicit
 
 Public Property Get FullColumn() As ICommitStrategy

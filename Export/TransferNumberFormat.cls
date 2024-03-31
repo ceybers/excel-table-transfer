@@ -7,11 +7,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("Model2.PostProcessors")
+'@Folder "MVVM.Model.PostProcessors.Strategies"
 Option Explicit
 Implements ITransferPostProcesser
 
-Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As TransferInstruction2)
+Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As TransferInstruction)
     Dim i As Long
     For i = 0 To TransferInstruction.Source.ValueColumnCount - 1
         Dim SourceColumn As ListColumn
@@ -23,5 +23,4 @@ Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As Transfer
         DestinationColumn.DataBodyRange.NumberFormat = SourceColumn.DataBodyRange.Cells.Item(1, 1).NumberFormat
     Next i
 End Sub
-
 

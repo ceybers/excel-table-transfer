@@ -7,142 +7,76 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Model.ColumnPairs"
+'@Folder "MVVM.Model.ColumnPair"
 Option Explicit
 
-Private Type TClsColumnPairs
-    Item As Collection
-    ConstrainRHS As Boolean
+Private Type TState
+    Items As Collection
 End Type
+Private This As TState
 
-Private This As TClsColumnPairs
-
-'@Enumerator
-Public Property Get Item() As Collection
-Attribute Item.VB_UserMemId = -4
-    Set Item = This.Item
-End Property
-
-Public Property Get Count() As Long
-    Count = This.Item.Count
-End Property
-
-Public Property Get ConstrainRHS() As Boolean
-    ConstrainRHS = This.ConstrainRHS
-End Property
-
-Public Property Let ConstrainRHS(ByVal RHS As Boolean)
-    This.ConstrainRHS = RHS
+Public Property Get Items() As Collection
+    Set Items = This.Items
 End Property
 
 Private Sub Class_Initialize()
-    Set This.Item = New Collection
-    This.ConstrainRHS = True
+    Set This.Items = New Collection
 End Sub
 
-Public Sub Add(ByVal ColumnPair As ColumnPair)
-    If Exists(ColumnPair) Then Exit Sub
-    
-    This.Item.Add ColumnPair
-End Sub
-
-Public Sub AddOrReplace(ByVal ColumnPair As ColumnPair)
-    If Not Exists(ColumnPair) Then
-        This.Item.Add ColumnPair
-        Exit Sub
-    End If
-    
-    Dim FoundPair As ColumnPair
-    If ConstrainRHS Then
-        Set FoundPair = GetPair(RHS:=ColumnPair.RHS)
-    Else
-        Set FoundPair = GetPair(ColumnPair.LHS, ColumnPair.RHS)
-    End If
-    
-    Set FoundPair.LHS = ColumnPair.LHS
-    Set FoundPair.RHS = ColumnPair.RHS
-End Sub
-
-Public Sub Remove(ByVal ColumnPair As ColumnPair)
-    Debug.Assert Not ColumnPair Is Nothing
-    
-    Dim FoundPair As ColumnPair
-    Set FoundPair = GetPair(ColumnPair.LHS, ColumnPair.RHS)
-    
-    Dim idx As Long
-    idx = GetIndexOfColumnPair(FoundPair)
-    
-    If idx >= 0 Then
-        This.Item.Remove idx
-    End If
-End Sub
-
-Private Function GetIndexOfColumnPair(ByVal ColumnPair As ColumnPair) As Long
-    Debug.Assert Not ColumnPair Is Nothing
+Public Function GetArray(ByVal Direction As TransferDirection) As Variant
+    Dim Result() As Variant
+    ReDim Result(0 To Items.Count - 1)
     
     Dim i As Long
-    For i = 1 To This.Item.Count
-        If This.Item.Item(i).Equals(ColumnPair) Or (This.ConstrainRHS And (This.Item.Item(i).RHS Is ColumnPair.RHS)) Then
-            GetIndexOfColumnPair = i
-            Exit Function
+    For i = 0 To UBound(Result)
+        If Direction = ttSource Then
+            Result(i) = This.Items.Item(i + 1).Source
+        Else
+            Result(i) = This.Items.Item(i + 1).Destination
         End If
     Next i
     
-    GetIndexOfColumnPair = -1
+    GetArray = Result
 End Function
 
-Public Sub Clear()
-    CollectionHelpers.CollectionClear This.Item
+Public Sub Add(ByVal Source As String, ByVal Destination As String)
+    If Exists(Source, Destination) Then Exit Sub
+    
+    Dim ColumnPair As ColumnPair
+    Set ColumnPair = New ColumnPair
+    With ColumnPair
+        .Source = Source
+        .Destination = Destination
+    End With
+    
+    This.Items.Add Item:=ColumnPair
 End Sub
 
-Public Function Exists(ByVal ColumnPair As ColumnPair) As Boolean
-    Dim RHS As ColumnPair
-    For Each RHS In This.Item
-        If ColumnPair.Equals(RHS) Then
-            Exists = True
-            Exit Function
-        ElseIf ConstrainRHS And (ColumnPair.RHS Is RHS.RHS) Then
-            Exists = True
-            Exit Function
+Public Sub Remove(ByVal Source As String, ByVal Destination As String)
+    Dim i As Long
+    For i = 1 To This.Items.Count
+        Dim ColumnPair As ColumnPair
+        Set ColumnPair = This.Items.Item(i)
+        If ColumnPair.Source = Source And ColumnPair.Destination = Destination Then
+            This.Items.Remove i
+            Exit Sub
         End If
-    Next RHS
-End Function
+    Next i
+End Sub
 
-Public Function GetPair(Optional ByVal LHS As ListColumn, Optional ByVal RHS As ListColumn) As ColumnPair
-    If (LHS Is Nothing) And (RHS Is Nothing) Then Exit Function
-
+Public Function Exists(ByVal Source As String, ByVal Destination As String) As Boolean
     Dim ColumnPair As ColumnPair
-    For Each ColumnPair In This.Item
-        If (RHS Is Nothing) And (ColumnPair.LHS Is LHS) Then
-            Set GetPair = ColumnPair
-            Exit Function
-        ElseIf (LHS Is Nothing) And (ColumnPair.RHS Is RHS) Then
-            Set GetPair = ColumnPair
-            Exit Function
-        ElseIf (ColumnPair.LHS Is LHS) And (ColumnPair.RHS Is RHS) Then
-            Set GetPair = ColumnPair
-            Exit Function
-        End If
-    Next ColumnPair
+    Exists = TryGetColumnPair(Source, Destination, ColumnPair)
 End Function
 
-Public Function TryGetPair(ByRef ColumnPair As ColumnPair, Optional ByVal LHS As ListColumn, Optional ByVal RHS As ListColumn) As Boolean
-    Dim Result As ColumnPair
-    Set Result = GetPair(LHS, RHS)
-    
-    Set ColumnPair = Result
-    
-    If Not Result Is Nothing Then
-        TryGetPair = True
-    End If
-End Function
-
-Public Function IsMappedRHS(ByVal ListColumn As ListColumn) As Boolean
-    Dim ColumnPair As ColumnPair
-    For Each ColumnPair In This.Item
-        If ColumnPair.RHS Is ListColumn Then
-            IsMappedRHS = True
+Private Function TryGetColumnPair(ByVal Source As String, ByVal Destination As String, ByRef OutColumnPair As ColumnPair) As Boolean
+    Dim ThisColumnPair As ColumnPair
+    For Each ThisColumnPair In This.Items
+        If ThisColumnPair.Source = Source And ThisColumnPair.Destination = Destination Then
+            Set OutColumnPair = ThisColumnPair
+            TryGetColumnPair = True
             Exit Function
         End If
-    Next ColumnPair
+    Next ThisColumnPair
 End Function
+

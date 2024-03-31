@@ -1,8 +1,8 @@
 Attribute VB_Name = "ColumnPairToTransferInstruction"
-'@Folder "Model2.TransferInstruction2"
+'@Folder "MVVM.Model.TransferInstruction"
 Option Explicit
 
-Public Sub UpdateTransferInstruction(ByVal TransferInstruction As TransferInstruction2, _
+Public Sub UpdateTransferInstruction(ByVal TransferInstruction As TransferInstruction, _
     ByVal ColPairCollection As Collection)
     With TransferInstruction.Source
         .Load .Table, .KeyColumnName, ColPairCollectionToArray(ColPairCollection, True)
@@ -29,4 +29,5 @@ Private Function ColPairCollectionToArray(ByVal ColPairCollection As Collection,
     
     ColPairCollectionToArray = Result
 End Function
+
 

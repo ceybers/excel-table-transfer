@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} ValueMapperView 
-   Caption         =   "Map Value Columns"
-   ClientHeight    =   9015.001
+   Caption         =   "Table Transfer Tool"
+   ClientHeight    =   5820
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   9360.001
@@ -13,133 +13,79 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@IgnoreModule HungarianNotation
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView2
+Implements IView
 
-'@MemberAttribute VB_VarHelpID, -1
-Private WithEvents vm As ValueMapperViewModel
-Attribute vm.VB_VarHelpID = -1
-Private Const ICON_SIZE As Long = 16
-
-Private Type TFrmKeyMapper2View
-    'IsCancelled As Boolean
+Private Type TState
+    ViewModel As ValueMapperViewModel
     Result As ViewResult
 End Type
+Private This As TState
 
-Private This As TFrmKeyMapper2View
-
-Private Sub cmbBack_Click()
+Private Sub cboBack_Click()
     This.Result = vrBack
     Me.Hide
 End Sub
 
-Private Sub cmbCancel_Click()
-    This.Result = vrCancel
-    Me.Hide
-End Sub
-
-Private Sub cmbFinish_Click()
-    This.Result = vrFinish
-    Me.Hide
-End Sub
-
-Private Sub cmbNext_Click()
+Private Sub cboNext_Click()
     This.Result = vrNext
     Me.Hide
 End Sub
 
-Private Sub cmbAutoMap_Click()
-    vm.Automap
+Private Sub cboCancel_Click()
+    This.Result = vrCancel
+    Me.Hide
 End Sub
 
-Private Sub cmbClearSearchLHS_Click()
-    vm.LHSCriteria = vbNullString
+Private Sub lvSrcValues_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    This.ViewModel.Source.TrySelect Item.Key
+    'This.ViewModel.TryEvaluateMatch
+    UpdateButtons
+    UpdateMappingControl
 End Sub
 
-Private Sub cmbClearSearchRHS_Click()
-    vm.RHSCriteria = vbNullString
+Private Sub lvDstValues_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    This.ViewModel.Destination.TrySelect Item.Key
+    'This.ViewModel.TryEvaluateMatch
+    UpdateButtons
+    UpdateMappingControl
 End Sub
 
-Private Sub cmbMapRight_Click()
-    vm.TryMap
+Private Sub cboMapAdd_Click()
+    This.ViewModel.DoMapAdd
+    UpdateListViewLHS
+    UpdateListViewRHS
+    UpdateMappingControl
+    UpdateButtons
 End Sub
 
-Private Sub cmbReset_Click()
-    vm.Reset
-    vm_MappingChanged
+Private Sub cboMapRemove_Click()
+    This.ViewModel.DoMapRemove
+    UpdateListViewLHS
+    UpdateListViewRHS
+    UpdateMappingControl
+    UpdateButtons
 End Sub
 
-Private Sub cmbSelectNone_Click()
-    vm.SelectNone
-End Sub
-
-Private Sub cmbSelectAll_Click()
-    vm.SelectAll
-End Sub
-
-Private Sub cmbUnmapLeft_Click()
-    vm.TryUnMap
-End Sub
-
-Private Sub chkShowMappedOnlyLHS_Click()
-    vm.ShowMappedOnlyLHS = Me.chkShowMappedOnlyLHS.Value
-End Sub
-
-Private Sub chkShowMappedOnlyRHS_Click()
-    vm.ShowMappedOnlyRHS = Me.chkShowMappedOnlyRHS.Value
-End Sub
-
-Private Sub lvLHS_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    vm.TrySelectLHS Item
-End Sub
-
-Private Sub lvRHS_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    vm.TrySelectRHS Item
-End Sub
-
-Private Sub lvRHS_ItemCheck(ByVal Item As MSComctlLib.ListItem)
-    vm.TryCheck Item
-End Sub
-
-Private Function TryReselectListItem(ByVal lv As ListView, ByVal Key As String) As Boolean
-    Dim i As Long
-    For i = 1 To lv.ListItems.Count
-        If lv.ListItems.Item(i).Key = Key Then
-            lv.ListItems.Item(i).Selected = True
-            TryReselectListItem = True
-            Exit Function
-        End If
-    Next i
-End Function
-
-Private Sub vm_MappingChanged()
-    vm.UpdateLHStoListView Me.lvLHS
-    vm.UpdateRHStoListView Me.lvRHS
+Private Sub cboMapAll_Click()
+    This.ViewModel.DoAutoMap
+    UpdateListViewLHS
+    UpdateListViewRHS
+    UpdateMappingControl
+    UpdateButtons
     
-    Me.cmbReset.Enabled = vm.CanReset
-    Me.cmbAutoMap.Enabled = vm.CanAutoMap
-    Me.cmbSelectAll.Enabled = vm.CanSelectAll
-    Me.cmbSelectNone.Enabled = vm.CanSelectNone
-    
-    vm_SelectionChanged
-    
-    Me.cmbNext.Enabled = (vm.CheckedValuePairs.Count > 0)
-    If Me.cmbNext.Enabled Then
-        Me.cmbNext.SetFocus
-    End If
-    Me.cmbFinish.Enabled = False ' Always go to TransferDeltasMVVM before committing
+    If Me.cboNext.Enabled Then Me.cboNext.SetFocus
 End Sub
 
-Private Sub txtSearchLHS_Change()
-    If IsNull(Me.txtSearchLHS) Then Exit Sub
-    vm.LHSCriteria = Me.txtSearchLHS
-End Sub
-
-Private Sub txtSearchRHS_Change()
-    If IsNull(Me.txtSearchRHS) Then Exit Sub
-    vm.RHSCriteria = Me.txtSearchRHS
+Private Sub cboMapReset_Click()
+    This.ViewModel.DoRemoveAll
+    UpdateListViewLHS
+    UpdateListViewRHS
+    UpdateMappingControl
+    UpdateButtons
+    
+    Me.cboMapAll.SetFocus
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -148,92 +94,52 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     End If
 End Sub
 
-' ---
-Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
-    Set vm = ViewModel
+Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    frmAbout.Show
+End Sub
+
+Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
+    Set This.ViewModel = ViewModel
     
     InitializeControls
-    
-    LoadFromVM
-    
-    lvLHS_ItemClick Me.lvLHS.ListItems.Item(1)
-    lvRHS_ItemClick Me.lvRHS.ListItems.Item(1)
-    
-    vm_MappingChanged
-    
-    vm.AutomapIfEmpty
+    UpdateListViewLHS
+    UpdateListViewRHS
+    UpdateButtons
+    Me.cboMapAll.SetFocus
     
     Me.Show
     
-    IView2_ShowDialog = This.Result
+    IView_ShowDialog = This.Result
 End Function
 
 Private Sub InitializeControls()
-    Dim msoImageList As ImageList
-    Set msoImageList = New ImageList
-    Set msoImageList = StandardImageList.GetMSOImageList(ICON_SIZE)
+    Me.lblHeaderText.Caption = HDR_TXT_VALUE_MAPPER
     
-    Set Me.lvLHS.Icons = msoImageList
-    Set Me.lvLHS.SmallIcons = msoImageList
-    Set Me.lvRHS.Icons = msoImageList
-    Set Me.lvRHS.SmallIcons = msoImageList
-    
-    ' TODO These look really bad. IPictDisp issues on specifically Button controls vs being okay on Labels?
-    Me.cmbClearSearchLHS.Picture = msoImageList.ListImages.Item("Cross").Picture
-    Me.cmbClearSearchRHS.Picture = msoImageList.ListImages.Item("Cross").Picture
+    ValueColumnsToListView.Initialize Me.lvSrcValues
+    ValueColumnsToListView.Initialize Me.lvDstValues
+    ColumnPairsToListView.Initialize Me.lvMappedValues
 End Sub
 
-Public Sub LoadFromVM()
-    vm.InitializeListView Me.lvLHS
-    vm.InitializeListView Me.lvRHS, True
-    
-    vm.LoadLHStoListView Me.lvLHS
-    vm.LoadRHStoListView Me.lvRHS
+Private Sub UpdateListViewLHS()
+    ValueColumnsToListView.Load Me.lvSrcValues, This.ViewModel.Source
 End Sub
 
-Private Sub vm_CollectionChangedLHS()
-    Dim current As String
-    
-    If Not Me.lvLHS.SelectedItem Is Nothing Then
-        current = Me.lvLHS.SelectedItem.Key
-    End If
-    
-    vm.LoadLHStoListView Me.lvLHS
-    
-    If current <> vbNullString Then
-        If Not TryReselectListItem(Me.lvLHS, current) Then
-            If Me.lvLHS.ListItems.Count > 0 Then
-                Me.lvLHS.ListItems.Item(1).Selected = True
-                lvLHS_ItemClick Me.lvLHS.ListItems.Item(1)
-            End If
-        End If
-    End If
+Private Sub UpdateListViewRHS()
+    ValueColumnsToListView.Load Me.lvDstValues, This.ViewModel.Destination
 End Sub
 
-Private Sub vm_CollectionChangedRHS()
-    Dim current As String
-    
-    If Not Me.lvRHS.SelectedItem Is Nothing Then
-        current = Me.lvRHS.SelectedItem.Key
-    End If
-    
-    vm.LoadRHStoListView Me.lvRHS
-    vm.UpdateRHStoListView Me.lvRHS
-    
-    If current <> vbNullString Then
-        If Not TryReselectListItem(Me.lvRHS, current) Then
-            If Me.lvRHS.ListItems.Count > 0 Then
-                Me.lvRHS.ListItems.Item(1).Selected = True
-                lvRHS_ItemClick Me.lvRHS.ListItems.Item(1)
-            End If
-        End If
-    End If
+Private Sub UpdateMappingControl()
+    ColumnPairsToListView.Load Me.lvMappedValues, This.ViewModel.Mapped
 End Sub
 
-Private Sub vm_SelectionChanged()
-    Me.cmbMapRight.Enabled = vm.CanMapRight
-    Me.cmbUnmapLeft.Enabled = vm.CanUnmapLeft
+Private Sub UpdateButtons()
+    Me.cboBack.Enabled = True
+    Me.cboNext.Enabled = This.ViewModel.CanNext
+    Me.cboCancel.Enabled = True
     
-    Me.txtSearchLHS = vm.LHSCriteria
-    Me.txtSearchRHS = vm.RHSCriteria
+    Me.cboMapAdd.Enabled = This.ViewModel.CanMapAdd
+    Me.cboMapRemove.Enabled = This.ViewModel.CanMapRemove
+    Me.cboMapAll.Enabled = True
+    Me.cboMapReset.Enabled = This.ViewModel.CanRemoveAll
 End Sub
+
