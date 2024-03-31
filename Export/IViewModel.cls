@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@IgnoreModule ProcedureNotUsed
-'@Folder "MVVM.Infrastructure.Abstract"
+'@Folder "MVVM2.Infrastructure"
 '@Interface
 Option Explicit
 

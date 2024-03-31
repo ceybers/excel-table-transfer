@@ -5,11 +5,11 @@ Option Explicit
 Private Const MSO_ITEM As String = "lblSelCol"
 Private Const MSO_SELECTED As String = "lblKey2"
 
-Public Sub Initialize(ByVal ListView As ListView)
+Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
-        .ColumnHeaders.Add Text:="Column Name"
+        .ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16
         .View = lvwReport
         .FullRowSelect = True
         .Gridlines = False
@@ -20,7 +20,7 @@ Public Sub Initialize(ByVal ListView As ListView)
     End With
 End Sub
 
-Public Sub Load(ByVal ListView As ListView, ByVal KeyColumns As KeyColumns)
+Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal KeyColumns As KeyColumns)
     Debug.Assert Not KeyColumns Is Nothing
     
     ListView.ListItems.Clear
@@ -39,7 +39,7 @@ Public Sub Load(ByVal ListView As ListView, ByVal KeyColumns As KeyColumns)
     End If
 End Sub
 
-Private Sub AddItem(ByVal ListView As ListView, ByVal KeyColumn As KeyColumn)
+Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal KeyColumn As KeyColumn)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Key:=KeyColumn.Name, Text:=KeyColumn.Name)
     ListItem.SmallIcon = MSO_ITEM

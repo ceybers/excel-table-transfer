@@ -24,7 +24,7 @@ Private This As TState
 Public Sub Start()
     Set This.Settings = New TransferSettings
     Set This.Transfer = New TransferInstruction2
-    
+
 'DEBUG:
     'Set This.Transfer = GetDebugTransfer
     'GoTo RewindValueMapper
@@ -32,7 +32,7 @@ Public Sub Start()
 RewindReloadRecent:
     Select Case TryReloadRecent
         Case vrNext
-            GoTo RewindValueMapper
+            GoTo RewindTransferDeltas
     End Select
 
 RewindTablePicker:
@@ -146,35 +146,44 @@ Private Function TryKeyMapper() As ViewResult
 End Function
 
 Private Function TryValueMapper() As ViewResult
-    Dim ViewModel As ValueMapperViewModel
-    Set ViewModel = New ValueMapperViewModel
-    ViewModel.LoadFromTransferInstruction2 This.Transfer
+    Dim ViewModel As ValueMapper2ViewModel
+    Set ViewModel = New ValueMapper2ViewModel
+    With ViewModel.Source
+        .AllowEmpty = True
+        .AllowError = False
+        .AllowFormula = True
+        .Load This.Transfer.Source.Table
+        .SetKeyColumn This.Transfer.Source.KeyColumnName
+    End With
+    
+    With ViewModel.Destination
+        .AllowEmpty = True
+        .AllowError = True
+        .AllowFormula = False
+        .Load This.Transfer.Destination.Table
+        .SetKeyColumn This.Transfer.Destination.KeyColumnName
+    End With
     
     Dim View As IView2
-    Set View = New ValueMapperView
+    Set View = ValueMapper2View
     
     Dim Result As ViewResult
     Result = View.ShowDialog(ViewModel)
     
     Select Case Result
         Case vrNext
-            UpdateTransferInstruction This.Transfer, ViewModel.CheckedValuePairs
-            This.Transfer.Evaluate
-        'Case vrFinish
-            'UpdateTransferInstruction This.Transfer, ViewModel.CheckedValuePairs
-            'This.Transfer.Evaluate
-            'If IsEmpty(This.Transfer.Deltas) Then
-            '    Result = vrNext
-            'Else
-            '    This.Transfer.Commit CommitterFactory.FullColumn
-            '    DoPostProcessing
-            'End If
+            With This.Transfer
+                .Source.Load .Source.Table, .Source.KeyColumnName, ViewModel.Mapped.GetArray(tdSource)
+                .Destination.Load .Destination.Table, .Destination.KeyColumnName, ViewModel.Mapped.GetArray(tdDestination)
+            End With
     End Select
     
     TryValueMapper = Result
 End Function
 
 Private Function TryTransferDeltas() As ViewResult
+    This.Transfer.Evaluate
+    
     Dim ViewModel As TransferDeltasViewModel
     Set ViewModel = New TransferDeltasViewModel
     ViewModel.Load This.Transfer.TransferDeltas
@@ -186,7 +195,7 @@ Private Function TryTransferDeltas() As ViewResult
     Result = View.ShowDialog(ViewModel)
     
     Select Case Result
-        Case vrFinish
+        Case vrNext
             This.Transfer.Commit CommitterFactory.FullColumn
             DoPostProcessing
     End Select

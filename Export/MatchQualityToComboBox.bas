@@ -3,6 +3,7 @@ Attribute VB_Name = "MatchQualityToComboBox"
 Option Explicit
 
 Private Const NO_TWO_COLUMNS_SELECTED As String = vbNullString
+Private Const MSG_ZERO_KEYS As String = "Zero keys found!"
 
 Public Sub Initialize(ByVal ComboBox As MSForms.ComboBox)
     'ComboBox.Locked = True
@@ -19,8 +20,18 @@ Public Sub Load(ByVal ComboBox As MSForms.ComboBox, ByVal KeyColumnComparer As K
 End Sub
 
 Private Function GetKeyColumnComparerString(ByVal Comparer As KeyColumnComparer) As String
-    GetKeyColumnComparerString = CStr(Comparer.Intersection.Count) & " of " & _
-        CStr(Comparer.LeftOnly.Count + Comparer.Intersection.Count + Comparer.RightOnly.Count) & " matches"
+    Dim Intersection As Long
+    Intersection = Comparer.Intersection.Count
+    
+    Dim Total As Long
+    Total = Comparer.LeftOnly.Count + Comparer.Intersection.Count + Comparer.RightOnly.Count
+    
+    If Total = 0 Then
+        GetKeyColumnComparerString = MSG_ZERO_KEYS
+    Else
+    GetKeyColumnComparerString = Format$(Intersection / Total, "0%") & " (" & CStr(Intersection) & _
+        "/" & CStr(Total) & " keys intersect)"
+    End If
 End Function
 
 

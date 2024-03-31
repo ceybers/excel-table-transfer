@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} TransferDeltasView 
-   Caption         =   "Preview Transfer Changes"
-   ClientHeight    =   9015.001
+   Caption         =   "Table Transfer Tool"
+   ClientHeight    =   5820
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   9360.001
@@ -19,8 +19,8 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IView2
 
-Private Const LBL_HEADING As String = "Table differences compared successfully. The changes can be previewed below before applying them to the Destination table."
-Private Const LBL_NO_DELTAS As String = "Table differences compared successfully." & vbCrLf & "No changes were found."
+Private Const LBL_HEADING As String = "Table differences compared successfully." & vbCrLf & vbCrLf & "The changes can be previewed below before applying them to the Destination table."
+Private Const LBL_NO_DELTAS As String = "Table differences compared successfully." & vbCrLf & vbCrLf & "No changes were found."
 
 Private Type TState
     ViewModel As TransferDeltasViewModel
@@ -57,9 +57,6 @@ Private Sub cmbShowAll_Click()
     DoShowAll
 End Sub
 
-Private Sub lblTargetIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
-    frmAbout.Show
-End Sub
 
 Private Sub lvKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
     DoSelectKey Item.Text
@@ -73,6 +70,10 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
         This.Result = vrCancel
     End If
+End Sub
+
+Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    frmAbout.Show
 End Sub
 
 Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
@@ -90,9 +91,7 @@ Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
 End Function
 
 Private Sub InitializeControls()
-    Set Me.lblTargetIcon.Picture = frmPictures32.lblCompareChanges.Picture
-    
-    Me.lblHeading.Caption = LBL_HEADING
+    Me.lblHeaderText.Caption = LBL_HEADING
     
     TransferDeltasToListView.Initialize Me.lvKeys, tdKeyMember
     TransferDeltasToListView.Initialize Me.lvFields, tdField
@@ -101,17 +100,16 @@ End Sub
 
 Private Sub UpdateButtons()
     Me.cmbShowAll.Enabled = This.ViewModel.CanShowAll
-    Me.cmbNext.Enabled = False ' This is the last step, user will click 'Finish' instead
-    Me.cmbFinish.Enabled = This.ViewModel.CanFinish
+    Me.cmbNext.Enabled = This.ViewModel.CanFinish
     
-    If Me.cmbFinish.Enabled Then
-        Me.cmbFinish.SetFocus
+    If Me.cmbNext.Enabled Then
+        Me.cmbNext.SetFocus
     End If
 End Sub
 
 Private Sub UpdateNoChanges()
     If This.ViewModel.CanFinish = False Then
-        Me.lblHeading.Caption = LBL_NO_DELTAS
+        Me.lblHeaderText.Caption = LBL_NO_DELTAS
     End If
 End Sub
 

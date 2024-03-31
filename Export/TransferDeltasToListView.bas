@@ -13,12 +13,12 @@ Public Enum tdType
     tdDelta
 End Enum
 
-Public Sub Initialize(ByVal ListView As ListView, ByVal Member As tdType)
+Public Sub Initialize(ByVal ListView As MSComctlLib.ListView, ByVal Member As tdType)
     With ListView
         .ListItems.Clear
         .View = lvwReport
         .FullRowSelect = True
-        .Gridlines = True
+        .Gridlines = False
         .LabelEdit = lvwManual
         .BorderStyle = ccNone
         .HideSelection = False
@@ -27,7 +27,7 @@ Public Sub Initialize(ByVal ListView As ListView, ByVal Member As tdType)
     SetColumnHeaders ListView, Member
 End Sub
 
-Private Sub SetColumnHeaders(ByVal ListView As ListView, ByVal Member As tdType)
+Private Sub SetColumnHeaders(ByVal ListView As MSComctlLib.ListView, ByVal Member As tdType)
     With ListView
         .ColumnHeaders.Clear
         .ColumnHeaders.Add Text:="#", Width:=ListView.Width - 16
@@ -41,7 +41,7 @@ Private Sub SetColumnHeaders(ByVal ListView As ListView, ByVal Member As tdType)
     End If
 End Sub
 
-Public Sub Load(ByVal ListView As ListView, ByVal TransferDeltasViewModel As TransferDeltasViewModel, _
+Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal TransferDeltasViewModel As TransferDeltasViewModel, _
     ByVal Member As tdType)
     ListView.ListItems.Clear
     
@@ -58,36 +58,29 @@ Public Sub Load(ByVal ListView As ListView, ByVal TransferDeltasViewModel As Tra
     ElseIf Member = tdKeyMember Then
         AddSelectAll ListView
         For Each Item In TransferDeltasViewModel.Keys
-            AddItem ListView, Item, Member
+            AddItem ListView, Item
         Next Item
         UpdateHeader ListView, Member, (TransferDeltasViewModel.Keys.Count - 1)
     ElseIf Member = tdField Then
         AddSelectAll ListView
         For Each Item In TransferDeltasViewModel.Fields
-            AddItem ListView, Item, Member
+            AddItem ListView, Item
         Next Item
         UpdateHeader ListView, Member, (TransferDeltasViewModel.Fields.Count - 1)
     End If
 End Sub
 
-Private Sub AddItemTransferDelta(ByVal ListView As ListView, ByVal TransferDelta As TransferDelta)
+Private Sub AddItemTransferDelta(ByVal ListView As MSComctlLib.ListView, ByVal TransferDelta As TransferDelta)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Text:=TransferDelta.ValueBefore)
     ListItem.ListSubItems.Add Text:=TransferDelta.ValueAfter
 End Sub
 
-Private Sub AddItem(ByVal ListView As ListView, ByVal Text As String, ByVal Member As tdType)
-    Dim ListItem As ListItem
-    
-    Select Case Member
-        Case tdType.tdKeyMember
-                Set ListItem = ListView.ListItems.Add(Text:=Text)
-        Case tdType.tdField
-                Set ListItem = ListView.ListItems.Add(Text:=Text)
-    End Select
+Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal Text As String)
+    ListView.ListItems.Add Text:=Text
 End Sub
 
-Private Sub UpdateHeader(ByVal ListView As ListView, ByVal Member As tdType, ByVal Count As Long)
+Private Sub UpdateHeader(ByVal ListView As MSComctlLib.ListView, ByVal Member As tdType, ByVal Count As Long)
     Dim HeaderText As String
     
     Select Case Member
@@ -105,7 +98,7 @@ Private Sub UpdateHeader(ByVal ListView As ListView, ByVal Member As tdType, ByV
     End If
 End Sub
 
-Private Sub AddSelectAll(ByVal ListView As ListView)
+Private Sub AddSelectAll(ByVal ListView As MSComctlLib.ListView)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Text:=SELECT_ALL)
     ListItem.ForeColor = SELECT_ALL_COLOR

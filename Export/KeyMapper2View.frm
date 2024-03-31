@@ -90,6 +90,10 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     End If
 End Sub
 
+Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    frmAbout.Show
+End Sub
+
 Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
     Set This.ViewModel = ViewModel
     

@@ -19,7 +19,7 @@ Attribute GetMSOImageList.VB_Description = "Returns a new ImageList object pre-p
         If TypeOf Control Is MSForms.Label Then
             Dim Label As MSForms.Label
             Set Label = Control
-            Result.ListImages.Add Key:=Label.Name, Picture:=Label.Picture
+            Result.ListImages.Add Key:=Control.Name, Picture:=Label.Picture
         End If
     Next Control
     

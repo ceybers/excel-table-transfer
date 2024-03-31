@@ -24,6 +24,6 @@ End Sub
 
 Private Sub UserForm_Activate()
     Me.lblHeader.Caption = "Table Transfer Tool"
-    Me.lblVersion.Caption = "Version 1.8.1-dev"
+    Me.lblVersion.Caption = "Version 1.8.2-dev"
     Me.lblCopyright.Caption = "Copyright © 2024 Craig Eybers" & vbCrLf & "All rights reserved."
 End Sub
