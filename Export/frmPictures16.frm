@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmPictures16
    ClientHeight    =   5790
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   7290
+   ClientWidth     =   9045.001
    OleObjectBlob   =   "frmPictures16.frx":0000
    StartUpPosition =   1  'CenterOwner
 End

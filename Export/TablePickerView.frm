@@ -13,7 +13,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 '@Folder("MVVM2.Views")
 Option Explicit
 Implements IView2
@@ -106,5 +105,3 @@ Private Sub UpdateButtons()
         Me.cboNext.SetFocus
     End If
 End Sub
-
-

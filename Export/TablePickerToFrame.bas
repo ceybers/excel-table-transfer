@@ -7,44 +7,44 @@ Private Const TAG_TABLE As String = "TABLE"
 Private Const NO_TABLE_SELECTED As String = "(No table selected)"
 
 Public Sub UpdateControls(ByVal ViewModel As TablePickerViewModel, ByVal Frame As Frame, ByVal Direction As TransferDirection)
-    Dim Textbox As MSForms.Textbox
+    Dim TextBox As MSForms.TextBox
     
-    If TryGetControlByTag(Frame.Controls, TAG_WORKBOOK, Textbox) Then
+    If TryGetControlByTag(Frame.Controls, TAG_WORKBOOK, TextBox) Then
         If Direction = tdSource Then
             If Not ViewModel.SourceTable Is Nothing Then
-                Textbox.Text = ViewModel.SourceTable.Parent.Parent.Name
-                Textbox.Enabled = True
+                TextBox.Text = ViewModel.SourceTable.Parent.Parent.Name
+                TextBox.Enabled = True
             Else
-                Textbox.Text = NO_TABLE_SELECTED
-                Textbox.Enabled = False
+                TextBox.Text = NO_TABLE_SELECTED
+                TextBox.Enabled = False
             End If
         Else
             If Not ViewModel.DestinationTable Is Nothing Then
-                Textbox.Text = ViewModel.DestinationTable.Parent.Parent.Name
-                Textbox.Enabled = True
+                TextBox.Text = ViewModel.DestinationTable.Parent.Parent.Name
+                TextBox.Enabled = True
             Else
-                Textbox.Text = NO_TABLE_SELECTED
-                Textbox.Enabled = False
+                TextBox.Text = NO_TABLE_SELECTED
+                TextBox.Enabled = False
             End If
         End If
     End If
     
-    If TryGetControlByTag(Frame.Controls, TAG_TABLE, Textbox) Then
+    If TryGetControlByTag(Frame.Controls, TAG_TABLE, TextBox) Then
         If Direction = tdSource Then
             If Not ViewModel.SourceTable Is Nothing Then
-                Textbox.Text = ViewModel.SourceTable.Name
-                Textbox.Enabled = True
+                TextBox.Text = ViewModel.SourceTable.Name
+                TextBox.Enabled = True
             Else
-                Textbox.Text = NO_TABLE_SELECTED
-                Textbox.Enabled = False
+                TextBox.Text = NO_TABLE_SELECTED
+                TextBox.Enabled = False
             End If
         Else
             If Not ViewModel.DestinationTable Is Nothing Then
-                Textbox.Text = ViewModel.DestinationTable.Name
-                Textbox.Enabled = True
+                TextBox.Text = ViewModel.DestinationTable.Name
+                TextBox.Enabled = True
             Else
-                Textbox.Text = NO_TABLE_SELECTED
-                Textbox.Enabled = False
+                TextBox.Text = NO_TABLE_SELECTED
+                TextBox.Enabled = False
             End If
         End If
     End If

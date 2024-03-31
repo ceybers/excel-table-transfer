@@ -117,26 +117,29 @@ Private Function TryTablePicker() As ViewResult
 End Function
 
 Private Function TryKeyMapper() As ViewResult
-    Dim ViewModel As KeyMapperViewModel
-    Set ViewModel = New KeyMapperViewModel
-    ViewModel.LoadFromTransferInstruction2 This.Transfer
+    Dim ViewModel As KeyMapper2ViewModel
+    Set ViewModel = New KeyMapper2ViewModel
+    ViewModel.Load This.Transfer.Source.Table, This.Transfer.Destination.Table
     
     Dim ListObjectSettings As ISettings
     Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Source.Table)
-    This.Transfer.Source.KeyColumnName = ListObjectSettings.GetSetting(LAST_KEY_USED)
+    ViewModel.Source.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
     
     Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Destination.Table)
-    This.Transfer.Destination.KeyColumnName = ListObjectSettings.GetSetting(LAST_KEY_USED)
+    ViewModel.Destination.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
+    
+    ViewModel.TryEvaluateMatch
     
     Dim View As IView2
-    Set View = New KeyMapperView
+    Set View = New KeyMapper2View
     
     Dim Result As ViewResult
     Result = View.ShowDialog(ViewModel)
     
     Select Case Result
         Case vrNext
-            ViewModel.SaveToTransferInstruction This.Transfer
+            This.Transfer.Source.KeyColumnName = ViewModel.Source.Selected.Name
+            This.Transfer.Destination.KeyColumnName = ViewModel.Destination.Selected.Name
     End Select
     
     TryKeyMapper = Result

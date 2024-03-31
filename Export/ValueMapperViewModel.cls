@@ -175,11 +175,11 @@ Public Sub UpdateLHStoListView(ByVal lv As ListView)
     Next li
 End Sub
 
-Private Function IsMappedLHS(ByVal columnName As String) As Boolean
+Private Function IsMappedLHS(ByVal ColumnName As String) As Boolean
     Err.Raise 5, "ValueMapperViewModel", "IsMappedLHS failed"
     Dim ColPair As ColumnPair
     For Each ColPair In This.ValuePairs
-        If ColPair.LHS.Name = columnName Then
+        If ColPair.LHS.Name = ColumnName Then
             IsMappedLHS = True
             Exit Function
         End If
@@ -242,18 +242,18 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
     Next li
 End Sub
 
-Private Function GetMappedTo(ByVal columnName As String) As String
+Private Function GetMappedTo(ByVal ColumnName As String) As String
     Dim ColPair As ColumnPair
     For Each ColPair In This.ValuePairs
-        If ColPair.RHS.Name = columnName Then
+        If ColPair.RHS.Name = ColumnName Then
             GetMappedTo = ColPair.LHS.Name
             Exit Function
         End If
     Next ColPair
 End Function
 
-Private Function IsColumnMapped(ByVal columnName As String) As Boolean
-    IsColumnMapped = Not GetMappedTo(columnName) = vbNullString
+Private Function IsColumnMapped(ByVal ColumnName As String) As Boolean
+    IsColumnMapped = Not GetMappedTo(ColumnName) = vbNullString
 End Function
 
 Public Sub InitializeListView(ByVal lv As MSComctlLib.ListView, Optional ByVal RHS As Boolean = False)
@@ -324,10 +324,10 @@ Private Function DoesMappingExist(ByVal ColPair As ColumnPair) As Boolean
     Next RHS
 End Function
 
-Private Function IsMappingSelected(ByVal columnName As String) As Boolean
+Private Function IsMappingSelected(ByVal ColumnName As String) As Boolean
     Dim ColPair As ColumnPair
     For Each ColPair In This.CheckedValuePairs   ' TODO DRY
-        If ColPair.RHS.Name = columnName Then
+        If ColPair.RHS.Name = ColumnName Then
             IsMappingSelected = True
             Exit Function
         End If
@@ -384,10 +384,10 @@ Public Sub TrySelectRHS(ByVal Item As MSComctlLib.ListItem)
 End Sub
 
 ' TODO Helper func
-Private Function TryGetListColumnByName(ByVal lo As ListObject, ByVal columnName As String, ByRef lc As ListColumn) As Boolean
+Private Function TryGetListColumnByName(ByVal lo As ListObject, ByVal ColumnName As String, ByRef lc As ListColumn) As Boolean
     Dim curCol As ListColumn
     For Each curCol In lo.ListColumns
-        If curCol.Name = columnName Then
+        If curCol.Name = ColumnName Then
             Set lc = curCol
             TryGetListColumnByName = True
             Exit Function
