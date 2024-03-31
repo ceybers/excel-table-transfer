@@ -57,11 +57,25 @@ Public Sub TryEvaluateMatch()
 End Sub
 
 Public Sub ShowMatchDetails()
-    MsgBox "NYI"
+    Dim View As IView
+    Set View = New MatchQualityView
+    View.ShowDialog Me
+    Set View = Nothing
 End Sub
 
 Public Sub ShowQuality(ByVal Direction As TransferDirection)
-    MsgBox "NYI"
+    Dim ViewModel As KeyQualityViewModel
+    Set ViewModel = New KeyQualityViewModel
+    
+    If Direction = ttSource Then
+        ViewModel.Load This.Source.Selected
+    Else
+        ViewModel.Load This.Destination.Selected
+    End If
+    
+    Dim View As IView
+    Set View = New KeyQualityView
+    View.ShowDialog ViewModel
 End Sub
 
 Public Function CanNext() As Boolean

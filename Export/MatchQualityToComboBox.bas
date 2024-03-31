@@ -26,8 +26,8 @@ Private Function GetKeyColumnComparerString(ByVal Comparer As KeyColumnComparer)
     If Total = 0 Then
         GetKeyColumnComparerString = MSG_ZERO_KEYS
     Else
-    GetKeyColumnComparerString = Format$(Intersection / Total, "0%") & " (" & CStr(Intersection) & _
-        "/" & CStr(Total) & " keys intersect)"
+        GetKeyColumnComparerString = Format$(Intersection / Total, "0%") & " (" & CStr(Intersection) & _
+            "/" & CStr(Total) & " keys intersect)"
     End If
 End Function
 
