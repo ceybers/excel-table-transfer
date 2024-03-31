@@ -212,7 +212,7 @@ Private Sub TryAddNode(ByVal tv As MSComctlLib.TreeView, ByVal obj As Object)
         If nd.Key = Key Then Exit Sub
     Next nd
     
-    tv.Nodes.Add relative:=Parent, Relationship:=tvwChild, Key:=Key, Text:=Text, image:=image
+    tv.Nodes.Add Relative:=Parent, relationship:=tvwChild, Key:=Key, Text:=Text, image:=image
     
     If image = "activeLo" Then
         tv.Nodes.ControlDefault(Key).ForeColor = RGB(192, 192, 192)

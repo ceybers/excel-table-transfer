@@ -13,6 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '@IgnoreModule HungarianNotation, SetAssignmentWithIncompatibleObjectType
 '@Folder "MVVM2.Views"
 Option Explicit
@@ -22,7 +23,7 @@ Private Sub cmbClose_Click()
 End Sub
 
 Private Sub UserForm_Activate()
-    Me.lblHeader.caption = "Table Transfer Tool"
-    Me.lblVersion.caption = "Version 1.8.1-dev"
-    Me.lblCopyright.caption = "Copyright © 2024 Craig Eybers" & vbCrLf & "All rights reserved."
+    Me.lblHeader.Caption = "Table Transfer Tool"
+    Me.lblVersion.Caption = "Version 1.8.1-dev"
+    Me.lblCopyright.Caption = "Copyright © 2024 Craig Eybers" & vbCrLf & "All rights reserved."
 End Sub

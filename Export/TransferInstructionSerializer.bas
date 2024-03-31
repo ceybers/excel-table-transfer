@@ -1,5 +1,5 @@
 Attribute VB_Name = "TransferInstructionSerializer"
-'@Folder("Model2.TransferInstruction2")
+'@Folder "Model2.TransferInstruction2"
 Option Explicit
 
 Private Const ASC_UNIT_SEPARATOR As Long = 134 '31

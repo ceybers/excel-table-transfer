@@ -13,6 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '@IgnoreModule HungarianNotation
 '@Folder "MVVM2.Views"
 Option Explicit
@@ -91,7 +92,7 @@ End Function
 Private Sub InitializeControls()
     Set Me.lblTargetIcon.Picture = frmPictures32.lblCompareChanges.Picture
     
-    Me.lblHeading.caption = LBL_HEADING
+    Me.lblHeading.Caption = LBL_HEADING
     
     TransferDeltasToListView.Initialize Me.lvKeys, tdKeyMember
     TransferDeltasToListView.Initialize Me.lvFields, tdField
@@ -110,7 +111,7 @@ End Sub
 
 Private Sub UpdateNoChanges()
     If This.ViewModel.CanFinish = False Then
-        Me.lblHeading.caption = LBL_NO_DELTAS
+        Me.lblHeading.Caption = LBL_NO_DELTAS
     End If
 End Sub
 

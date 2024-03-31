@@ -17,6 +17,10 @@ Public Event CollectionChangedRHS()
 Public Event MappingChanged()
 Public Event SelectionChanged()
 
+Private Const MSO_KEY As String = "lblKey"
+Private Const MSO_LINK As String = "lblLink"
+Private Const MSO_FORMULA As String = "lblFormula"
+
 Private Const NOT_MAPPED As String = "(Not mapped)"
 Private Const KEY_COLUMN As String = "(Key column)"
 
@@ -161,11 +165,11 @@ Public Sub UpdateLHStoListView(ByVal lv As ListView)
     For Each li In lv.ListItems
         If TryGetListColumnByName(This.LHS, li.Key, lc) Then
             If lc Is This.KeyColumnLHS Then
-                li.SmallIcon = "Key"
+                li.SmallIcon = MSO_KEY
             ElseIf This.ValuePairs.GetPair(LHS:=lc) Is Nothing Then
                 li.SmallIcon = Empty
             Else
-                li.SmallIcon = "Link"
+                li.SmallIcon = MSO_LINK
             End If
         End If
     Next li
@@ -207,7 +211,7 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
     For Each li In lv.ListItems
         If TryGetListColumnByName(This.RHS, li.Key, lc) Then
             If lc Is This.KeyColumnRHS Then
-                li.SmallIcon = "Key"
+                li.SmallIcon = MSO_KEY
                 With li.ListSubItems.Item(1)
                     .Text = KEY_COLUMN
                     .ForeColor = RGB(212, 175, 55)
@@ -215,7 +219,7 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
             ElseIf This.ValuePairs.IsMappedRHS(lc) Then
                 Set mappedTo = This.ValuePairs.GetPair(RHS:=lc)
                 'li.SmallIcon = "Tick"
-                li.SmallIcon = "Link"
+                li.SmallIcon = MSO_LINK
                 With li.ListSubItems.Item(1)
                     .Text = mappedTo.LHS.Name
                     .ForeColor = RGB(0, 0, 0)
@@ -232,7 +236,7 @@ Public Sub UpdateRHStoListView(ByVal lv As ListView)
             li.Checked = (This.CheckedValuePairs.IsMappedRHS(lc))
             
             If ListColumnHasArray(lc) Then
-                li.SmallIcon = "Fx"
+                li.SmallIcon = MSO_FORMULA
             End If
         End If
     Next li

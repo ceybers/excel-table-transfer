@@ -56,6 +56,7 @@ Public Function GetSortedIndexedKeyColumn(ByVal KeyColumn As ListColumn) As Vari
     ' Store the row index (relative to .Value2 variant) in (i, 2)
     Dim i As Long
     For i = LBound(ValueVariant) To UBound(ValueVariant)
+        ValueVariant(i, 1) = CStr(ValueVariant(i, 1)) ' Cast errors to strings
         ValueVariant(i, 2) = i
     Next i
     

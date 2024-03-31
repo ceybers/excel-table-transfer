@@ -13,6 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '@IgnoreModule HungarianNotation
 '@Folder "MVVM.Views"
 Option Explicit
@@ -21,6 +22,8 @@ Implements IView2
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents vm As ValueMapperViewModel
 Attribute vm.VB_VarHelpID = -1
+
+Private Const MSO_CLEAR_SEARCH As String = "lblRemove"
 Private Const ICON_SIZE As Long = 16
 
 Private Type TFrmKeyMapper2View
@@ -179,8 +182,8 @@ Private Sub InitializeControls()
     Set Me.lvRHS.SmallIcons = msoImageList
     
     ' TODO These look really bad. IPictDisp issues on specifically Button controls vs being okay on Labels?
-    Me.cmbClearSearchLHS.Picture = msoImageList.ListImages.Item("Cross").Picture
-    Me.cmbClearSearchRHS.Picture = msoImageList.ListImages.Item("Cross").Picture
+    Me.cmbClearSearchLHS.Picture = msoImageList.ListImages.Item(MSO_CLEAR_SEARCH).Picture
+    Me.cmbClearSearchRHS.Picture = msoImageList.ListImages.Item(MSO_CLEAR_SEARCH).Picture
 End Sub
 
 Public Sub LoadFromVM()

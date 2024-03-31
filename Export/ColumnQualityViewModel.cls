@@ -11,6 +11,11 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IViewModel
 
+Private Const MSO_PASS As String = "lblComplete"
+Private Const MSO_WARNING As String = "lblWarning"
+Private Const MSO_ERROR As String = "lblError"
+Private Const MSO_TOTAL As String = "lblAutoSum"
+
 Private Type TClsColumnQualityViewModel
     ListColumn As ListColumn
     Results As KeyColumn
@@ -66,23 +71,23 @@ Public Sub UpdateListView(ByVal lv As ListView)
     End With
 End Sub
 
-Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal Value As Long, ByVal Target As Long)
+Private Sub AddListViewItem(ByVal lv As ListView, ByVal Caption As String, ByVal Value As Long, ByVal Target As Long)
     Dim icon As String
     
     If Value = Target Then
-        icon = "Tick"
+        icon = MSO_PASS
     ElseIf Value < Target And Target > 0 Then
-        icon = "TraceError"
+        icon = MSO_WARNING
     Else
-        icon = "Cross"
+        icon = MSO_ERROR
     End If
     
     If Target = -1 Then
-        icon = "AutoSum"
+        icon = MSO_TOTAL
     End If
     
-    With lv.ListItems.Add(Text:=caption, icon:=icon, SmallIcon:=icon)
-        .ListSubItems.Add Text:=Value
+    With lv.ListItems.Add(Text:=Caption, icon:=icon, SmallIcon:=icon)
+       .ListSubItems.Add Text:=Value
     End With
 End Sub
 
@@ -116,7 +121,7 @@ Private Sub SetListViewImageList(ByVal lv As ListView)
     'If lv.Icons Is Nothing Then
     'If True Then
         'Set il = GetMSOImageList
-        Set lv.Icons = GetMSOImageList(32)
+        Set lv.Icons = GetMSOImageList(16) 'GetMSOImageList(32)
         Set lv.SmallIcons = GetMSOImageList(16)
     'End If
 End Sub

@@ -40,7 +40,9 @@ Private Sub GenerateRootNode()
         .NodeType = ttApplication
         .Key = GetKey
     End With
+    
     This.Nodes.Add Item:=Node, Key:=Node.Key
+    
     This.RootNodeKey = Node.Key
 End Sub
 
@@ -48,17 +50,27 @@ Private Sub GenerateTableNodes()
     Dim ListObject As ListObject
     For Each ListObject In This.AllTables
         Dim Node As AvailableTableNode
-        Set Node = New AvailableTableNode
-        With Node
-            .Caption = ListObject.Name & " (" & ListObject.Parent.Parent.Name & ")"
-            .NodeType = ttListObject
-            .Key = GetKey
-            .ParentKey = This.RootNodeKey
-            Set .Object = ListObject
-        End With
+        Set Node = ListObjectToAvailableTableNode(ListObject, This.RootNodeKey)
+        
         This.Nodes.Add Item:=Node, Key:=Node.Key
     Next ListObject
 End Sub
+
+Private Function ListObjectToAvailableTableNode(ByVal ListObject As ListObject, ByVal RootNodeKey As String) As AvailableTableNode
+    Dim Result As AvailableTableNode
+    Set Result = New AvailableTableNode
+    With Result
+        .Caption = ListObject.Name & " (" & ListObject.Parent.Parent.Name & ")"
+        .NodeType = ttListObject
+        .Key = GetKey
+        .ParentKey = RootNodeKey
+        .IsHidden = Not (ListObject.Parent.Visible = xlSheetVisible)
+        .IsProtected = ListObject.Parent.ProtectContents
+        Set .Object = ListObject
+    End With
+    
+    Set ListObjectToAvailableTableNode = Result
+End Function
 
 Private Function GetKey(Optional ByVal Reset As Boolean) As String
     Static LastKey As Long

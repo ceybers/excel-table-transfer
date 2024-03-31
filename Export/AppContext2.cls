@@ -34,25 +34,17 @@ RewindReloadRecent:
         Case vrNext
             GoTo RewindValueMapper
     End Select
-    
-RewindSourceOrDestination:
-    Select Case TrySourceOrDestination
-        Case vrCancel
-            Exit Sub
-    End Select
 
-RewindSelectTable:
-    Select Case TrySelectTable
+RewindTablePicker:
+    Select Case TryTablePicker
         Case vrCancel
             Exit Sub
     End Select
     
 RewindKeyMapper:
     Select Case TryKeyMapper
-        'Case vrStart
-        '    GoTo RewindSourceOrDestination
         Case vrBack
-            GoTo RewindSourceOrDestination
+            GoTo RewindTablePicker
         Case vrCancel
             Exit Sub
     End Select
@@ -101,70 +93,27 @@ Private Function TryReloadRecent() As ViewResult
     Next RecentTransfer
 End Function
 
-Private Function TrySourceOrDestination() As ViewResult
-    Dim ViewModel As SourceOrDestinationViewModel
-    Set ViewModel = New SourceOrDestinationViewModel
+Private Function TryTablePicker() As ViewResult
+    Dim ViewModel As TablePickerViewModel
+    Set ViewModel = New TablePickerViewModel
+    ViewModel.Load
+    
+    Set ViewModel.SourceTable = This.Transfer.Source.Table
+    Set ViewModel.DestinationTable = This.Transfer.Destination.Table
     
     Dim View As IView2
-    Set View = New SourceOrDestinationView
-    
-    Dim Result As ViewResult
-    
-    If ViewModel.CanSelect = False Then
-        MsgBox MSG_NOT_ENOUGH_TABLES, vbExclamation + vbOKOnly, MSG_CAPTION
-        TrySourceOrDestination = vrCancel
-        Exit Function
-    End If
-    
-    If Selection.ListObject Is Nothing Then
-        TrySourceOrDestination = vrNext
-        Exit Function
-    End If
-        
-    Result = View.ShowDialog(ViewModel)
-    
-    Select Case Result
-        Case vrNext
-            If ViewModel.IsSource Then
-                Set This.Transfer.Source.Table = Selection.ListObject
-                Set This.Transfer.Destination.Table = Nothing
-            ElseIf ViewModel.IsDestination Then
-                Set This.Transfer.Source.Table = Nothing
-                Set This.Transfer.Destination.Table = Selection.ListObject
-            End If
-    End Select
-    
-    TrySourceOrDestination = Result
-End Function
-
-Private Function TrySelectTable() As ViewResult
-    Dim ViewModel As SelectTableViewModel
-    Set ViewModel = New SelectTableViewModel
-    
-    If Not This.Transfer.Source.Table Is Nothing Then
-        Set ViewModel.ActiveTable = This.Transfer.Source.Table
-    ElseIf Not This.Transfer.Destination.Table Is Nothing Then
-        Set ViewModel.ActiveTable = This.Transfer.Destination.Table
-    End If
-    
-    Dim View As IView2
-    Set View = New SelectTableView
+    Set View = New TablePickerView
     
     Dim Result As ViewResult
     Result = View.ShowDialog(ViewModel)
   
     Select Case Result
         Case vrNext
-            If This.Transfer.Source.Table Is Nothing Then
-                Set This.Transfer.Source.Table = ViewModel.SelectedTable
-            ElseIf This.Transfer.Destination.Table Is Nothing Then
-                Set This.Transfer.Destination.Table = ViewModel.SelectedTable
-            Else
-                Err.Raise vbObjectError + 14, "TrySelectTable", "Failed to set selected table."
-            End If
+            Set This.Transfer.Source.Table = ViewModel.SourceTable
+            Set This.Transfer.Destination.Table = ViewModel.DestinationTable
     End Select
     
-    TrySelectTable = Result
+    TryTablePicker = Result
 End Function
 
 Private Function TryKeyMapper() As ViewResult

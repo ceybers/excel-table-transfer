@@ -15,4 +15,6 @@ Public Key As String
 Public ParentKey As String
 Public Caption As String
 Public IsSelected As Boolean
+Public IsHidden As Boolean
+Public IsProtected As Boolean
 Public Object As Object

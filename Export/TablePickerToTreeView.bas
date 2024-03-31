@@ -2,9 +2,14 @@ Attribute VB_Name = "TablePickerToTreeView"
 '@Folder("MVVM2.ValueConverters")
 Option Explicit
 
-Private Const MSO_APP As String = "Excel"
-Private Const MSO_LO As String = "lo"
-Private Const MSO_LO_SEL As String = "activeLo"
+Private Const MSO_APP As String = "lblXlApp"
+Private Const MSO_LO As String = "lblXlTable"
+Private Const MSO_LO_SEL As String = "lblXlTableTick"
+Private Const MSO_LO_HID As String = "lblXlSheetHidden"
+Private Const MSO_LO_PRT As String = "lblXlSheetProtected"
+Private Const MSO_LO_404 As String = "lblNotFound"
+Private Const NO_TABLES_FOUND As String = "(No tables found)"
+Private Const NOT_FOUND_COLOR As Long = 8421504 ' RGB(128, 128, 128)
 
 Public Sub Initialize(ByVal TreeView As TreeView)
     With TreeView
@@ -16,15 +21,15 @@ Public Sub Initialize(ByVal TreeView As TreeView)
 End Sub
 
 Public Sub Load(ByVal TreeView As TreeView, ByVal ViewModel As TablePickerViewModel)
+    Debug.Assert Not ViewModel Is Nothing
+    
+    ' Preserve current selected node by its key
     Dim SelectedKey As String
     If Not TreeView.SelectedItem Is Nothing Then
         SelectedKey = TreeView.SelectedItem.Key
     End If
     
     TreeView.Nodes.Clear
-    
-    'If TransferDeltasViewModel Is Nothing Then Exit Sub
-    Debug.Assert Not ViewModel Is Nothing
     
     Dim NodeCache As Object
     Set NodeCache = CreateObject("Scripting.Dictionary")
@@ -33,7 +38,8 @@ Public Sub Load(ByVal TreeView As TreeView, ByVal ViewModel As TablePickerViewMo
     For Each Node In ViewModel.Items
         AddNode TreeView, Node, NodeCache
     Next Node
-    
+
+    ' Restore previously selected node by its key
     If SelectedKey <> vbNullString Then
         If NodeCache.Exists(SelectedKey) Then
             Dim TreeViewNode As Node
@@ -41,6 +47,8 @@ Public Sub Load(ByVal TreeView As TreeView, ByVal ViewModel As TablePickerViewMo
             TreeViewNode.Selected = True
         End If
     End If
+    
+    CheckNoTablesFound TreeView
 End Sub
 
 Private Sub AddNode(ByVal TreeView As TreeView, ByVal AvailableTable As AvailableTableNode, ByVal NodeCache As Object)
@@ -48,15 +56,44 @@ Private Sub AddNode(ByVal TreeView As TreeView, ByVal AvailableTable As Availabl
     If AvailableTable.NodeType = ttApplication Then
         Set Node = TreeView.Nodes.Add(Key:=AvailableTable.Key, Text:=AvailableTable.Caption)
         Node.Expanded = True
-        Node.image = MSO_APP
     Else
         Set Node = TreeView.Nodes.Add( _
-            Relative:=NodeCache.Item(AvailableTable.ParentKey), Relationship:=tvwChild, _
+            Relative:=NodeCache.Item(AvailableTable.ParentKey), relationship:=tvwChild, _
             Key:=AvailableTable.Key, Text:=AvailableTable.Caption)
-        Node.image = MSO_LO
-        If AvailableTable.IsSelected Then
-            Node.image = MSO_LO_SEL
-        End If
     End If
+    
+    UpdateNodeIcon AvailableTable, Node
     NodeCache.Add Key:=Node.Key, Item:=Node
+End Sub
+
+Private Sub UpdateNodeIcon(ByVal AvailableTable As AvailableTableNode, ByVal Node As Node)
+    If AvailableTable.NodeType = ttApplication Then
+        Node.image = MSO_APP
+        Exit Sub
+    End If
+    
+    With AvailableTable
+        Select Case True
+            Case .IsSelected
+                Node.image = MSO_LO_SEL
+                Node.Bold = True
+            Case .IsProtected
+                Node.image = MSO_LO_PRT
+            Case .IsHidden
+                Node.image = MSO_LO_HID
+            Case Else
+                Node.image = MSO_LO
+        End Select
+    End With
+End Sub
+
+Private Sub CheckNoTablesFound(ByVal TreeView As TreeView)
+    'NO_TABLES_FOUND
+    If TreeView.Nodes.Count = 1 Then
+        Dim Node As Node
+        Set Node = TreeView.Nodes.Add(Relative:=TreeView.Nodes.Item(1), relationship:=tvwChild, _
+            Key:=vbNullString, Text:=NO_TABLES_FOUND)
+        Node.ForeColor = NOT_FOUND_COLOR
+        Node.image = MSO_LO_404
+    End If
 End Sub

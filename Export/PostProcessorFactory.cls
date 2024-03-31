@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder("Model2.PostProcessors")
+'@Folder "Model2.PostProcessors"
 Option Explicit
 
 Public Property Get HighlightChanges() As ITransferPostProcesser

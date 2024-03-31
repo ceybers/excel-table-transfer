@@ -13,19 +13,17 @@ Implements IViewModel
 
 Private Type TState
     SelectedTable As ListObject
+    
     SourceTable As ListObject
     DestinationTable As ListObject
     SourceNode As AvailableTableNode
     DestinationNode As AvailableTableNode
+    
     BaseItems As AvailableTables
     Items As Collection
 End Type
 
 Private This As TState
-
-Public Property Get Foobar() As String
-    Foobar = "foobar"
-End Property
 
 Public Property Get SelectedTable() As ListObject
     Set SelectedTable = This.SelectedTable
@@ -41,6 +39,7 @@ End Property
 
 Public Property Set SourceTable(ByVal RHS As ListObject)
     Set This.SourceTable = RHS
+    GetNodeByObject(RHS).IsSelected = True
 End Property
 
 Public Property Get DestinationTable() As ListObject
@@ -49,6 +48,7 @@ End Property
 
 Public Property Set DestinationTable(ByVal RHS As ListObject)
     Set This.DestinationTable = RHS
+    GetNodeByObject(RHS).IsSelected = True
 End Property
 
 Public Property Get Items() As Collection
@@ -60,9 +60,10 @@ Private Function IViewModel_IsValid() As Boolean
 End Function
 
 Public Sub Load()
-    Set This.BaseItems = New AvailableTables
     Set This.Items = New Collection
+    Set This.BaseItems = New AvailableTables
     This.BaseItems.Load
+    
     UpdateNodes
 End Sub
 
@@ -75,45 +76,43 @@ Private Sub UpdateNodes()
     Next Node
 End Sub
 
-Public Function TryClick(ByVal Key As String) As Boolean
+Public Function TrySelect(ByVal Key As String) As Boolean
     Set This.SelectedTable = Nothing
     Dim Node As AvailableTableNode
     For Each Node In This.Items
         If Node.Key = Key Then
             If Node.NodeType = ttListObject Then
                 Set This.SelectedTable = Node.Object
-                TryClick = True
+                TrySelect = True
                 Exit Function
             End If
         End If
     Next Node
 End Function
 
-Public Function CanSelect() As Boolean
-    CanSelect = Not This.SelectedTable Is Nothing
+Public Function CanPickSelected() As Boolean
+    CanPickSelected = Not This.SelectedTable Is Nothing
 End Function
 
 Public Function CanNext() As Boolean
     If This.SourceTable Is Nothing Then Exit Function
     If This.DestinationTable Is Nothing Then Exit Function
+    If This.SourceTable Is This.DestinationTable Then Exit Function
+    
     CanNext = True
 End Function
 
-Public Sub DoSelect(ByVal Direction As TransferDirection)
+Public Sub PickSelectedTable(ByVal Direction As TransferDirection)
     If Direction = tdSource Then
         If Not This.SourceNode Is Nothing Then
             This.SourceNode.IsSelected = False
         End If
-        Set This.SourceTable = This.SelectedTable
-        Set This.SourceNode = GetNodeByObject(This.SelectedTable)
-        This.SourceNode.IsSelected = True
+        Set SourceTable = This.SelectedTable
     ElseIf Direction = tdDestination Then
         If Not This.DestinationNode Is Nothing Then
             This.DestinationNode.IsSelected = False
         End If
-        Set This.DestinationTable = This.SelectedTable
-        Set This.DestinationNode = GetNodeByObject(This.SelectedTable)
-        This.DestinationNode.IsSelected = True
+        Set DestinationTable = This.SelectedTable
     End If
 End Sub
 

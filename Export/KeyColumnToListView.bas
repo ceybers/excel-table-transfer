@@ -3,23 +3,14 @@ Attribute VB_Name = "KeyColumnToListView"
 Option Explicit
 
 Public Sub UpdateListView(ByVal lv As ListView)
-    'Debug.Assert IViewModel_IsValid
-    
-    'AddListViewItem lv, "Distinct", This.Results.Count, "Tick"
-    'AddListViewItem lv, "Unique", This.Results.UniqueKeys.Count, "Tick"
-    'AddListViewItem lv, "Non-Text", This.Results.NonTextCount, "Cross"
-    'AddListViewItem lv, "Errors", This.Results.ErrorCount, "TraceError"
-    'AddListViewItem lv, "Blanks", This.Results.BlankCount, "Cross"
-    'AddListViewItem lv, "Count", This.Results.Range.Cells.Count, "AutoSum"
-    
     With lv.ListItems.Item(lv.ListItems.Count)
         .Bold = True
         .ListSubItems.Item(1).Bold = True
     End With
 End Sub
 
-Private Sub AddListViewItem(ByVal lv As ListView, ByVal caption As String, ByVal Value As Long, ByVal icon As String)
-    With lv.ListItems.Add(Text:=caption, icon:=icon, SmallIcon:=icon)
+Private Sub AddListViewItem(ByVal lv As ListView, ByVal Caption As String, ByVal Value As Long, ByVal icon As String)
+    With lv.ListItems.Add(Text:=Caption, icon:=icon, SmallIcon:=icon)
         .ListSubItems.Add Text:=Value
     End With
 End Sub

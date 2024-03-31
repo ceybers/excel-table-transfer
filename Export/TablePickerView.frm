@@ -13,11 +13,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '@Folder("MVVM2.Views")
 Option Explicit
 Implements IView2
 
-Private Const LBL_HEADER_TEXT As String = "Which two tables are you transferring data between?" & vbCrLf & vbCrLf & "Select a table that will be the Source of your data and table that will be the Destination that will be updated."
+Private Const LBL_HEADER_TEXT As String = "Which two tables are you transferring data between?" & vbCrLf & vbCrLf & _
+    "Select a Source table to copy data from, and a Destination table to insert and update data."
 
 Private Type TState
     ViewModel As TablePickerViewModel
@@ -41,24 +43,21 @@ Private Sub cboCancel_Click()
 End Sub
 
 Private Sub cboSelSrc_Click()
-    This.ViewModel.DoSelect tdSource
-    UpdateListViewLHS ' To update TreeView icons
+    This.ViewModel.PickSelectedTable tdSource
+    UpdateListViewLHS
     UpdateListViewRHS
-    UpdateButtons ' Check to Set focus to cboNext
+    UpdateButtons
 End Sub
 
 Private Sub cboSelDst_Click()
-    This.ViewModel.DoSelect tdDestination
-    UpdateListViewLHS ' To update TreeView icons
+    This.ViewModel.PickSelectedTable tdDestination
+    UpdateListViewLHS
     UpdateListViewRHS
-    UpdateButtons ' Check to Set focus to cboNext
+    UpdateButtons
 End Sub
 
 Private Sub tvTables_NodeClick(ByVal Node As MSComctlLib.Node)
-    If This.ViewModel.TryClick(Node.Key) Then
-        'UpdateButtons
-        ' Even if it returns false we need to disable buttons
-    End If
+    This.ViewModel.TrySelect Node.Key
     UpdateButtons
 End Sub
 
@@ -100,10 +99,12 @@ Private Sub UpdateButtons()
     Me.cboNext.Enabled = This.ViewModel.CanNext
     Me.cboCancel.Enabled = True
     
-    Me.cboSelSrc.Enabled = This.ViewModel.CanSelect
-    Me.cboSelDst.Enabled = This.ViewModel.CanSelect
+    Me.cboSelSrc.Enabled = This.ViewModel.CanPickSelected
+    Me.cboSelDst.Enabled = This.ViewModel.CanPickSelected
     
     If This.ViewModel.CanNext Then
         Me.cboNext.SetFocus
     End If
 End Sub
+
+

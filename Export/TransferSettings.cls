@@ -80,3 +80,4 @@ Public Sub SaveMRU()
     This.User.SetCollection MRU_NAME_RECENT_TRANSFERS, This.RecentTransfers.ToCollection
 End Sub
 
+

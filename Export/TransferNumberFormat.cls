@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("Model2.PostProcessors")
+'@Folder "Model2.PostProcessors"
 Option Explicit
 Implements ITransferPostProcesser
 
@@ -23,5 +23,4 @@ Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As Transfer
         DestinationColumn.DataBodyRange.NumberFormat = SourceColumn.DataBodyRange.Cells.Item(1, 1).NumberFormat
     Next i
 End Sub
-
 
