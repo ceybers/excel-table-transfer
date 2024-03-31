@@ -1,7 +1,10 @@
 Attribute VB_Name = "IconConstants"
 '@Folder "MVVM.Model.Constants"
 Option Explicit
+
+Public Const MSO_ACCEPT As String = "icoAccept"
 Public Const MSO_APP As String = "icoXlApp"
+Public Const MSO_AUTO_SUM As String = "icoAutoSum"
 Public Const MSO_EMPTY As String = "icoDataEmpty"
 Public Const MSO_ERRORS As String = "icoError"
 Public Const MSO_FORMULA As String = "icoFormula"
@@ -19,3 +22,4 @@ Public Const MSO_TYPE_CURRENCY As String = "icoDataCurrency"
 Public Const MSO_TYPE_DATE As String = "icoDataDate"
 Public Const MSO_TYPE_LONG As String = "icoDataLong"
 Public Const MSO_TYPE_STRING As String = "icoDataString"
+Public Const MSO_WARNING As String = "icoWarning"
