@@ -2,19 +2,19 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "ValueMapper2ViewModel"
+Attribute VB_Name = "ValueMapperViewModel"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("MVVM2.ViewModels")
+'@Folder "MVVM.ViewModels"
 Option Explicit
 Implements IViewModel
 
 Private Type TState
     Source As ValueColumns
     Destination As ValueColumns
-    Mapped As ColumnPairs2
+    Mapped As ColumnPairs
 End Type
 
 Private This As TState
@@ -27,14 +27,14 @@ Public Property Get Destination() As ValueColumns
     Set Destination = This.Destination
 End Property
 
-Public Property Get Mapped() As ColumnPairs2
+Public Property Get Mapped() As ColumnPairs
     Set Mapped = This.Mapped
 End Property
 
 Private Sub Class_Initialize()
     Set This.Source = New ValueColumns
     Set This.Destination = New ValueColumns
-    Set This.Mapped = New ColumnPairs2
+    Set This.Mapped = New ColumnPairs
 End Sub
 
 Private Function IViewModel_IsValid() As Boolean
@@ -88,13 +88,19 @@ Public Sub DoAutoMap()
     For Each SourceColumn In This.Source.ValueColumns
         Dim DestinationColumn As ValueColumn
         For Each DestinationColumn In This.Destination.ValueColumns
-            If SourceColumn.Name = DestinationColumn.Name And SourceColumn.IsSelectable And DestinationColumn.IsSelectable Then
-                This.Mapped.Add SourceColumn.Name, DestinationColumn.Name
-                SourceColumn.IsMapped = True
-                DestinationColumn.IsMapped = True
-            End If
+            TryAutoMapOne SourceColumn, DestinationColumn
         Next DestinationColumn
     Next SourceColumn
+End Sub
+
+Private Sub TryAutoMapOne(ByVal Source As ValueColumn, ByVal Destination As ValueColumn)
+    If Source.Name <> Destination.Name Then Exit Sub
+    If Source.IsSelectable = False Then Exit Sub
+    If Destination.IsSelectable = False Then Exit Sub
+
+    This.Mapped.Add Source.Name, Destination.Name
+    Source.IsMapped = True
+    Destination.IsMapped = True
 End Sub
 
 Public Function CanRemoveAll() As Boolean

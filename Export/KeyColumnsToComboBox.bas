@@ -1,9 +1,6 @@
 Attribute VB_Name = "KeyColumnsToComboBox"
-'@Folder("MVVM2.ValueConverters")
+'@Folder "MVVM.ValueConverters"
 Option Explicit
-
-Private Const NO_COLUMN_SELECTED As String = "(No column selected)"
-Private Const NO_COLUMN_COLOR As Long = 8421504 ' RGB(128,128,128)
 
 Public Sub Initialize(ByVal ComboBox As MSForms.ComboBox)
     'ComboBox.Enabled = True

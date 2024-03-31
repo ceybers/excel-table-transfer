@@ -1,8 +1,6 @@
-Attribute VB_Name = "ColumnPairs2ToListView"
-'@Folder("MVVM2.ValueConverters")
+Attribute VB_Name = "ColumnPairsToListView"
+'@Folder "MVVM.ValueConverters"
 Option Explicit
-
-Private Const MSO_LINK As String = "lblLink"
 
 Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
     With ListView
@@ -20,24 +18,21 @@ Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
     End With
 End Sub
 
-Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal ColumnPairs As ColumnPairs2)
+Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal ColumnPairs As ColumnPairs)
     Debug.Assert Not ColumnPairs Is Nothing
     
     ListView.ListItems.Clear
     
-    Dim ColumnPair As ColumnPair2
+    Dim ColumnPair As ColumnPair
     For Each ColumnPair In ColumnPairs.Items
         AddItem ListView, ColumnPair
     Next ColumnPair
 End Sub
 
-Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal ColumnPair As ColumnPair2)
+Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal ColumnPair As ColumnPair)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Text:=ColumnPair.Source)
     ListItem.ListSubItems.Add Text:=ColumnPair.Destination
     ListItem.SmallIcon = MSO_LINK
 End Sub
-
-
-
 

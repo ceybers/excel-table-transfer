@@ -15,7 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 '@IgnoreModule HungarianNotation, SetAssignmentWithIncompatibleObjectType
-'@Folder "MVVM2.Views"
+'@Folder "MVVM.Views"
 Option Explicit
 
 Private Sub cmbClose_Click()

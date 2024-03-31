@@ -1,15 +1,6 @@
 Attribute VB_Name = "TablePickerToTreeView"
-'@Folder("MVVM2.ValueConverters")
+'@Folder "MVVM.ValueConverters"
 Option Explicit
-
-Private Const MSO_APP As String = "lblXlApp"
-Private Const MSO_LO As String = "lblXlTable"
-Private Const MSO_LO_SEL As String = "lblXlTableTick"
-Private Const MSO_LO_HID As String = "lblXlSheetHidden"
-Private Const MSO_LO_PRT As String = "lblXlSheetProtected"
-Private Const MSO_LO_404 As String = "lblNotFound"
-Private Const NO_TABLES_FOUND As String = "(No tables found)"
-Private Const NOT_FOUND_COLOR As Long = 8421504 ' RGB(128, 128, 128)
 
 Public Sub Initialize(ByVal TreeView As MSComctlLib.TreeView)
     With TreeView
@@ -97,3 +88,5 @@ Private Sub CheckNoTablesFound(ByVal TreeView As MSComctlLib.TreeView)
         Node.image = MSO_LO_404
     End If
 End Sub
+
+

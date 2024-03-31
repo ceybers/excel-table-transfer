@@ -1,5 +1,5 @@
 Attribute VB_Name = "TransferOptions"
-'@Folder "Model.TransferOptions"
+'@Folder "MVVM.Model.TransferOptions"
 Option Explicit
 
 Public Enum TransferOptionsEnum

@@ -7,10 +7,10 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("Model2.AvailableTables")
+'@Folder "MVVM.Model.AvailableTables"
 Option Explicit
 
-Public NodeType As TransferTreeviewNode
+Public NodeType As TransferNode
 Public Key As String
 Public ParentKey As String
 Public Caption As String

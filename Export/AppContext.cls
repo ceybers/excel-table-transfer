@@ -2,12 +2,12 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "AppContext2"
+Attribute VB_Name = "AppContext"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "MVVM2.AppContext"
+'@Folder "MVVM.AppContext"
 Option Explicit
 
 Private Const LAST_KEY_USED As String = "LastKeyUsed"
@@ -16,14 +16,14 @@ Private Const MSG_CAPTION As String = "Table Transfer Tool"
 Private Const MSG_NOT_ENOUGH_TABLES As String = "Not enough tables available to start a transfer!"
 
 Private Type TState
-    Transfer As TransferInstruction2
+    Transfer As TransferInstruction
     Settings As TransferSettings
 End Type
 Private This As TState
 
 Public Sub Start()
     Set This.Settings = New TransferSettings
-    Set This.Transfer = New TransferInstruction2
+    Set This.Transfer = New TransferInstruction
 
 'DEBUG:
     'Set This.Transfer = GetDebugTransfer
@@ -84,7 +84,7 @@ Private Function TryReloadRecent() As ViewResult
         Dim SerialString As String
         SerialString = Base64toString(RecentTransfer)
         
-        Dim TestTransfer As TransferInstruction2
+        Dim TestTransfer As TransferInstruction
         If TransferInstructionSerializer.TryDeserialize(SerialString, TestTransfer) Then
             Set This.Transfer = TestTransfer
             TryReloadRecent = vrNext
@@ -101,7 +101,7 @@ Private Function TryTablePicker() As ViewResult
     Set ViewModel.SourceTable = This.Transfer.Source.Table
     Set ViewModel.DestinationTable = This.Transfer.Destination.Table
     
-    Dim View As IView2
+    Dim View As IView
     Set View = New TablePickerView
     
     Dim Result As ViewResult
@@ -117,8 +117,8 @@ Private Function TryTablePicker() As ViewResult
 End Function
 
 Private Function TryKeyMapper() As ViewResult
-    Dim ViewModel As KeyMapper2ViewModel
-    Set ViewModel = New KeyMapper2ViewModel
+    Dim ViewModel As KeyMapperViewModel
+    Set ViewModel = New KeyMapperViewModel
     ViewModel.Load This.Transfer.Source.Table, This.Transfer.Destination.Table
     
     Dim ListObjectSettings As ISettings
@@ -130,8 +130,8 @@ Private Function TryKeyMapper() As ViewResult
     
     ViewModel.TryEvaluateMatch
     
-    Dim View As IView2
-    Set View = New KeyMapper2View
+    Dim View As IView
+    Set View = New KeyMapperView
     
     Dim Result As ViewResult
     Result = View.ShowDialog(ViewModel)
@@ -146,8 +146,8 @@ Private Function TryKeyMapper() As ViewResult
 End Function
 
 Private Function TryValueMapper() As ViewResult
-    Dim ViewModel As ValueMapper2ViewModel
-    Set ViewModel = New ValueMapper2ViewModel
+    Dim ViewModel As ValueMapperViewModel
+    Set ViewModel = New ValueMapperViewModel
     With ViewModel.Source
         .AllowEmpty = True
         .AllowError = False
@@ -164,8 +164,8 @@ Private Function TryValueMapper() As ViewResult
         .SetKeyColumn This.Transfer.Destination.KeyColumnName
     End With
     
-    Dim View As IView2
-    Set View = ValueMapper2View
+    Dim View As IView
+    Set View = ValueMapperView
     
     Dim Result As ViewResult
     Result = View.ShowDialog(ViewModel)
@@ -173,8 +173,8 @@ Private Function TryValueMapper() As ViewResult
     Select Case Result
         Case vrNext
             With This.Transfer
-                .Source.Load .Source.Table, .Source.KeyColumnName, ViewModel.Mapped.GetArray(tdSource)
-                .Destination.Load .Destination.Table, .Destination.KeyColumnName, ViewModel.Mapped.GetArray(tdDestination)
+                .Source.Load .Source.Table, .Source.KeyColumnName, ViewModel.Mapped.GetArray(ttSource)
+                .Destination.Load .Destination.Table, .Destination.KeyColumnName, ViewModel.Mapped.GetArray(ttDestination)
             End With
     End Select
     
@@ -184,12 +184,12 @@ End Function
 Private Function TryTransferDeltas() As ViewResult
     This.Transfer.Evaluate
     
-    Dim ViewModel As TransferDeltasViewModel
-    Set ViewModel = New TransferDeltasViewModel
+    Dim ViewModel As DeltasPreviewViewModel
+    Set ViewModel = New DeltasPreviewViewModel
     ViewModel.Load This.Transfer.TransferDeltas
     
-    Dim View As IView2
-    Set View = TransferDeltasView
+    Dim View As IView
+    Set View = DeltasPreviewView
     
     Dim Result As ViewResult
     Result = View.ShowDialog(ViewModel)

@@ -1,9 +1,6 @@
 Attribute VB_Name = "KeyColumnsToListView"
-'@Folder("MVVM2.ValueConverters")
+'@Folder "MVVM.ValueConverters"
 Option Explicit
-
-Private Const MSO_ITEM As String = "lblSelCol"
-Private Const MSO_SELECTED As String = "lblKey2"
 
 Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
     With ListView
@@ -44,5 +41,4 @@ Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal KeyColumn As K
     Set ListItem = ListView.ListItems.Add(Key:=KeyColumn.Name, Text:=KeyColumn.Name)
     ListItem.SmallIcon = MSO_ITEM
 End Sub
-
 

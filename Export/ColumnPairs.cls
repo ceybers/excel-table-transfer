@@ -2,12 +2,12 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "ColumnPairs2"
+Attribute VB_Name = "ColumnPairs"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("Model2.ColumnPair2")
+'@Folder "MVVM.Model.ColumnPair"
 Option Explicit
 
 Private Type TState
@@ -29,7 +29,7 @@ Public Function GetArray(ByVal Direction As TransferDirection) As Variant
     
     Dim i As Long
     For i = 0 To UBound(Result)
-        If Direction = tdSource Then
+        If Direction = ttSource Then
             Result(i) = This.Items.Item(i + 1).Source
         Else
             Result(i) = This.Items.Item(i + 1).Destination
@@ -42,8 +42,8 @@ End Function
 Public Sub Add(ByVal Source As String, ByVal Destination As String)
     If Exists(Source, Destination) Then Exit Sub
     
-    Dim ColumnPair As ColumnPair2
-    Set ColumnPair = New ColumnPair2
+    Dim ColumnPair As ColumnPair
+    Set ColumnPair = New ColumnPair
     With ColumnPair
         .Source = Source
         .Destination = Destination
@@ -55,7 +55,7 @@ End Sub
 Public Sub Remove(ByVal Source As String, ByVal Destination As String)
     Dim i As Long
     For i = 1 To This.Items.Count
-        Dim ColumnPair As ColumnPair2
+        Dim ColumnPair As ColumnPair
         Set ColumnPair = This.Items.Item(i)
         If ColumnPair.Source = Source And ColumnPair.Destination = Destination Then
             This.Items.Remove i
@@ -65,12 +65,12 @@ Public Sub Remove(ByVal Source As String, ByVal Destination As String)
 End Sub
 
 Public Function Exists(ByVal Source As String, ByVal Destination As String) As Boolean
-    Dim ColumnPair As ColumnPair2
+    Dim ColumnPair As ColumnPair
     Exists = TryGetColumnPair(Source, Destination, ColumnPair)
 End Function
 
-Private Function TryGetColumnPair(ByVal Source As String, ByVal Destination As String, ByRef OutColumnPair As ColumnPair2) As Boolean
-    Dim ThisColumnPair As ColumnPair2
+Private Function TryGetColumnPair(ByVal Source As String, ByVal Destination As String, ByRef OutColumnPair As ColumnPair) As Boolean
+    Dim ThisColumnPair As ColumnPair
     For Each ThisColumnPair In This.Items
         If ThisColumnPair.Source = Source And ThisColumnPair.Destination = Destination Then
             Set OutColumnPair = ThisColumnPair

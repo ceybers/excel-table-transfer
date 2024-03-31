@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "Model2.ValueComparer.Factory"
+'@Folder "MVVM.Model.ValueComparer.Factory"
 Option Explicit
 
 ' VarType 8 (and 5 and 11) only

@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Interface
-'@Folder "Model2.Commiter"
+'@Folder "MVVM.Model.Commiters"
 Option Explicit
 
 Public Sub Commit(ByVal Destination As TransferTable, ByVal Deltas As Variant)

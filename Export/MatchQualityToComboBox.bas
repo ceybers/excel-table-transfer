@@ -1,9 +1,6 @@
 Attribute VB_Name = "MatchQualityToComboBox"
-'@Folder("MVVM2.ValueConverters")
+'@Folder "MVVM.ValueConverters"
 Option Explicit
-
-Private Const NO_TWO_COLUMNS_SELECTED As String = vbNullString
-Private Const MSG_ZERO_KEYS As String = "Zero keys found!"
 
 Public Sub Initialize(ByVal ComboBox As MSForms.ComboBox)
     'ComboBox.Locked = True

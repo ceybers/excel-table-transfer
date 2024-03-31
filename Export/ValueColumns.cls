@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Model2.ValueColumns"
+'@Folder "MVVM.Model.ValueColumns"
 Option Explicit
 
 Public AllowFormula As Boolean

@@ -1,27 +1,24 @@
 VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} ValueMapper2View 
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} ValueMapperView 
    Caption         =   "Table Transfer Tool"
    ClientHeight    =   5820
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   9360.001
-   OleObjectBlob   =   "ValueMapper2View.frx":0000
+   OleObjectBlob   =   "ValueMapperView.frx":0000
    StartUpPosition =   2  'CenterScreen
 End
-Attribute VB_Name = "ValueMapper2View"
+Attribute VB_Name = "ValueMapperView"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder("MVVM2.Views")
+'@Folder "MVVM.Views"
 Option Explicit
-Implements IView2
-
-Private Const LBL_HEADER_TEXT As String = "Which columns contain the data you want to transfer?" & vbCrLf & vbCrLf & _
-    "Select pairs of columns from the Source and Destination tables and add them to the Mapped columns."
+Implements IView
 
 Private Type TState
-    ViewModel As ValueMapper2ViewModel
+    ViewModel As ValueMapperViewModel
     Result As ViewResult
 End Type
 Private This As TState
@@ -101,7 +98,7 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
+Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
     Set This.ViewModel = ViewModel
     
     InitializeControls
@@ -112,15 +109,15 @@ Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
     
     Me.Show
     
-    IView2_ShowDialog = This.Result
+    IView_ShowDialog = This.Result
 End Function
 
 Private Sub InitializeControls()
-    Me.lblHeaderText.Caption = LBL_HEADER_TEXT
+    Me.lblHeaderText.Caption = HDR_TXT_VALUE_MAPPER
     
     ValueColumnsToListView.Initialize Me.lvSrcValues
     ValueColumnsToListView.Initialize Me.lvDstValues
-    ColumnPairs2ToListView.Initialize Me.lvMappedValues
+    ColumnPairsToListView.Initialize Me.lvMappedValues
 End Sub
 
 Private Sub UpdateListViewLHS()
@@ -132,7 +129,7 @@ Private Sub UpdateListViewRHS()
 End Sub
 
 Private Sub UpdateMappingControl()
-    ColumnPairs2ToListView.Load Me.lvMappedValues, This.ViewModel.Mapped
+    ColumnPairsToListView.Load Me.lvMappedValues, This.ViewModel.Mapped
 End Sub
 
 Private Sub UpdateButtons()
@@ -145,5 +142,4 @@ Private Sub UpdateButtons()
     Me.cboMapAll.Enabled = True
     Me.cboMapReset.Enabled = This.ViewModel.CanRemoveAll
 End Sub
-
 

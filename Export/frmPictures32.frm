@@ -15,6 +15,6 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 '@IgnoreModule HungarianNotation, EmptyModule
-'@Folder "MVVM2.Resources"
+'@Folder "MVVM.Resources"
 Option Explicit
 

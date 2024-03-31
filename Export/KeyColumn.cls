@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "Model.KeyColumn"
+'@Folder "MVVM.Model.KeyColumn"
 Option Explicit
 
 Private Const ERR_MSG_EMPTY_TABLE As String = "Cannot create clsKeyColumn with a column in an empty table"
@@ -347,4 +347,5 @@ Private Sub SetDistinct()
         This.Distinct.Add Key
     Next Key
 End Sub
+
 

@@ -1,16 +1,12 @@
 Attribute VB_Name = "TablePickerToFrame"
-'@Folder("MVVM2.ValueConverters")
+'@Folder "MVVM.ValueConverters"
 Option Explicit
 
-Private Const TAG_WORKBOOK As String = "WORKBOOK"
-Private Const TAG_TABLE As String = "TABLE"
-Private Const NO_TABLE_SELECTED As String = "(No table selected)"
-
-Public Sub UpdateControls(ByVal ViewModel As TablePickerViewModel, ByVal Frame As Frame, ByVal Direction As TransferDirection)
+Public Sub Load(ByVal ViewModel As TablePickerViewModel, ByVal Frame As Frame, ByVal Direction As TransferDirection)
     Dim TextBox As MSForms.TextBox
     
     If TryGetControlByTag(Frame.Controls, TAG_WORKBOOK, TextBox) Then
-        If Direction = tdSource Then
+        If Direction = ttSource Then
             If Not ViewModel.SourceTable Is Nothing Then
                 TextBox.Text = ViewModel.SourceTable.Parent.Parent.Name
                 TextBox.Enabled = True
@@ -30,7 +26,7 @@ Public Sub UpdateControls(ByVal ViewModel As TablePickerViewModel, ByVal Frame A
     End If
     
     If TryGetControlByTag(Frame.Controls, TAG_TABLE, TextBox) Then
-        If Direction = tdSource Then
+        If Direction = ttSource Then
             If Not ViewModel.SourceTable Is Nothing Then
                 TextBox.Text = ViewModel.SourceTable.Name
                 TextBox.Enabled = True
@@ -50,7 +46,7 @@ Public Sub UpdateControls(ByVal ViewModel As TablePickerViewModel, ByVal Frame A
     End If
 End Sub
 
-Public Function TryGetControlByTag(ByVal Controls As Controls, ByVal Tag As String, ByRef OutControl As Control) As Boolean
+Private Function TryGetControlByTag(ByVal Controls As Controls, ByVal Tag As String, ByRef OutControl As Control) As Boolean
     Dim Control As Control
     For Each Control In Controls
         If Control.Tag = Tag Then

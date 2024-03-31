@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@PredeclaredId
-'@Folder "Model2.PostProcessors"
+'@Folder "MVVM.Model.PostProcessors.Strategies"
 Option Explicit
 Implements ITransferPostProcesser
 
@@ -34,7 +34,7 @@ Public Property Let Color(ByVal vNewValue As Long)
     This.Color = vNewValue
 End Property
 
-Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As TransferInstruction2)
+Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As TransferInstruction)
     Dim Target As Range
     
     Dim DestinationRange As Range

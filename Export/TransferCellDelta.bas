@@ -1,5 +1,5 @@
 Attribute VB_Name = "TransferCellDelta"
-'@Folder "Model2.TransferInstruction2"
+'@Folder "MVVM.Model.TransferInstruction"
 Option Explicit
 
 Public Enum DeltaIndex

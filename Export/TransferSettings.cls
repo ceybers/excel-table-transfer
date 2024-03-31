@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Model2.Settings"
+'@Folder "MVVM.Model.Settings"
 Option Explicit
 
 Private Const SETTINGS_UUID As String = "{e0daadf3-7046-4d50-95c4-5df5ad6b2bba}"

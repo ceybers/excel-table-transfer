@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("MVVM2.ViewModels")
+'@Folder "MVVM.ViewModels"
 Option Explicit
 Implements IViewModel
 
@@ -103,12 +103,12 @@ Public Function CanNext() As Boolean
 End Function
 
 Public Sub PickSelectedTable(ByVal Direction As TransferDirection)
-    If Direction = tdSource Then
+    If Direction = ttSource Then
         If Not This.SourceNode Is Nothing Then
             This.SourceNode.IsSelected = False
         End If
         Set SourceTable = This.SelectedTable
-    ElseIf Direction = tdDestination Then
+    ElseIf Direction = ttDestination Then
         If Not This.DestinationNode Is Nothing Then
             This.DestinationNode.IsSelected = False
         End If

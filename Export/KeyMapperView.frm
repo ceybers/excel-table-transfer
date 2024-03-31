@@ -1,27 +1,24 @@
 VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} KeyMapper2View 
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} KeyMapperView 
    Caption         =   "Table Transfer Tool"
    ClientHeight    =   5820
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   9360.001
-   OleObjectBlob   =   "KeyMapper2View.frx":0000
+   OleObjectBlob   =   "KeyMapperView.frx":0000
    StartUpPosition =   2  'CenterScreen
 End
-Attribute VB_Name = "KeyMapper2View"
+Attribute VB_Name = "KeyMapperView"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder("MVVM2.Views")
+'@Folder "MVVM.Views"
 Option Explicit
-Implements IView2
-
-Private Const LBL_HEADER_TEXT As String = "Which two columns contain the primary key used to join your tables?" & vbCrLf & vbCrLf & _
-    "Select a Key column in both the Source and the Destination table."
+Implements IView
 
 Private Type TState
-    ViewModel As KeyMapper2ViewModel
+    ViewModel As KeyMapperViewModel
     Result As ViewResult
 End Type
 Private This As TState
@@ -68,7 +65,7 @@ End Sub
 Private Sub cmbDstQuality_DropButtonClick()
     Me.cmbDstQuality.Enabled = False
     Me.cmbDstQuality.Enabled = True
-    This.ViewModel.ShowQuality TransferDirection.tdDestination
+    This.ViewModel.ShowQuality TransferDirection.ttDestination
 
 End Sub
 
@@ -81,7 +78,7 @@ End Sub
 Private Sub cmbSrcQuality_DropButtonClick()
     Me.cmbSrcQuality.Enabled = False
     Me.cmbSrcQuality.Enabled = True
-    This.ViewModel.ShowQuality TransferDirection.tdSource
+    This.ViewModel.ShowQuality TransferDirection.ttSource
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -94,7 +91,7 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
+Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
     Set This.ViewModel = ViewModel
     
     InitializeControls
@@ -105,11 +102,11 @@ Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
     
     Me.Show
     
-    IView2_ShowDialog = This.Result
+    IView_ShowDialog = This.Result
 End Function
 
 Private Sub InitializeControls()
-    Me.lblHeaderText.Caption = LBL_HEADER_TEXT
+    Me.lblHeaderText.Caption = HDR_TXT_KEY_MAPPER
     
     KeyColumnsToListView.Initialize Me.lvSrcKeys
     KeyColumnsToListView.Initialize Me.lvDstKeys
@@ -142,3 +139,4 @@ Private Sub UpdateButtons()
         Me.cboNext.SetFocus
     End If
 End Sub
+

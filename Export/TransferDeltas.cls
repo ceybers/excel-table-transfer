@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Model2.TransferDeltas"
+'@Folder "MVVM.Model.TransferDeltas"
 Option Explicit
 
 Private Const DEFAULT_LIMIT As Long = 10

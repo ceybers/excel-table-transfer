@@ -1,19 +1,6 @@
 Attribute VB_Name = "ValueColumnsToListView"
-'@Folder("MVVM2.ValueConverters")
+'@Folder "MVVM.ValueConverters"
 Option Explicit
-
-Private Const MSO_ITEM As String = "lblSelCol"
-Private Const MSO_KEY_COL As String = "lblKey2"
-Private Const MSO_FORMULA As String = "lblFunction"
-Private Const MSO_LINK As String = "lblLink"
-Private Const MSO_ERRORS As String = "lblError"
-
-Private Const MSO_TYPE_STRING As String = "lblDataString"
-Private Const MSO_TYPE_LONG As String = "lblDataLong"
-Private Const MSO_TYPE_BOOLEAN As String = "lblDataBoolean"
-Private Const MSO_TYPE_DATE As String = "lblDataDate"
-Private Const MSO_TYPE_CURRENCY As String = "lblDataCurrency"
-Private Const MSO_EMPTY As String = "lblDataEmpty"
 
 Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
     With ListView

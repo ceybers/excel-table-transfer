@@ -1,29 +1,25 @@
 VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} TransferDeltasView 
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} DeltasPreviewView 
    Caption         =   "Table Transfer Tool"
    ClientHeight    =   5820
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   9360.001
-   OleObjectBlob   =   "TransferDeltasView.frx":0000
+   OleObjectBlob   =   "DeltasPreviewView.frx":0000
    StartUpPosition =   2  'CenterScreen
 End
-Attribute VB_Name = "TransferDeltasView"
+Attribute VB_Name = "DeltasPreviewView"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 '@IgnoreModule HungarianNotation
-'@Folder "MVVM2.Views"
+'@Folder "MVVM.Views"
 Option Explicit
-Implements IView2
-
-Private Const LBL_HEADING As String = "Table differences compared successfully." & vbCrLf & vbCrLf & "The changes can be previewed below before applying them to the Destination table."
-Private Const LBL_NO_DELTAS As String = "Table differences compared successfully." & vbCrLf & vbCrLf & "No changes were found."
+Implements IView
 
 Private Type TState
-    ViewModel As TransferDeltasViewModel
+    ViewModel As DeltasPreviewViewModel
     Result As ViewResult
 End Type
 Private This As TState
@@ -76,7 +72,7 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
+Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
     Set This.ViewModel = ViewModel
     
     InitializeControls
@@ -87,15 +83,15 @@ Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
     
     Me.Show
     
-    IView2_ShowDialog = This.Result 'Not This.IsCancelled
+    IView_ShowDialog = This.Result 'Not This.IsCancelled
 End Function
 
 Private Sub InitializeControls()
-    Me.lblHeaderText.Caption = LBL_HEADING
+    Me.lblHeaderText.Caption = HDR_TXT_DELTAS_PREVIEW
     
-    TransferDeltasToListView.Initialize Me.lvKeys, tdKeyMember
-    TransferDeltasToListView.Initialize Me.lvFields, tdField
-    TransferDeltasToListView.Initialize Me.lvDeltas, tdDelta
+    TransferDeltasToListView.Initialize Me.lvKeys, ttKeyMember
+    TransferDeltasToListView.Initialize Me.lvFields, ttField
+    TransferDeltasToListView.Initialize Me.lvDeltas, ttDelta
 End Sub
 
 Private Sub UpdateButtons()
@@ -109,17 +105,17 @@ End Sub
 
 Private Sub UpdateNoChanges()
     If This.ViewModel.CanFinish = False Then
-        Me.lblHeaderText.Caption = LBL_NO_DELTAS
+        Me.lblHeaderText.Caption = DELTAS_PREVIEW_NO_RESULTS
     End If
 End Sub
 
 Private Sub UpdateListViewLHS()
-    TransferDeltasToListView.Load Me.lvKeys, This.ViewModel, tdKeyMember
-    TransferDeltasToListView.Load Me.lvFields, This.ViewModel, tdField
+    TransferDeltasToListView.Load Me.lvKeys, This.ViewModel, ttKeyMember
+    TransferDeltasToListView.Load Me.lvFields, This.ViewModel, ttField
 End Sub
 
 Private Sub UpdateListViewRHS()
-    TransferDeltasToListView.Load Me.lvDeltas, This.ViewModel, tdDelta
+    TransferDeltasToListView.Load Me.lvDeltas, This.ViewModel, ttDelta
 End Sub
 
 Private Sub DoShowAll()
@@ -131,7 +127,7 @@ Private Sub DoShowAll()
 End Sub
 
 Private Sub DoSelectKey(ByVal Key As String)
-    If Key = TransferDeltasToListView.SELECT_ALL Then
+    If Key = SELECT_ALL Then
         This.ViewModel.TrySelectKey vbNullString
     Else
         This.ViewModel.TrySelectKey Key
@@ -141,7 +137,7 @@ Private Sub DoSelectKey(ByVal Key As String)
 End Sub
 
 Private Sub DoSelectField(ByVal Field As String)
-    If Field = TransferDeltasToListView.SELECT_ALL Then
+    If Field = SELECT_ALL Then
         This.ViewModel.TrySelectField vbNullString
     Else
         This.ViewModel.TrySelectField Field

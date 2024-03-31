@@ -7,10 +7,10 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Model2.PostProcessors"
+'@Folder "MVVM.Model.PostProcessors.Strategies"
 Option Explicit
 Implements ITransferPostProcesser
 
-Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As TransferInstruction2)
+Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As TransferInstruction)
     Highlighting.RemoveExistingHighlighting TransferInstruction.Destination.Table.Parent
 End Sub

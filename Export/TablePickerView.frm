@@ -13,12 +13,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder("MVVM2.Views")
+'@Folder "MVVM.Views"
 Option Explicit
-Implements IView2
-
-Private Const LBL_HEADER_TEXT As String = "Which two tables are you transferring data between?" & vbCrLf & vbCrLf & _
-    "Select a Source table to copy data from, and a Destination table to insert and update data."
+Implements IView
 
 Private Type TState
     ViewModel As TablePickerViewModel
@@ -42,14 +39,14 @@ Private Sub cboCancel_Click()
 End Sub
 
 Private Sub cboSelSrc_Click()
-    This.ViewModel.PickSelectedTable tdSource
+    This.ViewModel.PickSelectedTable ttSource
     UpdateListViewLHS
     UpdateListViewRHS
     UpdateButtons
 End Sub
 
 Private Sub cboSelDst_Click()
-    This.ViewModel.PickSelectedTable tdDestination
+    This.ViewModel.PickSelectedTable ttDestination
     UpdateListViewLHS
     UpdateListViewRHS
     UpdateButtons
@@ -70,7 +67,7 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
+Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
     Set This.ViewModel = ViewModel
     
     InitializeControls
@@ -80,11 +77,11 @@ Private Function IView2_ShowDialog(ByVal ViewModel As Object) As ViewResult
     
     Me.Show
     
-    IView2_ShowDialog = This.Result
+    IView_ShowDialog = This.Result
 End Function
 
 Private Sub InitializeControls()
-    Me.lblHeaderText.Caption = LBL_HEADER_TEXT
+    Me.lblHeaderText.Caption = HDR_TXT_TABLE_PICKER
     TablePickerToTreeView.Initialize Me.tvTables
 End Sub
 
@@ -93,8 +90,8 @@ Private Sub UpdateListViewLHS()
 End Sub
 
 Private Sub UpdateListViewRHS()
-    TablePickerToFrame.UpdateControls This.ViewModel, Me.frmSrc, tdSource
-    TablePickerToFrame.UpdateControls This.ViewModel, Me.frmDst, tdDestination
+    TablePickerToFrame.Load This.ViewModel, Me.frmSrc, ttSource
+    TablePickerToFrame.Load This.ViewModel, Me.frmDst, ttDestination
 End Sub
 
 Private Sub UpdateButtons()
@@ -109,3 +106,4 @@ Private Sub UpdateButtons()
         Me.cboNext.SetFocus
     End If
 End Sub
+

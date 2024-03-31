@@ -2,12 +2,12 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "KeyMapper2ViewModel"
+Attribute VB_Name = "KeyMapperViewModel"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("MVVM2.ViewModels")
+'@Folder "MVVM.ViewModels"
 Option Explicit
 Implements IViewModel
 
