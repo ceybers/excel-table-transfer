@@ -57,8 +57,10 @@ Public Sub TryEvaluateMatch()
 End Sub
 
 Public Sub ShowMatchDetails()
-    MsgBox "NYI"
-
+    Dim View As IView
+    Set View = New MatchQualityView
+    View.ShowDialog Me
+    Set View = Nothing
 End Sub
 
 Public Sub ShowQuality(ByVal Direction As TransferDirection)

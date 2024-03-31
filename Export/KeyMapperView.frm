@@ -54,31 +54,27 @@ Private Sub lvDstKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
     UpdateResults
 End Sub
 
-Private Sub lvSrcKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As stdole.OLE_XPOS_PIXELS, ByVal y As stdole.OLE_YPOS_PIXELS)
+Private Sub lvSrcKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As stdole.OLE_XPOS_PIXELS, ByVal Y As stdole.OLE_YPOS_PIXELS)
     UpdateButtons
 End Sub
 
-Private Sub lvDstKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As stdole.OLE_XPOS_PIXELS, ByVal y As stdole.OLE_YPOS_PIXELS)
+Private Sub lvDstKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As stdole.OLE_XPOS_PIXELS, ByVal Y As stdole.OLE_YPOS_PIXELS)
     UpdateButtons
-End Sub
-
-Private Sub cmbDstQuality_DropButtonClick()
-    Me.cmbDstQuality.Enabled = False
-    Me.cmbDstQuality.Enabled = True
-    This.ViewModel.ShowQuality TransferDirection.ttDestination
-
-End Sub
-
-Private Sub cmbMatchQuality_DropButtonClick()
-    Me.cmbMatchQuality.Enabled = False
-    Me.cmbMatchQuality.Enabled = True
-    This.ViewModel.ShowMatchDetails
 End Sub
 
 Private Sub cmbSrcQuality_DropButtonClick()
-    Me.cmbSrcQuality.Enabled = False
-    Me.cmbSrcQuality.Enabled = True
+    Me.cboCancel.SetFocus
     This.ViewModel.ShowQuality TransferDirection.ttSource
+End Sub
+
+Private Sub cmbDstQuality_DropButtonClick()
+    Me.cboCancel.SetFocus
+    This.ViewModel.ShowQuality TransferDirection.ttDestination
+End Sub
+
+Private Sub cmbMatchQuality_DropButtonClick()
+    Me.cboCancel.SetFocus
+    This.ViewModel.ShowMatchDetails
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
