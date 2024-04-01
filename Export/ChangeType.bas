@@ -56,4 +56,3 @@ Public Function GetVarTypeMod(ByVal Value As Variant) As Long
     
     GetVarTypeMod = Result
 End Function
-

@@ -18,15 +18,15 @@ Private Type TState
 End Type
 Private This As TState
 
+Private Property Get IAppContext_BindingManager() As BindingManager
+    Set IAppContext_BindingManager = This.BindingManager
+End Property
+
 Private Sub Class_Initialize()
     Set This.Settings = New TransferSettings
     Set This.Transfer = New TransferInstruction
     Set This.BindingManager = New BindingManager
 End Sub
-
-Private Property Get IAppContext_BindingManager() As BindingManager
-    Set IAppContext_BindingManager = This.BindingManager
-End Property
 
 Public Sub Start()
     'On Error GoTo ErrorHandler

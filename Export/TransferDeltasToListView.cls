@@ -12,28 +12,18 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IValueConverter
 
-Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object) ' read
-    If TypeName(Source) = "TransferDeltas" Then
+Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object)
+    If TypeOf Source Is TransferDeltas Then
         Load Source, Target
     Else
         LoadCollection Source, Target
     End If
 End Sub
 
-Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding) ' write
-    'Dim ListView As MScomctllib.ListView
-    'Set ListView = PropertyBinding.Target
-    
-    'Dim VM As KeyMapperViewModel
-    'Set VM = PropertyBinding.Source
-    
-    'Dim KeyColumns As KeyColumns
-    'Set KeyColumns = CallByName(VM, PropertyBinding.SourcePropertyPath, VbGet)
-    
-    'KeyColumns.TrySelect ListView.SelectedItem.Key
+Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding)
 End Sub
 
-Public Sub LoadCollection(ByVal Collection As Collection, ByVal ListView As MScomctllib.ListView)
+Private Sub LoadCollection(ByVal Collection As Collection, ByVal ListView As MScomctllib.ListView)
     ListView.ListItems.Clear
     
     AddSelectAll ListView
@@ -44,7 +34,7 @@ Public Sub LoadCollection(ByVal Collection As Collection, ByVal ListView As MSco
     Next Item
 End Sub
 
-Public Sub Load(ByVal Deltas As TransferDeltas, ByVal ListView As MScomctllib.ListView)
+Private Sub Load(ByVal Deltas As TransferDeltas, ByVal ListView As MScomctllib.ListView)
     ListView.ListItems.Clear
     
     Dim SourceNumberFormats As Object
@@ -125,7 +115,6 @@ Public Sub Initialize(ByVal ListView As MScomctllib.ListView, ByVal Member As Tt
     
     SetColumnHeaders ListView, Member
 End Sub
-
 
 Private Sub SetColumnHeaders(ByVal ListView As MScomctllib.ListView, ByVal Member As TtDeltaType)
     With ListView

@@ -12,24 +12,23 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IValueConverter
 
-Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object) ' read
+Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object)
     Load Source, Target
 End Sub
 
-Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding) ' write
-    Dim ListView As MScomctllib.ListView
-    Set ListView = PropertyBinding.Target
-    
-    Dim VM As KeyMapperViewModel
-    Set VM = PropertyBinding.Source
-    
+Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding)
+    SelectItem PropertyBinding.Target, PropertyBinding.Source, PropertyBinding.SourcePropertyPath
+End Sub
+
+Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As ValueMapperViewModel, _
+    ByVal SourcePropertyPath As String)
     Dim KeyColumns As KeyColumns
-    Set KeyColumns = CallByName(VM, PropertyBinding.SourcePropertyPath, VbGet)
+    Set KeyColumns = CallByName(VM, SourcePropertyPath, VbGet)
     
     KeyColumns.TrySelect ListView.SelectedItem.Key
 End Sub
 
-Public Sub Load(ByVal KeyColumns As KeyColumns, ByVal ListView As MScomctllib.ListView)
+Private Sub Load(ByVal KeyColumns As KeyColumns, ByVal ListView As MScomctllib.ListView)
     ListView.ListItems.Clear
     
     Dim KeyColumn As KeyColumn
@@ -56,7 +55,7 @@ Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
-        .ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16
+        .ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16 ' TODO Header consts
         .View = lvwReport
         .FullRowSelect = True
         .Gridlines = False

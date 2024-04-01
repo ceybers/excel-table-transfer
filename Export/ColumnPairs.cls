@@ -21,10 +21,6 @@ Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = This.Items.[_NewEnum]
 End Property
 
-'Public Property Get Items() As Collection
-'    Set Items = This.Items
-'End Property
-
 Public Property Get Count() As Long
     Count = This.Items.Count
 End Property

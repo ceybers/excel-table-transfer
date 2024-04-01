@@ -127,7 +127,7 @@ End Function
 Public Sub BindControls()
     ValueColumnsToListView.Initialize Me.lvSrcValues
     ValueColumnsToListView.Initialize Me.lvDstValues
-    ValueColumnsToListView.Initialize Me.lvMappedValues
+    ColumnPairsToListView.Initialize Me.lvMappedValues
     
     With Context.BindingManager
         .BindPropertyPath ViewModel, "Source", Me.lvSrcValues, "ListItems", TwoWayBinding, ValueColumnsToListView

@@ -13,24 +13,21 @@ Option Explicit
 
 Implements IValueConverter
 
-Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object) ' read
+Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object)
     Load Source, Target
 End Sub
 
-Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding) ' write
-    ' Read-only
+Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding)
 End Sub
 
-Public Sub Load(ByVal KeyColumn As KeyColumn, ByVal ListView As MScomctllib.ListView)
-    Debug.Assert Not KeyColumn Is Nothing
-    
+Private Sub Load(ByVal KeyColumn As KeyColumn, ByVal ListView As MScomctllib.ListView)
     ListView.ListItems.Clear
     
     Dim Total As Long
     Total = KeyColumn.Range.Count
     
     With KeyColumn
-        ' TODO Move to Consts
+        ' TODO Move list item text to Consts
         AddItem ListView, "Distinct", .Keys.Count, IIf(.Keys.Count = Total, MSO_ACCEPT, IIf(.Keys.Count = 0, MSO_ERROR, MSO_WARNING))
         AddItem ListView, "Unique", .UniqueKeys.Count, IIf(.UniqueKeys.Count = Total, MSO_ACCEPT, IIf(.Keys.Count = 0, MSO_ERROR, MSO_WARNING))
         AddItem ListView, "Non-text", .NonTextCount, IIf(.NonTextCount > 0, MSO_WARNING, MSO_ACCEPT)
@@ -56,7 +53,7 @@ Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
-        .ColumnHeaders.Add Text:="Measurement", Width:=64
+        .ColumnHeaders.Add Text:="Measurement", Width:=64 ' TODO Header Consts
         .ColumnHeaders.Add Text:="Value", Width:=48
         .ColumnHeaders.Item(2).Alignment = lvwColumnRight
         .View = lvwReport
@@ -68,4 +65,3 @@ Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
         Set .SmallIcons = StandardImageList.GetMSOImageList(16)
     End With
 End Sub
-

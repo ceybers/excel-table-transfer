@@ -118,6 +118,5 @@ ErrHandlerA:
     IsBindingValid = True
     Exit Function
 ErrHandlerB:
-    'MsgBox "Err " & Err.Number & " - " & Err.Description
     Err.Clear
 End Function

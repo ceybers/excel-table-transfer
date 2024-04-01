@@ -13,26 +13,23 @@ Option Explicit
 
 Implements IValueConverter
 
-Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object) ' read
+Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object)
     Load Source, Target
 End Sub
 
-Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding) ' write
-    Dim ListView As MScomctllib.ListView
-    Set ListView = PropertyBinding.Target
-    
-    Dim VM As KeyMapperViewModel
-    Set VM = PropertyBinding.Source
-    
+Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding)
+    SelectItem PropertyBinding.Target, PropertyBinding.Source, PropertyBinding.SourcePropertyPath
+End Sub
+
+Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As ValueMapperViewModel, _
+    ByVal SourcePropertyPath As String)
     Dim ValueColumns As ValueColumns
     Set ValueColumns = CallByName(VM, PropertyBinding.SourcePropertyPath, VbGet)
     
     ValueColumns.TrySelect ListView.SelectedItem.Key
 End Sub
 
-Public Sub Load(ByVal ColumnPairs As ColumnPairs, ByVal ListView As MScomctllib.ListView)
-    Debug.Assert Not ColumnPairs Is Nothing
-    
+Private Sub Load(ByVal ColumnPairs As ColumnPairs, ByVal ListView As MScomctllib.ListView)
     ListView.ListItems.Clear
     
     Dim ColumnPair As ColumnPair

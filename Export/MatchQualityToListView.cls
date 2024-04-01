@@ -12,17 +12,14 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IValueConverter
 
-Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object) ' read
+Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object)
     Load Source, Target
 End Sub
 
-Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding) ' write
-    ' Read-only
+Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding)
 End Sub
 
-Public Sub Load(ByVal KeyColumn As Collection, ByVal ListView As MScomctllib.ListView)
-    'Debug.Assert Not Collection Is Nothing
-    
+Private Sub Load(ByVal KeyColumn As Collection, ByVal ListView As MScomctllib.ListView)
     ListView.ListItems.Clear
     
     Dim Item As Variant

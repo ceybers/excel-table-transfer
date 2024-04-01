@@ -17,22 +17,18 @@ Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Obje
 End Sub
 
 Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding) ' write
-    Dim ListView As MScomctllib.ListView
-    Set ListView = PropertyBinding.Target
-    
-    Dim VM As ValueMapperViewModel
-    Set VM = PropertyBinding.Source
-    
+    SelectItem PropertyBinding.Target, PropertyBinding.Source, PropertyBinding.SourcePropertyPath
+End Sub
+
+Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As ValueMapperViewModel, _
+    ByVal SourcePropertyPath As String)
     Dim ValueColumns As ValueColumns
-    Set ValueColumns = CallByName(VM, PropertyBinding.SourcePropertyPath, VbGet)
+    Set ValueColumns = CallByName(VM, SourcePropertyPath, VbGet)
     
     ValueColumns.TrySelect ListView.SelectedItem.Key
 End Sub
 
-
-Public Sub Load(ByVal ValueColumns As ValueColumns, ByVal ListView As MScomctllib.ListView)
-    Debug.Assert Not ValueColumns Is Nothing
-    
+Private Sub Load(ByVal ValueColumns As ValueColumns, ByVal ListView As MScomctllib.ListView)
     If ListView.ListItems.Count <> ValueColumns.ValueColumns.Count Then
         LoadItems ListView, ByVal ValueColumns
     End If
@@ -42,6 +38,7 @@ End Sub
 
 Private Sub LoadItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns As ValueColumns)
     ListView.ListItems.Clear
+    
     Dim ValueColumn As ValueColumn
     For Each ValueColumn In ValueColumns.ValueColumns
         AddItem ListView, ValueColumn
@@ -70,7 +67,7 @@ Private Sub UpdateListItem(ByVal ListItem As MScomctllib.ListItem, ByVal ValueCo
     Set ValueColumn = ValueColumns.ValueColumns.Item(ListItem.Key)
     
     If ValueColumn.IsSelectable = False Then
-        ListItem.ForeColor = RGB(128, 128, 128)
+        ListItem.ForeColor = RGB(128, 128, 128) ' TODO Const color
     End If
     
     Select Case True
@@ -103,7 +100,7 @@ Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
-        .ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16
+        .ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16 'TODO Column header const
         .View = lvwReport
         .FullRowSelect = True
         .Gridlines = False

@@ -17,5 +17,4 @@ Public Function CreateBinding(ByVal Source As Object, _
     Optional ByVal BindingMode As BindingMode, _
     Optional ByVal ValueConverter As IValueConverter) _
     As IPropertyBinding
-    
 End Function

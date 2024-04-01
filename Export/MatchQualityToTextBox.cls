@@ -12,15 +12,14 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IValueConverter
 
-Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object) ' read
+Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object)
     Load Source, Target
 End Sub
 
-Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding) ' write
-    ' Read-only
+Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding)
 End Sub
 
-Public Sub Load(ByVal TextBox As MSForms.TextBox, ByVal KeyColumn As KeyColumn)
+Private Sub Load(ByVal TextBox As MSForms.TextBox, ByVal KeyColumn As KeyColumn)
     Dim MaxLines As Long
     With KeyColumnComparer
         MaxLines = .LeftOnly.Count
@@ -45,4 +44,3 @@ Public Sub Load(ByVal TextBox As MSForms.TextBox, ByVal KeyColumn As KeyColumn)
     
     TextBox.Text = Join(Table, vbCrLf)
 End Sub
-
