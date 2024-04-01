@@ -23,6 +23,8 @@ Private Type TState
     Limit As Long
     
     DeltaVariants As Variant
+    SourceNumberFormats As Object ' Dictionary
+    DestinationNumberFormats As Object ' Dictionary
 End Type
 Private This As TState
 
@@ -67,6 +69,14 @@ Public Property Let Limit(ByVal vNewValue As Long)
     This.Limit = vNewValue
     UpdateBaseItems
     UpdateItems
+End Property
+
+Public Property Get SourceNumberFormats() As Object
+    Set SourceNumberFormats = This.SourceNumberFormats
+End Property
+
+Public Property Get DestinationNumberFormats() As Object
+    Set DestinationNumberFormats = This.DestinationNumberFormats
 End Property
 
 Private Sub Class_Initialize()
@@ -119,3 +129,8 @@ Private Function TestFilter(ByVal TransferDelta As TransferDelta) As Boolean
     
     TestFilter = True
 End Function
+
+Public Sub SetNumberFormats(ByVal SourceNumberFormats As Object, ByVal DestinationNumberFormats As Object)
+    Set This.SourceNumberFormats = SourceNumberFormats
+    Set This.DestinationNumberFormats = DestinationNumberFormats
+End Sub

@@ -13,16 +13,16 @@ Option Explicit
 Implements ITransferPostProcesser
 
 Private Type TState
-    ChangeType As Long
+    ChangeType As TtChangeType
     Color As Long
 End Type
 Private This As TState
 
-Public Property Get ChangeType() As Long
+Public Property Get ChangeType() As TtChangeType
     ChangeType = This.ChangeType
 End Property
 
-Public Property Let ChangeType(ByVal vNewValue As Long)
+Public Property Let ChangeType(ByVal vNewValue As TtChangeType)
     This.ChangeType = vNewValue
 End Property
 
@@ -58,7 +58,7 @@ Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As Transfer
     ApplyHighlighting Target, This.Color
 End Sub
 
-Public Function Create(ByVal ChangeType As Long, ByVal Color As Long) As HighlightChanges
+Public Function Create(ByVal ChangeType As TtChangeType, ByVal Color As Long) As HighlightChanges
     Dim Result As HighlightChanges
     Set Result = New HighlightChanges
     

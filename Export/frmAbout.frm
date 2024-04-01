@@ -13,6 +13,10 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
+
+
+
 '@IgnoreModule HungarianNotation
 '@Folder "MVVM.Views"
 Option Explicit
@@ -24,5 +28,5 @@ End Sub
 Private Sub UserForm_Activate()
     Me.lblHeader.Caption = APP_TITLE
     Me.lblVersion.Caption = APP_VERSION
-    Me.lblCopyright.Caption = APP_COPYRIGHT
+    Me.lblCopyright.Caption = "Copyright " & ChrW$(169) & " " & APP_COPYRIGHT
 End Sub

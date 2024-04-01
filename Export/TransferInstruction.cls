@@ -62,26 +62,19 @@ Public Sub SetComparer(ByVal Comparer As IValueComparer)
 End Sub
 
 Public Sub Evaluate()
-    Set This.Comparer = New NonBlankComparer
+    Set This.Comparer = New NonBlankComparer ' TODO This needs to be here, since we aren't assigning it somewhere else yet
     
     If Not IsValid Then
-        Debug.Print "TransferInstruction not valid"
-        Err.Raise vbObjectError + 15, ERR_SOURCE, "Could not load Transfer Instruction"
+        Err.Raise vbObjectError + 15, ERR_SOURCE, "Could not load Transfer Instruction" ' TODO ERR MSG Constants
         Exit Sub
     End If
     
-    'DebugPrintHeader
     GenerateKeyMap
     If IsEmpty(This.KeyMap) Then Exit Sub
     
     TransferColumns
     UpdateTransferDeltas
-    'DebugPrintDeltas
 End Sub
-
-'Private Function ValuePairCount() As Long
-'    ValuePairCount = Source.ValueColumnCount
-'End Function
 
 Private Function IsValid() As Boolean
     If Source Is Nothing Then Exit Function
@@ -140,18 +133,17 @@ Private Sub TransferColumn(ByVal FieldIndex As Long)
         
         If This.Comparer.Compare(SourceValue, DestinationValue) Then
             Dim CellDelta As Variant
-            CellDelta = GetTransferCellDelta(This.KeyMap(i, 3), Destination.ValueColumns(FieldIndex).Index, _
-                This.KeyMap(i, 1), SourceColumn.Name, DestinationColumn.Name, _
+            CellDelta = GetTransferCellDelta( _
+                This.KeyMap(i, 3), _
+                Destination.ValueColumns(FieldIndex).Index, _
+                This.KeyMap(i, 1), _
+                SourceColumn.Name, DestinationColumn.Name, _
                 SourceValue, DestinationValue)
                 
             This.ValueDeltas(This.ValueDeltaCursor) = CellDelta
             This.ValueDeltaCursor = This.ValueDeltaCursor + 1
-            
-            'DestinationVariantArray(This.KeyMap(i, 3), 1) = SourceValue
         End If
     Next i
-        
-    'DestinationColumn.DataBodyRange.Value2 = DestinationVariantArray
 End Sub
 
 Public Sub Commit(ByVal Commiter As ICommitStrategy)
@@ -178,5 +170,3 @@ End Sub
 Public Sub PostProcess(ByVal PostProcessor As ITransferPostProcesser)
     PostProcessor.Execute Me
 End Sub
-
-

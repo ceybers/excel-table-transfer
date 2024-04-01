@@ -11,5 +11,18 @@ Attribute VB_Exposed = False
 '@Folder "MVVM.Infrastructure.Abstract"
 Option Explicit
 
-Public Function ShowDialog(ByVal ViewModel As Object) As ViewResult
+'@Description "Gets the ViewModel / binding Source."
+Public Property Get ViewModel() As Object
+End Property
+
+'@Description "Displays the View modally and returns a value indicating confirmation (True) or cancellation (False)."
+Public Function ShowDialog() As TtViewResult
 End Function
+
+'@Description "Displays the View."
+Public Sub Show()
+End Sub
+
+'@Description "Hides the View."
+Public Sub Hide()
+End Sub

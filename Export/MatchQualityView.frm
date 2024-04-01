@@ -18,10 +18,31 @@ Option Explicit
 Implements IView
 
 Private Type TState
+    Context As IAppContext
     ViewModel As KeyMapperViewModel
-    Result As ViewResult
+    Result As TtViewResult
 End Type
 Private This As TState
+
+Private Property Get IView_ViewModel() As Object
+    Set IView_ViewModel = This.ViewModel
+End Property
+
+Public Property Get ViewModel() As KeyMapperViewModel
+    Set ViewModel = This.ViewModel
+End Property
+
+Public Property Set ViewModel(ByVal vNewValue As KeyMapperViewModel)
+    Set This.ViewModel = vNewValue
+End Property
+
+Public Property Get Context() As IAppContext
+    Set Context = This.Context
+End Property
+
+Public Property Set Context(ByVal vNewValue As IAppContext)
+    Set This.Context = vNewValue
+End Property
 
 Private Sub cboCancel_Click()
     This.Result = vrCancel
@@ -42,29 +63,45 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     End If
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
+Private Sub IView_Show()
+    IView_ShowDialog
+End Sub
+ 
+Private Sub IView_Hide()
+    Me.Hide
+End Sub
+
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyMapperViewModel) As IView
+    Dim Result As MatchQualityView
+    Set Result = New MatchQualityView
+    
+    Set Result.Context = Context
+    Set Result.ViewModel = ViewModel
+
+    Set Create = Result
+End Function
+
+Private Function IView_ShowDialog() As TtViewResult
     Set This.ViewModel = ViewModel
     
-    InitializeControls
-    UpdateControls
+    BindControls
+    
+    Me.mpgMatchQuality.Value = 0
     
     Me.Show
     
     IView_ShowDialog = This.Result
 End Function
 
-Private Sub InitializeControls()
+Private Sub BindControls()
     MatchQualityToListView.Initialize Me.lvLeftOnly
     MatchQualityToListView.Initialize Me.lvIntersection
     MatchQualityToListView.Initialize Me.lvRightOnly
-    MatchQualityToTextBox.Initialize Me.txtMatchQuality
     
-    Me.mpgMatchQuality.Value = 0
-End Sub
-
-Private Sub UpdateControls()
-    MatchQualityToListView.Load Me.lvLeftOnly, This.ViewModel.MatchQuality.LeftOnly
-    MatchQualityToListView.Load Me.lvIntersection, This.ViewModel.MatchQuality.Intersection
-    MatchQualityToListView.Load Me.lvRightOnly, This.ViewModel.MatchQuality.RightOnly
-    MatchQualityToTextBox.Load Me.txtMatchQuality, This.ViewModel.MatchQuality
+    With Context.BindingManager
+        .BindPropertyPath ViewModel, "MatchQuality.LeftOnly", Me.lvLeftOnly, "ListItems", OneWayBinding, MatchQualityToListView
+        .BindPropertyPath ViewModel, "MatchQuality.Intersection", Me.lvIntersection, "ListItems", OneWayBinding, MatchQualityToListView
+        .BindPropertyPath ViewModel, "MatchQuality.RightOnly", Me.lvRightOnly, "ListItems", OneTimeBinding, MatchQualityToListView
+        .BindPropertyPath ViewModel, "MatchQuality.ToTextTable", Me.txtMatchQuality, "Text", OneTimeBinding
+    End With
 End Sub

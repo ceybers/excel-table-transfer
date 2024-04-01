@@ -9,10 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Folder "MVVM.ViewModels"
 Option Explicit
+Implements INotifyPropertyChanged
 
 Private Const MAX_LIMIT_DELTAS As Long = 1000000
 
 Private Type TState
+    Notifier As INotifyPropertyChanged
+    
     TransferDeltas As TransferDeltas
     Source As ListObject ' Reference so we can get NumberFormats per ListColumn
     Destination As ListObject ' Reference so we can get NumberFormats per ListColumn
@@ -27,17 +30,35 @@ Public Property Get Fields() As Collection
     Set Fields = This.TransferDeltas.Fields
 End Property
 
-Public Property Get Deltas() As Collection
-    Set Deltas = This.TransferDeltas.Items
+Public Property Get Deltas() As TransferDeltas
+    Set Deltas = This.TransferDeltas
 End Property
+
+Private Sub Class_Initialize()
+    Set This.Notifier = New PropertyChangeNotifier
+End Sub
+
+Private Sub INotifyPropertyChanged_RegisterHandler(ByVal Handler As IHandlePropertyChanged)
+    This.Notifier.RegisterHandler Handler
+End Sub
+
+Private Sub INotifyPropertyChanged_OnPropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    This.Notifier.OnPropertyChanged Source, PropertyName
+End Sub
+
+Private Sub OnPropertyChanged(ByVal PropertyName As String)
+    INotifyPropertyChanged_OnPropertyChanged Me, PropertyName
+End Sub
 
 Public Sub Load(ByVal TransferDeltas As TransferDeltas, ByVal Source As ListObject, ByVal Destination As ListObject)
     Set This.TransferDeltas = TransferDeltas
     Set This.Source = Source
     Set This.Destination = Destination
+    
+    This.TransferDeltas.SetNumberFormats GetNumberFormats(ttSource), GetNumberFormats(ttDestination)
 End Sub
 
-Public Function GetNumberFormats(ByVal Direction As TransferDirection) As Object
+Private Function GetNumberFormats(ByVal Direction As TtDirection) As Object
     Dim Result As Object
     Set Result = CreateObject("Scripting.Dictionary")
     
@@ -59,10 +80,12 @@ End Function
 
 Public Sub TrySelectKey(ByVal Key As String)
     This.TransferDeltas.KeyFilter = Key
+    OnPropertyChanged "Deltas"
 End Sub
 
 Public Sub TrySelectField(ByVal Field As String)
     This.TransferDeltas.FieldFilter = Field
+    OnPropertyChanged "Deltas"
 End Sub
 
 Public Function CanShowAll() As Boolean
@@ -75,4 +98,6 @@ End Function
 
 Public Sub DoShowAll()
     This.TransferDeltas.Limit = MAX_LIMIT_DELTAS
+    OnPropertyChanged "Deltas"
 End Sub
+

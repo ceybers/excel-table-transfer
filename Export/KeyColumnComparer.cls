@@ -11,12 +11,13 @@ Attribute VB_Exposed = False
 '@PredeclaredId
 '@Folder "MVVM.Model.KeyColumn"
 Option Explicit
-
-Private Const ERR_MSG_EMPTY_TABLE As String = "Cannot Map KeyColumns with an empty table"
+Implements INotifyPropertyChanged
 
 Private Const MIN_TOTAL As Long = 4
 
 Private Type TClsCompareKeyColumns
+    Notifier As INotifyPropertyChanged
+    
     LHS As KeyColumn
     RHS As KeyColumn
     
@@ -84,6 +85,22 @@ Public Property Get Score() As Double
     End If
 End Property
 
+Private Sub Class_Initialize()
+    Set This.Notifier = New PropertyChangeNotifier
+End Sub
+
+Private Sub INotifyPropertyChanged_RegisterHandler(ByVal Handler As IHandlePropertyChanged)
+    This.Notifier.RegisterHandler Handler
+End Sub
+
+Private Sub INotifyPropertyChanged_OnPropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    This.Notifier.OnPropertyChanged Source, PropertyName
+End Sub
+
+Private Sub OnPropertyChanged(ByVal PropertyName As String)
+    INotifyPropertyChanged_OnPropertyChanged Me, PropertyName
+End Sub
+
 Public Function Create(ByVal LHS As KeyColumn, ByVal RHS As KeyColumn) As KeyColumnComparer
     Dim Result As KeyColumnComparer
     Set Result = New KeyColumnComparer
@@ -98,7 +115,7 @@ End Function
 
 Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByVal FilterDestination As Boolean = False) As Variant
     If This.LHS Is Nothing Or This.RHS Is Nothing Then
-        Err.Raise vbObjectError + 4, Err.Source, ERR_MSG_EMPTY_TABLE
+        Err.Raise vbObjectError + 4, Err.Source, StringConstants.ERR_MSG_KEYCOLCOMP_EMPTY_TABLE
         Exit Function
     End If
     
@@ -170,3 +187,27 @@ Private Sub Upsert(ByVal Key As String, ByVal Value As Long)
         This.Dictionary.Item(Key) = Value
     End If
 End Sub
+
+Public Property Get ToTextTable() As String
+    Dim MaxLines As Long
+    MaxLines = This.LeftOnly.Count
+    If This.Intersection.Count > MaxLines Then MaxLines = This.Intersection.Count
+    If This.RightOnly.Count > MaxLines Then MaxLines = This.RightOnly.Count
+    
+    Dim Table() As Variant
+    ReDim Table(1 To MaxLines - 1)
+    
+    Dim i As Long
+    For i = 1 To (MaxLines - 1)
+        Dim Row() As Variant
+        Row = Array(vbNullString, vbNullString, vbNullString)
+        With This
+            If (i < .LeftOnly.Count) Then Row(0) = .LeftOnly.Item(i)
+            If (i < .Intersection.Count) Then Row(1) = .Intersection.Item(i)
+            If (i < .RightOnly.Count) Then Row(2) = .RightOnly.Item(i)
+        End With
+        Table(i) = Join(Row, vbTab)
+    Next i
+    
+    ToTextTable = Join(Table, vbCrLf)
+End Property

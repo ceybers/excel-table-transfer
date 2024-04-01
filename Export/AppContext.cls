@@ -9,21 +9,27 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Folder "MVVM.AppContext"
 Option Explicit
-
-Private Const LAST_KEY_USED As String = "LastKeyUsed"
-
-Private Const MSG_CAPTION As String = "Table Transfer Tool"
-Private Const MSG_NOT_ENOUGH_TABLES As String = "Not enough tables available to start a transfer!"
+Implements IAppContext
 
 Private Type TState
     Transfer As TransferInstruction
     Settings As TransferSettings
+    BindingManager As BindingManager
 End Type
 Private This As TState
 
-Public Sub Start()
+Private Property Get IAppContext_BindingManager() As BindingManager
+    Set IAppContext_BindingManager = This.BindingManager
+End Property
+
+Private Sub Class_Initialize()
     Set This.Settings = New TransferSettings
     Set This.Transfer = New TransferInstruction
+    Set This.BindingManager = New BindingManager
+End Sub
+
+Public Sub Start()
+    'On Error GoTo ErrorHandler
 
 'DEBUG:
     'Set This.Transfer = GetDebugTransfer
@@ -69,9 +75,16 @@ RewindTransferDeltas:
     
 FinishEarly:
     SaveTransferHistory
+    Exit Sub
+    
+ErrorHandler:
+    MsgBox ERR_MSG_GENERIC, vbCritical + vbOKOnly, MSG_CAPTION
 End Sub
 
-Private Function TryReloadRecent() As ViewResult
+Private Function TryReloadRecent() As TtViewResult
+    ' DEBUG
+    Exit Function
+    
     This.Settings.LoadMRU
     
     Dim RecentTransfers As Collection
@@ -91,7 +104,7 @@ Private Function TryReloadRecent() As ViewResult
     Next RecentTransfer
 End Function
 
-Private Function TryTablePicker() As ViewResult
+Private Function TryTablePicker() As TtViewResult
     Dim ViewModel As TablePickerViewModel
     Set ViewModel = New TablePickerViewModel
     ViewModel.Load
@@ -100,10 +113,10 @@ Private Function TryTablePicker() As ViewResult
     Set ViewModel.DestinationTable = This.Transfer.Destination.Table
     
     Dim View As IView
-    Set View = New TablePickerView
+    Set View = TablePickerView.Create(Me, ViewModel)
     
-    Dim Result As ViewResult
-    Result = View.ShowDialog(ViewModel)
+    Dim Result As TtViewResult
+    Result = View.ShowDialog
   
     Select Case Result
         Case vrNext
@@ -114,25 +127,25 @@ Private Function TryTablePicker() As ViewResult
     TryTablePicker = Result
 End Function
 
-Private Function TryKeyMapper() As ViewResult
+Private Function TryKeyMapper() As TtViewResult
     Dim ViewModel As KeyMapperViewModel
     Set ViewModel = New KeyMapperViewModel
     ViewModel.Load This.Transfer.Source.Table, This.Transfer.Destination.Table
     
-    Dim ListObjectSettings As ISettings
-    Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Source.Table)
-    ViewModel.Source.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
+    'Dim ListObjectSettings As ISettings
+    'Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Source.Table)
+    'ViewModel.Source.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
     
-    Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Destination.Table)
-    ViewModel.Destination.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
+    'Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Destination.Table)
+    'ViewModel.Destination.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
     
     ViewModel.TryEvaluateMatch
     
     Dim View As IView
-    Set View = New KeyMapperView
+    Set View = KeyMapperView.Create(Me, ViewModel)
     
-    Dim Result As ViewResult
-    Result = View.ShowDialog(ViewModel)
+    Dim Result As TtViewResult
+    Result = View.ShowDialog()
     
     Select Case Result
         Case vrNext
@@ -143,7 +156,7 @@ Private Function TryKeyMapper() As ViewResult
     TryKeyMapper = Result
 End Function
 
-Private Function TryValueMapper() As ViewResult
+Private Function TryValueMapper() As TtViewResult
     Dim ViewModel As ValueMapperViewModel
     Set ViewModel = New ValueMapperViewModel
     With ViewModel.Source
@@ -163,10 +176,10 @@ Private Function TryValueMapper() As ViewResult
     End With
     
     Dim View As IView
-    Set View = ValueMapperView
+    Set View = ValueMapperView.Create(Me, ViewModel)
     
-    Dim Result As ViewResult
-    Result = View.ShowDialog(ViewModel)
+    Dim Result As TtViewResult
+    Result = View.ShowDialog()
     
     Select Case Result
         Case vrNext
@@ -179,7 +192,7 @@ Private Function TryValueMapper() As ViewResult
     TryValueMapper = Result
 End Function
 
-Private Function TryTransferDeltas() As ViewResult
+Private Function TryTransferDeltas() As TtViewResult
     This.Transfer.Evaluate
     
     Dim ViewModel As DeltasPreviewViewModel
@@ -187,10 +200,10 @@ Private Function TryTransferDeltas() As ViewResult
     ViewModel.Load This.Transfer.TransferDeltas, This.Transfer.Source.Table, This.Transfer.Destination.Table
     
     Dim View As IView
-    Set View = DeltasPreviewView
+    Set View = DeltasPreviewView.Create(Me, ViewModel)
     
-    Dim Result As ViewResult
-    Result = View.ShowDialog(ViewModel)
+    Dim Result As TtViewResult
+    Result = View.ShowDialog()
     
     Select Case Result
         Case vrNext
@@ -206,8 +219,8 @@ Private Sub DoPostProcessing()
     
     With This.Transfer
         .PostProcess PostProcessorFactory.RemoveHighlighting
-        .PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged 'TODO Move to constants
-        .PostProcess HighlightChanges.Create(2, RGB(204, 255, 153)) ' 0->A new
+        .PostProcess HighlightChanges.Create(ttValueChanged, COLOR_GREEN_DARK)
+        .PostProcess HighlightChanges.Create(ttValueReplacesBlank, COLOR_GREEN_LIGHT)
         .PostProcess PostProcessorFactory.TransferColumnWidths
         .PostProcess PostProcessorFactory.TransferNumberFormat
     End With

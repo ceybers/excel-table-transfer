@@ -2,7 +2,7 @@ Attribute VB_Name = "TablePickerToTreeView"
 '@Folder "MVVM.ValueConverters"
 Option Explicit
 
-Public Sub Initialize(ByVal TreeView As MSComctlLib.TreeView)
+Public Sub Initialize(ByVal TreeView As MScomctllib.TreeView)
     With TreeView
         .Nodes.Clear ' TODO change to remove index 0 because it is faster
         .Indentation = 16
@@ -11,7 +11,7 @@ Public Sub Initialize(ByVal TreeView As MSComctlLib.TreeView)
     End With
 End Sub
 
-Public Sub Load(ByVal TreeView As MSComctlLib.TreeView, ByVal ViewModel As TablePickerViewModel)
+Public Sub Load(ByVal TreeView As MScomctllib.TreeView, ByVal ViewModel As TablePickerViewModel)
     Debug.Assert Not ViewModel Is Nothing
     
     ' Preserve current selected node by its key
@@ -42,8 +42,8 @@ Public Sub Load(ByVal TreeView As MSComctlLib.TreeView, ByVal ViewModel As Table
     CheckNoTablesFound TreeView
 End Sub
 
-Private Sub AddNode(ByVal TreeView As MSComctlLib.TreeView, ByVal AvailableTable As AvailableTableNode, ByVal NodeCache As Object)
-    Dim Node As MSComctlLib.Node
+Private Sub AddNode(ByVal TreeView As MScomctllib.TreeView, ByVal AvailableTable As AvailableTableNode, ByVal NodeCache As Object)
+    Dim Node As MScomctllib.Node
     If AvailableTable.NodeType = ttApplication Then
         Set Node = TreeView.Nodes.Add(Key:=AvailableTable.Key, Text:=AvailableTable.Caption)
         Node.Expanded = True
@@ -59,33 +59,33 @@ End Sub
 
 Private Sub UpdateNodeIcon(ByVal AvailableTable As AvailableTableNode, ByVal Node As Node)
     If AvailableTable.NodeType = ttApplication Then
-        Node.image = IconConstants.MSO_EXCEL_APP
+        Node.image = MSO_EXCEL_APP
         Exit Sub
     End If
     
     With AvailableTable
         Select Case True
             Case .IsSelected
-                Node.image = IconConstants.MSO_TABLE_TICK
+                Node.image = MSO_TABLE_TICK
                 Node.Bold = True
             Case .IsProtected
-                Node.image = IconConstants.MSO_SHEET_PROTECTED
+                Node.image = MSO_SHEET_PROTECTED
             Case .IsHidden
-                Node.image = IconConstants.MSO_SHEET_HIDDEN
+                Node.image = MSO_SHEET_HIDDEN
             Case Else
-                Node.image = IconConstants.MSO_TABLE
+                Node.image = MSO_TABLE
         End Select
     End With
 End Sub
 
-Private Sub CheckNoTablesFound(ByVal TreeView As MSComctlLib.TreeView)
+Private Sub CheckNoTablesFound(ByVal TreeView As MScomctllib.TreeView)
     'NO_TABLES_FOUND
     If TreeView.Nodes.Count = 1 Then
-        Dim Node As MSComctlLib.Node
+        Dim Node As MScomctllib.Node
         Set Node = TreeView.Nodes.Add(Relative:=TreeView.Nodes.Item(1), relationship:=tvwChild, _
             Key:=vbNullString, Text:=NO_TABLES_FOUND)
-        Node.ForeColor = NOT_FOUND_COLOR
-        Node.image = IconConstants.MSO_NOT_FOUND
+        Node.ForeColor = StringConstants.COLOR_NO_TABLES_AVAILABLE
+        Node.image = MSO_NOT_FOUND
     End If
 End Sub
 

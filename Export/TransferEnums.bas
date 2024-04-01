@@ -1,8 +1,8 @@
 Attribute VB_Name = "TransferEnums"
-'@Folder "MVVM.Model.Constants"
+'@Folder "MVVM.Resources.Constants"
 Option Explicit
 
-Public Enum ViewResult
+Public Enum TtViewResult
     vrCancel = 0
     vrOK
     vrStart
@@ -11,13 +11,13 @@ Public Enum ViewResult
     vrFinish
 End Enum
 
-Public Enum TransferDirection
+Public Enum TtDirection
     ttInvalidDirection = 0
     ttSource
     ttDestination
 End Enum
 
-Public Enum TransferNode
+Public Enum TtNode
     ttInvalidNode = 0
     ttApplication
     ttWorkbook
@@ -25,8 +25,8 @@ Public Enum TransferNode
     ttListObject
 End Enum
 
-Public Enum ChangeType2
-    ttInvalidType
+Public Enum TtChangeType
+    ttInvalidType = 0
     ttBlankUnchanged ' 0->0
     ttValueReplacesBlank ' A->0
     ttBlankReplacesValue ' 0->A
@@ -34,7 +34,7 @@ Public Enum ChangeType2
     ttValueChanged ' A->B
 End Enum
 
-Public Enum MemberType
+Public Enum TtDeltaType
     ttInvalidMember = 0
     ttKeyMember
     ttField

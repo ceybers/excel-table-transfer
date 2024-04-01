@@ -10,8 +10,12 @@ Attribute VB_Exposed = False
 '@Folder "MVVM.ViewModels"
 Option Explicit
 Implements IViewModel
+Implements INotifyPropertyChanged
+Implements IHandlePropertyChanged
 
 Private Type TState
+    Notifier As INotifyPropertyChanged
+    
     Source As ValueColumns
     Destination As ValueColumns
     Mapped As ColumnPairs
@@ -35,40 +39,75 @@ Private Sub Class_Initialize()
     Set This.Source = New ValueColumns
     Set This.Destination = New ValueColumns
     Set This.Mapped = New ColumnPairs
+    
+    Set This.Notifier = New PropertyChangeNotifier
+    RegisterWithChild This.Source
+    RegisterWithChild This.Destination
+    RegisterWithChild This.Mapped
+End Sub
+
+Private Sub RegisterWithChild(ByVal Model As INotifyPropertyChanged)
+    Model.RegisterHandler Me
 End Sub
 
 Private Function IViewModel_IsValid() As Boolean
     IViewModel_IsValid = True
 End Function
 
+Private Sub INotifyPropertyChanged_RegisterHandler(ByVal Handler As IHandlePropertyChanged)
+    This.Notifier.RegisterHandler Handler
+End Sub
+
+Private Sub INotifyPropertyChanged_OnPropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    This.Notifier.OnPropertyChanged Source, PropertyName
+End Sub
+
+Private Sub OnPropertyChanged(ByVal PropertyName As String)
+    INotifyPropertyChanged_OnPropertyChanged Me, PropertyName
+End Sub
+
+Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    If PropertyName = "Selected" Then
+        OnPropertyChanged "CanMapAdd"
+        OnPropertyChanged "CanMapRemove"
+        OnPropertyChanged "CanRemoveAll"
+        OnPropertyChanged "CanNext"
+    End If
+    If Source Is This.Mapped Then
+        BackSelectColumnPair
+    End If
+End Sub
+
 Public Sub Load(ByVal Source As ListObject, ByVal Destination As ListObject)
     This.Source.Load Source
     This.Destination.Load Destination
 End Sub
 
-Public Function CanMapAdd() As Boolean
-    If This.Source.Selected Is Nothing Then Exit Function
-    If This.Destination.Selected Is Nothing Then Exit Function
-    If Not This.Source.Selected.IsSelectable Then Exit Function
-    If Not This.Destination.Selected.IsSelectable Then Exit Function
-    If This.Mapped.Exists(This.Source.Selected.Name, This.Destination.Selected.Name) Then Exit Function
+Public Property Get CanMapAdd() As Boolean
+    If This.Source.Selected Is Nothing Then Exit Property
+    If This.Destination.Selected Is Nothing Then Exit Property
+    If Not This.Source.Selected.IsSelectable Then Exit Property
+    If Not This.Destination.Selected.IsSelectable Then Exit Property
+    If This.Mapped.Exists(This.Source.Selected.Name, This.Destination.Selected.Name) Then Exit Property
     
     CanMapAdd = True
-End Function
+End Property
 
-Public Function CanMapRemove() As Boolean
-    If This.Source.Selected Is Nothing Then Exit Function
-    If This.Destination.Selected Is Nothing Then Exit Function
-    If Not This.Source.Selected.IsSelectable Then Exit Function
-    If Not This.Destination.Selected.IsSelectable Then Exit Function
+Public Property Get CanMapRemove() As Boolean
+    If This.Source.Selected Is Nothing Then Exit Property
+    If This.Destination.Selected Is Nothing Then Exit Property
+    If Not This.Source.Selected.IsSelectable Then Exit Property
+    If Not This.Destination.Selected.IsSelectable Then Exit Property
     
     CanMapRemove = This.Mapped.Exists(This.Source.Selected.Name, This.Destination.Selected.Name)
-End Function
+End Property
 
 Public Sub DoMapAdd()
     This.Mapped.Add This.Source.Selected.Name, This.Destination.Selected.Name
     This.Source.Selected.IsMapped = True
     This.Destination.Selected.IsMapped = True
+    
+    CollectionChanged
 End Sub
 
 Public Sub DoMapRemove()
@@ -77,12 +116,12 @@ Public Sub DoMapRemove()
     This.Destination.Selected.IsMapped = False
 End Sub
 
-Public Function CanNext() As Boolean
-    CanNext = This.Mapped.Items.Count > 0
-End Function
+Public Property Get CanNext() As Boolean
+    CanNext = This.Mapped.Count > 0
+End Property
 
 Public Sub DoAutoMap()
-    CollectionClear This.Mapped.Items
+    This.Mapped.Clear
     
     Dim SourceColumn As ValueColumn
     For Each SourceColumn In This.Source.ValueColumns
@@ -91,6 +130,8 @@ Public Sub DoAutoMap()
             TryAutoMapOne SourceColumn, DestinationColumn
         Next DestinationColumn
     Next SourceColumn
+    
+    CollectionChanged
 End Sub
 
 Private Sub TryAutoMapOne(ByVal Source As ValueColumn, ByVal Destination As ValueColumn)
@@ -103,13 +144,31 @@ Private Sub TryAutoMapOne(ByVal Source As ValueColumn, ByVal Destination As Valu
     Destination.IsMapped = True
 End Sub
 
-Public Function CanRemoveAll() As Boolean
-    CanRemoveAll = This.Mapped.Items.Count > 0
-End Function
+Public Property Get CanRemoveAll() As Boolean
+    CanRemoveAll = This.Mapped.Count > 0
+End Property
 
 Public Sub DoRemoveAll()
-    CollectionClear This.Mapped.Items
+    This.Mapped.Clear
     This.Source.Reset
     This.Destination.Reset
+    
+    CollectionChanged
 End Sub
 
+Private Sub CollectionChanged()
+    OnPropertyChanged "Source" ' Necessary to update icon after pressing AutoMap
+    OnPropertyChanged "Destination"
+    OnPropertyChanged "Mapped"
+    OnPropertyChanged "CanNext"
+    OnPropertyChanged "CanMapAdd"
+    OnPropertyChanged "CanMapRemove"
+    OnPropertyChanged "CanRemoveAll"
+End Sub
+
+Private Sub BackSelectColumnPair()
+    This.Source.TrySelect This.Mapped.Selected.Source
+    OnPropertyChanged "Source"
+    This.Destination.TrySelect This.Mapped.Selected.Destination
+    OnPropertyChanged "Destination"
+End Sub

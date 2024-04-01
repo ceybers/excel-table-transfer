@@ -14,13 +14,12 @@ Implements ITransferPostProcesser
 Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As TransferInstruction)
     Dim i As Long
     For i = 0 To TransferInstruction.Source.ValueColumnCount - 1
-        Dim SourceColumn As ListColumn
-        Set SourceColumn = TransferInstruction.Source.ValueColumns(i)
-        
-        Dim DestinationColumn As ListColumn
-        Set DestinationColumn = TransferInstruction.Destination.ValueColumns(i)
-        
-        DestinationColumn.DataBodyRange.ColumnWidth = SourceColumn.DataBodyRange.ColumnWidth
+        With TransferInstruction
+            UpdateColumn .Source.ValueColumns(i), .Destination.ValueColumns(i)
+        End With
     Next i
 End Sub
 
+Private Sub UpdateColumn(ByVal SourceColumn As ListColumn, ByVal DestinationColumn As ListColumn)
+    DestinationColumn.DataBodyRange.ColumnWidth = SourceColumn.DataBodyRange.ColumnWidth
+End Sub

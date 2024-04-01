@@ -50,21 +50,11 @@ Public Property Let KeyColumnName(ByVal RHS As String)
     If ListColumnHelpers.Exists(This.Table, RHS) Then
         This.KeyColumnName = RHS
     End If
-    
-    'Err.Raise vbObjectError + 15, , "Key Column doesn't exist"
 End Property
 
 Public Property Get ValueColumns() As Variant
     ValueColumns = This.ValueColumns
 End Property
-
-'Public Property Get ValueColumnNames() As Variant
-'    ValueColumnNames = This.ValueColumnNames
-'End Property
-
-'Public Property Let ValueColumnNames(ByVal RHS As Variant)
-'    This.ValueColumnNames = RHS
-'End Property
 
 Public Property Get ValueColumnCount() As Long
     If IsEmpty(This.ValueColumns) Then

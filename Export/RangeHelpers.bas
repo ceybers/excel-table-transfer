@@ -21,3 +21,20 @@ Attribute AppendRange.VB_Description = "Adds a Range to an existing Range as a U
     Set UnionRange = Application.Union(UnionRange, RangeToAppend)
     AppendRange = True
 End Function
+
+'@Description "Returns True if SpecialCells would have returned a Range. Returns False if no cells were selected."
+Public Function HasSpecialCells(ByVal Range As Range, ByVal CellType As XlCellType, _
+    Optional ByVal Value As XlSpecialCellsValue) As Boolean
+Attribute HasSpecialCells.VB_Description = "Returns True if SpecialCells would have returned a Range. Returns False if no cells were selected."
+    If Range Is Nothing Then Exit Function
+
+    Dim Result As Range
+    On Error Resume Next
+    If Value = 0 Then
+        Set Result = Range.SpecialCells(CellType)
+    Else
+        Set Result = Range.SpecialCells(CellType, Value)
+    End If
+    
+    HasSpecialCells = (Not Result Is Nothing)
+End Function

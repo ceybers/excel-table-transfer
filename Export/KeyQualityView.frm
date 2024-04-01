@@ -18,8 +18,9 @@ Option Explicit
 Implements IView
 
 Private Type TState
+    Context As IAppContext
     ViewModel As KeyQualityViewModel
-    Result As ViewResult
+    Result As TtViewResult
 End Type
 Private This As TState
 
@@ -28,34 +29,59 @@ Private Sub cboCancel_Click()
     Me.Hide
 End Sub
 
+Private Property Get IView_ViewModel() As Object
+    Set IView_ViewModel = This.ViewModel
+End Property
+
+Public Property Get ViewModel() As KeyQualityViewModel
+    Set ViewModel = This.ViewModel
+End Property
+
+Public Property Set ViewModel(ByVal vNewValue As KeyQualityViewModel)
+    Set This.ViewModel = vNewValue
+End Property
+
+Public Property Get Context() As IAppContext
+    Set Context = This.Context
+End Property
+
+Public Property Set Context(ByVal vNewValue As IAppContext)
+    Set This.Context = vNewValue
+End Property
+
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
         This.Result = vrCancel
     End If
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
-    Set This.ViewModel = ViewModel
+Private Sub IView_Show()
+    IView_ShowDialog
+End Sub
+ 
+Private Sub IView_Hide()
+    Me.Hide
+End Sub
+
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyQualityViewModel) As IView
+    Dim Result As KeyQualityView
+    Set Result = New KeyQualityView
     
-    InitializeControls
-    UpdateListView
-    UpdateButtons
+    Set Result.Context = Context
+    Set Result.ViewModel = ViewModel
+
+    Set Create = Result
+End Function
+
+Private Function IView_ShowDialog() As TtViewResult
+    BindControls
     
     Me.Show
     
     IView_ShowDialog = This.Result
 End Function
 
-Private Sub InitializeControls()
+Private Sub BindControls()
     KeyColumnToListView.Initialize Me.lvQuality
+    Context.BindingManager.BindPropertyPath ViewModel, "KeyColumn", Me.lvQuality, "ListItems", OneWayBinding, KeyColumnToListView
 End Sub
-
-Private Sub UpdateListView()
-    KeyColumnToListView.Load Me.lvQuality, This.ViewModel.KeyColumn
-End Sub
-
-Private Sub UpdateButtons()
-    Me.cboCancel.Enabled = True
-End Sub
-
-

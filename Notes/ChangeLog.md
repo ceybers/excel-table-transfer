@@ -1,4 +1,7 @@
 # Change Log
+## v1.8.4-dev (2024/04/01)
+- Upgraded MVVM to use Property Binding. This should make it easier and more efficient to add new UI dialogs and features.
+
 ## v1.8.2-dev (2024/03/31)
 - Overhauled all the UI dialogs.
 - Fixed error when trying to transfer data with no matching keys.

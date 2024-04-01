@@ -19,10 +19,31 @@ Option Explicit
 Implements IView
 
 Private Type TState
+    Context As IAppContext
     ViewModel As DeltasPreviewViewModel
-    Result As ViewResult
+    Result As TtViewResult
 End Type
 Private This As TState
+
+Private Property Get IView_ViewModel() As Object
+    Set IView_ViewModel = This.ViewModel
+End Property
+
+Public Property Get ViewModel() As DeltasPreviewViewModel
+    Set ViewModel = This.ViewModel
+End Property
+
+Public Property Set ViewModel(ByVal vNewValue As DeltasPreviewViewModel)
+    Set This.ViewModel = vNewValue
+End Property
+
+Public Property Get Context() As IAppContext
+    Set Context = This.Context
+End Property
+
+Public Property Set Context(ByVal vNewValue As IAppContext)
+    Set This.Context = vNewValue
+End Property
 
 Private Sub cmbBack_Click()
     This.Result = vrBack
@@ -53,13 +74,20 @@ Private Sub cmbShowAll_Click()
     DoShowAll
 End Sub
 
-
-Private Sub lvKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    DoSelectKey Item.Text
+Private Sub lvKeys_ItemClick(ByVal Item As MScomctllib.ListItem)
+    DoSelectKey Item.Text ' TODO Create a proper Model and VM
 End Sub
 
-Private Sub lvFields_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    DoSelectField Item.Text
+Private Sub lvFields_ItemClick(ByVal Item As MScomctllib.ListItem)
+    DoSelectField Item.Text ' TODO Create a proper Model and VM
+End Sub
+
+Private Sub IView_Show()
+    IView_ShowDialog
+End Sub
+ 
+Private Sub IView_Hide()
+    Me.Hide
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -72,35 +100,37 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
-    Set This.ViewModel = ViewModel
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As DeltasPreviewViewModel) As IView
+    Dim Result As DeltasPreviewView
+    Set Result = New DeltasPreviewView
     
-    InitializeControls
-    UpdateListViewLHS
-    UpdateListViewRHS
-    UpdateButtons
+    Set Result.Context = Context
+    Set Result.ViewModel = ViewModel
+
+    Set Create = Result
+End Function
+
+Private Function IView_ShowDialog() As TtViewResult
+    Me.lblHeaderText.Caption = HDR_TXT_DELTAS_PREVIEW
+    
+    BindControls
     UpdateNoChanges
     
     Me.Show
     
-    IView_ShowDialog = This.Result 'Not This.IsCancelled
+    IView_ShowDialog = This.Result
 End Function
 
-Private Sub InitializeControls()
-    Me.lblHeaderText.Caption = HDR_TXT_DELTAS_PREVIEW
-    
+Private Sub BindControls()
     TransferDeltasToListView.Initialize Me.lvKeys, ttKeyMember
     TransferDeltasToListView.Initialize Me.lvFields, ttField
     TransferDeltasToListView.Initialize Me.lvDeltas, ttDelta
-End Sub
-
-Private Sub UpdateButtons()
-    Me.cmbShowAll.Enabled = This.ViewModel.CanShowAll
-    Me.cmbNext.Enabled = This.ViewModel.CanFinish
     
-    If Me.cmbNext.Enabled Then
-        Me.cmbNext.SetFocus
-    End If
+    With Context.BindingManager
+        .BindPropertyPath ViewModel, "Keys", Me.lvKeys, "ListItems", TwoWayBinding, TransferDeltasToListView
+        .BindPropertyPath ViewModel, "Fields", Me.lvFields, "ListItems", TwoWayBinding, TransferDeltasToListView
+        .BindPropertyPath ViewModel, "Deltas", Me.lvDeltas, "ListItems", OneWayBinding, TransferDeltasToListView
+    End With
 End Sub
 
 Private Sub UpdateNoChanges()
@@ -109,21 +139,8 @@ Private Sub UpdateNoChanges()
     End If
 End Sub
 
-Private Sub UpdateListViewLHS()
-    TransferDeltasToListView.Load Me.lvKeys, This.ViewModel, ttKeyMember
-    TransferDeltasToListView.Load Me.lvFields, This.ViewModel, ttField
-End Sub
-
-Private Sub UpdateListViewRHS()
-    TransferDeltasToListView.Load Me.lvDeltas, This.ViewModel, ttDelta
-End Sub
-
 Private Sub DoShowAll()
-    'msgbox "Are you sure?"
     This.ViewModel.DoShowAll
-    UpdateListViewLHS
-    UpdateListViewRHS
-    UpdateButtons
 End Sub
 
 Private Sub DoSelectKey(ByVal Key As String)
@@ -132,8 +149,6 @@ Private Sub DoSelectKey(ByVal Key As String)
     Else
         This.ViewModel.TrySelectKey Key
     End If
-    
-    UpdateListViewRHS
 End Sub
 
 Private Sub DoSelectField(ByVal Field As String)
@@ -142,6 +157,4 @@ Private Sub DoSelectField(ByVal Field As String)
     Else
         This.ViewModel.TrySelectField Field
     End If
-    
-    UpdateListViewRHS
 End Sub
