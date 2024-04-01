@@ -78,11 +78,11 @@ Public Sub DoMapRemove()
 End Sub
 
 Public Function CanNext() As Boolean
-    CanNext = This.Mapped.Items.Count > 0
+    CanNext = This.Mapped.Count > 0
 End Function
 
 Public Sub DoAutoMap()
-    CollectionClear This.Mapped.Items
+    This.Mapped.Clear
     
     Dim SourceColumn As ValueColumn
     For Each SourceColumn In This.Source.ValueColumns
@@ -104,11 +104,11 @@ Private Sub TryAutoMapOne(ByVal Source As ValueColumn, ByVal Destination As Valu
 End Sub
 
 Public Function CanRemoveAll() As Boolean
-    CanRemoveAll = This.Mapped.Items.Count > 0
+    CanRemoveAll = This.Mapped.Count > 0
 End Function
 
 Public Sub DoRemoveAll()
-    CollectionClear This.Mapped.Items
+    This.Mapped.Clear
     This.Source.Reset
     This.Destination.Reset
 End Sub

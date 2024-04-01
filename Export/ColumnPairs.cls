@@ -15,8 +15,18 @@ Private Type TState
 End Type
 Private This As TState
 
-Public Property Get Items() As Collection
-    Set Items = This.Items
+'@Enumerator
+Public Property Get NewEnum() As IUnknown
+Attribute NewEnum.VB_UserMemId = -4
+    Set NewEnum = This.Items.[_NewEnum]
+End Property
+
+'Public Property Get Items() As Collection
+'    Set Items = This.Items
+'End Property
+
+Public Property Get Count() As Long
+    Count = This.Items.Count
 End Property
 
 Private Sub Class_Initialize()
@@ -25,7 +35,7 @@ End Sub
 
 Public Function GetArray(ByVal Direction As TransferDirection) As Variant
     Dim Result() As Variant
-    ReDim Result(0 To Items.Count - 1)
+    ReDim Result(0 To This.Items.Count - 1)
     
     Dim i As Long
     For i = 0 To UBound(Result)
@@ -64,6 +74,10 @@ Public Sub Remove(ByVal Source As String, ByVal Destination As String)
     Next i
 End Sub
 
+Public Sub Clear()
+    CollectionClear This.Items
+End Sub
+
 Public Function Exists(ByVal Source As String, ByVal Destination As String) As Boolean
     Dim ColumnPair As ColumnPair
     Exists = TryGetColumnPair(Source, Destination, ColumnPair)
@@ -79,4 +93,3 @@ Private Function TryGetColumnPair(ByVal Source As String, ByVal Destination As S
         End If
     Next ThisColumnPair
 End Function
-

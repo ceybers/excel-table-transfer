@@ -24,7 +24,7 @@ Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal ColumnPairs As Col
     ListView.ListItems.Clear
     
     Dim ColumnPair As ColumnPair
-    For Each ColumnPair In ColumnPairs.Items
+    For Each ColumnPair In ColumnPairs
         AddItem ListView, ColumnPair
     Next ColumnPair
 End Sub

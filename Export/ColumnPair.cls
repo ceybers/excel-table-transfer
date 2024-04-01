@@ -12,7 +12,3 @@ Option Explicit
 
 Public Source As String
 Public Destination As String
-
-Public Function Exists(ByVal RHS As ColumnPair) As Boolean
-    Exists = (Source = RHS.Source And Destination = RHS.Destination)
-End Function
