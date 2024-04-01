@@ -24,7 +24,7 @@ End Sub
 Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As ValueMapperViewModel, _
     ByVal SourcePropertyPath As String)
     Dim ValueColumns As ValueColumns
-    Set ValueColumns = CallByName(VM, PropertyBinding.SourcePropertyPath, VbGet)
+    Set ValueColumns = CallByName(VM, SourcePropertyPath, VbGet)
     
     ValueColumns.TrySelect ListView.SelectedItem.Key
 End Sub

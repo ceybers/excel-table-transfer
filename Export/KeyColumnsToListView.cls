@@ -20,7 +20,7 @@ Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBindin
     SelectItem PropertyBinding.Target, PropertyBinding.Source, PropertyBinding.SourcePropertyPath
 End Sub
 
-Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As ValueMapperViewModel, _
+Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As KeyMapperViewModel, _
     ByVal SourcePropertyPath As String)
     Dim KeyColumns As KeyColumns
     Set KeyColumns = CallByName(VM, SourcePropertyPath, VbGet)
@@ -55,8 +55,9 @@ Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
-        .ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16 ' TODO Header consts
-        .View = lvwReport
+        '.ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16 ' TODO Header consts
+        '.View = lvwReport
+        .View = lvwList
         .FullRowSelect = True
         .Gridlines = False
         .LabelEdit = lvwManual
