@@ -2,7 +2,7 @@ Attribute VB_Name = "ValueColumnsToListView"
 '@Folder "MVVM.ValueConverters"
 Option Explicit
 
-Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
+Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
@@ -17,7 +17,7 @@ Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
     End With
 End Sub
 
-Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal ValueColumns As ValueColumns)
+Public Sub Load(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns As ValueColumns)
     Debug.Assert Not ValueColumns Is Nothing
     
     If ListView.ListItems.Count <> ValueColumns.ValueColumns.Count Then
@@ -27,7 +27,7 @@ Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal ValueColumns As Va
     UpdateItems ListView, ByVal ValueColumns
 End Sub
 
-Private Sub LoadItems(ByVal ListView As MSComctlLib.ListView, ByVal ValueColumns As ValueColumns)
+Private Sub LoadItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns As ValueColumns)
     ListView.ListItems.Clear
     Dim ValueColumn As ValueColumn
     For Each ValueColumn In ValueColumns.ValueColumns
@@ -35,7 +35,7 @@ Private Sub LoadItems(ByVal ListView As MSComctlLib.ListView, ByVal ValueColumns
     Next ValueColumn
 End Sub
 
-Private Sub UpdateItems(ByVal ListView As MSComctlLib.ListView, ByVal ValueColumns As ValueColumns)
+Private Sub UpdateItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns As ValueColumns)
     Dim ListItem As ListItem
     For Each ListItem In ListView.ListItems
         UpdateListItem ListItem, ValueColumns
@@ -49,12 +49,12 @@ Private Sub UpdateItems(ByVal ListView As MSComctlLib.ListView, ByVal ValueColum
     
 End Sub
 
-Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal ValueColumn As ValueColumn)
+Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal ValueColumn As ValueColumn)
     ListView.ListItems.Add Key:=ValueColumn.Name, Text:=ValueColumn.Name
 End Sub
 
 
-Private Sub UpdateListItem(ByVal ListItem As MSComctlLib.ListItem, ByVal ValueColumns As ValueColumns)
+Private Sub UpdateListItem(ByVal ListItem As MScomctllib.ListItem, ByVal ValueColumns As ValueColumns)
     Dim ValueColumn As ValueColumn
     Set ValueColumn = ValueColumns.ValueColumns.Item(ListItem.Key)
     

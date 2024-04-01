@@ -58,11 +58,11 @@ Private Sub cmbShowAll_Click()
 End Sub
 
 
-Private Sub lvKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
+Private Sub lvKeys_ItemClick(ByVal Item As MScomctllib.ListItem)
     DoSelectKey Item.Text
 End Sub
 
-Private Sub lvFields_ItemClick(ByVal Item As MSComctlLib.ListItem)
+Private Sub lvFields_ItemClick(ByVal Item As MScomctllib.ListItem)
     DoSelectField Item.Text
 End Sub
 

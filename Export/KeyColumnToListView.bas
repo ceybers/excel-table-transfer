@@ -2,7 +2,7 @@ Attribute VB_Name = "KeyColumnToListView"
 '@Folder("MVVM.ValueConverters")
 Option Explicit
 
-Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
+Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
@@ -19,7 +19,7 @@ Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
     End With
 End Sub
 
-Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal KeyColumn As KeyColumn)
+Public Sub Load(ByVal ListView As MScomctllib.ListView, ByVal KeyColumn As KeyColumn)
     Debug.Assert Not KeyColumn Is Nothing
     
     ListView.ListItems.Clear
@@ -42,9 +42,9 @@ Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal KeyColumn As KeyCo
     End With
 End Sub
 
-Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal Text As String, ByVal Value As Long, _
+Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal Text As String, ByVal Value As Long, _
     ByVal Icon As String)
-    Dim ListItem As MSComctlLib.ListItem
+    Dim ListItem As MScomctllib.ListItem
     Set ListItem = ListView.ListItems.Add(Text:=Text, SmallIcon:=Icon)
     ListItem.ListSubItems.Add Text:=CStr(Value)
 End Sub

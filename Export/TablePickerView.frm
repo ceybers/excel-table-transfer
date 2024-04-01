@@ -13,19 +13,36 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView
+Implements IView3
 
 Private Type TState
+    Context As IAppContext
     ViewModel As TablePickerViewModel
     Result As TtViewResult
 End Type
 Private This As TState
+
+Private Property Get IView3_ViewModel() As Object
+    Set IView3_ViewModel = This.ViewModel
+End Property
+
+Public Property Get ViewModel() As TablePickerViewModel
+    Set ViewModel = This.ViewModel
+End Property
+
+Public Property Set ViewModel(ByVal vNewValue As TablePickerViewModel)
+    Set This.ViewModel = vNewValue
+End Property
+
+Public Property Get Context() As IAppContext
+    Set Context = This.Context
+End Property
+
+Public Property Set Context(ByVal vNewValue As IAppContext)
+    Set This.Context = vNewValue
+End Property
 
 Private Sub cboBack_Click()
     This.Result = vrBack
@@ -45,20 +62,17 @@ End Sub
 Private Sub cboSelSrc_Click()
     This.ViewModel.PickSelectedTable ttSource
     UpdateListViewLHS
-    UpdateListViewRHS
-    UpdateButtons
+    TryAutoFocusNext
 End Sub
 
 Private Sub cboSelDst_Click()
     This.ViewModel.PickSelectedTable ttDestination
     UpdateListViewLHS
-    UpdateListViewRHS
-    UpdateButtons
+    TryAutoFocusNext
 End Sub
 
-Private Sub tvTables_NodeClick(ByVal Node As MSComctlLib.Node)
+Private Sub tvTables_NodeClick(ByVal Node As MScomctllib.Node)
     This.ViewModel.TrySelect Node.Key
-    UpdateButtons
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -71,21 +85,53 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As TtViewResult
+Private Sub IView3_Show()
+    IView3_ShowDialog
+End Sub
+ 
+Private Sub IView3_Hide()
+    Me.Hide
+End Sub
+
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As TablePickerViewModel) As IView3
+    Dim Result As TablePickerView
+    Set Result = New TablePickerView
+    
+    Set Result.Context = Context
+    Set Result.ViewModel = ViewModel
+
+    Set Create = Result
+End Function
+
+Private Function IView3_ShowDialog() As TtViewResult
     Set This.ViewModel = ViewModel
+    Me.lblHeaderText.Caption = HDR_TXT_TABLE_PICKER
     
     InitializeControls
     UpdateListViewLHS
-    UpdateListViewRHS
-    UpdateButtons
     
-    Me.Show
+    BindControls
     
-    IView_ShowDialog = This.Result
+    Me.Show vbModal
+    
+    IView3_ShowDialog = This.Result
 End Function
 
+Private Sub BindControls()
+    With Context.BindingManager
+        .BindPropertyPath This.ViewModel, "SourceWorkbookName", Me.txtSrcWorkbook, "Value", OneWayBinding
+        .BindPropertyPath This.ViewModel, "SourceTableName", Me.txtSrcTable, "Value", OneWayBinding
+        .BindPropertyPath This.ViewModel, "DestinationWorkbookName", Me.txtDstWorkbook, "Value", OneWayBinding
+        .BindPropertyPath This.ViewModel, "DestinationTableName", Me.txtDstTable, "Value", OneWayBinding
+        
+        .BindPropertyPath This.ViewModel, "CanPickSelected", Me.cboSelSrc, "Enabled", OneWayBinding
+        .BindPropertyPath This.ViewModel, "CanPickSelected", Me.cboSelDst, "Enabled", OneWayBinding
+        
+        .BindPropertyPath This.ViewModel, "CanNext", Me.cboNext, "Enabled", OneWayBinding
+    End With
+End Sub
+
 Private Sub InitializeControls()
-    Me.lblHeaderText.Caption = HDR_TXT_TABLE_PICKER
     TablePickerToTreeView.Initialize Me.tvTables
 End Sub
 
@@ -93,21 +139,8 @@ Private Sub UpdateListViewLHS()
     TablePickerToTreeView.Load Me.tvTables, This.ViewModel
 End Sub
 
-Private Sub UpdateListViewRHS()
-    TablePickerToFrame.Load This.ViewModel, Me.frmSrc, ttSource
-    TablePickerToFrame.Load This.ViewModel, Me.frmDst, ttDestination
-End Sub
-
-Private Sub UpdateButtons()
-    Me.cboBack.Enabled = False
-    Me.cboNext.Enabled = This.ViewModel.CanNext
-    Me.cboCancel.Enabled = True
-    
-    Me.cboSelSrc.Enabled = This.ViewModel.CanPickSelected
-    Me.cboSelDst.Enabled = This.ViewModel.CanPickSelected
-    
-    If This.ViewModel.CanNext Then
+Private Sub TryAutoFocusNext()
+    If Me.cboNext.Enabled = True Then
         Me.cboNext.SetFocus
     End If
 End Sub
-

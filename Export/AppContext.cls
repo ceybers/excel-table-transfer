@@ -29,11 +29,11 @@ Private Property Get IAppContext_BindingManager() As BindingManager
 End Property
 
 Public Sub Start()
-    On Error GoTo ErrorHandler
+    'On Error GoTo ErrorHandler
 
 'DEBUG:
-    'Set This.Transfer = GetDebugTransfer
-    'GoTo RewindValueMapper
+    Set This.Transfer = GetDebugTransfer
+    GoTo RewindKeyMapper
 
 RewindReloadRecent:
     Select Case TryReloadRecent
@@ -112,11 +112,12 @@ Private Function TryTablePicker() As TtViewResult
     Set ViewModel.SourceTable = This.Transfer.Source.Table
     Set ViewModel.DestinationTable = This.Transfer.Destination.Table
     
-    Dim View As IView
-    Set View = New TablePickerView
+    Dim View As IView3
+    'Set View = New TablePickerView
+    Set View = TablePickerView.Create(Me, ViewModel)
     
     Dim Result As TtViewResult
-    Result = View.ShowDialog(ViewModel)
+    Result = View.ShowDialog
   
     Select Case Result
         Case vrNext
@@ -141,11 +142,14 @@ Private Function TryKeyMapper() As TtViewResult
     
     ViewModel.TryEvaluateMatch
     
-    Dim View As IView
-    Set View = New KeyMapperView
+    'Dim View As IView
+    'Set View = New KeyMapperView
+    
+    Dim View As IView3
+    Set View = KeyMapperView.Create(Me, ViewModel)
     
     Dim Result As TtViewResult
-    Result = View.ShowDialog(ViewModel)
+    Result = View.ShowDialog()
     
     Select Case Result
         Case vrNext

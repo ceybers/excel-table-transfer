@@ -13,15 +13,12 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
 '@Folder("MVVM.Views")
 Option Explicit
-Implements IView
+Implements IView3
 
 Private Type TState
+    Context As IAppContext
     ViewModel As KeyQualityViewModel
     Result As TtViewResult
 End Type
@@ -32,22 +29,58 @@ Private Sub cboCancel_Click()
     Me.Hide
 End Sub
 
+Private Property Get IView3_ViewModel() As Object
+    Set IView3_ViewModel = This.ViewModel
+End Property
+
+Public Property Get ViewModel() As KeyQualityViewModel
+    Set ViewModel = This.ViewModel
+End Property
+
+Public Property Set ViewModel(ByVal vNewValue As KeyQualityViewModel)
+    Set This.ViewModel = vNewValue
+End Property
+
+Public Property Get Context() As IAppContext
+    Set Context = This.Context
+End Property
+
+Public Property Set Context(ByVal vNewValue As IAppContext)
+    Set This.Context = vNewValue
+End Property
+
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     If CloseMode = VbQueryClose.vbFormControlMenu Then
         This.Result = vrCancel
     End If
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As TtViewResult
-    Set This.ViewModel = ViewModel
+Private Sub IView3_Show()
+    IView3_ShowDialog
+End Sub
+ 
+Private Sub IView3_Hide()
+    Me.Hide
+End Sub
+
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyQualityViewModel) As IView3
+    Dim Result As KeyQualityView
+    Set Result = New KeyQualityView
     
+    Set Result.Context = Context
+    Set Result.ViewModel = ViewModel
+
+    Set Create = Result
+End Function
+
+Private Function IView3_ShowDialog() As TtViewResult
     InitializeControls
     UpdateListView
     UpdateButtons
     
     Me.Show
     
-    IView_ShowDialog = This.Result
+    IView3_ShowDialog = This.Result
 End Function
 
 Private Sub InitializeControls()
@@ -61,4 +94,3 @@ End Sub
 Private Sub UpdateButtons()
     Me.cboCancel.Enabled = True
 End Sub
-

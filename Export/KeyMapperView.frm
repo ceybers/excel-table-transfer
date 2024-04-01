@@ -13,19 +13,36 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView
+Implements IView3
 
 Private Type TState
+    Context As IAppContext
     ViewModel As KeyMapperViewModel
     Result As TtViewResult
 End Type
 Private This As TState
+
+Private Property Get IView3_ViewModel() As Object
+    Set IView3_ViewModel = This.ViewModel
+End Property
+
+Public Property Get ViewModel() As KeyMapperViewModel
+    Set ViewModel = This.ViewModel
+End Property
+
+Public Property Set ViewModel(ByVal vNewValue As KeyMapperViewModel)
+    Set This.ViewModel = vNewValue
+End Property
+
+Public Property Get Context() As IAppContext
+    Set Context = This.Context
+End Property
+
+Public Property Set Context(ByVal vNewValue As IAppContext)
+    Set This.Context = vNewValue
+End Property
 
 Private Sub cboBack_Click()
     This.Result = vrBack
@@ -42,43 +59,43 @@ Private Sub cboCancel_Click()
     Me.Hide
 End Sub
 
-Private Sub lvSrcKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    This.ViewModel.Source.TrySelect Item.Key
+Private Sub lvSrcKeys_ItemClick(ByVal Item As MScomctllib.ListItem)
     This.ViewModel.TryEvaluateMatch
-    
-    UpdateListViewLHS
-    UpdateResults
 End Sub
 
-Private Sub lvDstKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
-    This.ViewModel.Destination.TrySelect Item.Key
+Private Sub lvDstKeys_ItemClick(ByVal Item As MScomctllib.ListItem)
     This.ViewModel.TryEvaluateMatch
-    
-    UpdateListViewRHS
-    UpdateResults
 End Sub
 
 Private Sub lvSrcKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As stdole.OLE_XPOS_PIXELS, ByVal Y As stdole.OLE_YPOS_PIXELS)
-    UpdateButtons
+    TryAutoFocusNext
 End Sub
 
 Private Sub lvDstKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As stdole.OLE_XPOS_PIXELS, ByVal Y As stdole.OLE_YPOS_PIXELS)
-    UpdateButtons
+    TryAutoFocusNext
 End Sub
 
 Private Sub cmbSrcQuality_DropButtonClick()
     Me.cboCancel.SetFocus
-    This.ViewModel.ShowQuality TtDirection.ttSource
+    DoShowQuality ttSource
 End Sub
 
 Private Sub cmbDstQuality_DropButtonClick()
     Me.cboCancel.SetFocus
-    This.ViewModel.ShowQuality TtDirection.ttDestination
+    DoShowQuality ttDestination
 End Sub
 
 Private Sub cmbMatchQuality_DropButtonClick()
     Me.cboCancel.SetFocus
-    This.ViewModel.ShowMatchDetails
+    DoShowMatchQuality
+End Sub
+
+Private Sub IView3_Show()
+    IView3_ShowDialog
+End Sub
+ 
+Private Sub IView3_Hide()
+    Me.Hide
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -91,52 +108,69 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As TtViewResult
-    Set This.ViewModel = ViewModel
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyMapperViewModel) As IView3
+    Dim Result As KeyMapperView
+    Set Result = New KeyMapperView
+    
+    Set Result.Context = Context
+    Set Result.ViewModel = ViewModel
+
+    Set Create = Result
+End Function
+
+Private Function IView3_ShowDialog() As TtViewResult
+    Me.lblHeaderText.Caption = HDR_TXT_KEY_MAPPER
     
     InitializeControls
-    UpdateListViewLHS
-    UpdateListViewRHS
-    UpdateResults
-    UpdateButtons
+    BindControls
     
     Me.Show
     
-    IView_ShowDialog = This.Result
+    IView3_ShowDialog = This.Result
 End Function
 
 Private Sub InitializeControls()
-    Me.lblHeaderText.Caption = HDR_TXT_KEY_MAPPER
-    
-    KeyColumnsToListView.Initialize Me.lvSrcKeys
-    KeyColumnsToListView.Initialize Me.lvDstKeys
+    KeyColumnsToListView3.Initialize Me.lvSrcKeys
+    KeyColumnsToListView3.Initialize Me.lvDstKeys
 End Sub
 
-Private Sub UpdateListViewLHS()
-    KeyColumnsToListView.Load Me.lvSrcKeys, This.ViewModel.Source
-    KeyColumnsToComboBox.Load Me.cmbSrcQuality, This.ViewModel.Source
+Private Sub BindControls()
+    With Context.BindingManager
+        .BindPropertyPath ViewModel, "Source", Me.lvSrcKeys, "ListItems", TwoWayBinding, KeyColumnsToListView3
+        .BindPropertyPath ViewModel, "Destination", Me.lvDstKeys, "ListItems", TwoWayBinding, KeyColumnsToListView3
+        
+        .BindPropertyPath ViewModel, "Source.Caption", Me.cmbSrcQuality, "Text", OneWayBinding
+        .BindPropertyPath ViewModel, "Destination.Caption", Me.cmbDstQuality, "Text", OneWayBinding
+        .BindPropertyPath ViewModel, "MatchQualityCaption", Me.cmbMatchQuality, "Text", OneWayBinding
+        
+        .BindPropertyPath ViewModel, "CanNext", Me.cboNext, "Enabled", OneWayBinding
+    End With
 End Sub
 
-Private Sub UpdateListViewRHS()
-    KeyColumnsToListView.Load Me.lvDstKeys, This.ViewModel.Destination
-    KeyColumnsToComboBox.Load Me.cmbDstQuality, This.ViewModel.Destination
-End Sub
-
-Private Sub UpdateResults()
-    MatchQualityToComboBox.Load Me.cmbMatchQuality, This.ViewModel.MatchQuality
-End Sub
-
-Private Sub UpdateButtons()
-    Me.cboBack.Enabled = True
-    Me.cboNext.Enabled = This.ViewModel.CanNext
-    Me.cboCancel.Enabled = True
-    
-    Me.cmbSrcQuality.Enabled = Not This.ViewModel.Source.Selected Is Nothing
-    Me.cmbDstQuality.Enabled = Not This.ViewModel.Destination.Selected Is Nothing
-    Me.cmbMatchQuality.Enabled = Not This.ViewModel.MatchQuality Is Nothing
-    
-    If This.ViewModel.CanNext Then
+Private Sub TryAutoFocusNext()
+    If Me.cboNext.Enabled = True Then
         Me.cboNext.SetFocus
     End If
 End Sub
 
+Private Sub DoShowQuality(ByVal Direction As TtDirection)
+    Dim KeyQualityViewModel As KeyQualityViewModel
+    Set KeyQualityViewModel = New KeyQualityViewModel
+    
+    If Direction = ttSource Then
+        KeyQualityViewModel.Load This.ViewModel.Source.Selected
+    Else
+        KeyQualityViewModel.Load This.ViewModel.Destination.Selected
+    End If
+    
+    Dim View As IView3
+    Set View = KeyQualityView.Create(This.Context, KeyQualityViewModel)
+    
+    View.Show
+End Sub
+
+Private Sub DoShowMatchQuality()
+    Dim View As IView3
+    Set View = MatchQualityView.Create(This.Context, This.ViewModel)
+    View.Show
+End Sub

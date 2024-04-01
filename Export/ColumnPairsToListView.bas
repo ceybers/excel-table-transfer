@@ -2,7 +2,7 @@ Attribute VB_Name = "ColumnPairsToListView"
 '@Folder "MVVM.ValueConverters"
 Option Explicit
 
-Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
+Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
@@ -18,7 +18,7 @@ Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
     End With
 End Sub
 
-Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal ColumnPairs As ColumnPairs)
+Public Sub Load(ByVal ListView As MScomctllib.ListView, ByVal ColumnPairs As ColumnPairs)
     Debug.Assert Not ColumnPairs Is Nothing
     
     ListView.ListItems.Clear
@@ -29,7 +29,7 @@ Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal ColumnPairs As Col
     Next ColumnPair
 End Sub
 
-Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal ColumnPair As ColumnPair)
+Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal ColumnPair As ColumnPair)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Text:=ColumnPair.Source)
     ListItem.ListSubItems.Add Text:=ColumnPair.Destination

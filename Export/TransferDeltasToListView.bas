@@ -2,7 +2,7 @@ Attribute VB_Name = "TransferDeltasToListView"
 '@Folder "MVVM.ValueConverters"
 Option Explicit
 
-Public Sub Initialize(ByVal ListView As MSComctlLib.ListView, ByVal Member As TtDeltaType)
+Public Sub Initialize(ByVal ListView As MScomctllib.ListView, ByVal Member As TtDeltaType)
     With ListView
         .ListItems.Clear
         .View = lvwReport
@@ -16,7 +16,7 @@ Public Sub Initialize(ByVal ListView As MSComctlLib.ListView, ByVal Member As Tt
     SetColumnHeaders ListView, Member
 End Sub
 
-Private Sub SetColumnHeaders(ByVal ListView As MSComctlLib.ListView, ByVal Member As TtDeltaType)
+Private Sub SetColumnHeaders(ByVal ListView As MScomctllib.ListView, ByVal Member As TtDeltaType)
     With ListView
         .ColumnHeaders.Clear
         .ColumnHeaders.Add Text:="#", Width:=ListView.Width - 16
@@ -30,7 +30,7 @@ Private Sub SetColumnHeaders(ByVal ListView As MSComctlLib.ListView, ByVal Membe
     End If
 End Sub
 
-Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal ViewModel As DeltasPreviewViewModel, _
+Public Sub Load(ByVal ListView As MScomctllib.ListView, ByVal ViewModel As DeltasPreviewViewModel, _
     ByVal Member As TtDeltaType)
     ListView.ListItems.Clear
     
@@ -65,7 +65,7 @@ Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal ViewModel As Delta
     End If
 End Sub
 
-Private Sub AddItemTransferDelta(ByVal ListView As MSComctlLib.ListView, ByVal TransferDelta As TransferDelta, _
+Private Sub AddItemTransferDelta(ByVal ListView As MScomctllib.ListView, ByVal TransferDelta As TransferDelta, _
     ByVal SourceNumberFormat As String, ByVal DestinationNumberFormat As String)
     Dim ValueBeforeFormatted As String
     Dim ValueAfterFormatted As String
@@ -89,11 +89,11 @@ Private Sub AddItemTransferDelta(ByVal ListView As MSComctlLib.ListView, ByVal T
     ListItem.ListSubItems.Add Text:=ValueAfterFormatted
 End Sub
 
-Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal Text As String)
+Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal Text As String)
     ListView.ListItems.Add Text:=Text
 End Sub
 
-Private Sub UpdateHeader(ByVal ListView As MSComctlLib.ListView, ByVal Member As TtDeltaType, ByVal Count As Long)
+Private Sub UpdateHeader(ByVal ListView As MScomctllib.ListView, ByVal Member As TtDeltaType, ByVal Count As Long)
     Dim HeaderText As String
     
     Select Case Member
@@ -111,7 +111,7 @@ Private Sub UpdateHeader(ByVal ListView As MSComctlLib.ListView, ByVal Member As
     End If
 End Sub
 
-Private Sub AddSelectAll(ByVal ListView As MSComctlLib.ListView)
+Private Sub AddSelectAll(ByVal ListView As MScomctllib.ListView)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Text:=SELECT_ALL)
     ListItem.ForeColor = StringConstants.COLOR_SELECT_ALL

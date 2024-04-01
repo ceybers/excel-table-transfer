@@ -42,14 +42,14 @@ Private Sub cboCancel_Click()
     Me.Hide
 End Sub
 
-Private Sub lvSrcValues_ItemClick(ByVal Item As MSComctlLib.ListItem)
+Private Sub lvSrcValues_ItemClick(ByVal Item As MScomctllib.ListItem)
     This.ViewModel.Source.TrySelect Item.Key
     'This.ViewModel.TryEvaluateMatch
     UpdateButtons
     UpdateMappingControl
 End Sub
 
-Private Sub lvDstValues_ItemClick(ByVal Item As MSComctlLib.ListItem)
+Private Sub lvDstValues_ItemClick(ByVal Item As MScomctllib.ListItem)
     This.ViewModel.Destination.TrySelect Item.Key
     'This.ViewModel.TryEvaluateMatch
     UpdateButtons

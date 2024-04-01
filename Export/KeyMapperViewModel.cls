@@ -10,8 +10,11 @@ Attribute VB_Exposed = False
 '@Folder "MVVM.ViewModels"
 Option Explicit
 Implements IViewModel
+Implements INotifyPropertyChanged
 
 Private Type TState
+    Notifier As INotifyPropertyChanged
+    
     Source As KeyColumns
     Destination As KeyColumns
     MatchQuality As KeyColumnComparer
@@ -34,6 +37,19 @@ End Property
 Private Sub Class_Initialize()
     Set This.Source = New KeyColumns
     Set This.Destination = New KeyColumns
+    Set This.Notifier = New PropertyChangeNotifier
+End Sub
+
+Private Sub INotifyPropertyChanged_RegisterHandler(ByVal Handler As IHandlePropertyChanged)
+    This.Notifier.RegisterHandler Handler
+End Sub
+
+Private Sub INotifyPropertyChanged_OnPropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    This.Notifier.OnPropertyChanged Source, PropertyName
+End Sub
+
+Private Sub OnPropertyChanged(ByVal PropertyName As String)
+    INotifyPropertyChanged_OnPropertyChanged Me, PropertyName
 End Sub
 
 Private Function IViewModel_IsValid() As Boolean
@@ -53,34 +69,36 @@ Public Sub TryEvaluateMatch()
         Set This.MatchQuality = New KeyColumnComparer
         Set This.MatchQuality.LHS = This.Source.Selected
         Set This.MatchQuality.RHS = This.Destination.Selected
+        OnPropertyChanged "MatchQualityCaption"
     End If
 End Sub
 
-Public Sub ShowMatchDetails()
-    Dim View As IView
-    Set View = New MatchQualityView
-    View.ShowDialog Me
-    Set View = Nothing
-End Sub
-
-Public Sub ShowQuality(ByVal Direction As TtDirection)
-    Dim ViewModel As KeyQualityViewModel
-    Set ViewModel = New KeyQualityViewModel
-    
-    If Direction = ttSource Then
-        ViewModel.Load This.Source.Selected
-    Else
-        ViewModel.Load This.Destination.Selected
-    End If
-    
-    Dim View As IView
-    Set View = New KeyQualityView
-    View.ShowDialog ViewModel
-End Sub
-
-Public Function CanNext() As Boolean
-    If This.MatchQuality Is Nothing Then Exit Function
-    If This.MatchQuality.Intersection.Count = 0 Then Exit Function
+Public Property Get CanNext() As Boolean
+    If This.MatchQuality Is Nothing Then Exit Property
+    If This.MatchQuality.Intersection.Count = 0 Then Exit Property
     
     CanNext = True
+End Property
+
+Public Property Get MatchQualityCaption()
+    If This.MatchQuality Is Nothing Then
+        MatchQualityCaption = NO_TWO_COLUMNS_SELECTED
+    Else
+        MatchQualityCaption = GetKeyColumnComparerString(This.MatchQuality)
+    End If
+End Property
+
+Private Function GetKeyColumnComparerString(ByVal Comparer As KeyColumnComparer) As String
+    Dim Intersection As Long
+    Intersection = Comparer.Intersection.Count
+    
+    Dim Total As Long
+    Total = Comparer.LeftOnly.Count + Comparer.Intersection.Count + Comparer.RightOnly.Count
+    
+    If Total = 0 Then
+        GetKeyColumnComparerString = MSG_ZERO_KEYS
+    Else
+        GetKeyColumnComparerString = Format$(Intersection / Total, "0%") & " (" & CStr(Intersection) & _
+            "/" & CStr(Total) & " keys intersect)"
+    End If
 End Function

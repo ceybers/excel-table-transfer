@@ -2,7 +2,7 @@ Attribute VB_Name = "MatchQualityToListView"
 '@Folder("MVVM.ValueConverters")
 Option Explicit
 
-Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
+Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
@@ -13,7 +13,7 @@ Public Sub Initialize(ByVal ListView As MSComctlLib.ListView)
     End With
 End Sub
 
-Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal Collection As Collection)
+Public Sub Load(ByVal ListView As MScomctllib.ListView, ByVal Collection As Collection)
     Debug.Assert Not Collection Is Nothing
     
     ListView.ListItems.Clear
