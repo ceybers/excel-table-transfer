@@ -1,11 +1,26 @@
-Attribute VB_Name = "MatchQualityToTextBox"
-'@Folder "MVVM.ValueConverters"
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = "MatchQualityToTextBox3"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+'@PredeclaredId
+'@Folder("MVVM.ValueConverters")
 Option Explicit
+Implements IValueConverter
 
-Public Sub Initialize(ByVal TextBox As MSForms.TextBox)
+Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object) ' read
+    Load Source, Target
 End Sub
 
-Public Sub Load(ByVal TextBox As MSForms.TextBox, ByVal KeyColumnComparer As KeyColumnComparer)
+Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding) ' write
+    ' Read-only
+End Sub
+
+Public Sub Load(ByVal TextBox As MSForms.TextBox, ByVal KeyColumn As KeyColumn)
     Dim MaxLines As Long
     With KeyColumnComparer
         MaxLines = .LeftOnly.Count
@@ -30,3 +45,4 @@ Public Sub Load(ByVal TextBox As MSForms.TextBox, ByVal KeyColumnComparer As Key
     
     TextBox.Text = Join(Table, vbCrLf)
 End Sub
+

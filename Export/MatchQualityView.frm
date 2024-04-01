@@ -84,26 +84,24 @@ End Function
 Private Function IView3_ShowDialog() As TtViewResult
     Set This.ViewModel = ViewModel
     
-    InitializeControls
-    UpdateControls
+    BindControls
+    
+    Me.mpgMatchQuality.Value = 0
     
     Me.Show
     
     IView3_ShowDialog = This.Result
 End Function
 
-Private Sub InitializeControls()
-    MatchQualityToListView.Initialize Me.lvLeftOnly
-    MatchQualityToListView.Initialize Me.lvIntersection
-    MatchQualityToListView.Initialize Me.lvRightOnly
-    MatchQualityToTextBox.Initialize Me.txtMatchQuality
+Private Sub BindControls()
+    MatchQualityToListView3.Initialize Me.lvLeftOnly
+    MatchQualityToListView3.Initialize Me.lvIntersection
+    MatchQualityToListView3.Initialize Me.lvRightOnly
     
-    Me.mpgMatchQuality.Value = 0
-End Sub
-
-Private Sub UpdateControls()
-    MatchQualityToListView.Load Me.lvLeftOnly, This.ViewModel.MatchQuality.LeftOnly
-    MatchQualityToListView.Load Me.lvIntersection, This.ViewModel.MatchQuality.Intersection
-    MatchQualityToListView.Load Me.lvRightOnly, This.ViewModel.MatchQuality.RightOnly
-    MatchQualityToTextBox.Load Me.txtMatchQuality, This.ViewModel.MatchQuality
+    With Context.BindingManager
+        .BindPropertyPath ViewModel, "MatchQuality.LeftOnly", Me.lvLeftOnly, "ListItems", OneWayBinding, MatchQualityToListView3
+        .BindPropertyPath ViewModel, "MatchQuality.Intersection", Me.lvIntersection, "ListItems", OneWayBinding, MatchQualityToListView3
+        .BindPropertyPath ViewModel, "MatchQuality.RightOnly", Me.lvRightOnly, "ListItems", OneTimeBinding, MatchQualityToListView3
+        .BindPropertyPath ViewModel, "MatchQuality.ToTextTable", Me.txtMatchQuality, "Text", OneTimeBinding
+    End With
 End Sub

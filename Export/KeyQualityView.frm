@@ -74,23 +74,14 @@ Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyQuali
 End Function
 
 Private Function IView3_ShowDialog() As TtViewResult
-    InitializeControls
-    UpdateListView
-    UpdateButtons
+    BindControls
     
     Me.Show
     
     IView3_ShowDialog = This.Result
 End Function
 
-Private Sub InitializeControls()
-    KeyColumnToListView.Initialize Me.lvQuality
-End Sub
-
-Private Sub UpdateListView()
-    KeyColumnToListView.Load Me.lvQuality, This.ViewModel.KeyColumn
-End Sub
-
-Private Sub UpdateButtons()
-    Me.cboCancel.Enabled = True
+Private Sub BindControls()
+    KeyColumnToListView3.Initialize Me.lvQuality
+    Context.BindingManager.BindPropertyPath ViewModel, "KeyColumn", Me.lvQuality, "ListItems", OneWayBinding, KeyColumnToListView3
 End Sub

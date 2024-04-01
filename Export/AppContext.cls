@@ -32,8 +32,8 @@ Public Sub Start()
     'On Error GoTo ErrorHandler
 
 'DEBUG:
-    Set This.Transfer = GetDebugTransfer
-    GoTo RewindKeyMapper
+    'Set This.Transfer = GetDebugTransfer
+    'GoTo RewindValueMapper
 
 RewindReloadRecent:
     Select Case TryReloadRecent
@@ -113,7 +113,6 @@ Private Function TryTablePicker() As TtViewResult
     Set ViewModel.DestinationTable = This.Transfer.Destination.Table
     
     Dim View As IView3
-    'Set View = New TablePickerView
     Set View = TablePickerView.Create(Me, ViewModel)
     
     Dim Result As TtViewResult
@@ -141,9 +140,6 @@ Private Function TryKeyMapper() As TtViewResult
     ViewModel.Destination.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
     
     ViewModel.TryEvaluateMatch
-    
-    'Dim View As IView
-    'Set View = New KeyMapperView
     
     Dim View As IView3
     Set View = KeyMapperView.Create(Me, ViewModel)
@@ -179,11 +175,11 @@ Private Function TryValueMapper() As TtViewResult
         .SetKeyColumn This.Transfer.Destination.KeyColumnName
     End With
     
-    Dim View As IView
-    Set View = ValueMapperView
+    Dim View As IView3
+    Set View = ValueMapperView.Create(Me, ViewModel)
     
     Dim Result As TtViewResult
-    Result = View.ShowDialog(ViewModel)
+    Result = View.ShowDialog()
     
     Select Case Result
         Case vrNext
@@ -203,11 +199,11 @@ Private Function TryTransferDeltas() As TtViewResult
     Set ViewModel = New DeltasPreviewViewModel
     ViewModel.Load This.Transfer.TransferDeltas, This.Transfer.Source.Table, This.Transfer.Destination.Table
     
-    Dim View As IView
-    Set View = DeltasPreviewView
+    Dim View As IView3
+    Set View = DeltasPreviewView.Create(Me, ViewModel)
     
     Dim Result As TtViewResult
-    Result = View.ShowDialog(ViewModel)
+    Result = View.ShowDialog()
     
     Select Case Result
         Case vrNext

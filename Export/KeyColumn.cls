@@ -31,7 +31,6 @@ Private Type TClsKeyColumn
     NonTextCount As Long
     Limit As Long
 End Type
-
 Private This As TClsKeyColumn
 
 Public Property Get Name() As String

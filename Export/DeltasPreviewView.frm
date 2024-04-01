@@ -13,20 +13,37 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
 '@IgnoreModule HungarianNotation
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView
+Implements IView3
 
 Private Type TState
+    Context As IAppContext
     ViewModel As DeltasPreviewViewModel
     Result As TtViewResult
 End Type
 Private This As TState
+
+Private Property Get IView3_ViewModel() As Object
+    Set IView3_ViewModel = This.ViewModel
+End Property
+
+Public Property Get ViewModel() As DeltasPreviewViewModel
+    Set ViewModel = This.ViewModel
+End Property
+
+Public Property Set ViewModel(ByVal vNewValue As DeltasPreviewViewModel)
+    Set This.ViewModel = vNewValue
+End Property
+
+Public Property Get Context() As IAppContext
+    Set Context = This.Context
+End Property
+
+Public Property Set Context(ByVal vNewValue As IAppContext)
+    Set This.Context = vNewValue
+End Property
 
 Private Sub cmbBack_Click()
     This.Result = vrBack
@@ -57,13 +74,20 @@ Private Sub cmbShowAll_Click()
     DoShowAll
 End Sub
 
-
 Private Sub lvKeys_ItemClick(ByVal Item As MScomctllib.ListItem)
     DoSelectKey Item.Text
 End Sub
 
 Private Sub lvFields_ItemClick(ByVal Item As MScomctllib.ListItem)
     DoSelectField Item.Text
+End Sub
+
+Private Sub IView3_Show()
+    IView3_ShowDialog
+End Sub
+ 
+Private Sub IView3_Hide()
+    Me.Hide
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -76,8 +100,18 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As TtViewResult
-    Set This.ViewModel = ViewModel
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As DeltasPreviewViewModel) As IView3
+    Dim Result As DeltasPreviewView
+    Set Result = New DeltasPreviewView
+    
+    Set Result.Context = Context
+    Set Result.ViewModel = ViewModel
+
+    Set Create = Result
+End Function
+
+Private Function IView3_ShowDialog() As TtViewResult
+    Me.lblHeaderText.Caption = HDR_TXT_DELTAS_PREVIEW
     
     InitializeControls
     UpdateListViewLHS
@@ -87,24 +121,28 @@ Private Function IView_ShowDialog(ByVal ViewModel As Object) As TtViewResult
     
     Me.Show
     
-    IView_ShowDialog = This.Result 'Not This.IsCancelled
+    IView3_ShowDialog = This.Result 'Not This.IsCancelled
 End Function
 
 Private Sub InitializeControls()
-    Me.lblHeaderText.Caption = HDR_TXT_DELTAS_PREVIEW
+    TransferDeltasToListView3.Initialize Me.lvKeys, ttKeyMember
+    TransferDeltasToListView3.Initialize Me.lvFields, ttField
+    TransferDeltasToListView3.Initialize Me.lvDeltas, ttDelta
     
-    TransferDeltasToListView.Initialize Me.lvKeys, ttKeyMember
-    TransferDeltasToListView.Initialize Me.lvFields, ttField
-    TransferDeltasToListView.Initialize Me.lvDeltas, ttDelta
+    With Context.BindingManager
+        .BindPropertyPath ViewModel, "Keys", Me.lvKeys, "ListItems", TwoWayBinding, TransferDeltasToListView3
+        .BindPropertyPath ViewModel, "Fields", Me.lvFields, "ListItems", TwoWayBinding, TransferDeltasToListView3
+        .BindPropertyPath ViewModel, "Deltas", Me.lvDeltas, "ListItems", OneWayBinding, TransferDeltasToListView3
+    End With
 End Sub
 
 Private Sub UpdateButtons()
-    Me.cmbShowAll.Enabled = This.ViewModel.CanShowAll
-    Me.cmbNext.Enabled = This.ViewModel.CanFinish
+    'Me.cmbShowAll.Enabled = This.ViewModel.CanShowAll
+    'Me.cmbNext.Enabled = This.ViewModel.CanFinish
     
-    If Me.cmbNext.Enabled Then
-        Me.cmbNext.SetFocus
-    End If
+    'If Me.cmbNext.Enabled Then
+    '    Me.cmbNext.SetFocus
+    'End If
 End Sub
 
 Private Sub UpdateNoChanges()
@@ -114,12 +152,12 @@ Private Sub UpdateNoChanges()
 End Sub
 
 Private Sub UpdateListViewLHS()
-    TransferDeltasToListView.Load Me.lvKeys, This.ViewModel, ttKeyMember
-    TransferDeltasToListView.Load Me.lvFields, This.ViewModel, ttField
+    'TransferDeltasToListView.Load Me.lvKeys, This.ViewModel, ttKeyMember
+    'TransferDeltasToListView.Load Me.lvFields, This.ViewModel, ttField
 End Sub
 
 Private Sub UpdateListViewRHS()
-    TransferDeltasToListView.Load Me.lvDeltas, This.ViewModel, ttDelta
+    'TransferDeltasToListView.Load Me.lvDeltas, This.ViewModel, ttDelta
 End Sub
 
 Private Sub DoShowAll()

@@ -121,7 +121,6 @@ End Function
 Private Function IView3_ShowDialog() As TtViewResult
     Me.lblHeaderText.Caption = HDR_TXT_KEY_MAPPER
     
-    InitializeControls
     BindControls
     
     Me.Show
@@ -129,12 +128,10 @@ Private Function IView3_ShowDialog() As TtViewResult
     IView3_ShowDialog = This.Result
 End Function
 
-Private Sub InitializeControls()
+Private Sub BindControls()
     KeyColumnsToListView3.Initialize Me.lvSrcKeys
     KeyColumnsToListView3.Initialize Me.lvDstKeys
-End Sub
-
-Private Sub BindControls()
+    
     With Context.BindingManager
         .BindPropertyPath ViewModel, "Source", Me.lvSrcKeys, "ListItems", TwoWayBinding, KeyColumnsToListView3
         .BindPropertyPath ViewModel, "Destination", Me.lvDstKeys, "ListItems", TwoWayBinding, KeyColumnsToListView3

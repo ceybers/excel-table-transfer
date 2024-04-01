@@ -13,19 +13,36 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView
+Implements IView3
 
 Private Type TState
+    Context As IAppContext
     ViewModel As ValueMapperViewModel
     Result As TtViewResult
 End Type
 Private This As TState
+
+Private Property Get IView3_ViewModel() As Object
+    Set IView3_ViewModel = This.ViewModel
+End Property
+
+Public Property Get ViewModel() As ValueMapperViewModel
+    Set ViewModel = This.ViewModel
+End Property
+
+Public Property Set ViewModel(ByVal vNewValue As ValueMapperViewModel)
+    Set This.ViewModel = vNewValue
+End Property
+
+Public Property Get Context() As IAppContext
+    Set Context = This.Context
+End Property
+
+Public Property Set Context(ByVal vNewValue As IAppContext)
+    Set This.Context = vNewValue
+End Property
 
 Private Sub cboBack_Click()
     This.Result = vrBack
@@ -44,52 +61,36 @@ End Sub
 
 Private Sub lvSrcValues_ItemClick(ByVal Item As MScomctllib.ListItem)
     This.ViewModel.Source.TrySelect Item.Key
-    'This.ViewModel.TryEvaluateMatch
-    UpdateButtons
-    UpdateMappingControl
 End Sub
 
 Private Sub lvDstValues_ItemClick(ByVal Item As MScomctllib.ListItem)
     This.ViewModel.Destination.TrySelect Item.Key
-    'This.ViewModel.TryEvaluateMatch
-    UpdateButtons
-    UpdateMappingControl
 End Sub
 
 Private Sub cboMapAdd_Click()
     This.ViewModel.DoMapAdd
-    UpdateListViewLHS
-    UpdateListViewRHS
-    UpdateMappingControl
-    UpdateButtons
 End Sub
 
 Private Sub cboMapRemove_Click()
     This.ViewModel.DoMapRemove
-    UpdateListViewLHS
-    UpdateListViewRHS
-    UpdateMappingControl
-    UpdateButtons
 End Sub
 
 Private Sub cboMapAll_Click()
     This.ViewModel.DoAutoMap
-    UpdateListViewLHS
-    UpdateListViewRHS
-    UpdateMappingControl
-    UpdateButtons
-    
     If Me.cboNext.Enabled Then Me.cboNext.SetFocus
 End Sub
 
 Private Sub cboMapReset_Click()
     This.ViewModel.DoRemoveAll
-    UpdateListViewLHS
-    UpdateListViewRHS
-    UpdateMappingControl
-    UpdateButtons
-    
     Me.cboMapAll.SetFocus
+End Sub
+
+Private Sub IView3_Show()
+    IView3_ShowDialog
+End Sub
+ 
+Private Sub IView3_Hide()
+    Me.Hide
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
@@ -102,48 +103,38 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As TtViewResult
-    Set This.ViewModel = ViewModel
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As ValueMapperViewModel) As IView3
+    Dim Result As ValueMapperView
+    Set Result = New ValueMapperView
     
-    InitializeControls
-    UpdateListViewLHS
-    UpdateListViewRHS
-    UpdateButtons
-    Me.cboMapAll.SetFocus
+    Set Result.Context = Context
+    Set Result.ViewModel = ViewModel
+
+    Set Create = Result
+End Function
+
+Private Function IView3_ShowDialog() As TtViewResult
+    Me.lblHeaderText.Caption = HDR_TXT_VALUE_MAPPER
+    BindControls
     
     Me.Show
     
-    IView_ShowDialog = This.Result
+    IView3_ShowDialog = This.Result
 End Function
 
-Private Sub InitializeControls()
-    Me.lblHeaderText.Caption = HDR_TXT_VALUE_MAPPER
+Public Sub BindControls()
+    ValueColumnsToListView3.Initialize Me.lvSrcValues
+    ValueColumnsToListView3.Initialize Me.lvDstValues
+    ValueColumnsToListView3.Initialize Me.lvMappedValues
     
-    ValueColumnsToListView.Initialize Me.lvSrcValues
-    ValueColumnsToListView.Initialize Me.lvDstValues
-    ColumnPairsToListView.Initialize Me.lvMappedValues
+    With Context.BindingManager
+        .BindPropertyPath ViewModel, "Source", Me.lvSrcValues, "ListItems", TwoWayBinding, ValueColumnsToListView3
+        .BindPropertyPath ViewModel, "Destination", Me.lvDstValues, "ListItems", TwoWayBinding, ValueColumnsToListView3
+        .BindPropertyPath ViewModel, "Mapped", Me.lvMappedValues, "ListItems", TwoWayBinding, ColumnPairsToListView3
+        
+        .BindPropertyPath ViewModel, "CanNext", Me.cboNext, "Enabled", OneWayBinding
+        .BindPropertyPath ViewModel, "CanMapAdd", Me.cboMapAdd, "Enabled", OneWayBinding
+        .BindPropertyPath ViewModel, "CanMapRemove", Me.cboMapRemove, "Enabled", OneWayBinding
+        .BindPropertyPath ViewModel, "CanRemoveAll", Me.cboMapReset, "Enabled", OneWayBinding
+    End With
 End Sub
-
-Private Sub UpdateListViewLHS()
-    ValueColumnsToListView.Load Me.lvSrcValues, This.ViewModel.Source
-End Sub
-
-Private Sub UpdateListViewRHS()
-    ValueColumnsToListView.Load Me.lvDstValues, This.ViewModel.Destination
-End Sub
-
-Private Sub UpdateMappingControl()
-    ColumnPairsToListView.Load Me.lvMappedValues, This.ViewModel.Mapped
-End Sub
-
-Private Sub UpdateButtons()
-    Me.cboBack.Enabled = True
-    Me.cboNext.Enabled = This.ViewModel.CanNext
-    Me.cboCancel.Enabled = True
-    
-    Me.cboMapAdd.Enabled = This.ViewModel.CanMapAdd
-    Me.cboMapRemove.Enabled = This.ViewModel.CanMapRemove
-    Me.cboMapAll.Enabled = True
-    Me.cboMapReset.Enabled = This.ViewModel.CanRemoveAll
-End Sub
-

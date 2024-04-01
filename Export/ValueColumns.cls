@@ -9,12 +9,15 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Folder "MVVM.Model.ValueColumns"
 Option Explicit
+Implements INotifyPropertyChanged
 
 Public AllowFormula As Boolean
 Public AllowEmpty As Boolean
 Public AllowError As Boolean
 
 Private Type TState
+    Notifier As INotifyPropertyChanged
+    
     ListObject As ListObject
     ValueColumns As Collection
     Selected As ValueColumn
@@ -34,7 +37,20 @@ Public Property Get Selected() As ValueColumn
 End Property
 
 Private Sub Class_Initialize()
+    Set This.Notifier = New PropertyChangeNotifier
     Set This.ValueColumns = New Collection
+End Sub
+
+Private Sub INotifyPropertyChanged_RegisterHandler(ByVal Handler As IHandlePropertyChanged)
+    This.Notifier.RegisterHandler Handler
+End Sub
+
+Private Sub INotifyPropertyChanged_OnPropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    This.Notifier.OnPropertyChanged Source, PropertyName
+End Sub
+
+Private Sub OnPropertyChanged(ByVal PropertyName As String)
+    INotifyPropertyChanged_OnPropertyChanged Me, PropertyName
 End Sub
 
 Public Sub Load(ByVal ListObject As ListObject)
@@ -90,6 +106,7 @@ End Function
 
 Public Sub TrySelect(ByVal ColumnName As String)
     Set This.Selected = This.ValueColumns.Item(ColumnName)
+    OnPropertyChanged "Selected"
 End Sub
 
 Public Sub SetKeyColumn(ByVal ColumnName As String)

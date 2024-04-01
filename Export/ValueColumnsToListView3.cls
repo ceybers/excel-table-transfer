@@ -1,23 +1,36 @@
-Attribute VB_Name = "ValueColumnsToListView"
-'@Folder "MVVM.ValueConverters"
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = "ValueColumnsToListView3"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+'@PredeclaredId
+'@Folder("MVVM.ValueConverters")
 Option Explicit
+Implements IValueConverter
 
-Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
-    With ListView
-        .ListItems.Clear
-        .ColumnHeaders.Clear
-        .ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16
-        .View = lvwReport
-        .FullRowSelect = True
-        .Gridlines = False
-        .LabelEdit = lvwManual
-        .BorderStyle = ccNone
-        .HideSelection = False
-        Set .SmallIcons = StandardImageList.GetMSOImageList(16)
-    End With
+Private Sub IValueConverter_Convert(ByVal Source As Object, ByVal Target As Object) ' read
+    Load Source, Target
 End Sub
 
-Public Sub Load(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns As ValueColumns)
+Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding) ' write
+    Dim ListView As MScomctllib.ListView
+    Set ListView = PropertyBinding.Target
+    
+    Dim VM As ValueMapperViewModel
+    Set VM = PropertyBinding.Source
+    
+    Dim ValueColumns As ValueColumns
+    Set ValueColumns = CallByName(VM, PropertyBinding.SourcePropertyPath, VbGet)
+    
+    ValueColumns.TrySelect ListView.SelectedItem.Key
+End Sub
+
+
+Public Sub Load(ByVal ValueColumns As ValueColumns, ByVal ListView As MScomctllib.ListView)
     Debug.Assert Not ValueColumns Is Nothing
     
     If ListView.ListItems.Count <> ValueColumns.ValueColumns.Count Then
@@ -46,13 +59,11 @@ Private Sub UpdateItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColum
             Set ListView.SelectedItem = Nothing
         End If
     End If
-    
 End Sub
 
 Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal ValueColumn As ValueColumn)
     ListView.ListItems.Add Key:=ValueColumn.Name, Text:=ValueColumn.Name
 End Sub
-
 
 Private Sub UpdateListItem(ByVal ListItem As MScomctllib.ListItem, ByVal ValueColumns As ValueColumns)
     Dim ValueColumn As ValueColumn
@@ -88,3 +99,17 @@ Private Sub UpdateListItem(ByVal ListItem As MScomctllib.ListItem, ByVal ValueCo
     End Select
 End Sub
 
+Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
+    With ListView
+        .ListItems.Clear
+        .ColumnHeaders.Clear
+        .ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16
+        .View = lvwReport
+        .FullRowSelect = True
+        .Gridlines = False
+        .LabelEdit = lvwManual
+        .BorderStyle = ccNone
+        .HideSelection = False
+        Set .SmallIcons = StandardImageList.GetMSOImageList(16)
+    End With
+End Sub
