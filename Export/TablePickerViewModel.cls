@@ -102,7 +102,7 @@ Public Function CanNext() As Boolean
     CanNext = True
 End Function
 
-Public Sub PickSelectedTable(ByVal Direction As TransferDirection)
+Public Sub PickSelectedTable(ByVal Direction As TtDirection)
     If Direction = ttSource Then
         If Not This.SourceNode Is Nothing Then
             This.SourceNode.IsSelected = False

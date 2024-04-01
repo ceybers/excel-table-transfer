@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 '@Folder "MVVM.Model.AvailableTables"
 Option Explicit
 
-Public NodeType As TransferNode
+Public NodeType As TtNode
 Public Key As String
 Public ParentKey As String
 Public Caption As String

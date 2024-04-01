@@ -63,7 +63,7 @@ Public Sub ShowMatchDetails()
     Set View = Nothing
 End Sub
 
-Public Sub ShowQuality(ByVal Direction As TransferDirection)
+Public Sub ShowQuality(ByVal Direction As TtDirection)
     Dim ViewModel As KeyQualityViewModel
     Set ViewModel = New KeyQualityViewModel
     

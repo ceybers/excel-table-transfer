@@ -23,7 +23,7 @@ Implements IView
 
 Private Type TState
     ViewModel As KeyQualityViewModel
-    Result As ViewResult
+    Result As TtViewResult
 End Type
 Private This As TState
 
@@ -38,7 +38,7 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     End If
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
+Private Function IView_ShowDialog(ByVal ViewModel As Object) As TtViewResult
     Set This.ViewModel = ViewModel
     
     InitializeControls
@@ -61,5 +61,4 @@ End Sub
 Private Sub UpdateButtons()
     Me.cboCancel.Enabled = True
 End Sub
-
 

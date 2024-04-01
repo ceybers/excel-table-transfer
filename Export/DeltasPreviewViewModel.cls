@@ -37,7 +37,7 @@ Public Sub Load(ByVal TransferDeltas As TransferDeltas, ByVal Source As ListObje
     Set This.Destination = Destination
 End Sub
 
-Public Function GetNumberFormats(ByVal Direction As TransferDirection) As Object
+Public Function GetNumberFormats(ByVal Direction As TtDirection) As Object
     Dim Result As Object
     Set Result = CreateObject("Scripting.Dictionary")
     

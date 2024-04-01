@@ -2,7 +2,7 @@ Attribute VB_Name = "TransferDeltasToListView"
 '@Folder "MVVM.ValueConverters"
 Option Explicit
 
-Public Sub Initialize(ByVal ListView As MSComctlLib.ListView, ByVal Member As MemberType)
+Public Sub Initialize(ByVal ListView As MSComctlLib.ListView, ByVal Member As TtDeltaType)
     With ListView
         .ListItems.Clear
         .View = lvwReport
@@ -16,7 +16,7 @@ Public Sub Initialize(ByVal ListView As MSComctlLib.ListView, ByVal Member As Me
     SetColumnHeaders ListView, Member
 End Sub
 
-Private Sub SetColumnHeaders(ByVal ListView As MSComctlLib.ListView, ByVal Member As MemberType)
+Private Sub SetColumnHeaders(ByVal ListView As MSComctlLib.ListView, ByVal Member As TtDeltaType)
     With ListView
         .ColumnHeaders.Clear
         .ColumnHeaders.Add Text:="#", Width:=ListView.Width - 16
@@ -31,7 +31,7 @@ Private Sub SetColumnHeaders(ByVal ListView As MSComctlLib.ListView, ByVal Membe
 End Sub
 
 Public Sub Load(ByVal ListView As MSComctlLib.ListView, ByVal ViewModel As DeltasPreviewViewModel, _
-    ByVal Member As MemberType)
+    ByVal Member As TtDeltaType)
     ListView.ListItems.Clear
     
     'If TransferDeltasViewModel Is Nothing Then Exit Sub
@@ -93,7 +93,7 @@ Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal Text As String
     ListView.ListItems.Add Text:=Text
 End Sub
 
-Private Sub UpdateHeader(ByVal ListView As MSComctlLib.ListView, ByVal Member As MemberType, ByVal Count As Long)
+Private Sub UpdateHeader(ByVal ListView As MSComctlLib.ListView, ByVal Member As TtDeltaType, ByVal Count As Long)
     Dim HeaderText As String
     
     Select Case Member

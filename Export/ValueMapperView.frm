@@ -23,7 +23,7 @@ Implements IView
 
 Private Type TState
     ViewModel As ValueMapperViewModel
-    Result As ViewResult
+    Result As TtViewResult
 End Type
 Private This As TState
 
@@ -102,7 +102,7 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
+Private Function IView_ShowDialog(ByVal ViewModel As Object) As TtViewResult
     Set This.ViewModel = ViewModel
     
     InitializeControls

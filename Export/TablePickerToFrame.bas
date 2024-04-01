@@ -2,7 +2,7 @@ Attribute VB_Name = "TablePickerToFrame"
 '@Folder "MVVM.ValueConverters"
 Option Explicit
 
-Public Sub Load(ByVal ViewModel As TablePickerViewModel, ByVal Frame As Frame, ByVal Direction As TransferDirection)
+Public Sub Load(ByVal ViewModel As TablePickerViewModel, ByVal Frame As Frame, ByVal Direction As TtDirection)
     Dim TextBox As MSForms.TextBox
     
     If TryGetControlByTag(Frame.Controls, TAG_WORKBOOK, TextBox) Then

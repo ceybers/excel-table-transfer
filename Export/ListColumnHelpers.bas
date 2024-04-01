@@ -4,6 +4,7 @@ Option Explicit
 
 '@Description "Tries to get a ListColumn with the given name from a ListObject. If successful, returns True and sets the Out variable to the ListColumn."
 Public Function TryGetListColumn(ByVal ListObject As ListObject, ByVal ListColumnName As String, ByRef OutListColumn As ListColumn) As Boolean
+Attribute TryGetListColumn.VB_Description = "Tries to get a ListColumn with the given name from a ListObject. If successful, returns True and sets the Out variable to the ListColumn."
     If ListObject Is Nothing Then Exit Function
     If ListColumnName = vbNullString Then Exit Function
     

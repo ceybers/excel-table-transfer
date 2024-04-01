@@ -21,17 +21,17 @@ Public Function GetListColumnFromRange(ByVal rng As Range) As ListColumn
 End Function
 
 ' Ref by TransferInstruction
-Public Function TryGetWorkbook(ByVal Filename As String, ByRef wb As Workbook, Optional ByVal path As String = vbNullString) As Boolean
+Public Function TryGetWorkbook(ByVal Filename As String, ByRef wb As Workbook, Optional ByVal Path As String = vbNullString) As Boolean
     Dim curWB As Workbook
     For Each curWB In Application.Workbooks
-        If path = vbNullString Then
+        If Path = vbNullString Then
             If curWB.Name = Filename Then
                 Set wb = curWB
                 TryGetWorkbook = True
                 Exit Function
             End If
         Else
-            If curWB.FullName = path & Filename Then
+            If curWB.FullName = Path & Filename Then
                 Set wb = curWB
                 TryGetWorkbook = True
                 Exit Function

@@ -2,7 +2,7 @@ Attribute VB_Name = "ChangeType"
 '@Folder "MVVM.Model.TransferInstruction"
 Option Explicit
 
-Public Function GetChangeType(ByVal LHS As Variant, ByVal RHS As Variant) As ChangeType2
+Public Function GetChangeType(ByVal LHS As Variant, ByVal RHS As Variant) As TtChangeType
     Dim LHSVarType As Long
     LHSVarType = GetVarTypeMod(LHS)
     
@@ -24,7 +24,7 @@ Public Function GetChangeType(ByVal LHS As Variant, ByVal RHS As Variant) As Cha
     End If
 End Function
 
-Public Function ChangeTypeToString(ByVal Value As ChangeType2) As String
+Public Function ChangeTypeToString(ByVal Value As TtChangeType) As String
     Select Case Value
         Case ttInvalidType
             ChangeTypeToString = CHANGE_TYPE_INVALID

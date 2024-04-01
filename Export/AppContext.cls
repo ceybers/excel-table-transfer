@@ -9,19 +9,27 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Folder "MVVM.AppContext"
 Option Explicit
-
+Implements IAppContext
 
 Private Type TState
     Transfer As TransferInstruction
     Settings As TransferSettings
+    BindingManager As BindingManager
 End Type
 Private This As TState
 
-Public Sub Start()
-    On Error GoTo ErrorHandler
-    
+Private Sub Class_Initialize()
     Set This.Settings = New TransferSettings
     Set This.Transfer = New TransferInstruction
+    Set This.BindingManager = New BindingManager
+End Sub
+
+Private Property Get IAppContext_BindingManager() As BindingManager
+    Set IAppContext_BindingManager = This.BindingManager
+End Property
+
+Public Sub Start()
+    On Error GoTo ErrorHandler
 
 'DEBUG:
     'Set This.Transfer = GetDebugTransfer
@@ -73,7 +81,7 @@ ErrorHandler:
     MsgBox ERR_MSG_GENERIC, vbCritical + vbOKOnly, MSG_CAPTION
 End Sub
 
-Private Function TryReloadRecent() As ViewResult
+Private Function TryReloadRecent() As TtViewResult
     ' DEBUG
     Exit Function
     
@@ -96,7 +104,7 @@ Private Function TryReloadRecent() As ViewResult
     Next RecentTransfer
 End Function
 
-Private Function TryTablePicker() As ViewResult
+Private Function TryTablePicker() As TtViewResult
     Dim ViewModel As TablePickerViewModel
     Set ViewModel = New TablePickerViewModel
     ViewModel.Load
@@ -107,7 +115,7 @@ Private Function TryTablePicker() As ViewResult
     Dim View As IView
     Set View = New TablePickerView
     
-    Dim Result As ViewResult
+    Dim Result As TtViewResult
     Result = View.ShowDialog(ViewModel)
   
     Select Case Result
@@ -119,7 +127,7 @@ Private Function TryTablePicker() As ViewResult
     TryTablePicker = Result
 End Function
 
-Private Function TryKeyMapper() As ViewResult
+Private Function TryKeyMapper() As TtViewResult
     Dim ViewModel As KeyMapperViewModel
     Set ViewModel = New KeyMapperViewModel
     ViewModel.Load This.Transfer.Source.Table, This.Transfer.Destination.Table
@@ -136,7 +144,7 @@ Private Function TryKeyMapper() As ViewResult
     Dim View As IView
     Set View = New KeyMapperView
     
-    Dim Result As ViewResult
+    Dim Result As TtViewResult
     Result = View.ShowDialog(ViewModel)
     
     Select Case Result
@@ -148,7 +156,7 @@ Private Function TryKeyMapper() As ViewResult
     TryKeyMapper = Result
 End Function
 
-Private Function TryValueMapper() As ViewResult
+Private Function TryValueMapper() As TtViewResult
     Dim ViewModel As ValueMapperViewModel
     Set ViewModel = New ValueMapperViewModel
     With ViewModel.Source
@@ -170,7 +178,7 @@ Private Function TryValueMapper() As ViewResult
     Dim View As IView
     Set View = ValueMapperView
     
-    Dim Result As ViewResult
+    Dim Result As TtViewResult
     Result = View.ShowDialog(ViewModel)
     
     Select Case Result
@@ -184,7 +192,7 @@ Private Function TryValueMapper() As ViewResult
     TryValueMapper = Result
 End Function
 
-Private Function TryTransferDeltas() As ViewResult
+Private Function TryTransferDeltas() As TtViewResult
     This.Transfer.Evaluate
     
     Dim ViewModel As DeltasPreviewViewModel
@@ -194,7 +202,7 @@ Private Function TryTransferDeltas() As ViewResult
     Dim View As IView
     Set View = DeltasPreviewView
     
-    Dim Result As ViewResult
+    Dim Result As TtViewResult
     Result = View.ShowDialog(ViewModel)
     
     Select Case Result

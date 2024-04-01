@@ -33,7 +33,7 @@ Private Sub Class_Initialize()
     Set This.Items = New Collection
 End Sub
 
-Public Function GetArray(ByVal Direction As TransferDirection) As Variant
+Public Function GetArray(ByVal Direction As TtDirection) As Variant
     Dim Result() As Variant
     ReDim Result(0 To This.Items.Count - 1)
     

@@ -23,7 +23,7 @@ Implements IView
 
 Private Type TState
     ViewModel As KeyMapperViewModel
-    Result As ViewResult
+    Result As TtViewResult
 End Type
 Private This As TState
 
@@ -68,12 +68,12 @@ End Sub
 
 Private Sub cmbSrcQuality_DropButtonClick()
     Me.cboCancel.SetFocus
-    This.ViewModel.ShowQuality TransferDirection.ttSource
+    This.ViewModel.ShowQuality TtDirection.ttSource
 End Sub
 
 Private Sub cmbDstQuality_DropButtonClick()
     Me.cboCancel.SetFocus
-    This.ViewModel.ShowQuality TransferDirection.ttDestination
+    This.ViewModel.ShowQuality TtDirection.ttDestination
 End Sub
 
 Private Sub cmbMatchQuality_DropButtonClick()
@@ -91,7 +91,7 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Function IView_ShowDialog(ByVal ViewModel As Object) As ViewResult
+Private Function IView_ShowDialog(ByVal ViewModel As Object) As TtViewResult
     Set This.ViewModel = ViewModel
     
     InitializeControls

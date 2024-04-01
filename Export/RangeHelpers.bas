@@ -25,6 +25,7 @@ End Function
 '@Description "Returns True if SpecialCells would have returned a Range. Returns False if no cells were selected."
 Public Function HasSpecialCells(ByVal Range As Range, ByVal CellType As XlCellType, _
     Optional ByVal Value As XlSpecialCellsValue) As Boolean
+Attribute HasSpecialCells.VB_Description = "Returns True if SpecialCells would have returned a Range. Returns False if no cells were selected."
     If Range Is Nothing Then Exit Function
 
     Dim Result As Range
