@@ -15,7 +15,7 @@ Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As Transfer
     Dim i As Long
     For i = 0 To TransferInstruction.Source.ValueColumnCount - 1
         With TransferInstruction
-            UpdateColumn .Source.ValueColumnCount(i), .Destination.ValueColumnCount(i)
+            UpdateColumn .Source.ValueColumns(i), .Destination.ValueColumns(i)
         End With
     Next i
 End Sub
