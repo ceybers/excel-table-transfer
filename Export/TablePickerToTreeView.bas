@@ -59,21 +59,21 @@ End Sub
 
 Private Sub UpdateNodeIcon(ByVal AvailableTable As AvailableTableNode, ByVal Node As Node)
     If AvailableTable.NodeType = ttApplication Then
-        Node.image = IconConstants.MSO_EXCEL_APP
+        Node.image = MSO_EXCEL_APP
         Exit Sub
     End If
     
     With AvailableTable
         Select Case True
             Case .IsSelected
-                Node.image = IconConstants.MSO_TABLE_TICK
+                Node.image = MSO_TABLE_TICK
                 Node.Bold = True
             Case .IsProtected
-                Node.image = IconConstants.MSO_SHEET_PROTECTED
+                Node.image = MSO_SHEET_PROTECTED
             Case .IsHidden
-                Node.image = IconConstants.MSO_SHEET_HIDDEN
+                Node.image = MSO_SHEET_HIDDEN
             Case Else
-                Node.image = IconConstants.MSO_TABLE
+                Node.image = MSO_TABLE
         End Select
     End With
 End Sub
@@ -84,8 +84,8 @@ Private Sub CheckNoTablesFound(ByVal TreeView As MSComctlLib.TreeView)
         Dim Node As MSComctlLib.Node
         Set Node = TreeView.Nodes.Add(Relative:=TreeView.Nodes.Item(1), relationship:=tvwChild, _
             Key:=vbNullString, Text:=NO_TABLES_FOUND)
-        Node.ForeColor = NOT_FOUND_COLOR
-        Node.image = IconConstants.MSO_NOT_FOUND
+        Node.ForeColor = StringConstants.COLOR_NO_TABLES_AVAILABLE
+        Node.image = MSO_NOT_FOUND
     End If
 End Sub
 

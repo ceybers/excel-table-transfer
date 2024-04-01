@@ -10,10 +10,6 @@ Attribute VB_Exposed = False
 '@Folder "MVVM.AppContext"
 Option Explicit
 
-Private Const LAST_KEY_USED As String = "LastKeyUsed"
-
-Private Const MSG_CAPTION As String = "Table Transfer Tool"
-Private Const MSG_NOT_ENOUGH_TABLES As String = "Not enough tables available to start a transfer!"
 
 Private Type TState
     Transfer As TransferInstruction
@@ -22,6 +18,8 @@ End Type
 Private This As TState
 
 Public Sub Start()
+    On Error GoTo ErrorHandler
+    
     Set This.Settings = New TransferSettings
     Set This.Transfer = New TransferInstruction
 
@@ -69,9 +67,16 @@ RewindTransferDeltas:
     
 FinishEarly:
     SaveTransferHistory
+    Exit Sub
+    
+ErrorHandler:
+    MsgBox ERR_MSG_GENERIC, vbCritical + vbOKOnly, MSG_CAPTION
 End Sub
 
 Private Function TryReloadRecent() As ViewResult
+    ' DEBUG
+    Exit Function
+    
     This.Settings.LoadMRU
     
     Dim RecentTransfers As Collection
@@ -206,8 +211,8 @@ Private Sub DoPostProcessing()
     
     With This.Transfer
         .PostProcess PostProcessorFactory.RemoveHighlighting
-        .PostProcess HighlightChanges.Create(4, RGB(226, 239, 218)) ' unchanged 'TODO Move to constants
-        .PostProcess HighlightChanges.Create(2, RGB(204, 255, 153)) ' 0->A new
+        .PostProcess HighlightChanges.Create(ttValueChanged, COLOR_GREEN_DARK)
+        .PostProcess HighlightChanges.Create(ttValueReplacesBlank, COLOR_GREEN_LIGHT)
         .PostProcess PostProcessorFactory.TransferColumnWidths
         .PostProcess PostProcessorFactory.TransferNumberFormat
     End With

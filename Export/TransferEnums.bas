@@ -1,5 +1,5 @@
 Attribute VB_Name = "TransferEnums"
-'@Folder "MVVM.Model.Constants"
+'@Folder "MVVM.Resources.Constants"
 Option Explicit
 
 Public Enum ViewResult
@@ -26,7 +26,7 @@ Public Enum TransferNode
 End Enum
 
 Public Enum ChangeType2
-    ttInvalidType
+    ttInvalidType = 0
     ttBlankUnchanged ' 0->0
     ttValueReplacesBlank ' A->0
     ttBlankReplacesValue ' 0->A

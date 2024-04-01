@@ -81,7 +81,7 @@ Private Sub AddItemTransferDelta(ByVal ListView As MSComctlLib.ListView, ByVal T
             ValueBeforeFormatted = TransferDelta.ValueBefore
             ValueAfterFormatted = TransferDelta.ValueAfter
         Case Else
-            Err.Raise vbObjectError + 15, ERR_SOURCE, "Unexpected VarType"
+            Err.Raise StringConstants.ERR_NUM_UNEXPECTED_VARTYPE, ERR_SOURCE, ERR_MSG_UNEXPECTED_VARTYPE
     End Select
     
     Dim ListItem As ListItem
@@ -114,7 +114,7 @@ End Sub
 Private Sub AddSelectAll(ByVal ListView As MSComctlLib.ListView)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Text:=SELECT_ALL)
-    ListItem.ForeColor = SELECT_ALL_COLOR
+    ListItem.ForeColor = StringConstants.COLOR_SELECT_ALL
     ListItem.Key = SELECT_ALL
 End Sub
 

@@ -12,8 +12,6 @@ Attribute VB_Exposed = False
 '@Folder "MVVM.Model.KeyColumn"
 Option Explicit
 
-Private Const ERR_MSG_EMPTY_TABLE As String = "Cannot Map KeyColumns with an empty table"
-
 Private Const MIN_TOTAL As Long = 4
 
 Private Type TClsCompareKeyColumns
@@ -98,7 +96,7 @@ End Function
 
 Public Function Map(Optional ByVal FilterSource As Boolean = False, Optional ByVal FilterDestination As Boolean = False) As Variant
     If This.LHS Is Nothing Or This.RHS Is Nothing Then
-        Err.Raise vbObjectError + 4, Err.Source, ERR_MSG_EMPTY_TABLE
+        Err.Raise vbObjectError + 4, Err.Source, StringConstants.ERR_MSG_KEYCOLCOMP_EMPTY_TABLE
         Exit Function
     End If
     

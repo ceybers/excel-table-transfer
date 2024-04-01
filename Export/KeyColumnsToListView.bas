@@ -39,6 +39,6 @@ End Sub
 Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal KeyColumn As KeyColumn)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Key:=KeyColumn.Name, Text:=KeyColumn.Name)
-    ListItem.SmallIcon = IconConstants.MSO_CELL
+    ListItem.SmallIcon = MSO_CELL
 End Sub
 

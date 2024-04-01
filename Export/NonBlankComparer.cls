@@ -20,7 +20,7 @@ Private Function IValueComparer_Compare(ByVal LHS As Variant, ByVal RHS As Varia
         Case vbEmpty:
             Exit Function
         Case vbString:
-            If Len(LHS) = 0 Then Exit Function
+            If LenB(LHS) = 0 Then Exit Function
     End Select
     
     IValueComparer_Compare = True

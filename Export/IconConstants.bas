@@ -1,5 +1,5 @@
 Attribute VB_Name = "IconConstants"
-'@Folder "MVVM.Model.Constants"
+'@Folder "MVVM.Resources.Constants"
 Option Explicit
 
 Public Const MSO_ACCEPT As String = "icoAccept"

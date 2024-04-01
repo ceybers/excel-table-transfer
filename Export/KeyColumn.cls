@@ -11,12 +11,7 @@ Attribute VB_Exposed = False
 '@Folder "MVVM.Model.KeyColumn"
 Option Explicit
 
-Private Const ERR_MSG_EMPTY_TABLE As String = "Cannot create clsKeyColumn with a column in an empty table"
-Private Const ERR_MSG_MULTIPLE_COLUMNS As String = "Cannot create clsKeyColumn with a range that spans multiple columns"
-Private Const ERR_MSG_EMPTY_RANGE As String = "Cannot create KeyColumn from empty range (rng is nothing)"
-Private Const ERR_MSG_NO_VISIBLE_CELLS As String = "KeyColumn.LoadRange failed"
-
-Private Const DEFAULT_LIMIT As Long = 2147483647
+Private Const DEFAULT_LIMIT As Long = 2147483647 ' TODO Rename to MAX_VAL_LONG
 
 Private Type TClsKeyColumn
     Name As String
@@ -62,7 +57,7 @@ End Property
 
 Public Property Set Range(ByVal RHS As Range)
     If RHS Is Nothing Then
-        Err.Raise Number:=vbObjectError + 1, Description:=ERR_MSG_EMPTY_TABLE
+        Err.Raise Number:=vbObjectError + 1, Description:=StringConstants.ERR_MSG_KEYCOL_EMPTY_TABLE
         Exit Property
     End If
     If Not IsRangeASingleColumn(RHS) Then

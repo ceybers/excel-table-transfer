@@ -65,7 +65,7 @@ Private Sub UpdateListItem(ByVal ListItem As MSComctlLib.ListItem, ByVal ValueCo
     Select Case True
         '@Ignore UnassignedVariableUsage
         Case ValueColumn.IsKeyColumn
-            ListItem.SmallIcon = IconConstants.MSO_KEY
+            ListItem.SmallIcon = MSO_KEY
         Case ValueColumn.IsMapped
             ListItem.SmallIcon = MSO_LINK
             ListItem.Bold = True
@@ -74,7 +74,7 @@ Private Sub UpdateListItem(ByVal ListItem As MSComctlLib.ListItem, ByVal ValueCo
         Case ValueColumn.IsEmpty
             ListItem.SmallIcon = MSO_EMPTY
         Case ValueColumn.HasErrors
-            ListItem.SmallIcon = IconConstants.MSO_ERROR
+            ListItem.SmallIcon = MSO_ERROR
         Case ValueColumn.HasNumbers
             If ValueColumn.DataType = vbCurrency Then
                 ListItem.SmallIcon = MSO_TYPE_CURRENCY

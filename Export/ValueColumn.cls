@@ -35,16 +35,16 @@ Public Sub Load(ByVal ListColumn As ListColumn)
     End If
     
     IsEmpty = IsListColumnEmpty(ListColumn)
-    On Error Resume Next
-    HasErrors = (Not ListColumn.DataBodyRange.SpecialCells(xlCellTypeConstants, xlErrors) Is Nothing)
-    HasBoolean = (Not ListColumn.DataBodyRange.SpecialCells(xlCellTypeConstants, xlLogical) Is Nothing)
-    HasNumbers = (Not ListColumn.DataBodyRange.SpecialCells(xlCellTypeConstants, xlNumbers) Is Nothing)
-    HasText = (Not ListColumn.DataBodyRange.SpecialCells(xlCellTypeConstants, xlTextValues) Is Nothing)
-    On Error GoTo 0
+    
+    HasErrors = HasSpecialCells(ListColumn.DataBodyRange, xlCellTypeConstants, xlErrors)
+    HasBoolean = HasSpecialCells(ListColumn.DataBodyRange, xlCellTypeConstants, xlLogical)
+    HasNumbers = HasSpecialCells(ListColumn.DataBodyRange, xlCellTypeConstants, xlNumbers)
+    HasText = HasSpecialCells(ListColumn.DataBodyRange, xlCellTypeConstants, xlTextValues)
 End Sub
 
 Private Function IsListColumnEmpty(ByVal ListColumn As ListColumn) As Boolean
     Dim EmptyCellRange As Range
+    
     On Error Resume Next
     Set EmptyCellRange = ListColumn.DataBodyRange.SpecialCells(xlCellTypeBlanks)
     On Error GoTo 0

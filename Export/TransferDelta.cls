@@ -19,7 +19,7 @@ Private Type TState
     ValueBefore As String
     ValueAfter As String
     DataType As VbVarType
-    ChangeType As Long
+    ChangeType As ChangeType2
 End Type
 Private This As TState
 
@@ -55,7 +55,7 @@ Public Property Get DataType() As VbVarType
     DataType = This.DataType
 End Property
 
-Public Property Get ChangeType() As Long
+Public Property Get ChangeType() As ChangeType2
     ChangeType = This.ChangeType
 End Property
 

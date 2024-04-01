@@ -2,9 +2,10 @@ Attribute VB_Name = "ListColumnHelpers"
 '@Folder("Helpers.Objects")
 Option Explicit
 
+'@Description "Tries to get a ListColumn with the given name from a ListObject. If successful, returns True and sets the Out variable to the ListColumn."
 Public Function TryGetListColumn(ByVal ListObject As ListObject, ByVal ListColumnName As String, ByRef OutListColumn As ListColumn) As Boolean
-    Debug.Assert Not ListObject Is Nothing
-    Debug.Assert ListColumnName <> vbNullString
+    If ListObject Is Nothing Then Exit Function
+    If ListColumnName = vbNullString Then Exit Function
     
     Dim ListColumn As ListColumn
     For Each ListColumn In ListObject.ListColumns
