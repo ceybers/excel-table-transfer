@@ -9,9 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Folder "MVVM.Model.ColumnPair"
 Option Explicit
+Implements INotifyPropertyChanged
 
 Private Type TState
+    Notifier As INotifyPropertyChanged
+    
     Items As Collection
+    Selected As ColumnPair
 End Type
 Private This As TState
 
@@ -25,8 +29,25 @@ Public Property Get Count() As Long
     Count = This.Items.Count
 End Property
 
+Public Property Get Selected() As ColumnPair
+    Set Selected = This.Selected
+End Property
+
 Private Sub Class_Initialize()
+    Set This.Notifier = New PropertyChangeNotifier
     Set This.Items = New Collection
+End Sub
+
+Private Sub INotifyPropertyChanged_RegisterHandler(ByVal Handler As IHandlePropertyChanged)
+    This.Notifier.RegisterHandler Handler
+End Sub
+
+Private Sub INotifyPropertyChanged_OnPropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    This.Notifier.OnPropertyChanged Source, PropertyName
+End Sub
+
+Private Sub OnPropertyChanged(ByVal PropertyName As String)
+    INotifyPropertyChanged_OnPropertyChanged Me, PropertyName
 End Sub
 
 Public Function GetArray(ByVal Direction As TtDirection) As Variant
@@ -53,9 +74,10 @@ Public Sub Add(ByVal Source As String, ByVal Destination As String)
     With ColumnPair
         .Source = Source
         .Destination = Destination
+        .Key = Source & Chr$(31) & Destination
     End With
     
-    This.Items.Add Item:=ColumnPair
+    This.Items.Add Key:=ColumnPair.Key, Item:=ColumnPair
 End Sub
 
 Public Sub Remove(ByVal Source As String, ByVal Destination As String)
@@ -78,6 +100,12 @@ Public Function Exists(ByVal Source As String, ByVal Destination As String) As B
     Dim ColumnPair As ColumnPair
     Exists = TryGetColumnPair(Source, Destination, ColumnPair)
 End Function
+
+Public Sub TrySelect(ByVal Key As String)
+    If TryGetColumnPair(Split(Key, Chr$(31))(0), Split(Key, Chr$(31))(1), This.Selected) Then
+        OnPropertyChanged "Selected"
+    End If
+End Sub
 
 Private Function TryGetColumnPair(ByVal Source As String, ByVal Destination As String, ByRef OutColumnPair As ColumnPair) As Boolean
     Dim ThisColumnPair As ColumnPair

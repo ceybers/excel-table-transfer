@@ -95,8 +95,7 @@ Private Function IsValueColumnSelectable(ByVal ValueColumn As ValueColumn) As Bo
     Dim Result As Boolean
     Result = True
     
-    '@Ignore UnassignedVariableUsage
-    If ValueColumn.IsKeyColumn Then Result = False
+    If ValueColumn.IsKeyColumn = True Then Result = False
     If AllowError = False And ValueColumn.HasErrors Then Result = False
     If AllowEmpty = False And ValueColumn.IsEmpty Then Result = False
     If AllowFormula = False And ValueColumn.IsFormula Then Result = False

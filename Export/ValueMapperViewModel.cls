@@ -43,6 +43,7 @@ Private Sub Class_Initialize()
     Set This.Notifier = New PropertyChangeNotifier
     RegisterWithChild This.Source
     RegisterWithChild This.Destination
+    RegisterWithChild This.Mapped
 End Sub
 
 Private Sub RegisterWithChild(ByVal Model As INotifyPropertyChanged)
@@ -71,6 +72,9 @@ Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object,
         OnPropertyChanged "CanMapRemove"
         OnPropertyChanged "CanRemoveAll"
         OnPropertyChanged "CanNext"
+    End If
+    If Source Is This.Mapped Then
+        BackSelectColumnPair
     End If
 End Sub
 
@@ -153,9 +157,18 @@ Public Sub DoRemoveAll()
 End Sub
 
 Private Sub CollectionChanged()
+    OnPropertyChanged "Source" ' Necessary to update icon after pressing AutoMap
+    OnPropertyChanged "Destination"
     OnPropertyChanged "Mapped"
     OnPropertyChanged "CanNext"
     OnPropertyChanged "CanMapAdd"
     OnPropertyChanged "CanMapRemove"
     OnPropertyChanged "CanRemoveAll"
+End Sub
+
+Private Sub BackSelectColumnPair()
+    This.Source.TrySelect This.Mapped.Selected.Source
+    OnPropertyChanged "Source"
+    This.Destination.TrySelect This.Mapped.Selected.Destination
+    OnPropertyChanged "Destination"
 End Sub

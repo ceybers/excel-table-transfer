@@ -3,7 +3,7 @@ Attribute VB_Name = "StringConstants"
 Option Explicit
 
 Public Const APP_TITLE As String = "Table Transfer Tool"
-Public Const APP_VERSION As String = "Version 1.8.3-dev"
+Public Const APP_VERSION As String = "Version 1.8.4-dev"
 Public Const APP_COPYRIGHT As String = "2024 Craig Eybers" & vbCrLf & "All rights reserved."
 
 Public Const TAG_WORKBOOK As String = "WORKBOOK"

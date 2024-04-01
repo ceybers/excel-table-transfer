@@ -132,12 +132,12 @@ Private Function TryKeyMapper() As TtViewResult
     Set ViewModel = New KeyMapperViewModel
     ViewModel.Load This.Transfer.Source.Table, This.Transfer.Destination.Table
     
-    Dim ListObjectSettings As ISettings
-    Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Source.Table)
-    ViewModel.Source.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
+    'Dim ListObjectSettings As ISettings
+    'Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Source.Table)
+    'ViewModel.Source.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
     
-    Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Destination.Table)
-    ViewModel.Destination.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
+    'Set ListObjectSettings = This.Settings.GetListObjectSettings(This.Transfer.Destination.Table)
+    'ViewModel.Destination.TrySelect ListObjectSettings.GetSetting(LAST_KEY_USED)
     
     ViewModel.TryEvaluateMatch
     

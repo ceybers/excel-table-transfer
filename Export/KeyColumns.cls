@@ -74,6 +74,7 @@ Public Sub TrySelect(ByVal ColumnName As String)
     If ListColumnHelpers.TryGetListColumn(This.ListObject, ColumnName, ListColumn) Then
         Set This.Selected = This.KeyColumns.Item(ColumnName)
         OnPropertyChanged "Caption"
+        OnPropertyChanged "Selected"
     End If
 End Sub
 

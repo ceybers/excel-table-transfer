@@ -17,11 +17,8 @@ Private Type TState
     'Context As AppContext
     
     SelectedTable As ListObject
-    
-    SourceTable As ListObject
-    DestinationTable As ListObject
-    SourceNode As AvailableTableNode
-    DestinationNode As AvailableTableNode
+    Source As TableProps
+    Destination As TableProps
     
     BaseItems As AvailableTables
     Items As Collection
@@ -39,11 +36,11 @@ Public Property Set SelectedTable(ByVal RHS As ListObject)
 End Property
 
 Public Property Get SourceTable() As ListObject
-    Set SourceTable = This.SourceTable
+    Set SourceTable = This.Source.ListObject
 End Property
 
 Public Property Set SourceTable(ByVal RHS As ListObject)
-    Set This.SourceTable = RHS
+    This.Source.Load RHS
     GetNodeByObject(RHS).IsSelected = True
     OnPropertyChanged "SourceWorkbookName"
     OnPropertyChanged "SourceTableName"
@@ -51,11 +48,11 @@ Public Property Set SourceTable(ByVal RHS As ListObject)
 End Property
 
 Public Property Get DestinationTable() As ListObject
-    Set DestinationTable = This.DestinationTable
+    Set DestinationTable = This.Destination.ListObject
 End Property
 
 Public Property Set DestinationTable(ByVal RHS As ListObject)
-    Set This.DestinationTable = RHS
+     This.Destination.Load RHS
     GetNodeByObject(RHS).IsSelected = True
     OnPropertyChanged "DestinationWorkbookName"
     OnPropertyChanged "DestinationTableName"
@@ -67,6 +64,8 @@ Public Property Get Items() As Collection
 End Property
 
 Private Sub Class_Initialize()
+    Set This.Source = New TableProps
+    Set This.Destination = New TableProps
     Set This.Notifier = New PropertyChangeNotifier
 End Sub
 
@@ -122,22 +121,22 @@ Public Property Get CanPickSelected() As Boolean
 End Property
 
 Public Property Get CanNext() As Boolean
-    If This.SourceTable Is Nothing Then Exit Property
-    If This.DestinationTable Is Nothing Then Exit Property
-    If This.SourceTable Is This.DestinationTable Then Exit Property
+    If This.Source.IsValid = False Then Exit Property
+    If This.Destination.IsValid = False Then Exit Property
+    If This.Source.ListObject Is This.Destination.ListObject Then Exit Property
     
     CanNext = True
 End Property
 
 Public Sub PickSelectedTable(ByVal Direction As TtDirection)
     If Direction = ttSource Then
-        If Not This.SourceNode Is Nothing Then
-            This.SourceNode.IsSelected = False
+        If Not This.Source.Node Is Nothing Then
+            This.Source.Node.IsSelected = False
         End If
         Set SourceTable = This.SelectedTable
     ElseIf Direction = ttDestination Then
-        If Not This.DestinationNode Is Nothing Then
-            This.DestinationNode.IsSelected = False
+        If Not This.Destination.Node Is Nothing Then
+            This.Destination.Node.IsSelected = False
         End If
         Set DestinationTable = This.SelectedTable
     End If
@@ -154,33 +153,33 @@ Private Function GetNodeByObject(ByVal Object As Object) As AvailableTableNode
 End Function
 
 Public Property Get SourceTableName() As String
-    If This.SourceTable Is Nothing Then
-        SourceTableName = NO_TABLE_SELECTED
+    If This.Source.IsValid Then
+        SourceTableName = This.Source.TableName
     Else
-        SourceTableName = This.SourceTable.Name
+        SourceTableName = NO_TABLE_SELECTED
     End If
 End Property
 
 Public Property Get SourceWorkbookName() As String
-    If This.SourceTable Is Nothing Then
-        SourceWorkbookName = NO_TABLE_SELECTED
+    If This.Source.IsValid Then
+        SourceWorkbookName = This.Source.WorkbookName
     Else
-        SourceWorkbookName = This.SourceTable.Parent.Parent.Name
+        SourceWorkbookName = NO_TABLE_SELECTED
     End If
 End Property
 
 Public Property Get DestinationTableName() As String
-    If This.DestinationTable Is Nothing Then
-        DestinationTableName = NO_TABLE_SELECTED
+    If This.Destination.IsValid Then
+        DestinationTableName = This.Destination.TableName
     Else
-        DestinationTableName = This.DestinationTable.Name
+        DestinationTableName = NO_TABLE_SELECTED
     End If
 End Property
 
 Public Property Get DestinationWorkbookName() As String
-    If This.DestinationTable Is Nothing Then
-        DestinationWorkbookName = NO_TABLE_SELECTED
+    If This.Destination.IsValid Then
+        DestinationWorkbookName = This.Destination.WorkbookName
     Else
-        DestinationWorkbookName = This.DestinationTable.Parent.Parent.Name
+        DestinationWorkbookName = NO_TABLE_SELECTED
     End If
 End Property

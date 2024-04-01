@@ -12,3 +12,4 @@ Option Explicit
 
 Public Source As String
 Public Destination As String
+Public Key As String

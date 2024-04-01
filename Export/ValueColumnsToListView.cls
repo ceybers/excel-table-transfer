@@ -43,6 +43,8 @@ Private Sub LoadItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns
     For Each ValueColumn In ValueColumns.ValueColumns
         AddItem ListView, ValueColumn
     Next ValueColumn
+    
+    Stop
 End Sub
 
 Private Sub UpdateItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns As ValueColumns)
@@ -56,6 +58,8 @@ Private Sub UpdateItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColum
             Set ListView.SelectedItem = Nothing
         End If
     End If
+    
+    ListView.ListItems.Item(ValueColumns.Selected.Name).Selected = True
 End Sub
 
 Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal ValueColumn As ValueColumn)
@@ -100,8 +104,9 @@ Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
-        .ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16 'TODO Column header const
-        .View = lvwReport
+        '.ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16 'TODO Column header const
+        '.View = lvwReport
+        .View = lvwList
         .FullRowSelect = True
         .Gridlines = False
         .LabelEdit = lvwManual

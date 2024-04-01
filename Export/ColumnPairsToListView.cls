@@ -23,10 +23,10 @@ End Sub
 
 Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As ValueMapperViewModel, _
     ByVal SourcePropertyPath As String)
-    Dim ValueColumns As ValueColumns
-    Set ValueColumns = CallByName(VM, SourcePropertyPath, VbGet)
+    Dim ColumnPairs As ColumnPairs
+    Set ColumnPairs = CallByName(VM, SourcePropertyPath, VbGet)
     
-    ValueColumns.TrySelect ListView.SelectedItem.Key
+    ColumnPairs.TrySelect ListView.SelectedItem.Key
 End Sub
 
 Private Sub Load(ByVal ColumnPairs As ColumnPairs, ByVal ListView As MScomctllib.ListView)
@@ -40,7 +40,7 @@ End Sub
 
 Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal ColumnPair As ColumnPair)
     Dim ListItem As ListItem
-    Set ListItem = ListView.ListItems.Add(Text:=ColumnPair.Source)
+    Set ListItem = ListView.ListItems.Add(Key:=ColumnPair.Key, Text:=ColumnPair.Source)
     ListItem.ListSubItems.Add Text:=ColumnPair.Destination
     ListItem.SmallIcon = MSO_LINK
 End Sub

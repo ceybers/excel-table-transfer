@@ -67,6 +67,10 @@ End Function
 Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
     If PropertyName = "Caption" Then
         TryEvaluateMatch
+    ElseIf Source Is This.Source Then
+        OnPropertyChanged "Source"
+    ElseIf Source Is This.Destination Then
+        OnPropertyChanged "Destination"
     End If
 End Sub
 
