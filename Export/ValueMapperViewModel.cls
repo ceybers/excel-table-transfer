@@ -36,19 +36,17 @@ Public Property Get Mapped() As ColumnPairs
 End Property
 
 Private Sub Class_Initialize()
-    Set This.Notifier = New PropertyChangeNotifier
     Set This.Source = New ValueColumns
     Set This.Destination = New ValueColumns
-    
-    Dim TestNotifyPropertyChanged As INotifyPropertyChanged
-    Set TestNotifyPropertyChanged = This.Source
-    TestNotifyPropertyChanged.RegisterHandler Me
-    Set TestNotifyPropertyChanged = This.Destination
-    TestNotifyPropertyChanged.RegisterHandler Me
-    
-'    This.Notifier.RegisterHandler This.Source
-    
     Set This.Mapped = New ColumnPairs
+    
+    Set This.Notifier = New PropertyChangeNotifier
+    RegisterWithChild This.Source
+    RegisterWithChild This.Destination
+End Sub
+
+Private Sub RegisterWithChild(ByVal Model As INotifyPropertyChanged)
+    Model.RegisterHandler Me
 End Sub
 
 Private Function IViewModel_IsValid() As Boolean

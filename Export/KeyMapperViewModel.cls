@@ -11,6 +11,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Implements IViewModel
 Implements INotifyPropertyChanged
+Implements IHandlePropertyChanged
 
 Private Type TState
     Notifier As INotifyPropertyChanged
@@ -37,7 +38,14 @@ End Property
 Private Sub Class_Initialize()
     Set This.Source = New KeyColumns
     Set This.Destination = New KeyColumns
+    
     Set This.Notifier = New PropertyChangeNotifier
+    RegisterWithChild This.Source
+    RegisterWithChild This.Destination
+End Sub
+
+Private Sub RegisterWithChild(ByVal Model As INotifyPropertyChanged)
+    Model.RegisterHandler Me
 End Sub
 
 Private Sub INotifyPropertyChanged_RegisterHandler(ByVal Handler As IHandlePropertyChanged)
@@ -56,6 +64,12 @@ Private Function IViewModel_IsValid() As Boolean
     IViewModel_IsValid = True
 End Function
 
+Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
+    If PropertyName = "Caption" Then
+        TryEvaluateMatch
+    End If
+End Sub
+
 Public Sub Load(ByVal Source As ListObject, ByVal Destination As ListObject)
     This.Source.Load Source
     This.Destination.Load Destination
@@ -69,8 +83,10 @@ Public Sub TryEvaluateMatch()
         Set This.MatchQuality = New KeyColumnComparer
         Set This.MatchQuality.LHS = This.Source.Selected
         Set This.MatchQuality.RHS = This.Destination.Selected
-        OnPropertyChanged "MatchQualityCaption"
     End If
+    
+    OnPropertyChanged "MatchQualityCaption"
+    OnPropertyChanged "CanNext"
 End Sub
 
 Public Property Get CanNext() As Boolean
