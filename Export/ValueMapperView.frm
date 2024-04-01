@@ -15,7 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView3
+Implements IView
 
 Private Type TState
     Context As IAppContext
@@ -24,8 +24,8 @@ Private Type TState
 End Type
 Private This As TState
 
-Private Property Get IView3_ViewModel() As Object
-    Set IView3_ViewModel = This.ViewModel
+Private Property Get IView_ViewModel() As Object
+    Set IView_ViewModel = This.ViewModel
 End Property
 
 Public Property Get ViewModel() As ValueMapperViewModel
@@ -85,11 +85,11 @@ Private Sub cboMapReset_Click()
     Me.cboMapAll.SetFocus
 End Sub
 
-Private Sub IView3_Show()
-    IView3_ShowDialog
+Private Sub IView_Show()
+    IView_ShowDialog
 End Sub
  
-Private Sub IView3_Hide()
+Private Sub IView_Hide()
     Me.Hide
 End Sub
 
@@ -103,7 +103,7 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As ValueMapperViewModel) As IView3
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As ValueMapperViewModel) As IView
     Dim Result As ValueMapperView
     Set Result = New ValueMapperView
     
@@ -113,24 +113,26 @@ Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As ValueMap
     Set Create = Result
 End Function
 
-Private Function IView3_ShowDialog() As TtViewResult
+Private Function IView_ShowDialog() As TtViewResult
     Me.lblHeaderText.Caption = HDR_TXT_VALUE_MAPPER
+    
     BindControls
+    Me.cboMapAll.SetFocus
     
     Me.Show
     
-    IView3_ShowDialog = This.Result
+    IView_ShowDialog = This.Result
 End Function
 
 Public Sub BindControls()
-    ValueColumnsToListView3.Initialize Me.lvSrcValues
-    ValueColumnsToListView3.Initialize Me.lvDstValues
-    ValueColumnsToListView3.Initialize Me.lvMappedValues
+    ValueColumnsToListView.Initialize Me.lvSrcValues
+    ValueColumnsToListView.Initialize Me.lvDstValues
+    ValueColumnsToListView.Initialize Me.lvMappedValues
     
     With Context.BindingManager
-        .BindPropertyPath ViewModel, "Source", Me.lvSrcValues, "ListItems", TwoWayBinding, ValueColumnsToListView3
-        .BindPropertyPath ViewModel, "Destination", Me.lvDstValues, "ListItems", TwoWayBinding, ValueColumnsToListView3
-        .BindPropertyPath ViewModel, "Mapped", Me.lvMappedValues, "ListItems", TwoWayBinding, ColumnPairsToListView3
+        .BindPropertyPath ViewModel, "Source", Me.lvSrcValues, "ListItems", TwoWayBinding, ValueColumnsToListView
+        .BindPropertyPath ViewModel, "Destination", Me.lvDstValues, "ListItems", TwoWayBinding, ValueColumnsToListView
+        .BindPropertyPath ViewModel, "Mapped", Me.lvMappedValues, "ListItems", TwoWayBinding, ColumnPairsToListView
         
         .BindPropertyPath ViewModel, "CanNext", Me.cboNext, "Enabled", OneWayBinding
         .BindPropertyPath ViewModel, "CanMapAdd", Me.cboMapAdd, "Enabled", OneWayBinding

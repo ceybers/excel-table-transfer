@@ -15,7 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView3
+Implements IView
 
 Private Type TState
     Context As IAppContext
@@ -24,8 +24,8 @@ Private Type TState
 End Type
 Private This As TState
 
-Private Property Get IView3_ViewModel() As Object
-    Set IView3_ViewModel = This.ViewModel
+Private Property Get IView_ViewModel() As Object
+    Set IView_ViewModel = This.ViewModel
 End Property
 
 Public Property Get ViewModel() As KeyMapperViewModel
@@ -90,11 +90,11 @@ Private Sub cmbMatchQuality_DropButtonClick()
     DoShowMatchQuality
 End Sub
 
-Private Sub IView3_Show()
-    IView3_ShowDialog
+Private Sub IView_Show()
+    IView_ShowDialog
 End Sub
  
-Private Sub IView3_Hide()
+Private Sub IView_Hide()
     Me.Hide
 End Sub
 
@@ -108,7 +108,7 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyMapperViewModel) As IView3
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyMapperViewModel) As IView
     Dim Result As KeyMapperView
     Set Result = New KeyMapperView
     
@@ -118,23 +118,24 @@ Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyMappe
     Set Create = Result
 End Function
 
-Private Function IView3_ShowDialog() As TtViewResult
+Private Function IView_ShowDialog() As TtViewResult
     Me.lblHeaderText.Caption = HDR_TXT_KEY_MAPPER
     
     BindControls
+    If Me.cboNext.Enabled Then Me.cboNext.SetFocus
     
     Me.Show
     
-    IView3_ShowDialog = This.Result
+    IView_ShowDialog = This.Result
 End Function
 
 Private Sub BindControls()
-    KeyColumnsToListView3.Initialize Me.lvSrcKeys
-    KeyColumnsToListView3.Initialize Me.lvDstKeys
+    KeyColumnsToListView.Initialize Me.lvSrcKeys
+    KeyColumnsToListView.Initialize Me.lvDstKeys
     
     With Context.BindingManager
-        .BindPropertyPath ViewModel, "Source", Me.lvSrcKeys, "ListItems", TwoWayBinding, KeyColumnsToListView3
-        .BindPropertyPath ViewModel, "Destination", Me.lvDstKeys, "ListItems", TwoWayBinding, KeyColumnsToListView3
+        .BindPropertyPath ViewModel, "Source", Me.lvSrcKeys, "ListItems", TwoWayBinding, KeyColumnsToListView
+        .BindPropertyPath ViewModel, "Destination", Me.lvDstKeys, "ListItems", TwoWayBinding, KeyColumnsToListView
         
         .BindPropertyPath ViewModel, "Source.Caption", Me.cmbSrcQuality, "Text", OneWayBinding
         .BindPropertyPath ViewModel, "Destination.Caption", Me.cmbDstQuality, "Text", OneWayBinding
@@ -160,14 +161,14 @@ Private Sub DoShowQuality(ByVal Direction As TtDirection)
         KeyQualityViewModel.Load This.ViewModel.Destination.Selected
     End If
     
-    Dim View As IView3
+    Dim View As IView
     Set View = KeyQualityView.Create(This.Context, KeyQualityViewModel)
     
     View.Show
 End Sub
 
 Private Sub DoShowMatchQuality()
-    Dim View As IView3
+    Dim View As IView
     Set View = MatchQualityView.Create(This.Context, This.ViewModel)
     View.Show
 End Sub

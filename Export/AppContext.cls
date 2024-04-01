@@ -112,7 +112,7 @@ Private Function TryTablePicker() As TtViewResult
     Set ViewModel.SourceTable = This.Transfer.Source.Table
     Set ViewModel.DestinationTable = This.Transfer.Destination.Table
     
-    Dim View As IView3
+    Dim View As IView
     Set View = TablePickerView.Create(Me, ViewModel)
     
     Dim Result As TtViewResult
@@ -141,7 +141,7 @@ Private Function TryKeyMapper() As TtViewResult
     
     ViewModel.TryEvaluateMatch
     
-    Dim View As IView3
+    Dim View As IView
     Set View = KeyMapperView.Create(Me, ViewModel)
     
     Dim Result As TtViewResult
@@ -175,7 +175,7 @@ Private Function TryValueMapper() As TtViewResult
         .SetKeyColumn This.Transfer.Destination.KeyColumnName
     End With
     
-    Dim View As IView3
+    Dim View As IView
     Set View = ValueMapperView.Create(Me, ViewModel)
     
     Dim Result As TtViewResult
@@ -199,7 +199,7 @@ Private Function TryTransferDeltas() As TtViewResult
     Set ViewModel = New DeltasPreviewViewModel
     ViewModel.Load This.Transfer.TransferDeltas, This.Transfer.Source.Table, This.Transfer.Destination.Table
     
-    Dim View As IView3
+    Dim View As IView
     Set View = DeltasPreviewView.Create(Me, ViewModel)
     
     Dim Result As TtViewResult

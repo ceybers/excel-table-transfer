@@ -15,7 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@Folder "MVVM.Views"
 Option Explicit
-Implements IView3
+Implements IView
 
 Private Type TState
     Context As IAppContext
@@ -24,8 +24,8 @@ Private Type TState
 End Type
 Private This As TState
 
-Private Property Get IView3_ViewModel() As Object
-    Set IView3_ViewModel = This.ViewModel
+Private Property Get IView_ViewModel() As Object
+    Set IView_ViewModel = This.ViewModel
 End Property
 
 Public Property Get ViewModel() As TablePickerViewModel
@@ -85,15 +85,15 @@ Private Sub lblHeaderIcon_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
     frmAbout.Show
 End Sub
 
-Private Sub IView3_Show()
-    IView3_ShowDialog
+Private Sub IView_Show()
+    IView_ShowDialog
 End Sub
  
-Private Sub IView3_Hide()
+Private Sub IView_Hide()
     Me.Hide
 End Sub
 
-Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As TablePickerViewModel) As IView3
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As TablePickerViewModel) As IView
     Dim Result As TablePickerView
     Set Result = New TablePickerView
     
@@ -103,7 +103,7 @@ Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As TablePic
     Set Create = Result
 End Function
 
-Private Function IView3_ShowDialog() As TtViewResult
+Private Function IView_ShowDialog() As TtViewResult
     Set This.ViewModel = ViewModel
     Me.lblHeaderText.Caption = HDR_TXT_TABLE_PICKER
     
@@ -114,7 +114,7 @@ Private Function IView3_ShowDialog() As TtViewResult
     
     Me.Show vbModal
     
-    IView3_ShowDialog = This.Result
+    IView_ShowDialog = This.Result
 End Function
 
 Private Sub BindControls()

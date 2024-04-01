@@ -15,7 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@Folder("MVVM.Views")
 Option Explicit
-Implements IView3
+Implements IView
 
 Private Type TState
     Context As IAppContext
@@ -24,8 +24,8 @@ Private Type TState
 End Type
 Private This As TState
 
-Private Property Get IView3_ViewModel() As Object
-    Set IView3_ViewModel = This.ViewModel
+Private Property Get IView_ViewModel() As Object
+    Set IView_ViewModel = This.ViewModel
 End Property
 
 Public Property Get ViewModel() As KeyMapperViewModel
@@ -63,15 +63,15 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     End If
 End Sub
 
-Private Sub IView3_Show()
-    IView3_ShowDialog
+Private Sub IView_Show()
+    IView_ShowDialog
 End Sub
  
-Private Sub IView3_Hide()
+Private Sub IView_Hide()
     Me.Hide
 End Sub
 
-Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyMapperViewModel) As IView3
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyMapperViewModel) As IView
     Dim Result As MatchQualityView
     Set Result = New MatchQualityView
     
@@ -81,7 +81,7 @@ Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyMappe
     Set Create = Result
 End Function
 
-Private Function IView3_ShowDialog() As TtViewResult
+Private Function IView_ShowDialog() As TtViewResult
     Set This.ViewModel = ViewModel
     
     BindControls
@@ -90,18 +90,18 @@ Private Function IView3_ShowDialog() As TtViewResult
     
     Me.Show
     
-    IView3_ShowDialog = This.Result
+    IView_ShowDialog = This.Result
 End Function
 
 Private Sub BindControls()
-    MatchQualityToListView3.Initialize Me.lvLeftOnly
-    MatchQualityToListView3.Initialize Me.lvIntersection
-    MatchQualityToListView3.Initialize Me.lvRightOnly
+    MatchQualityToListView.Initialize Me.lvLeftOnly
+    MatchQualityToListView.Initialize Me.lvIntersection
+    MatchQualityToListView.Initialize Me.lvRightOnly
     
     With Context.BindingManager
-        .BindPropertyPath ViewModel, "MatchQuality.LeftOnly", Me.lvLeftOnly, "ListItems", OneWayBinding, MatchQualityToListView3
-        .BindPropertyPath ViewModel, "MatchQuality.Intersection", Me.lvIntersection, "ListItems", OneWayBinding, MatchQualityToListView3
-        .BindPropertyPath ViewModel, "MatchQuality.RightOnly", Me.lvRightOnly, "ListItems", OneTimeBinding, MatchQualityToListView3
+        .BindPropertyPath ViewModel, "MatchQuality.LeftOnly", Me.lvLeftOnly, "ListItems", OneWayBinding, MatchQualityToListView
+        .BindPropertyPath ViewModel, "MatchQuality.Intersection", Me.lvIntersection, "ListItems", OneWayBinding, MatchQualityToListView
+        .BindPropertyPath ViewModel, "MatchQuality.RightOnly", Me.lvRightOnly, "ListItems", OneTimeBinding, MatchQualityToListView
         .BindPropertyPath ViewModel, "MatchQuality.ToTextTable", Me.txtMatchQuality, "Text", OneTimeBinding
     End With
 End Sub

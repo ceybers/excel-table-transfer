@@ -15,7 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@Folder("MVVM.Views")
 Option Explicit
-Implements IView3
+Implements IView
 
 Private Type TState
     Context As IAppContext
@@ -29,8 +29,8 @@ Private Sub cboCancel_Click()
     Me.Hide
 End Sub
 
-Private Property Get IView3_ViewModel() As Object
-    Set IView3_ViewModel = This.ViewModel
+Private Property Get IView_ViewModel() As Object
+    Set IView_ViewModel = This.ViewModel
 End Property
 
 Public Property Get ViewModel() As KeyQualityViewModel
@@ -55,15 +55,15 @@ Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
     End If
 End Sub
 
-Private Sub IView3_Show()
-    IView3_ShowDialog
+Private Sub IView_Show()
+    IView_ShowDialog
 End Sub
  
-Private Sub IView3_Hide()
+Private Sub IView_Hide()
     Me.Hide
 End Sub
 
-Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyQualityViewModel) As IView3
+Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyQualityViewModel) As IView
     Dim Result As KeyQualityView
     Set Result = New KeyQualityView
     
@@ -73,15 +73,15 @@ Public Function Create(ByVal Context As IAppContext, ByVal ViewModel As KeyQuali
     Set Create = Result
 End Function
 
-Private Function IView3_ShowDialog() As TtViewResult
+Private Function IView_ShowDialog() As TtViewResult
     BindControls
     
     Me.Show
     
-    IView3_ShowDialog = This.Result
+    IView_ShowDialog = This.Result
 End Function
 
 Private Sub BindControls()
-    KeyColumnToListView3.Initialize Me.lvQuality
-    Context.BindingManager.BindPropertyPath ViewModel, "KeyColumn", Me.lvQuality, "ListItems", OneWayBinding, KeyColumnToListView3
+    KeyColumnToListView.Initialize Me.lvQuality
+    Context.BindingManager.BindPropertyPath ViewModel, "KeyColumn", Me.lvQuality, "ListItems", OneWayBinding, KeyColumnToListView
 End Sub

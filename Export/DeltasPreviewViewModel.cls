@@ -80,10 +80,12 @@ End Function
 
 Public Sub TrySelectKey(ByVal Key As String)
     This.TransferDeltas.KeyFilter = Key
+    OnPropertyChanged "Deltas"
 End Sub
 
 Public Sub TrySelectField(ByVal Field As String)
     This.TransferDeltas.FieldFilter = Field
+    OnPropertyChanged "Deltas"
 End Sub
 
 Public Function CanShowAll() As Boolean
