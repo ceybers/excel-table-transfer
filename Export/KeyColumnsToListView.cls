@@ -51,7 +51,9 @@ Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal KeyColumn As K
     ListItem.SmallIcon = MSO_CELL
 End Sub
 
-Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
+Private Sub IValueConverter_Initialize(ByVal Target As Object)
+    Dim ListView As MScomctllib.ListView
+    Set ListView = Target
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear

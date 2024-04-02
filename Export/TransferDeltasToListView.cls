@@ -102,7 +102,9 @@ Private Sub AddSelectAll(ByVal ListView As MScomctllib.ListView)
     ListItem.Key = SELECT_ALL
 End Sub
 
-Public Sub Initialize(ByVal ListView As MScomctllib.ListView, ByVal Member As TtDeltaType)
+Private Sub IValueConverter_Initialize(ByVal Target As Object)
+    Dim ListView As MScomctllib.ListView
+    Set ListView = Target
     With ListView
         .ListItems.Clear
         .View = lvwReport
@@ -113,7 +115,7 @@ Public Sub Initialize(ByVal ListView As MScomctllib.ListView, ByVal Member As Tt
         .HideSelection = False
     End With
     
-    SetColumnHeaders ListView, Member
+    'SetColumnHeaders ListView, Member
 End Sub
 
 Private Sub SetColumnHeaders(ByVal ListView As MScomctllib.ListView, ByVal Member As TtDeltaType)
@@ -123,8 +125,8 @@ Private Sub SetColumnHeaders(ByVal ListView As MScomctllib.ListView, ByVal Membe
     End With
     
     If Member = ttDelta Then
-        ListView.ColumnHeaders.Item(1).Text = "Before" ' TODO Column Header consts
-        ListView.ColumnHeaders.Add Text:="After"
+        ListView.ColumnHeaders.Item(1).Text = COL_HDR_BEFORE
+        ListView.ColumnHeaders.Add Text:=COL_HDR_AFTER
         ListView.ColumnHeaders.Item(1).Width = (ListView.Width - 16) / 2
         ListView.ColumnHeaders.Item(2).Width = (ListView.Width - 16) / 2
     End If

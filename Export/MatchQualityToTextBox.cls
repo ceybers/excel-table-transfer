@@ -44,3 +44,6 @@ Private Sub Load(ByVal TextBox As MSForms.TextBox, ByVal KeyColumn As KeyColumn)
     
     TextBox.Text = Join(Table, vbCrLf)
 End Sub
+
+Private Sub IValueConverter_Initialize(ByVal Target As Object)
+End Sub

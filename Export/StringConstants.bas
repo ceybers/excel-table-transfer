@@ -57,6 +57,7 @@ Public Const CHANGE_TYPE_VALUE_CHANGED As String = "CHANGE_TYPE_VALUE_CHANGED"
 
 Public Const MAGIC_FORMULA_HIGHLIGHTING As String = "=OR(TRUE,""HighlightMapped;b92d7b59-e7ec-4db0-a7c6-5a6ad86ceac2"")"
 
+Public Const COLOR_DISABLED As Long = 8421504 'RGB(128,128,128)
 Public Const COLOR_GREEN_DARK As Long = 14348258 'RGB(226, 239, 218)
 Public Const COLOR_GREEN_LIGHT As Long = 10092492 'RGB(204, 255, 153) '#CCFF99
 Public Const COLOR_DEFAULT_HIGHLIGHT As Long = 10092492 'RGB(204, 255, 153) '#CCFF99
@@ -74,3 +75,18 @@ Public Const ERR_NUM_NO_VISIBLE_CELLS As Long = vbObjectError + 4
 Public Const ERR_MSG_NO_VISIBLE_CELLS As String = "KeyColumn.LoadRange failed"
 Public Const ERR_NUM_UNEXPECTED_VARTYPE As Long = vbObjectError + 5
 Public Const ERR_MSG_UNEXPECTED_VARTYPE As String = "Unexpected VarType TransferDeltas"
+Public Const ERR_NUM_CANT_LOAD_TRANSFER As Long = vbObjectError + 6
+Public Const ERR_MSG_CANT_LOAD_TRANSFER As String = "Unexpected VarType TransferDeltas"
+
+Public Const COL_HDR_BEFORE As String = "Before"
+Public Const COL_HDR_AFTER As String = "After"
+Public Const COL_HDR_SRC As String = "Source"
+Public Const COL_HDR_DST As String = "Destination"
+Public Const COL_HDR_MEASURE As String = "Measurement"
+Public Const COL_HDR_VALUE As String = "Value"
+Public Const COL_QUALITY_DISTINCT As String = "Distinct"
+Public Const COL_QUALITY_UNIQUE As String = "Unique"
+Public Const COL_QUALITY_NONTEXT As String = "Non-text"
+Public Const COL_QUALITY_BLANKS As String = "Blanks"
+Public Const COL_QUALITY_ERRORS As String = "Errors"
+Public Const COL_QUALITY_TOTAL As String = "Total"

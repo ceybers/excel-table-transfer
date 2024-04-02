@@ -122,10 +122,6 @@ Private Function IView_ShowDialog() As TtViewResult
 End Function
 
 Private Sub BindControls()
-    TransferDeltasToListView.Initialize Me.lvKeys, ttKeyMember
-    TransferDeltasToListView.Initialize Me.lvFields, ttField
-    TransferDeltasToListView.Initialize Me.lvDeltas, ttDelta
-    
     With Context.BindingManager
         .BindPropertyPath ViewModel, "Keys", Me.lvKeys, "ListItems", TwoWayBinding, TransferDeltasToListView
         .BindPropertyPath ViewModel, "Fields", Me.lvFields, "ListItems", TwoWayBinding, TransferDeltasToListView

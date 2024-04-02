@@ -28,7 +28,9 @@ Private Sub Load(ByVal KeyColumn As Collection, ByVal ListView As MScomctllib.Li
     Next Item
 End Sub
 
-Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
+Private Sub IValueConverter_Initialize(ByVal Target As Object)
+    Dim ListView As MScomctllib.ListView
+    Set ListView = Target
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear

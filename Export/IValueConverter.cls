@@ -13,6 +13,8 @@ Option Explicit
 Public Sub Convert(ByVal Source As Object, ByVal Target As Object)
 End Sub
 
-'Public Sub ConvertBack(ByVal Source As Object, ByVal Target As Object)
 Public Sub ConvertBack(ByVal PropertyBinding As IPropertyBinding)
+End Sub
+
+Public Sub Initialize(ByVal Target As Object)
 End Sub

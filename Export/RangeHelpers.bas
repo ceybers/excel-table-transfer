@@ -15,7 +15,6 @@ Attribute AppendRange.VB_Description = "Adds a Range to an existing Range as a U
         Exit Function
     End If
     
-    ' TODO CHK if `Worksheet Is Worksheet` is a valid equality test
     If Not RangeToAppend.Parent Is UnionRange.Parent Then Exit Function
     
     Set UnionRange = Application.Union(UnionRange, RangeToAppend)

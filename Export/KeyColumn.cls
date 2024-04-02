@@ -111,11 +111,11 @@ Public Property Get NonTextCount() As Long
     NonTextCount = This.NonTextCount
 End Property
 
-Public Property Get Limit() As Long ' TODO CHK was Double
+Public Property Get Limit() As Long
     Limit = This.Limit
 End Property
 
-Public Property Let Limit(ByVal RHS As Long) ' TODO CHK was Double
+Public Property Let Limit(ByVal RHS As Long)
     This.Limit = RHS
 End Property
 

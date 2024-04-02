@@ -65,7 +65,7 @@ Public Sub Evaluate()
     Set This.Comparer = New NonBlankComparer ' TODO This needs to be here, since we aren't assigning it somewhere else yet
     
     If Not IsValid Then
-        Err.Raise vbObjectError + 15, ERR_SOURCE, "Could not load Transfer Instruction" ' TODO ERR MSG Constants
+        Err.Raise ERR_NUM_CANT_LOAD_TRANSFER, ERR_SOURCE, ERR_MSG_CANT_LOAD_TRANSFER
         Exit Sub
     End If
     

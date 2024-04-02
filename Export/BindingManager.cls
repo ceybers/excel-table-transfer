@@ -58,6 +58,10 @@ Public Sub BindPropertyPath(ByVal Source As Object, ByVal SourcePropertyPath As 
     On Error GoTo NoStrategyFound
     Set BindingStrategy = This.BindingStrategies.Item(GetFullTypeName(Target))
     On Error GoTo 0
+        
+    If Not ValueConverter Is Nothing Then
+        ValueConverter.Initialize Target
+    End If
     
     Dim ThisBindingPath As IBindingPath
     Set ThisBindingPath = BindingPath.Create(Source, SourcePropertyPath)

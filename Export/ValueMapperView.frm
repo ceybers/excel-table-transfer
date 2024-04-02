@@ -125,10 +125,6 @@ Private Function IView_ShowDialog() As TtViewResult
 End Function
 
 Public Sub BindControls()
-    ValueColumnsToListView.Initialize Me.lvSrcValues
-    ValueColumnsToListView.Initialize Me.lvDstValues
-    ColumnPairsToListView.Initialize Me.lvMappedValues
-    
     With Context.BindingManager
         .BindPropertyPath ViewModel, "Source", Me.lvSrcValues, "ListItems", TwoWayBinding, ValueColumnsToListView
         .BindPropertyPath ViewModel, "Destination", Me.lvDstValues, "ListItems", TwoWayBinding, ValueColumnsToListView

@@ -45,12 +45,14 @@ Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal ColumnPair As 
     ListItem.SmallIcon = MSO_LINK
 End Sub
 
-Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
+Private Sub IValueConverter_Initialize(ByVal Target As Object)
+    Dim ListView As MScomctllib.ListView
+    Set ListView = Target
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
-        .ColumnHeaders.Add Text:="Source", Width:=(ListView.Width - 16) / 2 ' TODO Const column header text
-        .ColumnHeaders.Add Text:="Destination", Width:=(ListView.Width - 16) / 2
+        .ColumnHeaders.Add Text:=COL_HDR_SRC, Width:=(ListView.Width - 16) / 2
+        .ColumnHeaders.Add Text:=COL_HDR_DST, Width:=(ListView.Width - 16) / 2
         .View = lvwReport
         .FullRowSelect = True
         .Gridlines = False

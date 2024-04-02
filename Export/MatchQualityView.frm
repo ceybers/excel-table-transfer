@@ -94,10 +94,6 @@ Private Function IView_ShowDialog() As TtViewResult
 End Function
 
 Private Sub BindControls()
-    MatchQualityToListView.Initialize Me.lvLeftOnly
-    MatchQualityToListView.Initialize Me.lvIntersection
-    MatchQualityToListView.Initialize Me.lvRightOnly
-    
     With Context.BindingManager
         .BindPropertyPath ViewModel, "MatchQuality.LeftOnly", Me.lvLeftOnly, "ListItems", OneWayBinding, MatchQualityToListView
         .BindPropertyPath ViewModel, "MatchQuality.Intersection", Me.lvIntersection, "ListItems", OneWayBinding, MatchQualityToListView

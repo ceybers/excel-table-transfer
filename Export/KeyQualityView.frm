@@ -82,6 +82,7 @@ Private Function IView_ShowDialog() As TtViewResult
 End Function
 
 Private Sub BindControls()
-    KeyColumnToListView.Initialize Me.lvQuality
-    Context.BindingManager.BindPropertyPath ViewModel, "KeyColumn", Me.lvQuality, "ListItems", OneWayBinding, KeyColumnToListView
+    With Context.BindingManager
+        .BindPropertyPath ViewModel, "KeyColumn", Me.lvQuality, "ListItems", OneWayBinding, KeyColumnToListView
+    End With
 End Sub

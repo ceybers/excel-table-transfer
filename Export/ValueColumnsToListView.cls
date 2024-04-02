@@ -43,8 +43,6 @@ Private Sub LoadItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns
     For Each ValueColumn In ValueColumns.ValueColumns
         AddItem ListView, ValueColumn
     Next ValueColumn
-    
-    Stop
 End Sub
 
 Private Sub UpdateItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns As ValueColumns)
@@ -59,7 +57,9 @@ Private Sub UpdateItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColum
         End If
     End If
     
-    ListView.ListItems.Item(ValueColumns.Selected.Name).Selected = True
+    If Not ValueColumns.Selected Is Nothing Then
+        ListView.ListItems.Item(ValueColumns.Selected.Name).Selected = True
+    End If
 End Sub
 
 Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal ValueColumn As ValueColumn)
@@ -71,7 +71,7 @@ Private Sub UpdateListItem(ByVal ListItem As MScomctllib.ListItem, ByVal ValueCo
     Set ValueColumn = ValueColumns.ValueColumns.Item(ListItem.Key)
     
     If ValueColumn.IsSelectable = False Then
-        ListItem.ForeColor = RGB(128, 128, 128) ' TODO Const color
+        ListItem.ForeColor = COLOR_DISABLED
     End If
     
     Select Case True
@@ -100,7 +100,9 @@ Private Sub UpdateListItem(ByVal ListItem As MScomctllib.ListItem, ByVal ValueCo
     End Select
 End Sub
 
-Public Sub Initialize(ByVal ListView As MScomctllib.ListView)
+Private Sub IValueConverter_Initialize(ByVal Target As Object)
+    Dim ListView As MScomctllib.ListView
+    Set ListView = Target
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
