@@ -21,6 +21,7 @@ Private Type TState
     Context As IAppContext
     ViewModel As KeyMapperViewModel
     Result As TtViewResult
+    DoubleClickHelper As ListViewDoubleClickHelper
 End Type
 Private This As TState
 
@@ -59,6 +60,14 @@ Private Sub cboCancel_Click()
     Me.Hide
 End Sub
 
+Private Sub lvSrcKeys_DblClick()
+    This.DoubleClickHelper.OnDblClick
+End Sub
+
+Private Sub lvDstKeys_DblClick()
+    This.DoubleClickHelper.OnDblClick
+End Sub
+
 Private Sub lvSrcKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
     This.ViewModel.TryEvaluateMatch
 End Sub
@@ -67,12 +76,20 @@ Private Sub lvDstKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
     This.ViewModel.TryEvaluateMatch
 End Sub
 
-Private Sub lvSrcKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As stdole.OLE_XPOS_PIXELS, ByVal Y As stdole.OLE_YPOS_PIXELS)
+Private Sub lvSrcKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As stdole.OLE_XPOS_PIXELS, ByVal y As stdole.OLE_YPOS_PIXELS)
     TryAutoFocusNext
+    Dim ListItem As ListItem
+    If This.DoubleClickHelper.TryGetDoubleClickedListItem(Me.lvSrcKeys, x, y, ListItem) Then
+        Me.ViewModel.Destination.TrySelect ListItem.Key
+    End If
 End Sub
 
-Private Sub lvDstKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal X As stdole.OLE_XPOS_PIXELS, ByVal Y As stdole.OLE_YPOS_PIXELS)
+Private Sub lvDstKeys_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As stdole.OLE_XPOS_PIXELS, ByVal y As stdole.OLE_YPOS_PIXELS)
     TryAutoFocusNext
+    Dim ListItem As ListItem
+    If This.DoubleClickHelper.TryGetDoubleClickedListItem(Me.lvDstKeys, x, y, ListItem) Then
+        Me.ViewModel.Source.TrySelect ListItem.Key
+    End If
 End Sub
 
 Private Sub cmbSrcQuality_DropButtonClick()
@@ -120,6 +137,7 @@ End Function
 
 Private Function IView_ShowDialog() As TtViewResult
     Me.lblHeaderText.Caption = HDR_TXT_KEY_MAPPER
+    Set This.DoubleClickHelper = New ListViewDoubleClickHelper
     
     BindControls
     If Me.cboNext.Enabled Then Me.cboNext.SetFocus

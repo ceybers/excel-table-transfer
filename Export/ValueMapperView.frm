@@ -21,6 +21,7 @@ Private Type TState
     Context As IAppContext
     ViewModel As ValueMapperViewModel
     Result As TtViewResult
+    DoubleClickHelper As ListViewDoubleClickHelper
 End Type
 Private This As TState
 
@@ -57,6 +58,36 @@ End Sub
 Private Sub cboCancel_Click()
     This.Result = vrCancel
     Me.Hide
+End Sub
+
+Private Sub lvSrcValues_DblClick()
+    This.DoubleClickHelper.OnDblClick
+End Sub
+
+Private Sub lvDstValues_DblClick()
+    This.DoubleClickHelper.OnDblClick
+End Sub
+
+Private Sub lvSrcValues_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As stdole.OLE_XPOS_PIXELS, ByVal y As stdole.OLE_YPOS_PIXELS)
+    Dim ListItem As ListItem
+    If This.DoubleClickHelper.TryGetDoubleClickedListItem(Me.lvSrcValues, x, y, ListItem) Then
+        If This.ViewModel.Destination.TrySelect(ListItem.Key) Then
+            If Me.ViewModel.CanMapAdd Then
+                Me.ViewModel.DoMapAdd
+            End If
+        End If
+    End If
+End Sub
+
+Private Sub lvDstValues_MouseUp(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As stdole.OLE_XPOS_PIXELS, ByVal y As stdole.OLE_YPOS_PIXELS)
+    Dim ListItem As ListItem
+    If This.DoubleClickHelper.TryGetDoubleClickedListItem(Me.lvDstValues, x, y, ListItem) Then
+        If This.ViewModel.Source.TrySelect(ListItem.Key) Then
+            If Me.ViewModel.CanMapAdd Then
+                Me.ViewModel.DoMapAdd
+            End If
+        End If
+    End If
 End Sub
 
 Private Sub lvSrcValues_ItemClick(ByVal Item As MSComctlLib.ListItem)
@@ -115,6 +146,7 @@ End Function
 
 Private Function IView_ShowDialog() As TtViewResult
     Me.lblHeaderText.Caption = HDR_TXT_VALUE_MAPPER
+    Set This.DoubleClickHelper = New ListViewDoubleClickHelper
     
     BindControls
     Me.cboMapAll.SetFocus

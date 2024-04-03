@@ -68,10 +68,11 @@ End Sub
 
 Private Sub IHandlePropertyChanged_HandlePropertyChanged(ByVal Source As Object, ByVal PropertyName As String)
     If PropertyName = "Selected" Then
-        OnPropertyChanged "CanMapAdd"
-        OnPropertyChanged "CanMapRemove"
-        OnPropertyChanged "CanRemoveAll"
-        OnPropertyChanged "CanNext"
+        'OnPropertyChanged "CanMapAdd"
+        'OnPropertyChanged "CanMapRemove"
+        'OnPropertyChanged "CanRemoveAll"
+        'OnPropertyChanged "CanNext"
+        CollectionChanged
     End If
     If Source Is This.Mapped Then
         BackSelectColumnPair

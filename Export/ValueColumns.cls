@@ -103,10 +103,17 @@ Private Function IsValueColumnSelectable(ByVal ValueColumn As ValueColumn) As Bo
     IsValueColumnSelectable = Result
 End Function
 
-Public Sub TrySelect(ByVal ColumnName As String)
-    Set This.Selected = This.ValueColumns.Item(ColumnName)
-    OnPropertyChanged "Selected"
-End Sub
+Public Function TrySelect(ByVal ColumnName As String) As Boolean
+    Dim ValueColumn As ValueColumn
+    For Each ValueColumn In ValueColumns
+        If ValueColumn.Name = ColumnName Then
+            Set This.Selected = ValueColumn
+            OnPropertyChanged "Selected"
+            TrySelect = True
+            Exit Function
+        End If
+    Next ValueColumn
+End Function
 
 Public Sub SetKeyColumn(ByVal ColumnName As String)
     This.ValueColumns.Item(ColumnName).IsKeyColumn = True

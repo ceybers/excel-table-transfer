@@ -92,3 +92,5 @@ Public Const COL_QUALITY_NONTEXT As String = "Non-text"
 Public Const COL_QUALITY_BLANKS As String = "Blanks"
 Public Const COL_QUALITY_ERRORS As String = "Errors"
 Public Const COL_QUALITY_TOTAL As String = "Total"
+
+Public Const TWIPS_PER_PIXEL As Long = 15
