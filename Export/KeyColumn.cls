@@ -298,7 +298,7 @@ Private Function DisjointRangeToArray(ByVal Range As Range) As Variant
         End If
         
         Dim ThisLastRow As Long
-        ThisLastRow = Area.Row + Area.rows.Count - 1
+        ThisLastRow = Area.Row + Area.Rows.Count - 1
         
         If ThisLastRow > LastRow Then
             LastRow = ThisLastRow

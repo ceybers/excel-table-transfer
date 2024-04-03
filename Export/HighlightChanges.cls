@@ -40,14 +40,19 @@ Private Sub ITransferPostProcesser_Execute(ByVal TransferInstruction As Transfer
     Dim DestinationRange As Range
     Set DestinationRange = TransferInstruction.Destination.Table.DataBodyRange
     
+    Dim Deltas As Variant
+    Deltas = TransferInstruction.Deltas
+    
     Dim i As Long
     For i = 0 To UBound(TransferInstruction.Deltas)
-        If TransferInstruction.Deltas(i)(DeltaIndex.tdChangeType) = This.ChangeType Then
+        Dim Delta As Variant
+        Delta = Deltas(i)
+        If Delta(DeltaIndex.tdChangeType) = This.ChangeType Then
             Dim Row As Long
-            Row = TransferInstruction.Deltas(i)(DeltaIndex.tdRow)
+            Row = Delta(DeltaIndex.tdRow)
             
             Dim Column As Long
-            Column = TransferInstruction.Deltas(i)(DeltaIndex.tdCol)
+            Column = Delta(DeltaIndex.tdCol)
             
             AppendRange RangeToAppend:=DestinationRange.Cells.Item(Row, Column), UnionRange:=Target
         End If

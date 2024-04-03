@@ -78,12 +78,15 @@ FinishEarly:
     Exit Sub
     
 ErrorHandler:
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
+    Application.EnableEvents = True
     MsgBox ERR_MSG_GENERIC, vbCritical + vbOKOnly, MSG_CAPTION
 End Sub
 
 Private Function TryReloadRecent() As TtViewResult
     ' DEBUG
-    Exit Function
+    ' Exit Function
     
     This.Settings.LoadMRU
     
@@ -207,8 +210,16 @@ Private Function TryTransferDeltas() As TtViewResult
     
     Select Case Result
         Case vrNext
+            Application.Calculation = xlCalculationManual
+            Application.ScreenUpdating = False
+            Application.EnableEvents = False
+            
             This.Transfer.Commit CommitterFactory.FullColumn
             DoPostProcessing
+            
+            Application.Calculation = xlCalculationAutomatic
+            Application.ScreenUpdating = True
+            Application.EnableEvents = True
     End Select
     
     TryTransferDeltas = Result
@@ -219,8 +230,12 @@ Private Sub DoPostProcessing()
     
     With This.Transfer
         .PostProcess PostProcessorFactory.RemoveHighlighting
-        .PostProcess HighlightChanges.Create(ttValueChanged, COLOR_GREEN_DARK)
-        .PostProcess HighlightChanges.Create(ttValueReplacesBlank, COLOR_GREEN_LIGHT)
+        .PostProcess HighlightChanges.Create(ttBlankReplacesValue, RGB(0, 0, 128))
+        '.PostProcess HighlightChangesFast.Create(ttBlankUnchanged, RGB(0, 0, 255))
+        '.PostProcess HighlightChangesFast.Create(ttInvalidType, RGB(0, 128, 128))
+        .PostProcess HighlightChanges.Create(ttValueChanged, RGB(0, 128, 255))
+        .PostProcess HighlightChanges.Create(ttValueReplacesBlank, RGB(0, 255, 128))
+        .PostProcess HighlightChanges.Create(ttValueUnchanged, RGB(0, 255, 255))
         .PostProcess PostProcessorFactory.TransferColumnWidths
         .PostProcess PostProcessorFactory.TransferNumberFormat
     End With

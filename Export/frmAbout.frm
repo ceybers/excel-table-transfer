@@ -17,6 +17,7 @@ Attribute VB_Exposed = False
 
 
 
+
 '@IgnoreModule HungarianNotation
 '@Folder "MVVM.Views"
 Option Explicit

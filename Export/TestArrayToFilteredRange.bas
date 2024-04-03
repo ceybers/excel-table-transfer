@@ -47,8 +47,8 @@ Private Sub TestArrayToFilteredRange()
     On Error GoTo TestFail
     
     'Arrange:
-    Worksheet.rows.Item(2).Hidden = True
-    Worksheet.rows.Item(5).Hidden = True
+    Worksheet.Rows.Item(2).Hidden = True
+    Worksheet.Rows.Item(5).Hidden = True
     
     Dim SourceArray(1 To 6, 1 To 1) As Variant
     SourceArray(1, 1) = "a1"
@@ -62,8 +62,8 @@ Private Sub TestArrayToFilteredRange()
     'Act:
     ArrayHelpers.ArrayToFilteredRange SourceArray, Worksheet.Range("A1:A6")
     
-    Worksheet.rows.Item(2).Hidden = False
-    Worksheet.rows.Item(5).Hidden = False
+    Worksheet.Rows.Item(2).Hidden = False
+    Worksheet.Rows.Item(5).Hidden = False
     
     'Assert:
     With Worksheet.Range("A1:A6").Cells
