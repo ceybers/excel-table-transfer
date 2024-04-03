@@ -114,6 +114,8 @@ Public Sub DoMapRemove()
     This.Mapped.Remove This.Source.Selected.Name, This.Destination.Selected.Name
     This.Source.Selected.IsMapped = False
     This.Destination.Selected.IsMapped = False
+    
+    CollectionChanged
 End Sub
 
 Public Property Get CanNext() As Boolean

@@ -20,7 +20,8 @@ Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBindin
     SelectItem PropertyBinding.Target, PropertyBinding.Source, PropertyBinding.SourcePropertyPath
 End Sub
 
-Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As ValueMapperViewModel, _
+Private Sub SelectItem(ByVal ListView As MSComctlLib.ListView, _
+    ByVal VM As ValueMapperViewModel, _
     ByVal SourcePropertyPath As String)
     Dim ValueColumns As ValueColumns
     Set ValueColumns = CallByName(VM, SourcePropertyPath, VbGet)
@@ -28,15 +29,15 @@ Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As Value
     ValueColumns.TrySelect ListView.SelectedItem.Key
 End Sub
 
-Private Sub Load(ByVal ValueColumns As ValueColumns, ByVal ListView As MScomctllib.ListView)
+Private Sub Load(ByVal ValueColumns As ValueColumns, ByVal ListView As MSComctlLib.ListView)
     If ListView.ListItems.Count <> ValueColumns.ValueColumns.Count Then
-        LoadItems ListView, ByVal ValueColumns
+        LoadItems ValueColumns, ListView
     End If
         
-    UpdateItems ListView, ByVal ValueColumns
+    UpdateItems ValueColumns, ListView
 End Sub
 
-Private Sub LoadItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns As ValueColumns)
+Private Sub LoadItems(ByVal ValueColumns As ValueColumns, ByVal ListView As MSComctlLib.ListView)
     ListView.ListItems.Clear
     
     Dim ValueColumn As ValueColumn
@@ -45,7 +46,7 @@ Private Sub LoadItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns
     Next ValueColumn
 End Sub
 
-Private Sub UpdateItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColumns As ValueColumns)
+Private Sub UpdateItems(ByVal ValueColumns As ValueColumns, ByVal ListView As MSComctlLib.ListView)
     Dim ListItem As ListItem
     For Each ListItem In ListView.ListItems
         UpdateListItem ListItem, ValueColumns
@@ -62,11 +63,11 @@ Private Sub UpdateItems(ByVal ListView As MScomctllib.ListView, ByVal ValueColum
     End If
 End Sub
 
-Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal ValueColumn As ValueColumn)
+Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal ValueColumn As ValueColumn)
     ListView.ListItems.Add Key:=ValueColumn.Name, Text:=ValueColumn.Name
 End Sub
 
-Private Sub UpdateListItem(ByVal ListItem As MScomctllib.ListItem, ByVal ValueColumns As ValueColumns)
+Private Sub UpdateListItem(ByVal ListItem As MSComctlLib.ListItem, ByVal ValueColumns As ValueColumns)
     Dim ValueColumn As ValueColumn
     Set ValueColumn = ValueColumns.ValueColumns.Item(ListItem.Key)
     
@@ -74,6 +75,8 @@ Private Sub UpdateListItem(ByVal ListItem As MScomctllib.ListItem, ByVal ValueCo
         ListItem.ForeColor = COLOR_DISABLED
     End If
     
+    ListItem.Bold = False
+            
     Select Case True
         '@Ignore UnassignedVariableUsage
         Case ValueColumn.IsKeyColumn
@@ -101,19 +104,19 @@ Private Sub UpdateListItem(ByVal ListItem As MScomctllib.ListItem, ByVal ValueCo
 End Sub
 
 Private Sub IValueConverter_Initialize(ByVal Target As Object)
-    Dim ListView As MScomctllib.ListView
+    Dim ListView As MSComctlLib.ListView
     Set ListView = Target
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
-        '.ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16 'TODO Column header const
-        '.View = lvwReport
-        .View = lvwList
+        .ColumnHeaders.Add Text:=COL_HDR_COLUMN_NAME, Width:=ListView.Width - 16
+        Set .SmallIcons = StandardImageList.GetMSOImageList(16)
+        .BorderStyle = ccNone
         .FullRowSelect = True
         .Gridlines = False
-        .LabelEdit = lvwManual
-        .BorderStyle = ccNone
+        .HideColumnHeaders = True
         .HideSelection = False
-        Set .SmallIcons = StandardImageList.GetMSOImageList(16)
+        .LabelEdit = lvwManual
+        .View = lvwReport
     End With
 End Sub

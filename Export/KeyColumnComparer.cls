@@ -194,6 +194,8 @@ Public Property Get ToTextTable() As String
     If This.Intersection.Count > MaxLines Then MaxLines = This.Intersection.Count
     If This.RightOnly.Count > MaxLines Then MaxLines = This.RightOnly.Count
     
+    If MaxLines = 0 Then Exit Property
+    
     Dim Table() As Variant
     ReDim Table(1 To MaxLines - 1)
     

@@ -20,7 +20,7 @@ End Sub
 Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding)
 End Sub
 
-Private Sub Load(ByVal KeyColumn As KeyColumn, ByVal ListView As MScomctllib.ListView)
+Private Sub Load(ByVal KeyColumn As KeyColumn, ByVal ListView As MSComctlLib.ListView)
     ListView.ListItems.Clear
     
     Dim Total As Long
@@ -41,15 +41,15 @@ Private Sub Load(ByVal KeyColumn As KeyColumn, ByVal ListView As MScomctllib.Lis
     End With
 End Sub
 
-Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal Text As String, ByVal Value As Long, _
+Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal Text As String, ByVal Value As Long, _
     ByVal Icon As String)
-    Dim ListItem As MScomctllib.ListItem
+    Dim ListItem As MSComctlLib.ListItem
     Set ListItem = ListView.ListItems.Add(Text:=Text, SmallIcon:=Icon)
     ListItem.ListSubItems.Add Text:=CStr(Value)
 End Sub
 
 Private Sub IValueConverter_Initialize(ByVal Target As Object)
-    Dim ListView As MScomctllib.ListView
+    Dim ListView As MSComctlLib.ListView
     Set ListView = Target
     With ListView
         .ListItems.Clear

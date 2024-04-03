@@ -16,7 +16,7 @@ Implements IHandlePropertyChanged
 Private Const DO_DEBUG As Boolean = False
 
 '@MemberAttribute VB_VarHelpID, -1
-Private WithEvents mTreeView As MScomctllib.TreeView
+Private WithEvents mTreeView As MSComctlLib.TreeView
 Attribute mTreeView.VB_VarHelpID = -1
 
 Private Type TState
@@ -68,7 +68,7 @@ Public Sub Create(ByVal Source As Object, ByVal SourcePropertyPath As String, By
     UpdateTarget
 End Sub
 
-Private Sub mTreeView_NodeClick(ByVal Node As MScomctllib.Node)
+Private Sub mTreeView_NodeClick(ByVal Node As MSComctlLib.Node)
     If DO_DEBUG Then Debug.Print "TreeViewPropertyBinding tv_NodeClick()"
     UpdateSource
 End Sub

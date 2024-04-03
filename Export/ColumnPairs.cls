@@ -51,6 +51,12 @@ Private Sub OnPropertyChanged(ByVal PropertyName As String)
 End Sub
 
 Public Function GetArray(ByVal Direction As TtDirection) As Variant
+    If This.Items.Count = 0 Then
+        Debug.Print "XYZ FOOBAR"
+        GetArray = Array()
+        Exit Function
+    End If
+    
     Dim Result() As Variant
     ReDim Result(0 To This.Items.Count - 1)
     

@@ -23,18 +23,20 @@ End Sub
 Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBinding)
 End Sub
 
-Private Sub LoadCollection(ByVal Collection As Collection, ByVal ListView As MScomctllib.ListView)
+Private Sub LoadCollection(ByVal Collection As Collection, ByVal ListView As MSComctlLib.ListView)
     ListView.ListItems.Clear
     
     AddSelectAll ListView
     
     Dim Item As Variant
     For Each Item In Collection
-        AddItem ListView, Item
+        AddItem Item, ListView
     Next Item
+    
+    'UpdateHeader ListView, ttKeyMember, Collection.Count
 End Sub
 
-Private Sub Load(ByVal Deltas As TransferDeltas, ByVal ListView As MScomctllib.ListView)
+Private Sub Load(ByVal Deltas As TransferDeltas, ByVal ListView As MSComctlLib.ListView)
     ListView.ListItems.Clear
     
     Dim SourceNumberFormats As Object
@@ -45,11 +47,13 @@ Private Sub Load(ByVal Deltas As TransferDeltas, ByVal ListView As MScomctllib.L
     
     Dim TransferDelta As TransferDelta
     For Each TransferDelta In Deltas.Items
-        AddItemTransferDelta ListView, TransferDelta, SourceNumberFormats(TransferDelta.FieldSource), DestinationNumberFormats(TransferDelta.FieldDestination)
+        AddItemTransferDelta TransferDelta, ListView, _
+            SourceNumberFormats(TransferDelta.FieldSource), _
+            DestinationNumberFormats(TransferDelta.FieldDestination)
     Next TransferDelta
 End Sub
 
-Private Sub AddItemTransferDelta(ByVal ListView As MScomctllib.ListView, ByVal TransferDelta As TransferDelta, _
+Private Sub AddItemTransferDelta(ByVal TransferDelta As TransferDelta, ByVal ListView As MSComctlLib.ListView, _
     ByVal SourceNumberFormat As String, ByVal DestinationNumberFormat As String)
     Dim ValueBeforeFormatted As String
     Dim ValueAfterFormatted As String
@@ -73,11 +77,12 @@ Private Sub AddItemTransferDelta(ByVal ListView As MScomctllib.ListView, ByVal T
     ListItem.ListSubItems.Add Text:=ValueAfterFormatted
 End Sub
 
-Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal Text As String)
+Private Sub AddItem(ByVal Text As String, ByVal ListView As MSComctlLib.ListView)
     ListView.ListItems.Add Text:=Text
 End Sub
 
-Private Sub UpdateHeader(ByVal ListView As MScomctllib.ListView, ByVal Member As TtDeltaType, ByVal Count As Long)
+'@Obsolete
+Private Sub UpdateHeader(ByVal ListView As MSComctlLib.ListView, ByVal Member As TtDeltaType, ByVal Count As Long)
     Dim HeaderText As String
     
     Select Case Member
@@ -95,7 +100,7 @@ Private Sub UpdateHeader(ByVal ListView As MScomctllib.ListView, ByVal Member As
     End If
 End Sub
 
-Private Sub AddSelectAll(ByVal ListView As MScomctllib.ListView)
+Private Sub AddSelectAll(ByVal ListView As MSComctlLib.ListView)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Text:=SELECT_ALL)
     ListItem.ForeColor = StringConstants.COLOR_SELECT_ALL
@@ -103,25 +108,31 @@ Private Sub AddSelectAll(ByVal ListView As MScomctllib.ListView)
 End Sub
 
 Private Sub IValueConverter_Initialize(ByVal Target As Object)
-    Dim ListView As MScomctllib.ListView
+    Dim ListView As MSComctlLib.ListView
     Set ListView = Target
     With ListView
         .ListItems.Clear
-        .View = lvwReport
+        .BorderStyle = ccNone
         .FullRowSelect = True
         .Gridlines = False
-        .LabelEdit = lvwManual
-        .BorderStyle = ccNone
         .HideSelection = False
+        .LabelEdit = lvwManual
+        .View = lvwReport
     End With
     
-    'SetColumnHeaders ListView, Member
+    ' TODO FIX HACK Workaround
+    Select Case ListView.Name
+        Case "lvDeltas"
+            SetColumnHeaders ListView, TtDeltaType.ttDelta
+        Case "lvKeys", "lvFields"
+            SetColumnHeaders ListView, TtDeltaType.ttField
+    End Select
 End Sub
 
-Private Sub SetColumnHeaders(ByVal ListView As MScomctllib.ListView, ByVal Member As TtDeltaType)
+Private Sub SetColumnHeaders(ByVal ListView As MSComctlLib.ListView, ByVal Member As TtDeltaType)
     With ListView
         .ColumnHeaders.Clear
-        .ColumnHeaders.Add Text:="#", Width:=ListView.Width - 16
+        .ColumnHeaders.Add Text:=COL_HDR_RESULTS, Width:=ListView.Width - 16
     End With
     
     If Member = ttDelta Then
@@ -131,3 +142,4 @@ Private Sub SetColumnHeaders(ByVal ListView As MScomctllib.ListView, ByVal Membe
         ListView.ColumnHeaders.Item(2).Width = (ListView.Width - 16) / 2
     End If
 End Sub
+

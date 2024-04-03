@@ -2,7 +2,7 @@ Attribute VB_Name = "TablePickerToTreeView"
 '@Folder "MVVM.ValueConverters"
 Option Explicit
 
-Public Sub Initialize(ByVal TreeView As MScomctllib.TreeView)
+Public Sub Initialize(ByVal TreeView As MSComctlLib.TreeView)
     With TreeView
         .Nodes.Clear ' TODO change to remove index 0 because it is faster
         .Indentation = 16
@@ -11,7 +11,7 @@ Public Sub Initialize(ByVal TreeView As MScomctllib.TreeView)
     End With
 End Sub
 
-Public Sub Load(ByVal TreeView As MScomctllib.TreeView, ByVal ViewModel As TablePickerViewModel)
+Public Sub Load(ByVal TreeView As MSComctlLib.TreeView, ByVal ViewModel As TablePickerViewModel)
     Debug.Assert Not ViewModel Is Nothing
     
     ' Preserve current selected node by its key
@@ -42,8 +42,8 @@ Public Sub Load(ByVal TreeView As MScomctllib.TreeView, ByVal ViewModel As Table
     CheckNoTablesFound TreeView
 End Sub
 
-Private Sub AddNode(ByVal TreeView As MScomctllib.TreeView, ByVal AvailableTable As AvailableTableNode, ByVal NodeCache As Object)
-    Dim Node As MScomctllib.Node
+Private Sub AddNode(ByVal TreeView As MSComctlLib.TreeView, ByVal AvailableTable As AvailableTableNode, ByVal NodeCache As Object)
+    Dim Node As MSComctlLib.Node
     If AvailableTable.NodeType = ttApplication Then
         Set Node = TreeView.Nodes.Add(Key:=AvailableTable.Key, Text:=AvailableTable.Caption)
         Node.Expanded = True
@@ -78,10 +78,10 @@ Private Sub UpdateNodeIcon(ByVal AvailableTable As AvailableTableNode, ByVal Nod
     End With
 End Sub
 
-Private Sub CheckNoTablesFound(ByVal TreeView As MScomctllib.TreeView)
+Private Sub CheckNoTablesFound(ByVal TreeView As MSComctlLib.TreeView)
     'NO_TABLES_FOUND
     If TreeView.Nodes.Count = 1 Then
-        Dim Node As MScomctllib.Node
+        Dim Node As MSComctlLib.Node
         Set Node = TreeView.Nodes.Add(Relative:=TreeView.Nodes.Item(1), relationship:=tvwChild, _
             Key:=vbNullString, Text:=NO_TABLES_FOUND)
         Node.ForeColor = StringConstants.COLOR_NO_TABLES_AVAILABLE

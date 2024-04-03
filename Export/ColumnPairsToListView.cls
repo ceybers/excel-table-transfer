@@ -21,7 +21,7 @@ Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBindin
     SelectItem PropertyBinding.Target, PropertyBinding.Source, PropertyBinding.SourcePropertyPath
 End Sub
 
-Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As ValueMapperViewModel, _
+Private Sub SelectItem(ByVal ListView As MSComctlLib.ListView, ByVal VM As ValueMapperViewModel, _
     ByVal SourcePropertyPath As String)
     Dim ColumnPairs As ColumnPairs
     Set ColumnPairs = CallByName(VM, SourcePropertyPath, VbGet)
@@ -29,7 +29,7 @@ Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As Value
     ColumnPairs.TrySelect ListView.SelectedItem.Key
 End Sub
 
-Private Sub Load(ByVal ColumnPairs As ColumnPairs, ByVal ListView As MScomctllib.ListView)
+Private Sub Load(ByVal ColumnPairs As ColumnPairs, ByVal ListView As MSComctlLib.ListView)
     ListView.ListItems.Clear
     
     Dim ColumnPair As ColumnPair
@@ -38,7 +38,7 @@ Private Sub Load(ByVal ColumnPairs As ColumnPairs, ByVal ListView As MScomctllib
     Next ColumnPair
 End Sub
 
-Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal ColumnPair As ColumnPair)
+Private Sub AddItem(ByVal ListView As MSComctlLib.ListView, ByVal ColumnPair As ColumnPair)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Key:=ColumnPair.Key, Text:=ColumnPair.Source)
     ListItem.ListSubItems.Add Text:=ColumnPair.Destination
@@ -46,7 +46,7 @@ Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal ColumnPair As 
 End Sub
 
 Private Sub IValueConverter_Initialize(ByVal Target As Object)
-    Dim ListView As MScomctllib.ListView
+    Dim ListView As MSComctlLib.ListView
     Set ListView = Target
     With ListView
         .ListItems.Clear

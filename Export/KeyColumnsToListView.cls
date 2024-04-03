@@ -20,7 +20,8 @@ Private Sub IValueConverter_ConvertBack(ByVal PropertyBinding As IPropertyBindin
     SelectItem PropertyBinding.Target, PropertyBinding.Source, PropertyBinding.SourcePropertyPath
 End Sub
 
-Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As KeyMapperViewModel, _
+Private Sub SelectItem(ByVal ListView As MSComctlLib.ListView, _
+    ByVal VM As KeyMapperViewModel, _
     ByVal SourcePropertyPath As String)
     Dim KeyColumns As KeyColumns
     Set KeyColumns = CallByName(VM, SourcePropertyPath, VbGet)
@@ -28,43 +29,54 @@ Private Sub SelectItem(ByVal ListView As MScomctllib.ListView, ByVal VM As KeyMa
     KeyColumns.TrySelect ListView.SelectedItem.Key
 End Sub
 
-Private Sub Load(ByVal KeyColumns As KeyColumns, ByVal ListView As MScomctllib.ListView)
+Private Sub Load(ByVal KeyColumns As KeyColumns, ByVal ListView As MSComctlLib.ListView)
     ListView.ListItems.Clear
     
     Dim KeyColumn As KeyColumn
     For Each KeyColumn In KeyColumns.KeyColumns
-        AddItem ListView, KeyColumn
+        AddItem KeyColumn, ListView
     Next KeyColumn
     
-    If Not KeyColumns.Selected Is Nothing Then
-        With ListView.ListItems.Item(KeyColumns.Selected.Name)
-            .SmallIcon = MSO_KEY
-            .Bold = True
-            .Selected = True
-        End With
-    End If
+    UpdateSelectedItem KeyColumns, ListView
 End Sub
 
-Private Sub AddItem(ByVal ListView As MScomctllib.ListView, ByVal KeyColumn As KeyColumn)
+Private Sub AddItem(ByVal KeyColumn As KeyColumn, ByVal ListView As MSComctlLib.ListView)
     Dim ListItem As ListItem
     Set ListItem = ListView.ListItems.Add(Key:=KeyColumn.Name, Text:=KeyColumn.Name)
     ListItem.SmallIcon = MSO_CELL
 End Sub
 
+Private Sub UpdateSelectedItem(ByVal KeyColumns As KeyColumns, ByVal ListView As MSComctlLib.ListView)
+    If KeyColumns.Selected Is Nothing Then Exit Sub
+    
+    If Not ListView.SelectedItem Is Nothing Then
+        With ListView.SelectedItem
+            .SmallIcon = MSO_CELL
+            .Bold = False
+        End With
+    End If
+    
+    With ListView.ListItems.Item(KeyColumns.Selected.Name)
+        .SmallIcon = MSO_KEY
+        .Bold = True
+        .Selected = True
+    End With
+End Sub
+
 Private Sub IValueConverter_Initialize(ByVal Target As Object)
-    Dim ListView As MScomctllib.ListView
+    Dim ListView As MSComctlLib.ListView
     Set ListView = Target
     With ListView
         .ListItems.Clear
         .ColumnHeaders.Clear
-        '.ColumnHeaders.Add Text:="Column Name", Width:=ListView.Width - 16 ' TODO Header consts
-        '.View = lvwReport
-        .View = lvwList
+        .ColumnHeaders.Add Text:=COL_HDR_COLUMN_NAME, Width:=ListView.Width - 16
+        Set .SmallIcons = StandardImageList.GetMSOImageList(16)
+        .BorderStyle = ccNone
         .FullRowSelect = True
         .Gridlines = False
-        .LabelEdit = lvwManual
-        .BorderStyle = ccNone
+        .HideColumnHeaders = True
         .HideSelection = False
-        Set .SmallIcons = StandardImageList.GetMSOImageList(16)
+        .LabelEdit = lvwManual
+        .View = lvwReport
     End With
 End Sub

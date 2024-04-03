@@ -59,11 +59,11 @@ Private Sub cboCancel_Click()
     Me.Hide
 End Sub
 
-Private Sub lvSrcValues_ItemClick(ByVal Item As MScomctllib.ListItem)
+Private Sub lvSrcValues_ItemClick(ByVal Item As MSComctlLib.ListItem)
     This.ViewModel.Source.TrySelect Item.Key
 End Sub
 
-Private Sub lvDstValues_ItemClick(ByVal Item As MScomctllib.ListItem)
+Private Sub lvDstValues_ItemClick(ByVal Item As MSComctlLib.ListItem)
     This.ViewModel.Destination.TrySelect Item.Key
 End Sub
 

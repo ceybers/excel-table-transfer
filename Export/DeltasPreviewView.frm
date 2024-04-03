@@ -74,11 +74,11 @@ Private Sub cmbShowAll_Click()
     DoShowAll
 End Sub
 
-Private Sub lvKeys_ItemClick(ByVal Item As MScomctllib.ListItem)
+Private Sub lvKeys_ItemClick(ByVal Item As MSComctlLib.ListItem)
     DoSelectKey Item.Text ' TODO Create a proper Model and VM
 End Sub
 
-Private Sub lvFields_ItemClick(ByVal Item As MScomctllib.ListItem)
+Private Sub lvFields_ItemClick(ByVal Item As MSComctlLib.ListItem)
     DoSelectField Item.Text ' TODO Create a proper Model and VM
 End Sub
 

@@ -71,7 +71,7 @@ Private Sub cboSelDst_Click()
     TryAutoFocusNext
 End Sub
 
-Private Sub tvTables_NodeClick(ByVal Node As MScomctllib.Node)
+Private Sub tvTables_NodeClick(ByVal Node As MSComctlLib.Node)
     This.ViewModel.TrySelect Node.Key
 End Sub
 

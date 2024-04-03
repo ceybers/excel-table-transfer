@@ -16,7 +16,7 @@ Implements IHandlePropertyChanged
 Private Const DO_DEBUG As Boolean = False
 
 '@MemberAttribute VB_VarHelpID, -1
-Private WithEvents mListView As MScomctllib.ListView
+Private WithEvents mListView As MSComctlLib.ListView
 Attribute mListView.VB_VarHelpID = -1
 
 Private Type TState
@@ -74,13 +74,13 @@ End Sub
 '    TryUpdateSource
 'End Sub
 
-Private Sub mListView_ItemCheck(ByVal Item As MScomctllib.ListItem)
+Private Sub mListView_ItemCheck(ByVal Item As MSComctlLib.ListItem)
     If DO_DEBUG Then Debug.Print "ListViewPropertyBinding mListView_ItemCheck()"
     
     TryUpdateSource
 End Sub
 
-Private Sub mListView_ItemClick(ByVal Item As MScomctllib.ListItem)
+Private Sub mListView_ItemClick(ByVal Item As MSComctlLib.ListItem)
     If DO_DEBUG Then Debug.Print "ListViewPropertyBinding mListView_ItemClick()"
     
     TryUpdateSource
